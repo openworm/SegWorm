@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of skeleton2angles</title>
+  <meta name="keywords" content="skeleton2angles">
+  <meta name="description" content="SKELETON2ANGLES Compute the angles across a worm skeleton.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Util -->
+<h1>skeleton2angles
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>SKELETON2ANGLES Compute the angles across a worm skeleton.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function angles = skeleton2angles(skeletonX, skeletonY, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SKELETON2ANGLES Compute the angles across a worm skeleton.
+
+   ANGLES = SKELETON2ANGLES(SKELETONX, SKELETONY)
+
+   ANGLES = SKELETON2ANGLES(SKELETONX, SKELETONY, EDGELENGTH)
+
+   Inputs:
+       skeletonX  - the skeleton's x-axis coordinates per frame
+       skeletonY  - the skeleton's y-axis coordinates per frame
+       edgeLength - the edge length for computing the angles; if empty,
+                    the edge length defaults to 1/12 the number of
+                    skeleton points (as used in segWorm)
+
+   Outputs:
+       angles - the angles between each pair of coordinates per frame</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a>	CURVATURE Compute the curvature for a vector of points.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function angles = skeleton2angles(skeletonX, skeletonY, varargin)</a>
+0002 <span class="comment">%SKELETON2ANGLES Compute the angles across a worm skeleton.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   ANGLES = SKELETON2ANGLES(SKELETONX, SKELETONY)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   ANGLES = SKELETON2ANGLES(SKELETONX, SKELETONY, EDGELENGTH)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Inputs:</span>
+0009 <span class="comment">%       skeletonX  - the skeleton's x-axis coordinates per frame</span>
+0010 <span class="comment">%       skeletonY  - the skeleton's y-axis coordinates per frame</span>
+0011 <span class="comment">%       edgeLength - the edge length for computing the angles; if empty,</span>
+0012 <span class="comment">%                    the edge length defaults to 1/12 the number of</span>
+0013 <span class="comment">%                    skeleton points (as used in segWorm)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Outputs:</span>
+0016 <span class="comment">%       angles - the angles between each pair of coordinates per frame</span>
+0017 
+0018 <span class="comment">% Construct the skeleton.</span>
+0019 skeleton = cat(3, skeletonX, skeletonY);
+0020 
+0021 <span class="comment">% Compute the angle edge.</span>
+0022 edgeLength = size(skeleton, 1) / 12;
+0023 <span class="keyword">if</span> ~isempty(varargin)
+0024     edgeLength = varargin{1};
+0025 <span class="keyword">end</span>
+0026 
+0027 <span class="comment">% Compute the angles.</span>
+0028 angles = nan(size(skeleton, 1), size(skeleton, 2));
+0029 <span class="keyword">for</span> i = 1:size(skeleton, 2)
+0030     angles(:,i) = <a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a>(squeeze(skeleton(:,i,:)), edgeLength);
+0031 <span class="keyword">end</span>
+0032 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

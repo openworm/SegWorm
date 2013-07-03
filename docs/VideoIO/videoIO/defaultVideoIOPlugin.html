@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of defaultVideoIOPlugin</title>
+  <meta name="keywords" content="defaultVideoIOPlugin">
+  <meta name="description" content="pluginName = defaultVideoIOPlugin(ctor)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>defaultVideoIOPlugin
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>pluginName = defaultVideoIOPlugin(ctor)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function pluginName = defaultVideoIOPlugin(ctor) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">pluginName = defaultVideoIOPlugin(ctor)
+  Returns the name of the default videoIO (videoReader/videoWriter) plugin.  
+  The videoReader and videoWriter constructors will use the returned plugin 
+  if none is specified.  CTOR should be 'videoReader' or 'videoWriter'.
+
+ Example:
+   defaultVideoIOPlugin('videoReader') % returns 'DirectShow' on Windows
+
+ SEE ALSO:
+   <a href="buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>
+   videoReader
+   videoWriter
+
+Copyright (c) 2007 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="pvtVideoIO_mexName.html" class="code" title="function n = pvtVideoIO_mexName(ctor, plugin)">pvtVideoIO_mexName</a>	n = pvtVideoIO_mexName(ctor, plugin)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>	videoWriter class constructor</li><li><a href="../videoIO/tests/concatReadTests.html" class="code" title="function concatReadTests(plugin)">concatReadTests</a>	concatReadTests</li><li><a href="../videoIO/tests/longWriteTest.html" class="code" title="function longWriteTest(plugin, readerPlugin)">longWriteTest</a>	longWriteTests(plugin)</li><li><a href="../videoIO/tests/readTests.html" class="code" title="function readTests(plugin)">readTests</a>	readTests(plugin)</li><li><a href="../videoIO/tests/resizeTest.html" class="code" title="function resizeTest(plugin)">resizeTest</a>	writeTests(plugin)</li><li><a href="../videoIO/tests/standardTestBattery.html" class="code" title="function standardTestBattery(plugin)">standardTestBattery</a>	standardTestBattery(plugin)</li><li><a href="../videoIO/tests/testGet.html" class="code" title="function testGet(plugin)">testGet</a>	testGet</li><li><a href="../videoIO/tests/writeTests.html" class="code" title="function writeTests(plugin, readerPlugin)">writeTests</a>	writeTests(plugin)</li><li><a href="videoReader_concat.html" class="code" title="function [out,out2] = videoReader_concat(cmd, handle, varargin)">videoReader_concat</a>	videoReader_concat</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function pluginName = defaultVideoIOPlugin(ctor)</a>
+0002 <span class="comment">%pluginName = defaultVideoIOPlugin(ctor)</span>
+0003 <span class="comment">%  Returns the name of the default videoIO (videoReader/videoWriter) plugin.</span>
+0004 <span class="comment">%  The videoReader and videoWriter constructors will use the returned plugin</span>
+0005 <span class="comment">%  if none is specified.  CTOR should be 'videoReader' or 'videoWriter'.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Example:</span>
+0008 <span class="comment">%   defaultVideoIOPlugin('videoReader') % returns 'DirectShow' on Windows</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% SEE ALSO:</span>
+0011 <span class="comment">%   buildVideoIO</span>
+0012 <span class="comment">%   videoReader</span>
+0013 <span class="comment">%   videoWriter</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%Copyright (c) 2007 Gerald Dalley</span>
+0016 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0017 <span class="comment">%when using this library on GNU/Linux).</span>
+0018 
+0019 <span class="keyword">if</span> nargin&lt;1
+0020   ctor = <span class="string">'videoReader'</span>;
+0021 <span class="keyword">end</span>
+0022 
+0023 <span class="keyword">if</span> ispc
+0024   pluginName = <span class="string">'DirectShow'</span>;
+0025   
+0026 <span class="keyword">else</span>
+0027   pluginName = <span class="string">'ffmpegPopen2'</span>;
+0028   
+0029   <span class="comment">% Try to be nice and auto-detect if we should use ffmpegDirect instead</span>
+0030   <span class="keyword">try</span>
+0031     <a href="pvtVideoIO_mexName.html" class="code" title="function n = pvtVideoIO_mexName(ctor, plugin)">pvtVideoIO_mexName</a>(ctor,pluginName);
+0032     <span class="comment">% if the above line succeeded, then ffmpegPopen2 exists.</span>
+0033   <span class="keyword">catch</span>
+0034     <span class="comment">% ffmpegPopen2 doesn't exist</span>
+0035     <span class="keyword">try</span>
+0036       <a href="pvtVideoIO_mexName.html" class="code" title="function n = pvtVideoIO_mexName(ctor, plugin)">pvtVideoIO_mexName</a>(ctor,<span class="string">'ffmpegDirect'</span>);
+0037       <span class="comment">% if the above line succeeded, ffmpegDirect exists.  Default to it.</span>
+0038       pluginName = <span class="string">'ffmpegDirect'</span>;
+0039     <span class="keyword">catch</span>
+0040       <span class="comment">% Neither ffmpegPopen2 nor ffmpegDirect exist.  Use the standard</span>
+0041       <span class="comment">% default.  The user probably needs to run buildVideoIO or run make.</span>
+0042     <span class="keyword">end</span>
+0043   <span class="keyword">end</span>
+0044 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

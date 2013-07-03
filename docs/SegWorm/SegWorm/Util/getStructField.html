@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getStructField</title>
+  <meta name="keywords" content="getStructField">
+  <meta name="description" content="GETSTRUCTFIELD Get a field in a structure.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>getStructField
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>GETSTRUCTFIELD Get a field in a structure.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function data = getStructField(data, field, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">GETSTRUCTFIELD Get a field in a structure.
+
+   DATA = GETSTRUCTFIELD(DATA, FIELD)
+
+   DATA = GETSTRUCTFIELD(DATA, FIELD, ISSAFE)
+
+   Inputs:
+       data   - the structure
+       field  - the field to get (a period delimited string)
+       isSafe - are we using safe mode? when using safe mode, each field
+                is tested to ensure it exists; the default is no (false)
+
+   Output:
+       data - the field data;
+              empty if the field cannot be found</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="loadStructField.html" class="code" title="function data = loadStructField(fileName, structName, field)">loadStructField</a>	LOADSTRUCTFIELD Load a struct field from a file.</li><li><a href="../../SegWorm/Worms/Printing/plotWormStats.html" class="code" title="function plotWormStats(wormFile, worm2num, state, titleName, varargin)">plotWormStats</a>	PLOTWORMSTATS Plot the worm statistics.</li><li><a href="../../SegWorm/Worms/Printing/worm2CSV.html" class="code" title="function filenames = worm2CSV(filename, wormInfo, worm, wormName, varargin)">worm2CSV</a>	WORM2CSV Convert worm features to a CSV file.</li><li><a href="../../SegWorm/Worms/Printing/worm2TOCOntologyTIF.html" class="code" title="function [filename pages] = worm2TOCOntologyTIF(filename, worm, wormName,varargin)">worm2TOCOntologyTIF</a>	WORM2TOCONTOLOGYTIF Save worm details to a TIF.</li><li><a href="../../SegWorm/Worms/Printing/worm2detailsPDF2.html" class="code" title="function [filename pages] = worm2detailsPDF(filename, worm, wormName,varargin)">worm2detailsPDF2</a>	WORM2DETAILSPDF Save worm details to a PDF.</li><li><a href="../../SegWorm/Worms/Printing/worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>	WORM2DETAILSTIF Save worm details to a TIF.</li><li><a href="../../SegWorm/Worms/Printing/worm2summaryPDF2.html" class="code" title="function [filename pages] = worm2summaryPDF(filename, worm, wormName,varargin)">worm2summaryPDF2</a>	WORM2SUMMARYPDF Save a worm summary to a PDF.</li><li><a href="../../SegWorm/Worms/Printing/worm2summaryTIF.html" class="code" title="function [filename pages] = worm2summaryTIF(filename, worm, wormName,varargin)">worm2summaryTIF</a>	WORM2SUMMARYTIF Save a worm summary to a TIF.</li><li><a href="../../SegWorm/Worms/Printing/wormStatsInfo2CSV.html" class="code" title="function wormStatsInfo2CSV(filename, wormFile, varargin)">wormStatsInfo2CSV</a>	WORMSTATSINFO2CSV Convert the worm statistics to a set of CSV files.</li><li><a href="../../SegWorm/Worms/Statistics/filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">filterWormHist</a>	FILTERWORMHIST Filter worm features to meet specific criteria.</li><li><a href="../../SegWorm/Worms/Statistics/worm2NormTimes.html" class="code" title="function worm2NormTimes(filename, seconds, wormFiles, varargin)">worm2NormTimes</a>	WORM2NORMTIMES Normalize worm feature time series.</li><li><a href="../../SegWorm/Worms/Statistics/worm2StatsInfo.html" class="code" title="function worm2StatsInfo(filename, wormFiles, varargin)">worm2StatsInfo</a>	WORM2STATSINFO Compute worm statistics information and save it to a file.</li><li><a href="../../SegWorm/Worms/Statistics/worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li><li><a href="../../SegWorm/Worms/Statistics/worm2histogram2.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram2</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li><li><a href="../../SegWorm/Worms/Statistics/wormStats2Matrix2.html" class="code" title="function wormStats2Matrix(filename, wormFiles, varargin)">wormStats2Matrix2</a>	WORMSTATS2MATRIX Construct and save a features x worms matrix.</li><li><a href="../../SegWorm/Worms/Statistics/wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>	WORMFEATUREINFO Get information for computing the worm statistics.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function data = getStructField(data, field, varargin)</a>
+0002 <span class="comment">%GETSTRUCTFIELD Get a field in a structure.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   DATA = GETSTRUCTFIELD(DATA, FIELD)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   DATA = GETSTRUCTFIELD(DATA, FIELD, ISSAFE)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Inputs:</span>
+0009 <span class="comment">%       data   - the structure</span>
+0010 <span class="comment">%       field  - the field to get (a period delimited string)</span>
+0011 <span class="comment">%       isSafe - are we using safe mode? when using safe mode, each field</span>
+0012 <span class="comment">%                is tested to ensure it exists; the default is no (false)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   Output:</span>
+0015 <span class="comment">%       data - the field data;</span>
+0016 <span class="comment">%              empty if the field cannot be found</span>
+0017 
+0018 <span class="comment">% Are we using safe mode?</span>
+0019 isSafe = false;
+0020 <span class="keyword">if</span> ~isempty(varargin)
+0021     isSafe = varargin{1};
+0022 <span class="keyword">end</span>
+0023 
+0024 <span class="comment">% No data.</span>
+0025 <span class="keyword">if</span> isempty(field)
+0026     <span class="keyword">return</span>;
+0027     
+0028 <span class="comment">% Get the field.</span>
+0029 <span class="keyword">else</span>
+0030     fields = textscan(field, <span class="string">'%s'</span>, <span class="string">'Delimiter'</span>, <span class="string">'.'</span>);
+0031     fields = fields{1};
+0032     
+0033     <span class="comment">% Check each field to ensure it exists before traversing.</span>
+0034     <span class="keyword">if</span> isSafe
+0035         <span class="keyword">for</span> i = 1:length(fields)
+0036             
+0037             <span class="comment">% Have we reached the end?</span>
+0038             <span class="keyword">if</span> isempty(data) || ~isstruct(data) || ~isfield(data, fields{i})
+0039                 data = [];
+0040                 <span class="keyword">return</span>;
+0041             <span class="keyword">end</span>
+0042             
+0043             <span class="comment">% Go deeper.</span>
+0044             data = [data.(fields{i})];
+0045         <span class="keyword">end</span>
+0046         
+0047     <span class="comment">% Traverse each field without checking to ensure it exists.</span>
+0048     <span class="keyword">else</span>
+0049         <span class="keyword">for</span> i = 1:length(fields)
+0050             
+0051             <span class="comment">% Have we reached the end?</span>
+0052             <span class="keyword">if</span> isempty(data) || ~isstruct(data)
+0053                 data = [];
+0054                 <span class="keyword">return</span>;
+0055             <span class="keyword">end</span>
+0056             
+0057             <span class="comment">% Go deeper.</span>
+0058             data = [data.(fields{i})];
+0059         <span class="keyword">end</span>
+0060     <span class="keyword">end</span>
+0061 <span class="keyword">end</span>
+0062 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotWormPathData2</title>
+  <meta name="keywords" content="plotWormPathData2">
+  <meta name="description" content="PLOTWORMPATHDATA Plot the worm path data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>plotWormPathData2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>PLOTWORMPATHDATA Plot the worm path data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function plotWormPathData(titleLabel, skeleton, coils, omegas, bodyI,data, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOTWORMPATHDATA Plot the worm path data.
+
+   PLOTWORMPATHDATA(SKELETON, COILS, OMEGAS, BODYI, DATA)
+
+   PLOTWORMPATHDATA(SKELETON, COILS, OMEGAS, BODYI, DATA, DLIM, ALPHA,
+                    XLIMS, YLIMS)
+
+   Inputs:
+       skeleton - the worm skeleton (worm.posture.skeleton)
+       coils    - the worm coils (worm.posture.coils)
+       omegas   - the worm omegas (worm.locomotion.turns.omegas)
+       bodyI    - the body indices to use for the plot
+       data     - the data to plot
+       dLims    - the data limits to use for coloring;
+                  if empty, the colors are scaled to the full data set;
+                  the default is scaled (empty)
+       alpha    - the alpha transparency to use;
+                  the default is opaque (1)
+       xLims    - the x-axis limits;
+                  if empty, the limits are scaled to the data set;
+                  the default is scaled (empty)
+       yLims    - the y-axis limits;
+                  if empty, the limits are scaled to the data set;
+                  the default is scaled (empty)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/color2TeX.html" class="code" title="function str = color2TeX(color)">color2TeX</a>	COLOR2TEX Convert a color to a TeX string.</li><li><a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>	STR2COLORS Convert a string of colors to RGB values.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function i = findForeFrame(i, isNaNFrame)</a></li><li><a href="#_sub2" class="code">function i = findBackFrame(i, isNaNFrame)</a></li><li><a href="#_sub3" class="code">function [coilFrames omegaFrames] = touch2frames(coils, omegas, isNaNFrame)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function plotWormPathData(titleLabel, skeleton, coils, omegas, bodyI, </a><span class="keyword">...</span>
+0002     data, varargin)
+0003 <span class="comment">%PLOTWORMPATHDATA Plot the worm path data.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   PLOTWORMPATHDATA(SKELETON, COILS, OMEGAS, BODYI, DATA)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   PLOTWORMPATHDATA(SKELETON, COILS, OMEGAS, BODYI, DATA, DLIM, ALPHA,</span>
+0008 <span class="comment">%                    XLIMS, YLIMS)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Inputs:</span>
+0011 <span class="comment">%       skeleton - the worm skeleton (worm.posture.skeleton)</span>
+0012 <span class="comment">%       coils    - the worm coils (worm.posture.coils)</span>
+0013 <span class="comment">%       omegas   - the worm omegas (worm.locomotion.turns.omegas)</span>
+0014 <span class="comment">%       bodyI    - the body indices to use for the plot</span>
+0015 <span class="comment">%       data     - the data to plot</span>
+0016 <span class="comment">%       dLims    - the data limits to use for coloring;</span>
+0017 <span class="comment">%                  if empty, the colors are scaled to the full data set;</span>
+0018 <span class="comment">%                  the default is scaled (empty)</span>
+0019 <span class="comment">%       alpha    - the alpha transparency to use;</span>
+0020 <span class="comment">%                  the default is opaque (1)</span>
+0021 <span class="comment">%       xLims    - the x-axis limits;</span>
+0022 <span class="comment">%                  if empty, the limits are scaled to the data set;</span>
+0023 <span class="comment">%                  the default is scaled (empty)</span>
+0024 <span class="comment">%       yLims    - the y-axis limits;</span>
+0025 <span class="comment">%                  if empty, the limits are scaled to the data set;</span>
+0026 <span class="comment">%                  the default is scaled (empty)</span>
+0027 
+0028 <span class="comment">% Get the data limits to use for coloring.</span>
+0029 dLims = [];
+0030 <span class="keyword">if</span> ~isempty(varargin)
+0031     dLims = varargin{1};
+0032 <span class="keyword">end</span>
+0033 <span class="keyword">if</span> isempty(dLims)
+0034     dLims = [min(data), max(data)];
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="comment">% Get the alpha transparency to use.</span>
+0038 alpha = 1;
+0039 <span class="keyword">if</span> length(varargin) &gt; 1
+0040     alpha = varargin{2};
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="comment">% Get the x-axis limits.</span>
+0044 xLims = [];
+0045 <span class="keyword">if</span> length(varargin) &gt; 2
+0046     xLims = varargin{3};
+0047 <span class="keyword">end</span>
+0048 
+0049 <span class="comment">% Get the y-axis limits.</span>
+0050 yLims = [];
+0051 <span class="keyword">if</span> length(varargin) &gt; 3
+0052     yLims = varargin{4};
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="comment">% Initialize special ascii symbols.</span>
+0056 sepStr = <span class="string">'   ¤   '</span>;
+0057 
+0058 <span class="comment">% Initialize the label information.</span>
+0059 titleFont = <span class="string">'\fontsize{16}'</span>;
+0060 axisFont = <span class="string">'\fontsize{14}'</span>;
+0061 tickFontSize = 12;
+0062 
+0063 <span class="comment">% Initialize the worm plot information.</span>
+0064 firstWormColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0.5);
+0065 lastWormColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>)';
+0066 
+0067 <span class="comment">% Initialize the path plot information.</span>
+0068 pathWidth = 2;
+0069 wormWidth = 2;
+0070 
+0071 <span class="comment">% Initialize the event plot information.</span>
+0072 coilMarker = <span class="string">'\bf+'</span>;
+0073 coilColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+0074 omegaMarker = <span class="string">'\bfx'</span>;
+0075 omegaColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+0076 eventFontSize = 48;
+0077 
+0078 <span class="comment">% Initialize the skeleton information.</span>
+0079 x = skeleton.x;
+0080 y = skeleton.y;
+0081 isNaNFrame = isnan(x(1,:));
+0082 
+0083 <span class="comment">% Zero the skeleton.</span>
+0084 x = (x - min(x(:))) / 1000;
+0085 y = (y - min(y(:))) / 1000;
+0086 
+0087 <span class="comment">% Compute the points.</span>
+0088 bodyX = [mean(x(bodyI,:), 1), nan];
+0089 bodyY = [mean(y(bodyI,:), 1), nan];
+0090 z = [data, nan];
+0091 
+0092 <span class="comment">% Find the first and last worm.</span>
+0093 firstI = <a href="#_sub1" class="code" title="subfunction i = findForeFrame(i, isNaNFrame)">findForeFrame</a>(1, isNaNFrame);
+0094 lastI = <a href="#_sub2" class="code" title="subfunction i = findBackFrame(i, isNaNFrame)">findBackFrame</a>(length(isNaNFrame), isNaNFrame);
+0095 
+0096 <span class="comment">% Find the coils and omega turns.</span>
+0097 [coils omegas] = <a href="#_sub3" class="code" title="subfunction [coilFrames omegaFrames] = touch2frames(coils, omegas, isNaNFrame)">touch2frames</a>(coils, omegas, isNaNFrame);
+0098 coilsX = (bodyX(coils(:,1)) + bodyX(coils(:,2))) / 2;
+0099 coilsY = (bodyY(coils(:,1)) + bodyY(coils(:,2))) / 2;
+0100 omegasX = (bodyX(omegas(:,1)) + bodyX(omegas(:,2))) / 2;
+0101 omegasY = (bodyY(omegas(:,1)) + bodyY(omegas(:,2))) / 2;
+0102 
+0103 <span class="comment">% Plot the first and last worm.</span>
+0104 <span class="comment">% zWorm = [zeros(1, skelSize) nan];</span>
+0105 <span class="comment">% patch([x(:,firstI)', nan], [y(:,firstI)', nan], zWorm, ...</span>
+0106 <span class="comment">%     'EdgeColor', firstWormColor, 'LineWidth', wormWidth, 'EdgeAlpha', 1);</span>
+0107 <span class="comment">% patch([x(:,lastI)', nan], [y(:,lastI)', nan], zWorm, ...</span>
+0108 <span class="comment">%     'EdgeColor', lastWormColor, 'LineWidth', wormWidth, 'EdgeAlpha', 1);</span>
+0109 hold on;
+0110 plot(x(:,firstI), y(:,firstI), <span class="string">'o'</span>, <span class="string">'Color'</span>, firstWormColor, <span class="keyword">...</span>
+0111     <span class="string">'MarkerFaceColor'</span>, firstWormColor, <span class="keyword">...</span>
+0112     <span class="string">'MarkerEdgeColor'</span>, firstWormColor, <span class="keyword">...</span>
+0113     <span class="string">'LineWidth'</span>, wormWidth);
+0114 plot(x(:,lastI), y(:,lastI), <span class="string">'o'</span>, <span class="string">'Color'</span>, lastWormColor, <span class="keyword">...</span>
+0115     <span class="string">'MarkerFaceColor'</span>, lastWormColor, <span class="keyword">...</span>
+0116     <span class="string">'MarkerEdgeColor'</span>, lastWormColor, <span class="keyword">...</span>
+0117     <span class="string">'LineWidth'</span>, wormWidth);
+0118 
+0119 <span class="comment">% Plot the coils and omegas.</span>
+0120 text(coilsX, coilsY, coilMarker, <span class="string">'FontSize'</span>, eventFontSize, <span class="keyword">...</span>
+0121     <span class="string">'Color'</span>, coilColor, <span class="keyword">...</span>
+0122     <span class="string">'HorizontalAlignment'</span>, <span class="string">'Center'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'Middle'</span>);
+0123 text(omegasX, omegasY, omegaMarker, <span class="string">'FontSize'</span>, eventFontSize, <span class="keyword">...</span>
+0124     <span class="string">'Color'</span>, omegaColor, <span class="keyword">...</span>
+0125     <span class="string">'HorizontalAlignment'</span>, <span class="string">'Center'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'Middle'</span>);
+0126 
+0127 <span class="comment">% Plot the path.</span>
+0128 colormap(jet);
+0129 set(gca, <span class="string">'CLim'</span>, dLims);
+0130 patch(bodyX, bodyY, z, <span class="string">'CDataMapping'</span>,<span class="string">'scaled'</span>, <span class="keyword">...</span>
+0131     <span class="string">'EdgeColor'</span>, <span class="string">'flat'</span>, <span class="string">'LineWidth'</span>, pathWidth, <span class="string">'EdgeAlpha'</span>, alpha);
+0132 
+0133 <span class="comment">% Label the coils and omegas.</span>
+0134 blackStr = <span class="string">'\color{black}'</span>;
+0135 coilColorStr = <a href="../../../SegWorm/Util/color2TeX.html" class="code" title="function str = color2TeX(color)">color2TeX</a>(coilColor);
+0136 omegaColorStr = <a href="../../../SegWorm/Util/color2TeX.html" class="code" title="function str = color2TeX(color)">color2TeX</a>(omegaColor);
+0137 coilStr = [<span class="string">'\bfCoils('</span> coilColorStr coilMarker blackStr <span class="string">') = '</span> <span class="keyword">...</span>
+0138     num2str(length(coilsX))];
+0139 omegaStr = [<span class="string">'\bfOmegas('</span> omegaColorStr omegaMarker blackStr <span class="string">') = '</span> <span class="keyword">...</span>
+0140     num2str(length(omegasX))];
+0141 
+0142 <span class="comment">% Label the image.</span>
+0143 set(gca, <span class="string">'FontSize'</span>, tickFontSize);
+0144 title([titleFont titleLabel]);
+0145 xlabel([axisFont <span class="string">'X Location (mm)'</span> sepStr omegaStr]);
+0146 ylabel([axisFont <span class="string">'Y Location (mm)'</span> sepStr coilStr]);
+0147 
+0148 <span class="comment">% Clean up the image.</span>
+0149 axis equal;
+0150 <span class="keyword">if</span> ~isempty(xLims)
+0151     xlim(xLims);
+0152 <span class="keyword">end</span>
+0153 <span class="keyword">if</span> ~isempty(yLims)
+0154     ylim(yLims);
+0155 <span class="keyword">end</span>
+0156 <span class="keyword">end</span>
+0157 
+0158 
+0159 
+0160 <span class="comment">%% Find the first usable frame forwards.</span>
+0161 <a name="_sub1" href="#_subfunctions" class="code">function i = findForeFrame(i, isNaNFrame)</a>
+0162 <span class="keyword">while</span> isNaNFrame(i) &amp;&amp; i &lt; length(isNaNFrame)
+0163     i = i + 1;
+0164 <span class="keyword">end</span>
+0165 <span class="keyword">end</span>
+0166 
+0167 
+0168 
+0169 <span class="comment">%% Find the first usable frame backwards.</span>
+0170 <a name="_sub2" href="#_subfunctions" class="code">function i = findBackFrame(i, isNaNFrame)</a>
+0171 <span class="keyword">while</span> isNaNFrame(i) &amp;&amp; i &gt; 1
+0172     i = i - 1;
+0173 <span class="keyword">end</span>
+0174 <span class="keyword">end</span>
+0175 
+0176 
+0177 <span class="comment">%% Find the coils and omega turns.</span>
+0178 <a name="_sub3" href="#_subfunctions" class="code">function [coilFrames omegaFrames] = touch2frames(coils, omegas, isNaNFrame)</a>
+0179 
+0180 <span class="comment">% Get the frames.</span>
+0181 coils = coils.frames;
+0182 omegas = omegas.frames;
+0183 
+0184 <span class="comment">% Remove coils that are omega turns.</span>
+0185 <span class="keyword">if</span> ~isempty(coils)
+0186     keepI = true(length(coils), 1);
+0187     <span class="keyword">for</span> i = 1:length(coils)
+0188         <span class="keyword">for</span> j = 1:length(omegas)
+0189             
+0190             <span class="comment">% Do the coil and omega intersect?</span>
+0191             c1 = coils(i).start;
+0192             c2 = coils(i).end;
+0193             o1 = omegas(j).start;
+0194             o2 = omegas(j).end;
+0195             <span class="keyword">if</span> (c1 &gt;= o1 &amp;&amp; c1 &lt;= o2) || (c2 &gt;= o1 &amp;&amp; c2 &lt;= o2) || <span class="keyword">...</span>
+0196                     (c1 &lt;= o1 &amp;&amp; c2 &gt;= o2)
+0197                 keepI(i) = false;
+0198             <span class="keyword">end</span>
+0199         <span class="keyword">end</span>
+0200     <span class="keyword">end</span>
+0201     coils = coils(keepI);
+0202 <span class="keyword">end</span>
+0203 
+0204 <span class="comment">% Find the first and last usable frame for each coil.</span>
+0205 coilFrames = nan(length(coils), 2);
+0206 <span class="keyword">for</span> i = 1:length(coils)
+0207     
+0208     <span class="comment">% Find the first and last usable frame.</span>
+0209     coilFrames(i,1) = <a href="#_sub2" class="code" title="subfunction i = findBackFrame(i, isNaNFrame)">findBackFrame</a>(coils(i).start + 1, isNaNFrame);
+0210     coilFrames(i,2) = <a href="#_sub1" class="code" title="subfunction i = findForeFrame(i, isNaNFrame)">findForeFrame</a>(coils(i).end + 1, isNaNFrame);
+0211     
+0212     <span class="comment">% Are either of the frames missing?</span>
+0213     <span class="keyword">if</span> isNaNFrame(coilFrames(i,1))
+0214         coilFrames(i,1) = coilFrames(i,2);
+0215     <span class="keyword">elseif</span> isNaNFrame(coilFrames(i,2))
+0216         coilFrames(i,2) = coilFrames(i,1);
+0217     <span class="keyword">end</span>
+0218 <span class="keyword">end</span>
+0219 
+0220 <span class="comment">% Find the first and last usable frame for each omega.</span>
+0221 omegaFrames = nan(length(omegas), 2);
+0222 <span class="keyword">for</span> i = 1:length(omegas)
+0223     
+0224     <span class="comment">% Find the first and last usable frame.</span>
+0225     omegaFrames(i,1) = <a href="#_sub2" class="code" title="subfunction i = findBackFrame(i, isNaNFrame)">findBackFrame</a>(omegas(i).start + 1, isNaNFrame);
+0226     omegaFrames(i,2) = <a href="#_sub1" class="code" title="subfunction i = findForeFrame(i, isNaNFrame)">findForeFrame</a>(omegas(i).end + 1, isNaNFrame);
+0227     
+0228     <span class="comment">% Are either of the frames missing?</span>
+0229     <span class="keyword">if</span> isNaNFrame(omegaFrames(i,1))
+0230         omegaFrames(i,1) = omegaFrames(i,2);
+0231     <span class="keyword">elseif</span> isNaNFrame(omegaFrames(i,2))
+0232         omegaFrames(i,2) = omegaFrames(i,1);
+0233     <span class="keyword">end</span>
+0234 <span class="keyword">end</span>
+0235 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

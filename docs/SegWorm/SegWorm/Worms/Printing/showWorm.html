@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of showWorm</title>
+  <meta name="keywords" content="showWorm">
+  <meta name="description" content="SHOWWORMMORPHOLOGY Show the worm measurements.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>showWorm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>SHOWWORMMORPHOLOGY Show the worm measurements.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [saveFile pages] = showWorm(worm, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SHOWWORMMORPHOLOGY Show the worm measurements.
+
+   [SAVEFILE PAGES] = SHOWWORM(WORM)
+
+   [SAVEFILE PAGES] = SHOWWORM(WORM, FILEPREFIX)
+
+   [SAVEFILE PAGES] = SHOWWORM(WORM, FILEPREFIX, PAGE)
+
+   [SAVEFILE PAGES] = SHOWWORM(WORM, FILEPREFIX, PAGE, ISCLOSE)
+
+   Inputs:
+       worm        - the worm to show
+       filePrefix  - the file prefix for saving the figure;
+                     if empty, the figure is not saved
+       page        - the page number;
+                     if empty, the page number is not shown
+       isClose     - shoud we close the figure after saving it?
+                     when saving the figure, the default is yes (true)
+                     otherwise, the default is no (false)
+
+   Output:
+       saveFile - the file containing the saved figure;
+                  if empty, the figure was not saved
+       pages    - the number of pages in the figure file
+
+   See WORMORGANIZATION</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/mergePDFs.html" class="code" title="function mergePDFs(mergeFile, files, varargin)">mergePDFs</a>	MERGEPDFS Merge PDF files.</li><li><a href="showWormMorphology.html" class="code" title="function [saveFile pages] = showWormMorphology(worm, varargin)">showWormMorphology</a>	SHOWWORMMORPHOLOGY Show the worm morphology.</li><li><a href="showWormPosture.html" class="code" title="function [saveFile pages] = showWormPosture(worm, varargin)">showWormPosture</a>	SHOWWORMPOSTURE Show the worm posture.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [saveFile pages] = showWorm(worm, varargin)</a>
+0002 <span class="comment">%SHOWWORMMORPHOLOGY Show the worm measurements.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORM(WORM)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORM(WORM, FILEPREFIX)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORM(WORM, FILEPREFIX, PAGE)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORM(WORM, FILEPREFIX, PAGE, ISCLOSE)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   Inputs:</span>
+0013 <span class="comment">%       worm        - the worm to show</span>
+0014 <span class="comment">%       filePrefix  - the file prefix for saving the figure;</span>
+0015 <span class="comment">%                     if empty, the figure is not saved</span>
+0016 <span class="comment">%       page        - the page number;</span>
+0017 <span class="comment">%                     if empty, the page number is not shown</span>
+0018 <span class="comment">%       isClose     - shoud we close the figure after saving it?</span>
+0019 <span class="comment">%                     when saving the figure, the default is yes (true)</span>
+0020 <span class="comment">%                     otherwise, the default is no (false)</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   Output:</span>
+0023 <span class="comment">%       saveFile - the file containing the saved figure;</span>
+0024 <span class="comment">%                  if empty, the figure was not saved</span>
+0025 <span class="comment">%       pages    - the number of pages in the figure file</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%   See WORMORGANIZATION</span>
+0028 
+0029 <span class="comment">% Are we saving the figures to a file?</span>
+0030 figFiles = [];
+0031 filePrefix = [];
+0032 pages = 0;
+0033 page = [];
+0034 isClose = false;
+0035 <span class="keyword">if</span> ~isempty(varargin) &amp;&amp; ~isempty(varargin{1})
+0036     
+0037     <span class="comment">% Set the defaults.</span>
+0038     filePrefix = varargin{1};
+0039     isClose = true;
+0040     
+0041     <span class="comment">% Do we have page numbers?</span>
+0042     <span class="keyword">if</span> length(varargin) &gt; 1 &amp;&amp; ~isempty(varargin{2})
+0043         page = varargin{2};
+0044         
+0045         <span class="comment">% Are we closing the figure after saving it?</span>
+0046         <span class="keyword">if</span> length(varargin) &gt; 2 &amp;&amp; ~isempty(varargin{3})
+0047             isClose = varargin{3};
+0048         <span class="keyword">end</span>
+0049     <span class="keyword">end</span>
+0050 <span class="keyword">end</span>
+0051 
+0052 <span class="comment">% Show the worm morphology.</span>
+0053 [figFiles{end + 1} figPages] = <a href="showWormMorphology.html" class="code" title="function [saveFile pages] = showWormMorphology(worm, varargin)">showWormMorphology</a>(worm, filePrefix, <span class="keyword">...</span>
+0054     page + pages, isClose);
+0055 pages = pages + figPages;
+0056 
+0057 <span class="comment">% Show the worm posture.</span>
+0058 [figFiles{end + 1} figPages] = <a href="showWormPosture.html" class="code" title="function [saveFile pages] = showWormPosture(worm, varargin)">showWormPosture</a>(worm, filePrefix, <span class="keyword">...</span>
+0059     page + pages, isClose);
+0060 pages = pages + figPages;
+0061 
+0062 <span class="comment">% Save the figures to a file.</span>
+0063 saveFile = [];
+0064 <span class="keyword">if</span> ~isempty(filePrefix)
+0065     
+0066     <span class="comment">% Merge the figure files.</span>
+0067     saveFile = [filePrefix <span class="string">'.pdf'</span>];
+0068     <a href="../../../SegWorm/Util/mergePDFs.html" class="code" title="function mergePDFs(mergeFile, files, varargin)">mergePDFs</a>(saveFile, figFiles);
+0069     
+0070     <span class="comment">% Delete the individual figure files.</span>
+0071     <span class="keyword">for</span> i = 1:length(figFiles)
+0072         delete(figFiles{i});
+0073     <span class="keyword">end</span>
+0074 <span class="keyword">end</span>
+0075 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

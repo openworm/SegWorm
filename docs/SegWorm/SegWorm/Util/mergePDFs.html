@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mergePDFs</title>
+  <meta name="keywords" content="mergePDFs">
+  <meta name="description" content="MERGEPDFS Merge PDF files.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>mergePDFs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>MERGEPDFS Merge PDF files.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function mergePDFs(mergeFile, files, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">MERGEPDFS Merge PDF files.
+
+   MERGEPDFS(MERGEFILE, FILES)
+
+   MERGEPDFS(MERGEFILE, FILES, ISDELETE)
+
+   Inputs:
+       mergeFile - the file name for the merged PDF files
+       files     - a cell array of the names for the PDF files to merge
+       isDelete  - should we delete the separate PDFs after merging them?
+                   the default is no (false)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Printing/showWorm.html" class="code" title="function [saveFile pages] = showWorm(worm, varargin)">showWorm</a>	SHOWWORMMORPHOLOGY Show the worm measurements.</li><li><a href="../../SegWorm/Worms/Printing/showWormMorphology.html" class="code" title="function [saveFile pages] = showWormMorphology(worm, varargin)">showWormMorphology</a>	SHOWWORMMORPHOLOGY Show the worm morphology.</li><li><a href="../../SegWorm/Worms/Printing/showWormPosture.html" class="code" title="function [saveFile pages] = showWormPosture(worm, varargin)">showWormPosture</a>	SHOWWORMPOSTURE Show the worm posture.</li><li><a href="../../SegWorm/Worms/Printing/worm2summaryPDF2.html" class="code" title="function [filename pages] = worm2summaryPDF(filename, worm, wormName,varargin)">worm2summaryPDF2</a>	WORM2SUMMARYPDF Save a worm summary to a PDF.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%MERGEPDFS Merge PDF files.</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   MERGEPDFS(MERGEFILE, FILES)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   MERGEPDFS(MERGEFILE, FILES, ISDELETE)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Inputs:</span>
+0008 <span class="comment">%       mergeFile - the file name for the merged PDF files</span>
+0009 <span class="comment">%       files     - a cell array of the names for the PDF files to merge</span>
+0010 <span class="comment">%       isDelete  - should we delete the separate PDFs after merging them?</span>
+0011 <span class="comment">%                   the default is no (false)</span>
+0012 <a name="_sub0" href="#_subfunctions" class="code">function mergePDFs(mergeFile, files, varargin)</a>
+0013 
+0014 <span class="comment">% Should we delete the separate PDFs after merging them?</span>
+0015 isDelete = false;
+0016 <span class="keyword">if</span> ~isempty(varargin)
+0017     isDelete = varargin{1};
+0018 <span class="keyword">end</span>
+0019 
+0020 <span class="comment">% Organize the files.</span>
+0021 <span class="keyword">if</span> ~iscell(files)
+0022     files = {files};
+0023 <span class="keyword">end</span>
+0024 
+0025 <span class="comment">% Do we only have one file?</span>
+0026 <span class="keyword">if</span> length(files) == 1
+0027     [status, msg, ~] = movefile(files{1}, mergeFile);
+0028     
+0029     <span class="comment">% Report the error.</span>
+0030     <span class="keyword">if</span> ~status
+0031         error(<span class="string">'mergePDFs:Move'</span>, [files{1} <span class="string">' cannot be moved to &quot;'</span> <span class="keyword">...</span>
+0032             mergeFile <span class="string">'&quot;: '</span> msg]);
+0033     <span class="keyword">end</span>
+0034     
+0035     <span class="comment">% Done.</span>
+0036     <span class="keyword">return</span>;
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="comment">% Construct a string with the merging files.</span>
+0040 fileStr = [];
+0041 <span class="keyword">for</span> i = 1:length(files)
+0042     fileStr = [fileStr <span class="string">' &quot;'</span> files{i} <span class="string">'&quot;'</span>];
+0043 <span class="keyword">end</span>
+0044 
+0045 <span class="comment">% % Use Ghostscript to merge.</span>
+0046 <span class="comment">% gsPath = '/usr/local/bin/gs';</span>
+0047 <span class="comment">% command = [gsPath ' -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite ' ...</span>
+0048 <span class="comment">%     '-dAutoRotatePages=/None -c &quot;&lt;&lt;/Orientation 3&gt;&gt; setpagedevice&quot; ' ...</span>
+0049 <span class="comment">%     '-sOutputFile=' '''' mergeFile '''' fileStr ];</span>
+0050 
+0051 <span class="comment">% Use Pdftk to merge.</span>
+0052 pdftkPath = <span class="string">'/usr/local/bin/pdftk'</span>;
+0053 tmpMergeFile = [mergeFile <span class="string">'.tmp'</span>];
+0054 command = [pdftkPath <span class="string">' '</span> fileStr <span class="string">' cat output &quot;'</span> tmpMergeFile <span class="string">'&quot;; '</span> <span class="keyword">...</span>
+0055     pdftkPath <span class="string">' &quot;'</span> tmpMergeFile <span class="string">'&quot; cat 1-endE output &quot;'</span> mergeFile <span class="string">'&quot;; '</span> <span class="keyword">...</span>
+0056     <span class="string">'rm &quot;'</span> tmpMergeFile <span class="string">'&quot;'</span>];
+0057 
+0058 <span class="comment">% Merge the PDFs.</span>
+0059 [status, result] = system(command);
+0060 <span class="keyword">if</span> status ~= 0
+0061     
+0062     <span class="comment">% Construct a string with the merging files.</span>
+0063     fileStr = [];
+0064     <span class="keyword">for</span> i = 1:length(files)
+0065         fileStr = [fileStr <span class="string">', &quot;'</span> files{i} <span class="string">'&quot;'</span>];
+0066     <span class="keyword">end</span>
+0067     
+0068     <span class="comment">% Report the error.</span>
+0069     error(<span class="string">'mergePDFs:Merge'</span>, [fileStr <span class="string">' cannot be merged into &quot;'</span> <span class="keyword">...</span>
+0070         mergeFile <span class="string">'&quot;: '</span> result]);
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="comment">% Delete the separate PDFs.</span>
+0074 <span class="keyword">if</span> isDelete
+0075     <span class="keyword">for</span> i = 1:length(files)
+0076         delete(files{i});
+0077     <span class="keyword">end</span>
+0078 <span class="keyword">end</span>
+0079 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of close</title>
+  <meta name="keywords" content="close">
+  <meta name="description" content="VR=CLOSE(VR)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html @videoReader -->
+<h1>close
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>VR=CLOSE(VR)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function vr = close(vr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">VR=CLOSE(VR)
+  Closes video VR and releases any system resources necessary to access it
+  (e.g. threads, file handles, etc.).  Do NOT just clear a videoReader
+  object without first closing its handle.
+
+  Examples:
+    % BAD code--typically will leak system resources
+    vr = videoReader(...);
+    ...
+    clear vr; % leaks resources
+
+    % GOOD code
+    vr = videoReader(...);
+    vr = close(vr);
+    clear vr; % okay, but not needed
+
+  After calling CLOSE, VR should not be used any more.
+
+  Example:
+    vr = videoReader(...);
+    vr = close(vr);
+    next(vr); % BAD
+    vr = videoReader(...);
+    close(vr); % BAD: should reassign result to vr to be safe
+    next(vr); % BAD
+  
+SEE ALSO
+  <a href="videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>
+
+Copyright (c) 2006 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/contrib/videoPlayer/videoPlayer.html" class="code" title="function vp = videoPlayer(varargin)">videoPlayer</a>	function vp = videoPlayer(varargin)</li><li><a href="../../videoIO/tests/addFrameDemo.html" class="code" title="function addFrameDemo">addFrameDemo</a>	addFrameDemo</li><li><a href="../../videoIO/tests/analyzeNumFinalHiddenFrames.html" class="code" title="">analyzeNumFinalHiddenFrames</a>	analyzeNumFinalHiddenFrames</li><li><a href="../../videoIO/tests/concatReadTests.html" class="code" title="function concatReadTests(plugin)">concatReadTests</a>	concatReadTests</li><li><a href="../../videoIO/tests/divxSeekExpmt.html" class="code" title="function divxSeekExpmt">divxSeekExpmt</a>	divxSeekExpmt</li><li><a href="../../videoIO/tests/doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>	IMAGES=DOFULLREAD(...)</li><li><a href="../../videoIO/tests/doMultiFullReadTest.html" class="code" title="function doMultiFullReadTest(varargin)">doMultiFullReadTest</a>	DOMULTIFULLREADTEST(...)</li><li><a href="../../videoIO/tests/doPreciseSeekTests.html" class="code" title="function doPreciseSeekTests(varargin)">doPreciseSeekTests</a>	DOPRECISESEEKTESTS(...)</li><li><a href="../../videoIO/tests/getLoadableFiles.html" class="code" title="function [loadables,nonloadables,errors] = getLoadableFiles(varargin)">getLoadableFiles</a>	loadables = getLoadableFiles(...)</li><li><a href="../../videoIO/tests/longWriteTest.html" class="code" title="function longWriteTest(plugin, readerPlugin)">longWriteTest</a>	longWriteTests(plugin)</li><li><a href="../../videoIO/tests/readIndvFrameTests.html" class="code" title="function readIndvFrameTests(plugin,ext,varargin)">readIndvFrameTests</a>	readIndvFrameTests(plugin,ext,...)</li><li><a href="../../videoIO/tests/readTests.html" class="code" title="function readTests(plugin)">readTests</a>	readTests(plugin)</li><li><a href="../../videoIO/tests/resizeTest.html" class="code" title="function resizeTest(plugin)">resizeTest</a>	writeTests(plugin)</li><li><a href="../../videoIO/tests/testBitRate.html" class="code" title="function testBitRate(varargin)">testBitRate</a>	testBitRate</li><li><a href="../../videoIO/tests/testGet.html" class="code" title="function testGet(plugin)">testGet</a>	testGet</li><li><a href="../../videoIO/tests/testGopSize.html" class="code" title="function testGopSize(varargin)">testGopSize</a>	testGopSize</li><li><a href="../../videoIO/tests/testMatrix.html" class="code" title="function testMatrix">testMatrix</a>	testMatrix</li><li><a href="../../videoIO/tests/testQuality.html" class="code" title="function testQuality(varargin)">testQuality</a>	testQuality</li><li><a href="../../videoIO/tests/videoWriterDemo.html" class="code" title="">videoWriterDemo</a>	videoWriterDemo</li><li><a href="../../videoIO/tests/writeTests.html" class="code" title="function writeTests(plugin, readerPlugin)">writeTests</a>	writeTests(plugin)</li><li><a href="../../videoIO/videoReader_concat.html" class="code" title="function [out,out2] = videoReader_concat(cmd, handle, varargin)">videoReader_concat</a>	videoReader_concat</li><li><a href="../../videoIO/videoread.html" class="code" title="function mov=videoread(fname,varargin)">videoread</a>	VIDEOREAD Read an video file in a mannter compatible with Matlab's</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function vr = close(vr)</a>
+0002 <span class="comment">%VR=CLOSE(VR)</span>
+0003 <span class="comment">%  Closes video VR and releases any system resources necessary to access it</span>
+0004 <span class="comment">%  (e.g. threads, file handles, etc.).  Do NOT just clear a videoReader</span>
+0005 <span class="comment">%  object without first closing its handle.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Examples:</span>
+0008 <span class="comment">%    % BAD code--typically will leak system resources</span>
+0009 <span class="comment">%    vr = videoReader(...);</span>
+0010 <span class="comment">%    ...</span>
+0011 <span class="comment">%    clear vr; % leaks resources</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%    % GOOD code</span>
+0014 <span class="comment">%    vr = videoReader(...);</span>
+0015 <span class="comment">%    vr = close(vr);</span>
+0016 <span class="comment">%    clear vr; % okay, but not needed</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%  After calling CLOSE, VR should not be used any more.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%  Example:</span>
+0021 <span class="comment">%    vr = videoReader(...);</span>
+0022 <span class="comment">%    vr = close(vr);</span>
+0023 <span class="comment">%    next(vr); % BAD</span>
+0024 <span class="comment">%    vr = videoReader(...);</span>
+0025 <span class="comment">%    close(vr); % BAD: should reassign result to vr to be safe</span>
+0026 <span class="comment">%    next(vr); % BAD</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%SEE ALSO</span>
+0029 <span class="comment">%  videoReader</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%Copyright (c) 2006 Gerald Dalley</span>
+0032 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0033 <span class="comment">%when using this library on GNU/Linux).</span>
+0034 
+0035 feval(vr.plugin, <span class="string">'close'</span>, vr.handle);
+0036 vr.handle = nan;</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

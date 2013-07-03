@@ -1,0 +1,972 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of worm2CSV</title>
+  <meta name="keywords" content="worm2CSV">
+  <meta name="description" content="WORM2CSV Convert worm features to a CSV file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>worm2CSV
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORM2CSV Convert worm features to a CSV file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function filenames = worm2CSV(filename, wormInfo, worm, wormName, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORM2CSV Convert worm features to a CSV file.
+
+   [FILENAME] = WORM2CSV(FILENAME, WORMINFO, WORM, WORMNAME)
+
+   [FILENAME] = WORM2CSV(FILENAME, WORMINFO, WORM, WORMNAME,
+                         CONTROLINFO, CONTROL, CONTROLNAME)
+
+   Inputs:
+       filename    - the CSV filename;
+                     if empty, the file is named
+                     &quot;&lt;wormName&gt; [vs &lt;controlName&gt;].csv&quot;
+       wormInfo    - the worm information (see worm2histogram)
+       worm        - the worm histograms (see worm2histogram)
+       wormName    - the name for the worm
+       controlInfo - the control information (see worm2histogram)
+       control     - the control histograms (see worm2histogram);
+                     if empty; no control is shown
+       controlName - the name for the control
+
+   Output:
+       filenames - the CSV filenames
+
+ See also WORM2HISTOGRAM, WORMDISPLAYINFO, HISTOGRAM</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>	GETSTRUCTFIELD Get a field in a structure.</li><li><a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>	HISTOGRAM Compute the data's histogram.</li><li><a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>	SETSTRUCTFIELD Set a field in a structure.</li><li><a href="../../../SegWorm/Worms/Features/experimentDisplayInfo.html" class="code" title="function info = experimentDisplayInfo()">experimentDisplayInfo</a>	EXPERIMENTDISPLAYINFO Get information for displaying the experiment data.</li><li><a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>	WORMDISPLAYINFO Get information for displaying the worm data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function printExpHeaderCSV(file, expDispInfo, fields, wormInfo, controlInfo)</a></li><li><a href="#_sub2" class="code">function printExpCSV(file, expDispInfo, field, wormInfo, controlInfo)</a></li><li><a href="#_sub3" class="code">function printWormCSV(file, wormDispInfo, dataField, dataSubFields,</a></li><li><a href="#_sub4" class="code">function printWormMotionCSV(file, wormDispInfo, dataField,</a></li><li><a href="#_sub5" class="code">function printWormEventCSV(file, wormDispInfo, dataField, statFields,</a></li><li><a href="#_sub6" class="code">function printWormStatsCSV(file, info, worm, control)</a></li><li><a href="#_sub7" class="code">function printWormDataCSV(file, label, subLabel, field, worm, control)</a></li><li><a href="#_sub8" class="code">function printSeparator(file, num)</a></li><li><a href="#_sub9" class="code">function printCSV(file, varargin)</a></li><li><a href="#_sub10" class="code">function printVar(file, data)</a></li><li><a href="#_sub11" class="code">function saveHistogram(wormFiles, histInfo, wormName, filename)</a></li><li><a href="#_sub12" class="code">function histData = motion2histograms(data, motionEvents,</a></li><li><a href="#_sub13" class="code">function histData = event2histograms(data, statFields, eventFields,</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function filenames = worm2CSV(filename, wormInfo, worm, wormName, varargin)</a>
+0002 <span class="comment">%WORM2CSV Convert worm features to a CSV file.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [FILENAME] = WORM2CSV(FILENAME, WORMINFO, WORM, WORMNAME)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [FILENAME] = WORM2CSV(FILENAME, WORMINFO, WORM, WORMNAME,</span>
+0007 <span class="comment">%                         CONTROLINFO, CONTROL, CONTROLNAME)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Inputs:</span>
+0010 <span class="comment">%       filename    - the CSV filename;</span>
+0011 <span class="comment">%                     if empty, the file is named</span>
+0012 <span class="comment">%                     &quot;&lt;wormName&gt; [vs &lt;controlName&gt;].csv&quot;</span>
+0013 <span class="comment">%       wormInfo    - the worm information (see worm2histogram)</span>
+0014 <span class="comment">%       worm        - the worm histograms (see worm2histogram)</span>
+0015 <span class="comment">%       wormName    - the name for the worm</span>
+0016 <span class="comment">%       controlInfo - the control information (see worm2histogram)</span>
+0017 <span class="comment">%       control     - the control histograms (see worm2histogram);</span>
+0018 <span class="comment">%                     if empty; no control is shown</span>
+0019 <span class="comment">%       controlName - the name for the control</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   Output:</span>
+0022 <span class="comment">%       filenames - the CSV filenames</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% See also WORM2HISTOGRAM, WORMDISPLAYINFO, HISTOGRAM</span>
+0025 
+0026 <span class="comment">% Do we have a control?</span>
+0027 controlInfo = [];
+0028 control = [];
+0029 controlName = [];
+0030 <span class="keyword">if</span> length(varargin) &gt; 2
+0031     controlInfo = varargin{1};
+0032     control = varargin{2};
+0033     controlName = varargin{3};
+0034 <span class="keyword">end</span>
+0035 
+0036 <span class="comment">% Construct the worm name(s).</span>
+0037 <span class="keyword">if</span> isempty(wormName)
+0038     wormName = <span class="string">'worm'</span>;
+0039 <span class="keyword">end</span>
+0040 <span class="keyword">if</span> isempty(controlName)
+0041     wormName = <span class="string">'control'</span>;
+0042 <span class="keyword">end</span>
+0043 
+0044 <span class="comment">% Construct the filename.</span>
+0045 <span class="keyword">if</span> isempty(filename)
+0046     filename = wormName;
+0047     <span class="keyword">if</span> ~isempty(controlName)
+0048         filename = [filename <span class="string">' vs '</span> controlName];
+0049     <span class="keyword">end</span>
+0050     
+0051 <span class="comment">% Remove the file extension.</span>
+0052 <span class="keyword">elseif</span> strcmp(filename((end - 3):end), <span class="string">'.csv'</span>)
+0053     filename = filename(1:(end - 4));
+0054 <span class="keyword">end</span>
+0055 
+0056 <span class="comment">% Initialize the data separators.</span>
+0057 separator1 = 3;
+0058 separator2 = 2;
+0059 separator3 = 1;
+0060 
+0061 <span class="comment">% Initialize the experiment display information.</span>
+0062 expDispInfo = <a href="../../../SegWorm/Worms/Features/experimentDisplayInfo.html" class="code" title="function info = experimentDisplayInfo()">experimentDisplayInfo</a>();
+0063 
+0064 <span class="comment">% Initialize the worm display information.</span>
+0065 wormDispInfo = <a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>();
+0066 
+0067 <span class="comment">% Initialize the file names.</span>
+0068 filenames = [];
+0069 
+0070 
+0071 <span class="comment">%% Print the morphology features.</span>
+0072 
+0073 <span class="comment">% Add the file extension.</span>
+0074 filenames{end + 1} = [filename <span class="string">' morphology.csv'</span>];
+0075 
+0076 <span class="comment">% Delete the file if it already exists.</span>
+0077 <span class="keyword">if</span> exist(filenames{end}, <span class="string">'file'</span>)
+0078     delete(filenames{end});
+0079 <span class="keyword">end</span>
+0080 
+0081 <span class="comment">% Open the file.</span>
+0082 file = fopen(filenames{end}, <span class="string">'w'</span>);
+0083 
+0084 <span class="comment">% Print the experiment header.</span>
+0085 expFields = { <span class="keyword">...</span>
+0086     <span class="string">'experiment.worm.strain'</span>, <span class="keyword">...</span>
+0087     <span class="string">'experiment.worm.genotype'</span>, <span class="keyword">...</span>
+0088     <span class="string">'experiment.environment.timestamp'</span>};
+0089 <a href="#_sub1" class="code" title="subfunction printExpHeaderCSV(file, expDispInfo, fields, wormInfo, controlInfo)">printExpHeaderCSV</a>(file, expDispInfo, expFields, wormInfo, controlInfo);
+0090 
+0091 <span class="comment">% Print the morphology header.</span>
+0092 field = <span class="string">'morphology'</span>;
+0093 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator2);
+0094 label = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, [field <span class="string">'.name'</span>]);
+0095 <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, upper(label));
+0096 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0097 
+0098 <span class="comment">% Print the length.</span>
+0099 field = <span class="string">'morphology.length'</span>;
+0100 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, [], worm, control);
+0101 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0102 
+0103 <span class="comment">% Print the width.</span>
+0104 field = <span class="string">'morphology.width'</span>;
+0105 subFields = { <span class="keyword">...</span>
+0106     <span class="string">'head'</span>, <span class="keyword">...</span>
+0107     <span class="string">'midbody'</span>, <span class="keyword">...</span>
+0108     <span class="string">'tail'</span>};
+0109 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, subFields, worm, control);
+0110 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0111 
+0112 <span class="comment">% Print the area.</span>
+0113 field = <span class="string">'morphology.area'</span>;
+0114 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, [], worm, control);
+0115 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0116 
+0117 <span class="comment">% Print the area/length.</span>
+0118 field = <span class="string">'morphology.areaPerLength'</span>;
+0119 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, [], worm, control);
+0120 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0121 
+0122 <span class="comment">% Print the width/length.</span>
+0123 field = <span class="string">'morphology.widthPerLength'</span>;
+0124 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, [], worm, control);
+0125 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0126 
+0127 <span class="comment">% Close the file.</span>
+0128 fclose(file);
+0129 
+0130 
+0131 
+0132 <span class="comment">%% Print the posture.</span>
+0133 
+0134 <span class="comment">% Add the file extension.</span>
+0135 filenames{end + 1} = [filename <span class="string">' posture.csv'</span>];
+0136 
+0137 <span class="comment">% Delete the file if it already exists.</span>
+0138 <span class="keyword">if</span> exist(filenames{end}, <span class="string">'file'</span>)
+0139     delete(filenames{end});
+0140 <span class="keyword">end</span>
+0141 
+0142 <span class="comment">% Open the file.</span>
+0143 file = fopen(filenames{end}, <span class="string">'w'</span>);
+0144 
+0145 <span class="comment">% Print the experiment header.</span>
+0146 expFields = { <span class="keyword">...</span>
+0147     <span class="string">'experiment.worm.strain'</span>, <span class="keyword">...</span>
+0148     <span class="string">'experiment.worm.genotype'</span>, <span class="keyword">...</span>
+0149     <span class="string">'experiment.environment.timestamp'</span>};
+0150 <a href="#_sub1" class="code" title="subfunction printExpHeaderCSV(file, expDispInfo, fields, wormInfo, controlInfo)">printExpHeaderCSV</a>(file, expDispInfo, expFields, wormInfo, controlInfo);
+0151 
+0152 <span class="comment">% Print the posture header.</span>
+0153 field = <span class="string">'posture'</span>;
+0154 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator2);
+0155 label = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, [field <span class="string">'.name'</span>]);
+0156 <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, upper(label));
+0157 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0158 
+0159 <span class="comment">% Print the bends.</span>
+0160 field = <span class="string">'posture.bends'</span>;
+0161 subFields1 = { <span class="keyword">...</span>
+0162     <span class="string">'head'</span>, <span class="keyword">...</span>
+0163     <span class="string">'neck'</span>, <span class="keyword">...</span>
+0164     <span class="string">'midbody'</span>, <span class="keyword">...</span>
+0165     <span class="string">'hips'</span>, <span class="keyword">...</span>
+0166     <span class="string">'tail'</span>};
+0167 subFields2 = { <span class="keyword">...</span>
+0168     <span class="string">'mean'</span>, <span class="keyword">...</span>
+0169     <span class="string">'stdDev'</span>};
+0170 <span class="keyword">for</span> i = 1:length(subFields1)
+0171     <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, [field <span class="string">'.'</span> subFields1{i}], <span class="keyword">...</span>
+0172         subFields2, worm, control);
+0173     <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0174 <span class="keyword">end</span>
+0175 
+0176 <span class="comment">% Print the amplitude.</span>
+0177 fields = { <span class="keyword">...</span>
+0178     <span class="string">'posture.amplitude.max'</span>, <span class="keyword">...</span>
+0179     <span class="string">'posture.amplitude.ratio'</span>};
+0180 <span class="keyword">for</span> i = 1:length(fields)
+0181     <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, fields{i}, [], worm, control);
+0182     <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0183 <span class="keyword">end</span>
+0184 
+0185 <span class="comment">% Print the wavelength.</span>
+0186 field = <span class="string">'posture.wavelength'</span>;
+0187 subFields = { <span class="keyword">...</span>
+0188     <span class="string">'primary'</span>, <span class="keyword">...</span>
+0189     <span class="string">'secondary'</span>};
+0190 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, subFields, worm, control);
+0191 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0192 
+0193 <span class="comment">% Print the track length.</span>
+0194 field = <span class="string">'posture.tracklength'</span>;
+0195 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, [], worm, control);
+0196 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0197 
+0198 <span class="comment">% Print the eccentricity.</span>
+0199 field = <span class="string">'posture.eccentricity'</span>;
+0200 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, [], worm, control);
+0201 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0202 
+0203 <span class="comment">% Print the kinks.</span>
+0204 field = <span class="string">'posture.kinks'</span>;
+0205 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, [], worm, control);
+0206 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0207 
+0208 <span class="comment">% Print the coils.</span>
+0209 field = <span class="string">'posture.coils'</span>;
+0210 statFields = { <span class="keyword">...</span>
+0211     <span class="string">'frequency'</span>, <span class="keyword">...</span>
+0212     <span class="string">'timeRatio'</span>};
+0213 eventFields = { <span class="keyword">...</span>
+0214     <span class="string">'time'</span>, <span class="keyword">...</span>
+0215     <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0216     <span class="string">'interDistance'</span>};
+0217 <a href="#_sub5" class="code" title="subfunction printWormEventCSV(file, wormDispInfo, dataField, statFields, ">printWormEventCSV</a>(file, wormDispInfo, field, statFields, <span class="keyword">...</span>
+0218     eventFields, worm, control);
+0219 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0220 
+0221 <span class="comment">% Print the directions.</span>
+0222 field = <span class="string">'posture.directions'</span>;
+0223 subFields = { <span class="keyword">...</span>
+0224     <span class="string">'tail2head'</span>, <span class="keyword">...</span>
+0225     <span class="string">'head'</span>, <span class="keyword">...</span>
+0226     <span class="string">'tail'</span>};
+0227 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, subFields, worm, control);
+0228 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0229 
+0230 <span class="comment">% Print the eigen projection.</span>
+0231 field = <span class="string">'posture.eigenProjection'</span>;
+0232 <span class="keyword">for</span> i = 1:length(<a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, field))
+0233     <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, [], worm, control, i);
+0234     <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0235 <span class="keyword">end</span>
+0236 
+0237 <span class="comment">% Close the file.</span>
+0238 fclose(file);
+0239 
+0240 
+0241 
+0242 <span class="comment">%% Print the locomotion.</span>
+0243 
+0244 <span class="comment">% Add the file extension.</span>
+0245 filenames{end + 1} = [filename <span class="string">' locomotion.csv'</span>];
+0246 
+0247 <span class="comment">% Delete the file if it already exists.</span>
+0248 <span class="keyword">if</span> exist(filenames{end}, <span class="string">'file'</span>)
+0249     delete(filenames{end});
+0250 <span class="keyword">end</span>
+0251 
+0252 <span class="comment">% Open the file.</span>
+0253 file = fopen(filenames{end}, <span class="string">'w'</span>);
+0254 
+0255 <span class="comment">% Print the experiment header.</span>
+0256 expFields = { <span class="keyword">...</span>
+0257     <span class="string">'experiment.worm.strain'</span>, <span class="keyword">...</span>
+0258     <span class="string">'experiment.worm.genotype'</span>, <span class="keyword">...</span>
+0259     <span class="string">'experiment.environment.timestamp'</span>};
+0260 <a href="#_sub1" class="code" title="subfunction printExpHeaderCSV(file, expDispInfo, fields, wormInfo, controlInfo)">printExpHeaderCSV</a>(file, expDispInfo, expFields, wormInfo, controlInfo);
+0261 
+0262 <span class="comment">% Print the locomotion header.</span>
+0263 field = <span class="string">'locomotion'</span>;
+0264 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator2);
+0265 label = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, [field <span class="string">'.name'</span>]);
+0266 <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, upper(label));
+0267 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0268 
+0269 <span class="comment">% Print the motion.</span>
+0270 field = <span class="string">'locomotion.motion'</span>;
+0271 subFields = { <span class="keyword">...</span>
+0272     <span class="string">'forward'</span>, <span class="keyword">...</span>
+0273     <span class="string">'paused'</span>, <span class="keyword">...</span>
+0274     <span class="string">'backward'</span>};
+0275 statFields = { <span class="keyword">...</span>
+0276     <span class="string">'frequency'</span>, <span class="keyword">...</span>
+0277     <span class="string">'ratio.time'</span>, <span class="keyword">...</span>
+0278     <span class="string">'ratio.distance'</span>};
+0279 eventFields = { <span class="keyword">...</span>
+0280     <span class="string">'time'</span>, <span class="keyword">...</span>
+0281     <span class="string">'distance'</span>, <span class="keyword">...</span>
+0282     <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0283     <span class="string">'interDistance'</span>};
+0284 <span class="keyword">for</span> i = 1:length(subFields)
+0285     <a href="#_sub5" class="code" title="subfunction printWormEventCSV(file, wormDispInfo, dataField, statFields, ">printWormEventCSV</a>(file, wormDispInfo, [field <span class="string">'.'</span> subFields{i}], <span class="keyword">...</span>
+0286         statFields, eventFields, worm, control);
+0287 <span class="keyword">end</span>
+0288 
+0289 <span class="comment">% Print the velocity.</span>
+0290 field = <span class="string">'locomotion.velocity'</span>;
+0291 subFields1 = { <span class="keyword">...</span>
+0292     <span class="string">'headTip'</span>, <span class="keyword">...</span>
+0293     <span class="string">'head'</span>, <span class="keyword">...</span>
+0294     <span class="string">'midbody'</span>, <span class="keyword">...</span>
+0295     <span class="string">'tail'</span>, <span class="keyword">...</span>
+0296     <span class="string">'tailTip'</span>};
+0297 subFields2 = { <span class="keyword">...</span>
+0298     <span class="string">'speed'</span>, <span class="keyword">...</span>
+0299     <span class="string">'direction'</span>};
+0300 <span class="keyword">for</span> i = 1:length(subFields1)
+0301     <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, [field <span class="string">'.'</span> subFields1{i}], <span class="keyword">...</span>
+0302         subFields2, worm, control);
+0303     <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0304 <span class="keyword">end</span>
+0305 
+0306 <span class="comment">% Print the bends.</span>
+0307 field = <span class="string">'locomotion.bends'</span>;
+0308 subFields1 = { <span class="keyword">...</span>
+0309     <span class="string">'head'</span>, <span class="keyword">...</span>
+0310     <span class="string">'midbody'</span>, <span class="keyword">...</span>
+0311     <span class="string">'tail'</span>};
+0312 subFields2 = { <span class="keyword">...</span>
+0313     <span class="string">'amplitude'</span>, <span class="keyword">...</span>
+0314     <span class="string">'frequency'</span>};
+0315 <span class="keyword">for</span> i = 1:length(subFields1)
+0316     <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, [field <span class="string">'.'</span> subFields1{i}], <span class="keyword">...</span>
+0317         subFields2, worm, control);
+0318     <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0319 <span class="keyword">end</span>
+0320 
+0321 <span class="comment">% Print the foraging.</span>
+0322 field = <span class="string">'locomotion.bends.foraging'</span>;
+0323 subFields = { <span class="keyword">...</span>
+0324     <span class="string">'amplitude'</span>, <span class="keyword">...</span>
+0325     <span class="string">'angleSpeed'</span>};
+0326 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, subFields, worm, control);
+0327 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0328 
+0329 <span class="comment">% Print the turns.</span>
+0330 field = <span class="string">'locomotion.turns'</span>;
+0331 subFields = { <span class="keyword">...</span>
+0332     <span class="string">'omegas'</span>, <span class="keyword">...</span>
+0333     <span class="string">'upsilons'</span>};
+0334 statFields = { <span class="keyword">...</span>
+0335     <span class="string">'frequency'</span>, <span class="keyword">...</span>
+0336     <span class="string">'timeRatio'</span>};
+0337 eventFields = { <span class="keyword">...</span>
+0338     <span class="string">'time'</span>, <span class="keyword">...</span>
+0339     <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0340     <span class="string">'interDistance'</span>};
+0341 <span class="keyword">for</span> i = 1:length(subFields)
+0342     <a href="#_sub5" class="code" title="subfunction printWormEventCSV(file, wormDispInfo, dataField, statFields, ">printWormEventCSV</a>(file, wormDispInfo, [field <span class="string">'.'</span> subFields{i}], <span class="keyword">...</span>
+0343         statFields, eventFields, worm, control);
+0344     <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0345 <span class="keyword">end</span>
+0346 
+0347 <span class="comment">% Close the file.</span>
+0348 fclose(file);
+0349 
+0350 
+0351 
+0352 <span class="comment">%% Print the path.</span>
+0353 
+0354 <span class="comment">% Add the file extension.</span>
+0355 filenames{end + 1} = [filename <span class="string">' path.csv'</span>];
+0356 
+0357 <span class="comment">% Delete the file if it already exists.</span>
+0358 <span class="keyword">if</span> exist(filenames{end}, <span class="string">'file'</span>)
+0359     delete(filenames{end});
+0360 <span class="keyword">end</span>
+0361 
+0362 <span class="comment">% Open the file.</span>
+0363 file = fopen(filenames{end}, <span class="string">'w'</span>);
+0364 
+0365 <span class="comment">% Print the experiment header.</span>
+0366 expFields = { <span class="keyword">...</span>
+0367     <span class="string">'experiment.worm.strain'</span>, <span class="keyword">...</span>
+0368     <span class="string">'experiment.worm.genotype'</span>, <span class="keyword">...</span>
+0369     <span class="string">'experiment.environment.timestamp'</span>};
+0370 <a href="#_sub1" class="code" title="subfunction printExpHeaderCSV(file, expDispInfo, fields, wormInfo, controlInfo)">printExpHeaderCSV</a>(file, expDispInfo, expFields, wormInfo, controlInfo);
+0371 
+0372 <span class="comment">% Print the path header.</span>
+0373 field = <span class="string">'path'</span>;
+0374 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator2);
+0375 label = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, [field <span class="string">'.name'</span>]);
+0376 <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, upper(label));
+0377 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0378 
+0379 <span class="comment">% Print the curvature.</span>
+0380 field = <span class="string">'path.curvature'</span>;
+0381 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, [], worm, control);
+0382 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0383 
+0384 <span class="comment">% Print the range.</span>
+0385 field = <span class="string">'path.range'</span>;
+0386 <a href="#_sub4" class="code" title="subfunction printWormMotionCSV(file, wormDispInfo, dataField, ">printWormMotionCSV</a>(file, wormDispInfo, field, [], worm, control);
+0387 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0388 
+0389 <span class="comment">% Compute the duration histograms.</span>
+0390 field = <span class="string">'path.duration'</span>;
+0391 subFields = { <span class="keyword">...</span>
+0392     <span class="string">'worm'</span>, <span class="keyword">...</span>
+0393     <span class="string">'head'</span>, <span class="keyword">...</span>
+0394     <span class="string">'midbody'</span>, <span class="keyword">...</span>
+0395     <span class="string">'tail'</span>};
+0396 <a href="#_sub3" class="code" title="subfunction printWormCSV(file, wormDispInfo, dataField, dataSubFields, ">printWormCSV</a>(file, wormDispInfo, field, subFields, worm, control);
+0397 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator3);
+0398 
+0399 <span class="comment">% Close the file.</span>
+0400 fclose(file);
+0401 <span class="keyword">end</span>
+0402 
+0403 
+0404 
+0405 <span class="comment">%% Print the experiment header.</span>
+0406 <a name="_sub1" href="#_subfunctions" class="code">function printExpHeaderCSV(file, expDispInfo, fields, wormInfo, controlInfo)</a>
+0407 
+0408 <span class="comment">% Initialize the separator.</span>
+0409 separator = 1;
+0410 
+0411 <span class="comment">% Print the header.</span>
+0412 <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, <span class="string">'WORM'</span>, cell(2,1), <span class="string">'EXPERIMENTS'</span>, <span class="keyword">...</span>
+0413     cell(length(wormInfo), 1), <span class="string">'CONTROLS'</span>);
+0414 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator);
+0415 
+0416 <span class="comment">% Print the data.</span>
+0417 <span class="keyword">for</span> i = 1:length(fields)
+0418     <a href="#_sub2" class="code" title="subfunction printExpCSV(file, expDispInfo, field, wormInfo, controlInfo)">printExpCSV</a>(file, expDispInfo, fields{i}, wormInfo, controlInfo);
+0419 <span class="keyword">end</span>
+0420 <span class="keyword">end</span>
+0421 
+0422 
+0423 
+0424 <span class="comment">%% Print the experiment information.</span>
+0425 <a name="_sub2" href="#_subfunctions" class="code">function printExpCSV(file, expDispInfo, field, wormInfo, controlInfo)</a>
+0426 
+0427 <span class="comment">% Print the data.</span>
+0428 label = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(expDispInfo, field);
+0429 <a href="#_sub7" class="code" title="subfunction printWormDataCSV(file, label, subLabel, field, worm, control)">printWormDataCSV</a>(file, label.name, [], field, wormInfo, controlInfo);
+0430 <span class="keyword">end</span>
+0431 
+0432 
+0433 
+0434 <span class="comment">%% Print the worm information.</span>
+0435 <span class="comment">% varargin = field index</span>
+0436 <a name="_sub3" href="#_subfunctions" class="code">function printWormCSV(file, wormDispInfo, dataField, dataSubFields, </a><span class="keyword">...</span>
+0437     worm, control, varargin)
+0438 
+0439 <span class="comment">% Which field index are we using?</span>
+0440 index = 1;
+0441 <span class="keyword">if</span> ~isempty(varargin)
+0442     index = varargin{1};
+0443 <span class="keyword">end</span>
+0444 
+0445 <span class="comment">% Initialize the separator.</span>
+0446 separator = 1;
+0447 
+0448 <span class="comment">% Organize the data.</span>
+0449 <span class="keyword">if</span> ~iscell(dataSubFields)
+0450     dataSubFields = {dataSubFields};
+0451 <span class="keyword">end</span>
+0452 
+0453 <span class="comment">% Get the display index.</span>
+0454 wormDispInfo = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, dataField);
+0455 wormDispInfo = wormDispInfo(index);
+0456 
+0457 <span class="comment">% Get the data index.</span>
+0458 worm = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, dataField);
+0459 worm = worm(index);
+0460 control = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(control, dataField);
+0461 control = control(index);
+0462 
+0463 <span class="comment">% Print the data fields.</span>
+0464 <span class="keyword">for</span> i = 1:length(dataSubFields)
+0465     
+0466     <span class="comment">% Print the label.</span>
+0467     info = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, dataSubFields{i});
+0468     <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, [<span class="string">'* '</span> upper(info.name)]);
+0469     <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator);
+0470     
+0471     <span class="comment">% Print the statistics.</span>
+0472     subWorm = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, dataSubFields{i});
+0473     subControl = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(control, dataSubFields{i});
+0474     <a href="#_sub6" class="code" title="subfunction printWormStatsCSV(file, info, worm, control)">printWormStatsCSV</a>(file, info, subWorm, subControl);
+0475 <span class="keyword">end</span>
+0476 <span class="keyword">end</span>
+0477 
+0478 
+0479 
+0480 <span class="comment">%% Print the worm motion information.</span>
+0481 <span class="comment">% varargin = field index</span>
+0482 <a name="_sub4" href="#_subfunctions" class="code">function printWormMotionCSV(file, wormDispInfo, dataField, </a><span class="keyword">...</span>
+0483     dataSubFields, worm, control, varargin)
+0484 
+0485 <span class="comment">% Which field index are we using?</span>
+0486 index = 1;
+0487 <span class="keyword">if</span> ~isempty(varargin)
+0488     index = varargin{1};
+0489 <span class="keyword">end</span>
+0490 
+0491 <span class="comment">% Initialize the separator.</span>
+0492 separator = 1;
+0493 
+0494 <span class="comment">% Organize the data.</span>
+0495 <span class="keyword">if</span> ~iscell(dataSubFields)
+0496     dataSubFields = {dataSubFields};
+0497 <span class="keyword">end</span>
+0498 
+0499 <span class="comment">% Initialize the motion information.</span>
+0500 fields = { <span class="keyword">...</span>
+0501     <span class="string">'forward'</span>, <span class="keyword">...</span>
+0502     <span class="string">'paused'</span>, <span class="keyword">...</span>
+0503     <span class="string">'backward'</span>};
+0504 labels = { <span class="keyword">...</span>
+0505     <span class="string">'Forward'</span>, <span class="keyword">...</span>
+0506     <span class="string">'Paused'</span>, <span class="keyword">...</span>
+0507     <span class="string">'Backward'</span>};
+0508 
+0509 <span class="comment">% Get the display index.</span>
+0510 wormDispInfo = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, dataField);
+0511 wormDispInfo = wormDispInfo(index);
+0512 
+0513 <span class="comment">% Get the data index.</span>
+0514 worm = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, dataField);
+0515 worm = worm(index);
+0516 control = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(control, dataField);
+0517 control = control(index);
+0518 
+0519 <span class="comment">% Print the data fields.</span>
+0520 <span class="keyword">for</span> i = 1:length(dataSubFields)
+0521     
+0522     <span class="comment">% Print the overall statistics.</span>
+0523     <a href="#_sub3" class="code" title="subfunction printWormCSV(file, wormDispInfo, dataField, dataSubFields, ">printWormCSV</a>(file, wormDispInfo, dataSubFields{i}, [], <span class="keyword">...</span>
+0524         worm, control);
+0525     
+0526     <span class="comment">% Print the motion statistics.</span>
+0527     <span class="keyword">for</span> j = 1:length(fields)
+0528         
+0529         <span class="comment">% Print the label.</span>
+0530         info = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, dataSubFields{i});
+0531         <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, [<span class="string">'** '</span> labels{j} <span class="string">' '</span> info.name]);
+0532         <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator);
+0533         
+0534         <span class="comment">% Print the statistics.</span>
+0535         <span class="keyword">if</span> isempty(dataSubFields{i})
+0536             subWorm = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, fields{j});
+0537             subControl = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(control, fields{j});
+0538         <span class="keyword">else</span>
+0539             subWorm = <span class="keyword">...</span>
+0540                 <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, [dataSubFields{i} <span class="string">'.'</span> fields{j}]);
+0541             subControl = <span class="keyword">...</span>
+0542                 <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(control, [dataSubFields{i} <span class="string">'.'</span> fields{j}]);
+0543         <span class="keyword">end</span>
+0544         <a href="#_sub6" class="code" title="subfunction printWormStatsCSV(file, info, worm, control)">printWormStatsCSV</a>(file, info, subWorm, subControl);
+0545     <span class="keyword">end</span>
+0546 <span class="keyword">end</span>
+0547 <span class="keyword">end</span>
+0548 
+0549 
+0550 
+0551 <span class="comment">%% Print the worm event information.</span>
+0552 <span class="comment">% varargin = field index</span>
+0553 <a name="_sub5" href="#_subfunctions" class="code">function printWormEventCSV(file, wormDispInfo, dataField, statFields, </a><span class="keyword">...</span>
+0554     eventFields, worm, control, varargin)
+0555 
+0556 <span class="comment">% Which field index are we using?</span>
+0557 index = 1;
+0558 <span class="keyword">if</span> ~isempty(varargin)
+0559     index = varargin{1};
+0560 <span class="keyword">end</span>
+0561 
+0562 <span class="comment">% Initialize the separator.</span>
+0563 separator = 1;
+0564 
+0565 <span class="comment">% Organize the data.</span>
+0566 <span class="keyword">if</span> ~iscell(statFields)
+0567     statFields = {statFields};
+0568 <span class="keyword">end</span>
+0569 <span class="keyword">if</span> ~iscell(eventFields)
+0570     eventFields = {eventFields};
+0571 <span class="keyword">end</span>
+0572 
+0573 <span class="comment">% Initialize the statistics information.</span>
+0574 fields = { <span class="keyword">...</span>
+0575     <span class="string">'mean'</span>, <span class="keyword">...</span>
+0576     <span class="string">'stdDev'</span>};
+0577 labels = { <span class="keyword">...</span>
+0578     <span class="string">'Mean'</span>, <span class="keyword">...</span>
+0579     <span class="string">'S.D.'</span>};
+0580 
+0581 <span class="comment">% Get the display index.</span>
+0582 wormDispInfo = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, dataField);
+0583 wormDispInfo = wormDispInfo(index);
+0584 
+0585 <span class="comment">% Get the data index.</span>
+0586 worm = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, dataField);
+0587 worm = worm(index);
+0588 control = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(control, dataField);
+0589 control = control(index);
+0590 
+0591 <span class="comment">% Print the label.</span>
+0592 <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, [<span class="string">'* '</span> upper(wormDispInfo.name)]);
+0593 <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator);
+0594 
+0595 <span class="comment">% Print the statistics fields.</span>
+0596 <span class="keyword">for</span> i = 1:length(statFields)
+0597     
+0598     <span class="comment">% Print the statistics.</span>
+0599     info = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, statFields{i});
+0600     unit = info.unit;
+0601     <span class="keyword">for</span> j = 1:length(fields)
+0602         field = [statFields{i} <span class="string">'.'</span> fields{j}];
+0603         label = [labels{j} <span class="string">' ('</span> unit <span class="string">')'</span>];
+0604         <a href="#_sub7" class="code" title="subfunction printWormDataCSV(file, label, subLabel, field, worm, control)">printWormDataCSV</a>(file, info.name, label, field, worm, control);
+0605     <span class="keyword">end</span>
+0606     <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator);
+0607 <span class="keyword">end</span>
+0608 
+0609 <span class="comment">% Print the event fields.</span>
+0610 <span class="keyword">for</span> i = 1:length(eventFields)
+0611     
+0612     <span class="comment">% Print the label.</span>
+0613     info = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormDispInfo, eventFields{i});
+0614     <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, [<span class="string">'** '</span> info.name]);
+0615     <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator);
+0616     
+0617     <span class="comment">% Print the statistics.</span>
+0618     subWorm = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, eventFields{i});
+0619     subControl = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(control, eventFields{i});
+0620     <a href="#_sub6" class="code" title="subfunction printWormStatsCSV(file, info, worm, control)">printWormStatsCSV</a>(file, info, subWorm, subControl);
+0621 <span class="keyword">end</span>
+0622 <span class="keyword">end</span>
+0623 
+0624 
+0625 
+0626 <span class="comment">%% Print the worm statistics.</span>
+0627 <a name="_sub6" href="#_subfunctions" class="code">function printWormStatsCSV(file, info, worm, control)</a>
+0628 
+0629 <span class="comment">% Initialize the separator.</span>
+0630 separator = 1;
+0631 
+0632 <span class="comment">% Initialize the statistics information.</span>
+0633 fields = { <span class="keyword">...</span>
+0634     <span class="string">'data'</span>, <span class="keyword">...</span>
+0635     <span class="string">'sets'</span>, <span class="keyword">...</span>
+0636     <span class="string">'allData'</span>};
+0637 subFields = { <span class="keyword">...</span>
+0638     <span class="string">'samples'</span>, <span class="keyword">...</span>
+0639     <span class="string">'mean'</span>, <span class="keyword">...</span>
+0640     <span class="string">'stdDev'</span>};
+0641 labels = { <span class="keyword">...</span>
+0642     <span class="string">'Set'</span>, <span class="keyword">...</span>
+0643     <span class="string">'Data'</span>, <span class="keyword">...</span>
+0644     <span class="string">'All Data'</span>};
+0645 subLabels = { <span class="keyword">...</span>
+0646     <span class="string">'Samples'</span>, <span class="keyword">...</span>
+0647     <span class="string">'Mean'</span>, <span class="keyword">...</span>
+0648     <span class="string">'S.D.'</span>};
+0649 <span class="keyword">if</span> (info.isSigned)
+0650     subLabels{end + 1} = <span class="string">'Abs Mean'</span>;
+0651     subLabels{end + 1} = <span class="string">'Abs S.D.'</span>;
+0652     subFields{end + 1} = <span class="string">'absMean'</span>;
+0653     subFields{end + 1} = <span class="string">'absStdDev'</span>;
+0654 <span class="keyword">end</span>
+0655 
+0656 <span class="comment">% Print the statistics.</span>
+0657 <span class="keyword">for</span> i = 1:length(fields)
+0658     
+0659     <span class="comment">% Print a header for aggregate statistics.</span>
+0660     histField = [<span class="string">'histogram.'</span> fields{i}];
+0661     numExps = length(<a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, [histField <span class="string">'.samples'</span>]));
+0662     <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, cell(3,1), <span class="string">'* Experiments'</span>, cell(numExps,1), <span class="keyword">...</span>
+0663         <span class="string">'* Controls'</span>);
+0664     
+0665     <span class="comment">% Print the statistics.</span>
+0666     <span class="keyword">for</span> j = 1:length(subFields)
+0667         field = [histField <span class="string">'.'</span> subFields{j}];
+0668         subLabel = subLabels{j};
+0669         <span class="keyword">if</span> j &gt; 1
+0670             unit = info.unit;
+0671             subLabel = [subLabel <span class="string">' ('</span> unit <span class="string">')'</span>];
+0672         <span class="keyword">end</span>
+0673         <a href="#_sub7" class="code" title="subfunction printWormDataCSV(file, label, subLabel, field, worm, control)">printWormDataCSV</a>(file, labels{i}, subLabel, field, worm, control);
+0674     <span class="keyword">end</span>
+0675     <a href="#_sub8" class="code" title="subfunction printSeparator(file, num)">printSeparator</a>(file, separator);
+0676 <span class="keyword">end</span>
+0677 <span class="keyword">end</span>
+0678 
+0679 
+0680 
+0681 <span class="comment">%% Print the worm data.</span>
+0682 <a name="_sub7" href="#_subfunctions" class="code">function printWormDataCSV(file, label, subLabel, field, worm, control)</a>
+0683 
+0684 <span class="comment">% Get the data.</span>
+0685 wormData = arrayfun(@(x) <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(x, field), worm, <span class="keyword">...</span>
+0686     <span class="string">'UniformOutput'</span>, false);
+0687 controlData = arrayfun(@(x) <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(x, field), control, <span class="keyword">...</span>
+0688     <span class="string">'UniformOutput'</span>, false);
+0689 
+0690 <span class="comment">% Print the data.</span>
+0691 <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, label, subLabel, [], wormData, [], controlData);
+0692 <span class="keyword">end</span>
+0693 
+0694 
+0695 
+0696 <span class="comment">%% Print a field separator.</span>
+0697 <a name="_sub8" href="#_subfunctions" class="code">function printSeparator(file, num)</a>
+0698 <span class="keyword">for</span> i = 1:num
+0699     <a href="#_sub9" class="code" title="subfunction printCSV(file, varargin)">printCSV</a>(file, []);
+0700 <span class="keyword">end</span>
+0701 <span class="keyword">end</span>
+0702 
+0703 
+0704 
+0705 <span class="comment">%% Print a list of comma separated values.</span>
+0706 <a name="_sub9" href="#_subfunctions" class="code">function printCSV(file, varargin)</a>
+0707 <span class="keyword">for</span> i = 1:length(varargin)
+0708     data = varargin{i};
+0709     
+0710     <span class="comment">% Print a list of data.</span>
+0711     <span class="keyword">if</span> iscell(data)
+0712         <span class="keyword">for</span> j = 1:length(data)
+0713             <a href="#_sub10" class="code" title="subfunction printVar(file, data)">printVar</a>(file, data{j});
+0714         <span class="keyword">end</span>
+0715         
+0716     <span class="comment">% Print the data.</span>
+0717     <span class="keyword">else</span>
+0718         <a href="#_sub10" class="code" title="subfunction printVar(file, data)">printVar</a>(file, data);
+0719     <span class="keyword">end</span>
+0720 <span class="keyword">end</span>
+0721     
+0722 <span class="comment">% Print the new line.</span>
+0723 fprintf(file, <span class="string">'\n'</span>);
+0724 <span class="keyword">end</span>
+0725 
+0726 
+0727 
+0728 <span class="comment">%% Print a variable to a file.</span>
+0729 <a name="_sub10" href="#_subfunctions" class="code">function printVar(file, data)</a>
+0730 
+0731 <span class="comment">% Print a space.</span>
+0732 <span class="keyword">if</span> isempty(data)
+0733     fprintf(file, <span class="string">' ,'</span>);
+0734     
+0735 <span class="comment">% Print the number.</span>
+0736 <span class="keyword">elseif</span> isnumeric(data)
+0737     fprintf(file, <span class="string">'%d,'</span>, data);
+0738     
+0739 <span class="comment">% Print the string.</span>
+0740 <span class="keyword">elseif</span> ischar(data)
+0741     fprintf(file, <span class="string">'%s,'</span>, data);
+0742     
+0743 <span class="comment">% The data cannot be printed.</span>
+0744 <span class="keyword">else</span>
+0745     warning(<span class="string">'worm2CSV:BadData'</span>, <span class="keyword">...</span>
+0746         <span class="string">'The data cannot be printed, it is in an unrecognized format'</span>);
+0747 <span class="keyword">end</span>
+0748 <span class="keyword">end</span>
+0749 
+0750 
+0751 
+0752 
+0753 
+0754 <span class="comment">%% Save the worm histograms.</span>
+0755 <a name="_sub11" href="#_subfunctions" class="code">function saveHistogram(wormFiles, histInfo, wormName, filename)</a>
+0756 
+0757 <span class="comment">% Determine the locomotion modes.</span>
+0758 motionModes = loadWormFiles(wormFiles, <span class="string">'locomotion.motion.mode'</span>);
+0759 motionNames = { <span class="keyword">...</span>
+0760     <span class="string">'forward'</span>, <span class="keyword">...</span>
+0761     <span class="string">'paused'</span>, <span class="keyword">...</span>
+0762     <span class="string">'backward'</span>};
+0763 motionEvents = { <span class="keyword">...</span>
+0764     cellfun(@(x) x == 1, motionModes, <span class="string">'UniformOutput'</span>, false), <span class="keyword">...</span>
+0765     cellfun(@(x) x == 0, motionModes, <span class="string">'UniformOutput'</span>, false), <span class="keyword">...</span>
+0766     cellfun(@(x) x == -1, motionModes, <span class="string">'UniformOutput'</span>, false)};
+0767 
+0768 
+0769 
+0770 <span class="comment">%% Compute the morphology histograms.</span>
+0771 
+0772 
+0773 
+0774 
+0775 
+0776 
+0777 <span class="comment">%% Compute the locomotion histograms.</span>
+0778 
+0779 
+0780 
+0781 <span class="comment">%% Save the histograms.</span>
+0782 
+0783 save(filename, wormName, <span class="string">'-append'</span>);
+0784 <span class="keyword">end</span>
+0785 
+0786 
+0787 
+0788 <span class="comment">%% Convert motion data to a set of histograms.</span>
+0789 <a name="_sub12" href="#_subfunctions" class="code">function histData = motion2histograms(data, motionEvents, </a><span class="keyword">...</span>
+0790     motionNames, histInfo)
+0791 
+0792 <span class="comment">% Get the histogram information.</span>
+0793 resolution = [];
+0794 isZeroBin = [];
+0795 isSigned = [];
+0796 <span class="keyword">if</span> ~isempty(histInfo)
+0797     resolution = histInfo.resolution;
+0798     isZeroBin = histInfo.isZeroBin;
+0799     isSigned = histInfo.isSigned;
+0800 <span class="keyword">end</span>
+0801 
+0802 <span class="comment">% Create the histogram structures.</span>
+0803 histData.histogram = [];
+0804 <span class="keyword">for</span> i = 1:length(motionNames)
+0805     histData.(motionNames{i}).histogram = [];
+0806 <span class="keyword">end</span>
+0807 
+0808 <span class="comment">% Compute the data histogram.</span>
+0809 histData.histogram = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(data, resolution, isZeroBin);
+0810 
+0811 <span class="comment">% Compute the motion histograms.</span>
+0812 <span class="keyword">for</span> i = 1:length(motionEvents)
+0813     
+0814     <span class="comment">% Organize the motion data.</span>
+0815     isData = false;
+0816     motionData = cell(length(data),1);
+0817     <span class="keyword">for</span> j = 1:length(data)
+0818         motionData{j} = data{j}(motionEvents{i}{j});
+0819         <span class="keyword">if</span> ~isempty(motionData{j})
+0820             isData = true;
+0821         <span class="keyword">end</span>
+0822     <span class="keyword">end</span>
+0823     
+0824     <span class="comment">% Compute the motion histogram.</span>
+0825     <span class="keyword">if</span> isData
+0826         histData.(motionNames{i}).histogram = <span class="keyword">...</span>
+0827             <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(motionData, resolution, isZeroBin, isSigned);
+0828     <span class="keyword">end</span>
+0829 <span class="keyword">end</span>
+0830 <span class="keyword">end</span>
+0831 
+0832 
+0833 
+0834 <span class="comment">%% Convert event data to a set of histograms.</span>
+0835 <a name="_sub13" href="#_subfunctions" class="code">function histData = event2histograms(data, statFields, eventFields, </a><span class="keyword">...</span>
+0836     histInfos)
+0837 
+0838 <span class="comment">% Create the statistics structures.</span>
+0839 histData = [];
+0840 <span class="keyword">for</span> i = 1:length(statFields)
+0841     histData = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(histData, statFields{i}, []);
+0842 <span class="keyword">end</span>
+0843 
+0844 <span class="comment">% Compute the event statistics.</span>
+0845 <span class="keyword">for</span> i = 1:length(statFields)
+0846 
+0847     <span class="comment">% Organize the event data.</span>
+0848     isData = false;
+0849     eventData = nan(length(data),1);
+0850     <span class="keyword">for</span> j = 1:length(data)
+0851         field = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(data{j}, statFields{i});
+0852         <span class="keyword">if</span> ~isempty(field)
+0853             eventData(j) = field;
+0854             isData = true;
+0855         <span class="keyword">end</span>
+0856     <span class="keyword">end</span>
+0857     
+0858     <span class="comment">% Compute the event statistics.</span>
+0859     <span class="keyword">if</span> isData
+0860         histData = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(histData, [statFields{i} <span class="string">'.mean'</span>], <span class="keyword">...</span>
+0861             nanmean(eventData));
+0862         histData = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(histData, [statFields{i} <span class="string">'.stdDev'</span>], <span class="keyword">...</span>
+0863             nanstd(eventData));
+0864     <span class="keyword">end</span>
+0865 <span class="keyword">end</span>
+0866 
+0867 <span class="comment">% Create the histogram structures.</span>
+0868 <span class="keyword">for</span> i = 1:length(eventFields)
+0869     histData.(eventFields{i}).histogram = [];
+0870 <span class="keyword">end</span>
+0871 
+0872 <span class="comment">% Compute the event histograms.</span>
+0873 <span class="keyword">for</span> i = 1:length(eventFields)
+0874     
+0875     <span class="comment">% Organize the event data.</span>
+0876     isData = false;
+0877     eventData = cell(length(data),1);
+0878     <span class="keyword">for</span> j = 1:length(data)
+0879         field = data{j}.frames;
+0880         <span class="keyword">if</span> ~isempty(field)
+0881             eventData{j} = [field.(eventFields{i})];
+0882             isData = true;
+0883         <span class="keyword">end</span>
+0884     <span class="keyword">end</span>
+0885     
+0886     <span class="comment">% Get the histogram information.</span>
+0887     resolution = [];
+0888     isZeroBin = [];
+0889     isSigned = [];
+0890     <span class="keyword">if</span> ~isempty(histInfos(i))
+0891         resolution = histInfo(i).resolution;
+0892         isZeroBin = histInfo(i).isZeroBin;
+0893         isSigned = histInfo(i).isSigned;
+0894     <span class="keyword">end</span>
+0895 
+0896     <span class="comment">% Compute the event histogram.</span>
+0897     <span class="keyword">if</span> isData
+0898         histData.(eventFields{i}).histogram = <span class="keyword">...</span>
+0899             <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(eventData, resolution, isZeroBin, isSigned);
+0900     <span class="keyword">end</span>
+0901 <span class="keyword">end</span>
+0902 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

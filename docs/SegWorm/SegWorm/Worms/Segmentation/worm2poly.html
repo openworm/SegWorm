@@ -1,0 +1,550 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of worm2poly</title>
+  <meta name="keywords" content="worm2poly">
+  <meta name="description" content="WORM2POLY Compute the polygon outline for a worm segment.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Segmentation -->
+<h1>worm2poly
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORM2POLY Compute the polygon outline for a worm segment.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [polygon lcBounds rcBounds sBounds] = worm2poly(startSI, endSI,skeleton, headCI, tailCI, contour, isSplit, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORM2POLY Compute the polygon outline for a worm segment.
+
+   POLYGON = WORM2POLY(STARTSI, ENDSI, SKELETON, HEADCI, TAILCI, ...
+       CONTOUR)
+
+   POLYGON = WORM2POLY(STARTSI, ENDSI, SKELETON, HEADCI, TAILCI, ...
+       CONTOUR, SCCLENGTHS)
+
+   POLYGON = WORM2POLY(STARTSI, ENDSI, SKELETON, HEADCI, TAILCI, ...
+       CONTOUR, SCCLENGTHS, CCCLENGTHS)
+
+   Inputs:
+       startSI     - the skeleton index for the start of the worm segment
+       ensSI       - the skeleton index for the end of the worm segment
+       skeleton    - the worm's skeleton
+       headCI      - the contour index for the worm's head
+       tailCI      - the contour index for the worm's tail
+       contour     - the worm's contour
+       isSplit     - if true, split the worm segment, at the skeleton,
+                     into 2 halves (the 2 halves are returned as a single
+                     polygon of 2 cells)
+       sCCLengths  - the skeleton's chain-code length at each point;
+                     if empty, the array indices are used instead
+       cCCLengths  - the contour's chain-code length at each point;
+                     if empty, the array indices are used instead
+
+   Output:
+       polygon  - the polygon outline for the worm segment;
+                  or, if isSplit set to true, 2 cells where:
+                  polygon{1} = the side clockwise from the head, and
+                  polygon{2} = the side counter clockwise from the head
+       lcBounds - the left-side (counter clockwise from the head) contour
+                  bounds (the start and end indices of the segment)
+       rcBounds - the right-side (clockwise from the head) contour
+                  bounds (the start and end indices of the segment)
+       sBounds  - skeleton bounds (the start and end indices of the segment)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>	CHAINCODELENGTH2INDEX Translate a length into an index. The index</li><li><a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>	CIRCNEARESTPOINTS For each point, find the nearest corresponding point</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [polygon lcBounds rcBounds sBounds] = worm2poly(startSI, endSI, </a><span class="keyword">...</span>
+0002     skeleton, headCI, tailCI, contour, isSplit, varargin)
+0003 <span class="comment">%WORM2POLY Compute the polygon outline for a worm segment.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   POLYGON = WORM2POLY(STARTSI, ENDSI, SKELETON, HEADCI, TAILCI, ...</span>
+0006 <span class="comment">%       CONTOUR)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   POLYGON = WORM2POLY(STARTSI, ENDSI, SKELETON, HEADCI, TAILCI, ...</span>
+0009 <span class="comment">%       CONTOUR, SCCLENGTHS)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   POLYGON = WORM2POLY(STARTSI, ENDSI, SKELETON, HEADCI, TAILCI, ...</span>
+0012 <span class="comment">%       CONTOUR, SCCLENGTHS, CCCLENGTHS)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   Inputs:</span>
+0015 <span class="comment">%       startSI     - the skeleton index for the start of the worm segment</span>
+0016 <span class="comment">%       ensSI       - the skeleton index for the end of the worm segment</span>
+0017 <span class="comment">%       skeleton    - the worm's skeleton</span>
+0018 <span class="comment">%       headCI      - the contour index for the worm's head</span>
+0019 <span class="comment">%       tailCI      - the contour index for the worm's tail</span>
+0020 <span class="comment">%       contour     - the worm's contour</span>
+0021 <span class="comment">%       isSplit     - if true, split the worm segment, at the skeleton,</span>
+0022 <span class="comment">%                     into 2 halves (the 2 halves are returned as a single</span>
+0023 <span class="comment">%                     polygon of 2 cells)</span>
+0024 <span class="comment">%       sCCLengths  - the skeleton's chain-code length at each point;</span>
+0025 <span class="comment">%                     if empty, the array indices are used instead</span>
+0026 <span class="comment">%       cCCLengths  - the contour's chain-code length at each point;</span>
+0027 <span class="comment">%                     if empty, the array indices are used instead</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   Output:</span>
+0030 <span class="comment">%       polygon  - the polygon outline for the worm segment;</span>
+0031 <span class="comment">%                  or, if isSplit set to true, 2 cells where:</span>
+0032 <span class="comment">%                  polygon{1} = the side clockwise from the head, and</span>
+0033 <span class="comment">%                  polygon{2} = the side counter clockwise from the head</span>
+0034 <span class="comment">%       lcBounds - the left-side (counter clockwise from the head) contour</span>
+0035 <span class="comment">%                  bounds (the start and end indices of the segment)</span>
+0036 <span class="comment">%       rcBounds - the right-side (clockwise from the head) contour</span>
+0037 <span class="comment">%                  bounds (the start and end indices of the segment)</span>
+0038 <span class="comment">%       sBounds  - skeleton bounds (the start and end indices of the segment)</span>
+0039 
+0040 <span class="comment">% Are there chain-code lengths?</span>
+0041 sLength = size(skeleton, 1);
+0042 cLength = size(contour, 1);
+0043 <span class="keyword">switch</span> length(varargin)
+0044     
+0045     <span class="comment">% Use chain-code lengths for the skeleton.</span>
+0046     <span class="comment">% Use array-index length for the contour.</span>
+0047     <span class="keyword">case</span> 1
+0048         sCCLengths = varargin{1};
+0049         cCCLengths = 1:cLength;
+0050         
+0051     <span class="comment">% Use chain-code lengths for the skeleton and contour.</span>
+0052     <span class="keyword">case</span> 2
+0053         sCCLengths = varargin{1};
+0054         cCCLengths = varargin{2};
+0055 
+0056     <span class="comment">% Use array-index lengths for the skeleton and contour.</span>
+0057     <span class="keyword">otherwise</span>
+0058         sCCLengths = 1:sLength;
+0059         cCCLengths = 1:cLength;
+0060 <span class="keyword">end</span>
+0061 
+0062 <span class="comment">% Pre-compute values.</span>
+0063 endSCCLengths = sCCLengths(end);
+0064 startCCCLengths = cCCLengths(1);
+0065 endCCCLengths = cCCLengths(end);
+0066 headCCLCI = cCCLengths(headCI);
+0067 tailCCLCI = cCCLengths(tailCI);
+0068 
+0069 <span class="comment">% Go from start to end in positive, index increments.</span>
+0070 <span class="keyword">if</span> startSI &gt; endSI
+0071     tmp = startSI;
+0072     startSI = endSI;
+0073     endSI = tmp;
+0074 <span class="keyword">end</span>
+0075 
+0076 <span class="comment">% Compute the edge size to use in searching for opposing contour points.</span>
+0077 <span class="comment">% We use 1/4 of a contour side to be safe.</span>
+0078 <span class="comment">% Note: worm curvature can significantly distort the length of a contour</span>
+0079 <span class="comment">% side and, consequently, the locations of identical spots on opposing</span>
+0080 <span class="comment">% sides of the contour. Therefore, in addition to using scaled locations,</span>
+0081 <span class="comment">% we also use a large search window to ensure we correctly identify</span>
+0082 <span class="comment">% opposing contour locations.</span>
+0083 searchEdgeSize = endCCCLengths / 8;
+0084 
+0085 <span class="comment">% Compute the polygon of the worm chunk.</span>
+0086 <span class="comment">% Side1 always goes from start to end in positive, index increments.</span>
+0087 <span class="comment">% Side2 always goes from start to end in negative, index increments.</span>
+0088 <span class="keyword">if</span> headCI &lt; tailCI <span class="comment">% side 1 is continuous</span>
+0089     
+0090     <span class="comment">% Compute the boundaries for each side.</span>
+0091     preHeadCI = headCI - 1;
+0092     <span class="keyword">if</span> preHeadCI &lt; 1
+0093         preHeadCI = cLength;
+0094     <span class="keyword">end</span>
+0095     postHeadCI = headCI + 1;
+0096     preTailCI = tailCI - 1;
+0097     postTailCI = tailCI + 1;
+0098     <span class="keyword">if</span> postTailCI &gt; cLength
+0099         postTailCI = 1;
+0100     <span class="keyword">end</span>
+0101     
+0102     <span class="comment">% Compute each side's size.</span>
+0103     size1 = tailCCLCI - headCCLCI;
+0104     size2 = headCCLCI + endCCCLengths - tailCCLCI;
+0105     
+0106     <span class="comment">% Scale the starting skeleton point to corresponding contour points.</span>
+0107     nStartSI = sCCLengths(startSI) / endSCCLengths;
+0108     sCCL1 = headCCLCI + nStartSI * size1;
+0109     eCCL2 = headCCLCI - nStartSI * size2;
+0110     <span class="keyword">if</span> eCCL2 &lt; startCCCLengths
+0111         eCCL2 = eCCL2 + endCCCLengths;
+0112     <span class="keyword">end</span>
+0113     
+0114     <span class="comment">% Find the starting contour point for side 1.</span>
+0115     minSCCL1 = sCCL1 - searchEdgeSize;
+0116     <span class="keyword">if</span> minSCCL1 &lt;= headCCLCI
+0117         minS1 = postHeadCI;
+0118     <span class="keyword">else</span>
+0119         minS1 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(minSCCL1, cCCLengths);
+0120     <span class="keyword">end</span>
+0121     maxSCCL1 = sCCL1 + searchEdgeSize;
+0122     <span class="keyword">if</span> maxSCCL1 &gt;= tailCCLCI
+0123         maxS1 = preTailCI;
+0124     <span class="keyword">else</span>
+0125         maxS1 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(maxSCCL1, cCCLengths);
+0126     <span class="keyword">end</span>
+0127     startCI1 = <a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>(skeleton(startSI,:), minS1, maxS1, <span class="keyword">...</span>
+0128         contour);
+0129     
+0130     <span class="comment">% Find the ending contour point for side 2.</span>
+0131     minECCL2 = eCCL2 - searchEdgeSize;
+0132     <span class="keyword">if</span> minECCL2 &lt; startCCCLengths
+0133         minECCL2 = minECCL2 + endCCCLengths;
+0134     <span class="keyword">end</span>
+0135     <span class="keyword">if</span> minECCL2 &lt;= tailCCLCI &amp;&amp; minECCL2 &gt;= headCCLCI
+0136         minE2 = postTailCI;
+0137     <span class="keyword">else</span>
+0138         minE2 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(minECCL2, cCCLengths);
+0139     <span class="keyword">end</span>
+0140     maxECCL2 = eCCL2 + searchEdgeSize;
+0141     <span class="keyword">if</span> maxECCL2 &gt; endCCCLengths
+0142         maxECCL2 = maxECCL2 - endCCCLengths;
+0143     <span class="keyword">end</span>
+0144     <span class="keyword">if</span> maxECCL2 &gt;= headCCLCI &amp;&amp; maxECCL2 &lt;= tailCCLCI
+0145         maxE2 = preHeadCI;
+0146     <span class="keyword">else</span>
+0147         maxE2 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(maxECCL2, cCCLengths);
+0148     <span class="keyword">end</span>
+0149     endCI2 = <a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>(skeleton(startSI,:), minE2, maxE2, <span class="keyword">...</span>
+0150         contour);
+0151     
+0152     <span class="comment">% Scale the ending skeleton point to corresponding contour points.</span>
+0153     nEndSI = (endSCCLengths - sCCLengths(endSI)) / endSCCLengths;
+0154     eCCL1 = tailCCLCI - nEndSI * size1;
+0155     sCCL2 = tailCCLCI + nEndSI * size2;
+0156     <span class="keyword">if</span> sCCL2 &gt; endCCCLengths
+0157         sCCL2 = sCCL2 - endCCCLengths;
+0158     <span class="keyword">end</span>
+0159     
+0160     <span class="comment">% Find the ending contour point for side 1.</span>
+0161     minECCL1 = eCCL1 - searchEdgeSize;
+0162     <span class="keyword">if</span> minECCL1 &lt;= headCCLCI
+0163         minE1 = postHeadCI;
+0164     <span class="keyword">else</span>
+0165         minE1 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(minECCL1, cCCLengths);
+0166     <span class="keyword">end</span>
+0167     maxECCL1 = eCCL1 + searchEdgeSize;
+0168     <span class="keyword">if</span> maxECCL1 &gt;= tailCCLCI
+0169         maxE1 = preTailCI;
+0170     <span class="keyword">else</span>
+0171         maxE1 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(maxECCL1, cCCLengths);
+0172     <span class="keyword">end</span>
+0173     endCI1 = <a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>(skeleton(endSI,:), minE1, maxE1, contour);
+0174     
+0175     <span class="comment">% Find the starting contour point for side 2.</span>
+0176     minSCCL2 = sCCL2 - searchEdgeSize;
+0177     <span class="keyword">if</span> minSCCL2 &lt; startCCCLengths
+0178         minSCCL2 = minSCCL2 + endCCCLengths;
+0179     <span class="keyword">end</span>
+0180     <span class="keyword">if</span> minSCCL2 &lt;= tailCCLCI &amp;&amp; minSCCL2 &gt;= headCCLCI
+0181         minS2 = postTailCI;
+0182     <span class="keyword">else</span>
+0183         minS2 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(minSCCL2, cCCLengths);
+0184     <span class="keyword">end</span>
+0185     maxSCCL2 = sCCL2 + searchEdgeSize;
+0186     <span class="keyword">if</span> maxSCCL2 &gt; endCCCLengths
+0187         maxSCCL2 = maxSCCL2 - endCCCLengths;
+0188     <span class="keyword">end</span>
+0189     <span class="keyword">if</span> maxSCCL2 &gt;= headCCLCI &amp;&amp; maxSCCL2 &lt;= tailCCLCI
+0190         maxS2 = preHeadCI;
+0191     <span class="keyword">else</span>
+0192         maxS2 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(maxSCCL2, cCCLengths);
+0193     <span class="keyword">end</span>
+0194     startCI2 = <a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>(skeleton(endSI,:), minS2, maxS2, contour);
+0195     
+0196     <span class="comment">% Initialize the start/end contour/skeleton points.</span>
+0197     startSP = skeleton(startSI,:);
+0198     endSP = skeleton(endSI,:);
+0199     startCP1 = contour(startCI1,:);
+0200     endCP1 = contour(endCI1,:);
+0201     startCP2 = contour(startCI2,:);
+0202     endCP2 = contour(endCI2,:);
+0203     
+0204     <span class="comment">% Compute the line from the end of contour side 2</span>
+0205     <span class="comment">% to the start of the skeleton.</span>
+0206     pointsEC2toSS = max(abs(endCP2 - startSP)) + 1;
+0207     lineEC2toSS = round([linspace(endCP2(1), startSP(1), pointsEC2toSS); <span class="keyword">...</span>
+0208         linspace(endCP2(2), startSP(2), pointsEC2toSS)]');
+0209 
+0210     <span class="comment">% Compute the line from the start of the skeleton</span>
+0211     <span class="comment">% to the start of contour side 1.</span>
+0212     pointsSStoSC1 = max(abs(startSP - startCP1)) + 1;
+0213     lineSStoSC1 = round([linspace(startSP(1), startCP1(1), pointsSStoSC1); <span class="keyword">...</span>
+0214         linspace(startSP(2), startCP1(2), pointsSStoSC1)]');
+0215     
+0216     <span class="comment">% Compute the line from the end of contour side 1</span>
+0217     <span class="comment">% to the end of the skeleton.</span>
+0218     pointsEC1toES = max(abs(endCP1 - endSP)) + 1;
+0219     lineEC1toES = round([linspace(endCP1(1), endSP(1), pointsEC1toES); <span class="keyword">...</span>
+0220         linspace(endCP1(2), endSP(2), pointsEC1toES)]');
+0221 
+0222     <span class="comment">% Compute the line from the end of the skeleton</span>
+0223     <span class="comment">% to the start of contour side 2.</span>
+0224     pointsEStoSC2 = max(abs(endSP - startCP2)) + 1;
+0225     lineEStoSC2 = round([linspace(endSP(1), startCP2(1), pointsEStoSC2); <span class="keyword">...</span>
+0226         linspace(endSP(2), startCP2(2), pointsEStoSC2)]');
+0227     
+0228     <span class="comment">% Construct the split polygon.</span>
+0229     <span class="keyword">if</span> isSplit
+0230 <span class="comment">%         % Construct the side clockwise from the head.</span>
+0231 <span class="comment">%         % Note: this side is continuous.</span>
+0232 <span class="comment">%         polygon{1} = [contour(startCI1:endCI1,:); ...</span>
+0233 <span class="comment">%             flipud(skeleton(startSI:endSI,:))];</span>
+0234 <span class="comment">%</span>
+0235 <span class="comment">%         % Construct the side counter clockwise from the head.</span>
+0236 <span class="comment">%         if startCI2 &lt; endCI2</span>
+0237 <span class="comment">%             polygon{2} = [contour(startCI2:endCI2,:); ...</span>
+0238 <span class="comment">%                 skeleton(startSI:endSI,:)];</span>
+0239 <span class="comment">%         else</span>
+0240 <span class="comment">%             polygon{2} = [contour(startCI2:end,:); ...</span>
+0241 <span class="comment">%                 contour(1:endCI2,:); skeleton(startSI:endSI,:)];</span>
+0242 <span class="comment">%         end</span>
+0243         
+0244         <span class="comment">% Construct the side clockwise from the head.</span>
+0245         <span class="comment">% Note: this side is continuous.</span>
+0246         polygon{1} = [lineSStoSC1; contour(startCI1:endCI1,:); <span class="keyword">...</span>
+0247             lineEC1toES; flipud(skeleton(startSI:endSI,:))];
+0248         
+0249         <span class="comment">% Construct the side counter clockwise from the head.</span>
+0250         <span class="keyword">if</span> startCI2 &lt; endCI2
+0251             polygon{2} = [lineEStoSC2; contour(startCI2:endCI2,:); <span class="keyword">...</span>
+0252                 lineEC2toSS; skeleton(startSI:endSI,:)];
+0253         <span class="keyword">else</span>
+0254             polygon{2} = [lineEStoSC2; contour(startCI2:<span class="keyword">end</span>,:); <span class="keyword">...</span>
+0255                 contour(1:endCI2,:); lineEC2toSS; skeleton(startSI:endSI,:)];
+0256         <span class="keyword">end</span>
+0257         
+0258     <span class="comment">% Construct the polygon.</span>
+0259     <span class="comment">% Note: side 1 is continuous.</span>
+0260     <span class="keyword">else</span>
+0261         <span class="keyword">if</span> startCI2 &lt; endCI2
+0262 <span class="comment">%             polygon = [skeleton(startSI,:); contour(startCI1:endCI1,:); ...</span>
+0263 <span class="comment">%                 skeleton(endSI,:); contour(startCI2:endCI2,:)];</span>
+0264 
+0265             polygon = [lineEC2toSS; lineSStoSC1; contour(startCI1:endCI1,:); <span class="keyword">...</span>
+0266                 lineEC1toES; lineEStoSC2; contour(startCI2:endCI2,:)];
+0267         <span class="keyword">else</span>
+0268 <span class="comment">%             polygon = [skeleton(startSI,:); contour(startCI1:endCI1,:); ...</span>
+0269 <span class="comment">%                 skeleton(endSI,:); contour(startCI2:end,:); contour(1:endCI2,:)];</span>
+0270 
+0271             polygon = [lineEC2toSS; lineSStoSC1; contour(startCI1:endCI1,:); <span class="keyword">...</span>
+0272                 lineEC1toES; lineEStoSC2; contour(startCI2:<span class="keyword">end</span>,:); <span class="keyword">...</span>
+0273                 contour(1:endCI2,:)];
+0274         <span class="keyword">end</span>
+0275     <span class="keyword">end</span>
+0276     
+0277 <span class="keyword">else</span> <span class="comment">% side 1 wraps</span>
+0278     
+0279     <span class="comment">% Compute the boundaries for each side.</span>
+0280     preHeadCI = headCI - 1;
+0281     postHeadCI = headCI + 1;
+0282     <span class="keyword">if</span> postHeadCI &gt; cLength
+0283         postHeadCI = 1;
+0284     <span class="keyword">end</span>
+0285     preTailCI = tailCI - 1;
+0286     <span class="keyword">if</span> preTailCI &lt; 1
+0287         preTailCI = cLength;
+0288     <span class="keyword">end</span>
+0289     postTailCI = tailCI + 1;
+0290     
+0291     <span class="comment">% Compute each side's size.</span>
+0292     size2 = headCCLCI - tailCCLCI;
+0293     size1 = tailCCLCI + endCCCLengths - headCCLCI;
+0294     
+0295     <span class="comment">% Scale the starting skeleton point to corresponding contour points.</span>
+0296     nStartSI = sCCLengths(startSI) / endSCCLengths;
+0297     sCCL1 = headCCLCI + nStartSI * size1;
+0298     <span class="keyword">if</span> sCCL1 &gt; endCCCLengths
+0299         sCCL1 = sCCL1 - endCCCLengths;
+0300     <span class="keyword">end</span>
+0301     eCCL2 = headCCLCI - nStartSI * size2;
+0302     
+0303     <span class="comment">% Find the starting contour point for side 1.</span>
+0304     minSCCL1 = sCCL1 - searchEdgeSize;
+0305     <span class="keyword">if</span> minSCCL1 &lt; startCCCLengths
+0306         minSCCL1 = minSCCL1 + endCCCLengths;
+0307     <span class="keyword">end</span>
+0308     <span class="keyword">if</span> minSCCL1 &lt;= headCCLCI &amp;&amp; minSCCL1 &gt;= tailCCLCI
+0309         minS1 = postHeadCI;
+0310     <span class="keyword">else</span>
+0311         minS1 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(minSCCL1, cCCLengths);
+0312     <span class="keyword">end</span>
+0313     maxSCCL1 = sCCL1 + searchEdgeSize;
+0314     <span class="keyword">if</span> maxSCCL1 &gt; endCCCLengths
+0315         maxSCCL1 = maxSCCL1 - endCCCLengths;
+0316     <span class="keyword">end</span>
+0317     <span class="keyword">if</span> maxSCCL1 &gt;= tailCCLCI &amp;&amp; maxSCCL1 &lt;= headCCLCI
+0318         maxS1 = preTailCI;
+0319     <span class="keyword">else</span>
+0320         maxS1 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(maxSCCL1, cCCLengths);
+0321     <span class="keyword">end</span>
+0322     startCI1 = <a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>(skeleton(startSI,:), minS1, maxS1, <span class="keyword">...</span>
+0323         contour);
+0324     
+0325     <span class="comment">% Find the ending contour point for side 2.</span>
+0326     minECCL2 = eCCL2 - searchEdgeSize;
+0327     <span class="keyword">if</span> minECCL2 &lt;= tailCCLCI
+0328         minE2 = postTailCI;
+0329     <span class="keyword">else</span>
+0330         minE2 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(minECCL2, cCCLengths);
+0331     <span class="keyword">end</span>
+0332     maxECCL2 = eCCL2 + searchEdgeSize;
+0333     <span class="keyword">if</span> maxECCL2 &gt;= headCCLCI
+0334         maxE2 = preHeadCI;
+0335     <span class="keyword">else</span>
+0336         maxE2 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(maxECCL2, cCCLengths);
+0337     <span class="keyword">end</span>
+0338     endCI2 = <a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>(skeleton(startSI,:), minE2, maxE2, contour);
+0339     
+0340     <span class="comment">% Scale the ending skeleton point to corresponding contour points.</span>
+0341     nEndSI = (endSCCLengths - sCCLengths(endSI)) / endSCCLengths;
+0342     eCCL1 = tailCCLCI - nEndSI * size1;
+0343     <span class="keyword">if</span> eCCL1 &lt; startCCCLengths
+0344         eCCL1 = eCCL1 + endCCCLengths;
+0345     <span class="keyword">end</span>
+0346     sCCL2 = tailCCLCI + nEndSI * size2;
+0347     
+0348     <span class="comment">% Find the ending contour point for side 1.</span>
+0349     minECCL1 = eCCL1 - searchEdgeSize;
+0350     <span class="keyword">if</span> minECCL1 &lt; startCCCLengths
+0351         minECCL1 = minECCL1 + endCCCLengths;
+0352     <span class="keyword">end</span>
+0353     <span class="keyword">if</span> minECCL1 &lt;= headCCLCI &amp;&amp; minECCL1 &gt;= tailCCLCI
+0354         minE1 = postHeadCI;
+0355     <span class="keyword">else</span>
+0356         minE1 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(minECCL1, cCCLengths);
+0357     <span class="keyword">end</span>
+0358     maxECCL1 = eCCL1 + searchEdgeSize;
+0359     <span class="keyword">if</span> maxECCL1 &gt; endCCCLengths
+0360         maxECCL1 = maxECCL1 - endCCCLengths;
+0361     <span class="keyword">end</span>
+0362     <span class="keyword">if</span> maxECCL1 &gt;= tailCCLCI &amp;&amp; maxECCL1 &lt;= headCCLCI
+0363         maxE1 = preTailCI;
+0364     <span class="keyword">else</span>
+0365         maxE1 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(maxECCL1, cCCLengths);
+0366     <span class="keyword">end</span>
+0367     endCI1 = <a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>(skeleton(endSI,:), minE1, maxE1, contour);
+0368         
+0369     <span class="comment">% Find the starting contour point for side 2.</span>
+0370     minSCCL2 = sCCL2 - searchEdgeSize;
+0371     <span class="keyword">if</span> minSCCL2 &lt;= tailCCLCI
+0372         minS2 = postTailCI;
+0373     <span class="keyword">else</span>
+0374         minS2 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(minSCCL2, cCCLengths);
+0375     <span class="keyword">end</span>
+0376     maxSCCL2 = sCCL2 + searchEdgeSize;
+0377     <span class="keyword">if</span> maxSCCL2 &gt;= headCCLCI
+0378         maxS2 = preHeadCI;
+0379     <span class="keyword">else</span>
+0380         maxS2 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(maxSCCL2, cCCLengths);
+0381     <span class="keyword">end</span>
+0382     startCI2 = <a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>(skeleton(endSI,:), minS2, maxS2, contour);
+0383     
+0384     <span class="comment">% Initialize the start/end contour/skeleton points.</span>
+0385     startSP = skeleton(startSI,:);
+0386     endSP = skeleton(endSI,:);
+0387     startCP1 = contour(startCI1,:);
+0388     endCP1 = contour(endCI1,:);
+0389     startCP2 = contour(startCI2,:);
+0390     endCP2 = contour(endCI2,:);
+0391     
+0392     <span class="comment">% Compute the line from the end of contour side 2</span>
+0393     <span class="comment">% to the start of the skeleton.</span>
+0394     pointsEC2toSS = max(abs(endCP2 - startSP)) + 1;
+0395     lineEC2toSS = round([linspace(endCP2(1), startSP(1), pointsEC2toSS); <span class="keyword">...</span>
+0396         linspace(endCP2(2), startSP(2), pointsEC2toSS)]');
+0397 
+0398     <span class="comment">% Compute the line from the start of the skeleton</span>
+0399     <span class="comment">% to the start of contour side 1.</span>
+0400     pointsSStoSC1 = max(abs(startSP - startCP1)) + 1;
+0401     lineSStoSC1 = round([linspace(startSP(1), startCP1(1), pointsSStoSC1); <span class="keyword">...</span>
+0402         linspace(startSP(2), startCP1(2), pointsSStoSC1)]');
+0403     
+0404     <span class="comment">% Compute the line from the end of contour side 1</span>
+0405     <span class="comment">% to the end of the skeleton.</span>
+0406     pointsEC1toES = max(abs(endCP1 - endSP)) + 1;
+0407     lineEC1toES = round([linspace(endCP1(1), endSP(1), pointsEC1toES); <span class="keyword">...</span>
+0408         linspace(endCP1(2), endSP(2), pointsEC1toES)]');
+0409 
+0410     <span class="comment">% Compute the line from the end of the skeleton</span>
+0411     <span class="comment">% to the start of contour side 2.</span>
+0412     pointsEStoSC2 = max(abs(endSP - startCP2)) + 1;
+0413     lineEStoSC2 = round([linspace(endSP(1), startCP2(1), pointsEStoSC2); <span class="keyword">...</span>
+0414         linspace(endSP(2), startCP2(2), pointsEStoSC2)]');
+0415     
+0416     <span class="comment">% Construct the split polygon.</span>
+0417     <span class="keyword">if</span> isSplit
+0418 <span class="comment">%         % Construct the side clockwise from the head.</span>
+0419 <span class="comment">%         if startCI1 &lt; endCI1</span>
+0420 <span class="comment">%             polygon{1} = [contour(startCI1:endCI1,:); ...</span>
+0421 <span class="comment">%                 flipud(skeleton(startSI:endSI,:))];</span>
+0422 <span class="comment">%         else</span>
+0423 <span class="comment">%             polygon{1} = [contour(startCI1:end,:); ...</span>
+0424 <span class="comment">%                 contour(1:endCI1,:); flipud(skeleton(startSI:endSI,:))];</span>
+0425 <span class="comment">%         end</span>
+0426 <span class="comment">%</span>
+0427 <span class="comment">%         % Construct the side counter clockwise from the head.</span>
+0428 <span class="comment">%         % Note: this side is continuous.</span>
+0429 <span class="comment">%         polygon{2} = [contour(startCI2:endCI2,:); skeleton(startSI:endSI,:)];</span>
+0430         
+0431         <span class="comment">% Construct the side clockwise from the head.</span>
+0432         <span class="keyword">if</span> startCI1 &lt; endCI1
+0433             polygon{1} = [lineSStoSC1; contour(startCI1:endCI1,:); <span class="keyword">...</span>
+0434                 lineEC1toES; flipud(skeleton(startSI:endSI,:))];
+0435         <span class="keyword">else</span>
+0436             polygon{1} = [lineSStoSC1; contour(startCI1:<span class="keyword">end</span>,:); <span class="keyword">...</span>
+0437                 contour(1:endCI1,:); lineEC1toES; flipud(skeleton(startSI:endSI,:))];
+0438         <span class="keyword">end</span>
+0439         
+0440         <span class="comment">% Construct the side counter clockwise from the head.</span>
+0441         <span class="comment">% Note: this side is continuous.</span>
+0442         polygon{2} = [lineEStoSC2; contour(startCI2:endCI2,:); <span class="keyword">...</span>
+0443             lineEC2toSS; skeleton(startSI:endSI,:)];
+0444         
+0445     <span class="comment">% Construct the polygon.</span>
+0446     <span class="comment">% Note: side 2 is continuous.</span>
+0447     <span class="keyword">else</span>
+0448         <span class="keyword">if</span> startCI1 &lt; endCI1
+0449 <span class="comment">%             polygon = [skeleton(startSI,:); contour(startCI1:endCI1,:); ...</span>
+0450 <span class="comment">%                 skeleton(endSI,:); contour(startCI2:endCI2,:)];</span>
+0451             
+0452             polygon = [lineEC2toSS; lineSStoSC1; contour(startCI1:endCI1,:); <span class="keyword">...</span>
+0453                 lineEC1toES; lineEStoSC2; contour(startCI2:endCI2,:)];
+0454         <span class="keyword">else</span>
+0455 <span class="comment">%             polygon = [skeleton(startSI,:); contour(startCI1:end,:); ...</span>
+0456 <span class="comment">%                 contour(1:endCI1,:); skeleton(endSI,:); contour(startCI2:endCI2,:)];</span>
+0457 
+0458             polygon = [lineEC2toSS; lineSStoSC1; contour(startCI1:<span class="keyword">end</span>,:); <span class="keyword">...</span>
+0459                 contour(1:endCI1,:); lineEC1toES; lineEStoSC2; <span class="keyword">...</span>
+0460                 contour(startCI2:endCI2,:)];
+0461         <span class="keyword">end</span>
+0462     <span class="keyword">end</span>
+0463 <span class="keyword">end</span>
+0464 
+0465 <span class="comment">% Construct the bounds.</span>
+0466 rcBounds = [startCI1; endCI1];
+0467 lcBounds = [startCI2; endCI2];
+0468 sBounds = [startSI; endSI];
+0469 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

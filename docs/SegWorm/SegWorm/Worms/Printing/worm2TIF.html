@@ -1,0 +1,440 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of worm2TIF</title>
+  <meta name="keywords" content="worm2TIF">
+  <meta name="description" content="WORM2TIF Save worm information to a TIF.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>worm2TIF
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORM2TIF Save worm information to a TIF.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [filename pages] = worm2TIF(filename, worm, wormName, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORM2TIF Save worm information to a TIF.
+
+   [FILENAME PAGES] = WORM2TIF(FILENAME, WORM, WORMNAME)
+
+   [FILENAME PAGES] = WORM2TIF(FILENAME, WORM, WORMNAME,
+                               WORMINFOFILTER, WORMFEATFILTER,
+                               WORMFEATDIR,
+                               CONTROL, CONTROLNAME,
+                               CONTROLINFOFILTER, CONTROLFEATFILTER,
+                               CONTROLFEATDIR,
+                               SIGNIFICANCE, ISSHOW, SAVEQUALITY, ISCLOSE,
+                               ISVERBOSE)
+
+   Inputs:
+       filename          - the TIF filename;
+                           if empty, the file is named
+                           &quot;&lt;wormName&gt; [vs &lt;controlName&gt;].tif&quot;
+       worm              - the worm histograms or filename
+       wormName          - the name for the worm;
+                           or, a function handle of the form:
+
+                   LABEL = WORM2LABEL(WORMINFO)
+
+                           wormInfo = the worm information
+                           label    = the worm label
+
+                           if empty, we use WORM2STRAINLABEL
+
+       wormInfoFilter    - the worm information filtering criteria;
+                           a structure with any of the fields:
+
+              minFPS     = the minimum video frame rate (frames/seconds)
+              minTime    = the minimum video time (seconds)
+              maxTime    = the maximum video time (seconds)
+              minSegTime = the minimum time for segmented video (seconds)
+              minRatio   = the minimum ratio for segmented video frames
+              minDate    = the minimum date to use (DATENUM)
+              maxDate    = the maximum date to use (DATENUM)
+              years      = the years to use
+              months     = the months to use (1-12)
+              weeks      = the weeks to use (1-52)
+              days       = the days (of the week) to use (1-7)
+              hours      = the hours to use (1-24)
+              trackers   = the trackers to use (1-8)
+
+       wormFeatFilter    - the worm feature filtering criteria;
+                           a structure with the fields:
+
+               featuresI = the feature indices (see WORMDATAINFO)
+               minThr    = the minimum feature value (optional)
+               maxThr    = the maximum feature value (optional)
+               indices   = the sub indices for the features (optional)
+               subFields = the subFields for the features (optional)
+
+       wormFeatDir       - the directory to search for worm files;
+                           if empty, search in the current directory
+                           the default is the current directory (empty)
+       control           - the control histograms or filename;
+                           if empty; no control is shown
+       controlName       - the name for the control;
+                           or, a function handle of the form:
+
+                   LABEL = WORM2LABEL(WORMINFO)
+
+                           wormInfo = the worm information
+                           label    = the worm label
+
+                           if empty, we use WORM2STRAINLABEL
+
+       controlInfoFilter - the control indices to use;
+                           or, the control filtering criteria
+       controlFeatFilter - the control feature filtering criteria
+       controlFeatDir    - the directory to search for control files;
+                           if empty, search in the current directory
+                           the default is the current directory (empty)
+       significance      - the feature statistical significance or filename;
+                           if empty; no statistical significance is shown
+                           if a struct, the fields are:
+
+                           p     = the p-value, per feature
+                           q     = the q-value, per feature
+                           power = the power, per feature
+
+       isShow            - are we showing the figures onscreen?
+                           Note: hiding the figures is faster.
+       saveQuality       - the quality (magnification) for saving the figures;
+                           if empty, the figures are not saved
+                           the default is none (empty)
+       isClose           - shoud we close the figures after saving them?
+                           when saving the figure, the default is yes (true)
+                           otherwise, the default is no (false)
+       isVerbose         - verbose mode displays the progress;
+                           the default is yes (true)
+   Output:
+       filename - the TIF file containing the saved figures;
+                  if empty, the figures were not saved
+       pages    - the number of pages in the figure file
+
+ See also FILTERWORMINFO, FILTERWORMHIST, WORM2HISTOGRAM, WORM2STATSINFO</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="methodsTIF.html" class="code" title="function [filename pages] = methodsTIF(filename, varargin)">methodsTIF</a>	METHODSTIF Save worm details to a TIF.</li><li><a href="worm2TOCOntologyTIF.html" class="code" title="function [filename pages] = worm2TOCOntologyTIF(filename, worm, wormName,varargin)">worm2TOCOntologyTIF</a>	WORM2TOCONTOLOGYTIF Save worm details to a TIF.</li><li><a href="worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>	WORM2DETAILSTIF Save worm details to a TIF.</li><li><a href="worm2pathTIF.html" class="code" title="function [filename pages] = worm2pathTIF(filename, worm, wormName, varargin)">worm2pathTIF</a>	WORM2PATHTIF Save worm information to a TIF.</li><li><a href="worm2summaryTIF.html" class="code" title="function [filename pages] = worm2summaryTIF(filename, worm, wormName,varargin)">worm2summaryTIF</a>	WORM2SUMMARYTIF Save a worm summary to a TIF.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>	WORM2STRAINLABEL Label the worm strain.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [filename pages] = worm2TIF(filename, worm, wormName, varargin)</a>
+0002 <span class="comment">%WORM2TIF Save worm information to a TIF.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [FILENAME PAGES] = WORM2TIF(FILENAME, WORM, WORMNAME)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [FILENAME PAGES] = WORM2TIF(FILENAME, WORM, WORMNAME,</span>
+0007 <span class="comment">%                               WORMINFOFILTER, WORMFEATFILTER,</span>
+0008 <span class="comment">%                               WORMFEATDIR,</span>
+0009 <span class="comment">%                               CONTROL, CONTROLNAME,</span>
+0010 <span class="comment">%                               CONTROLINFOFILTER, CONTROLFEATFILTER,</span>
+0011 <span class="comment">%                               CONTROLFEATDIR,</span>
+0012 <span class="comment">%                               SIGNIFICANCE, ISSHOW, SAVEQUALITY, ISCLOSE,</span>
+0013 <span class="comment">%                               ISVERBOSE)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Inputs:</span>
+0016 <span class="comment">%       filename          - the TIF filename;</span>
+0017 <span class="comment">%                           if empty, the file is named</span>
+0018 <span class="comment">%                           &quot;&lt;wormName&gt; [vs &lt;controlName&gt;].tif&quot;</span>
+0019 <span class="comment">%       worm              - the worm histograms or filename</span>
+0020 <span class="comment">%       wormName          - the name for the worm;</span>
+0021 <span class="comment">%                           or, a function handle of the form:</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%                   LABEL = WORM2LABEL(WORMINFO)</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%                           wormInfo = the worm information</span>
+0026 <span class="comment">%                           label    = the worm label</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%                           if empty, we use WORM2STRAINLABEL</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%       wormInfoFilter    - the worm information filtering criteria;</span>
+0031 <span class="comment">%                           a structure with any of the fields:</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%              minFPS     = the minimum video frame rate (frames/seconds)</span>
+0034 <span class="comment">%              minTime    = the minimum video time (seconds)</span>
+0035 <span class="comment">%              maxTime    = the maximum video time (seconds)</span>
+0036 <span class="comment">%              minSegTime = the minimum time for segmented video (seconds)</span>
+0037 <span class="comment">%              minRatio   = the minimum ratio for segmented video frames</span>
+0038 <span class="comment">%              minDate    = the minimum date to use (DATENUM)</span>
+0039 <span class="comment">%              maxDate    = the maximum date to use (DATENUM)</span>
+0040 <span class="comment">%              years      = the years to use</span>
+0041 <span class="comment">%              months     = the months to use (1-12)</span>
+0042 <span class="comment">%              weeks      = the weeks to use (1-52)</span>
+0043 <span class="comment">%              days       = the days (of the week) to use (1-7)</span>
+0044 <span class="comment">%              hours      = the hours to use (1-24)</span>
+0045 <span class="comment">%              trackers   = the trackers to use (1-8)</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">%       wormFeatFilter    - the worm feature filtering criteria;</span>
+0048 <span class="comment">%                           a structure with the fields:</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">%               featuresI = the feature indices (see WORMDATAINFO)</span>
+0051 <span class="comment">%               minThr    = the minimum feature value (optional)</span>
+0052 <span class="comment">%               maxThr    = the maximum feature value (optional)</span>
+0053 <span class="comment">%               indices   = the sub indices for the features (optional)</span>
+0054 <span class="comment">%               subFields = the subFields for the features (optional)</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">%       wormFeatDir       - the directory to search for worm files;</span>
+0057 <span class="comment">%                           if empty, search in the current directory</span>
+0058 <span class="comment">%                           the default is the current directory (empty)</span>
+0059 <span class="comment">%       control           - the control histograms or filename;</span>
+0060 <span class="comment">%                           if empty; no control is shown</span>
+0061 <span class="comment">%       controlName       - the name for the control;</span>
+0062 <span class="comment">%                           or, a function handle of the form:</span>
+0063 <span class="comment">%</span>
+0064 <span class="comment">%                   LABEL = WORM2LABEL(WORMINFO)</span>
+0065 <span class="comment">%</span>
+0066 <span class="comment">%                           wormInfo = the worm information</span>
+0067 <span class="comment">%                           label    = the worm label</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">%                           if empty, we use WORM2STRAINLABEL</span>
+0070 <span class="comment">%</span>
+0071 <span class="comment">%       controlInfoFilter - the control indices to use;</span>
+0072 <span class="comment">%                           or, the control filtering criteria</span>
+0073 <span class="comment">%       controlFeatFilter - the control feature filtering criteria</span>
+0074 <span class="comment">%       controlFeatDir    - the directory to search for control files;</span>
+0075 <span class="comment">%                           if empty, search in the current directory</span>
+0076 <span class="comment">%                           the default is the current directory (empty)</span>
+0077 <span class="comment">%       significance      - the feature statistical significance or filename;</span>
+0078 <span class="comment">%                           if empty; no statistical significance is shown</span>
+0079 <span class="comment">%                           if a struct, the fields are:</span>
+0080 <span class="comment">%</span>
+0081 <span class="comment">%                           p     = the p-value, per feature</span>
+0082 <span class="comment">%                           q     = the q-value, per feature</span>
+0083 <span class="comment">%                           power = the power, per feature</span>
+0084 <span class="comment">%</span>
+0085 <span class="comment">%       isShow            - are we showing the figures onscreen?</span>
+0086 <span class="comment">%                           Note: hiding the figures is faster.</span>
+0087 <span class="comment">%       saveQuality       - the quality (magnification) for saving the figures;</span>
+0088 <span class="comment">%                           if empty, the figures are not saved</span>
+0089 <span class="comment">%                           the default is none (empty)</span>
+0090 <span class="comment">%       isClose           - shoud we close the figures after saving them?</span>
+0091 <span class="comment">%                           when saving the figure, the default is yes (true)</span>
+0092 <span class="comment">%                           otherwise, the default is no (false)</span>
+0093 <span class="comment">%       isVerbose         - verbose mode displays the progress;</span>
+0094 <span class="comment">%                           the default is yes (true)</span>
+0095 <span class="comment">%   Output:</span>
+0096 <span class="comment">%       filename - the TIF file containing the saved figures;</span>
+0097 <span class="comment">%                  if empty, the figures were not saved</span>
+0098 <span class="comment">%       pages    - the number of pages in the figure file</span>
+0099 <span class="comment">%</span>
+0100 <span class="comment">% See also FILTERWORMINFO, FILTERWORMHIST, WORM2HISTOGRAM, WORM2STATSINFO</span>
+0101 
+0102 <span class="comment">% Load the worm.</span>
+0103 wormInfo = [];
+0104 <span class="keyword">if</span> ischar(worm)
+0105     load(worm, <span class="string">'wormInfo'</span>);
+0106 <span class="keyword">end</span>
+0107 
+0108 <span class="comment">% Determine the worm name.</span>
+0109 <span class="keyword">if</span> isempty(wormName) &amp;&amp; ~isempty(wormInfo)
+0110     wormName = <a href="../../../SegWorm/Worms/Statistics/worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>(wormInfo);
+0111 <span class="keyword">elseif</span> isa(wormName, <span class="string">'function_handle'</span>)
+0112     <span class="keyword">if</span> ~isempty(wormInfo)
+0113         wormName = wormName(wormInfo);
+0114     <span class="keyword">else</span>
+0115         wormName = <span class="string">''</span>;
+0116     <span class="keyword">end</span>
+0117 <span class="keyword">end</span>
+0118 
+0119 <span class="comment">% Get the worm information filter.</span>
+0120 wormInfoFilter = [];
+0121 <span class="keyword">if</span> ~isempty(varargin)
+0122     wormInfoFilter = varargin{1};
+0123 <span class="keyword">end</span>
+0124 
+0125 <span class="comment">% Get the worm feature filter.</span>
+0126 wormFeatFilter = [];
+0127 <span class="keyword">if</span> length(varargin) &gt; 1
+0128     wormFeatFilter = varargin{2};
+0129 <span class="keyword">end</span>
+0130 
+0131 <span class="comment">% Where should we search for the feature files?</span>
+0132 wormFeatDir = [];
+0133 <span class="keyword">if</span> length(varargin) &gt; 2
+0134     wormFeatDir = varargin{3};
+0135 <span class="keyword">end</span>
+0136 
+0137 <span class="comment">% Do we have a control?</span>
+0138 control = [];
+0139 controlName = [];
+0140 <span class="keyword">if</span> length(varargin) &gt; 3
+0141     
+0142     <span class="comment">% Load the control.</span>
+0143     control = varargin{4};
+0144     controlInfo = [];
+0145     <span class="keyword">if</span> ~isempty(control) &amp;&amp; ischar(control)
+0146         controlData = load(control, <span class="string">'wormInfo'</span>);
+0147         controlInfo = controlData.wormInfo;
+0148         clear controlData;
+0149     <span class="keyword">end</span>
+0150     
+0151     <span class="comment">% Determine the control name.</span>
+0152     <span class="keyword">if</span> length(varargin) &gt; 4
+0153         controlName = varargin{5};
+0154     <span class="keyword">end</span>
+0155     <span class="keyword">if</span> isempty(controlName) &amp;&amp; ~isempty(controlInfo)
+0156         controlName = <a href="../../../SegWorm/Worms/Statistics/worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>(controlInfo);
+0157     <span class="keyword">elseif</span> isa(controlName, <span class="string">'function_handle'</span>)
+0158         <span class="keyword">if</span> ~isempty(controlInfo)
+0159             controlName = controlName(controlInfo);
+0160         <span class="keyword">else</span>
+0161             controlName = <span class="string">''</span>;
+0162         <span class="keyword">end</span>
+0163     <span class="keyword">end</span>
+0164 <span class="keyword">end</span>
+0165 
+0166 <span class="comment">% Get the worm information filter.</span>
+0167 controlInfoFilter = [];
+0168 <span class="keyword">if</span> length(varargin) &gt; 5
+0169     controlInfoFilter = varargin{6};
+0170 <span class="keyword">end</span>
+0171 
+0172 <span class="comment">% Get the worm feature filter.</span>
+0173 controlFeatFilter = [];
+0174 <span class="keyword">if</span> length(varargin) &gt; 6
+0175     controlFeatFilter = varargin{7};
+0176 <span class="keyword">end</span>
+0177 
+0178 <span class="comment">% Where should we search for the feature files?</span>
+0179 controlFeatDir = [];
+0180 <span class="keyword">if</span> length(varargin) &gt; 7
+0181     controlFeatDir = varargin{8};
+0182 <span class="keyword">end</span>
+0183 
+0184 <span class="comment">% Do we have the statistical significance?</span>
+0185 significance = [];
+0186 <span class="keyword">if</span> length(varargin) &gt; 8
+0187     significance = varargin{9};
+0188 <span class="keyword">end</span>
+0189 
+0190 <span class="comment">% Are we showing the figures onscreen?</span>
+0191 <span class="comment">% Note: hiding the figures is faster.</span>
+0192 isShow = true;
+0193 <span class="keyword">if</span> length(varargin) &gt; 9
+0194     isShow = varargin{10};
+0195 <span class="keyword">end</span>
+0196 
+0197 <span class="comment">% Determine the quality (magnification) for saving the figures.</span>
+0198 saveQuality = []; <span class="comment">% don't save the figures</span>
+0199 <span class="keyword">if</span> length(varargin) &gt; 10
+0200     saveQuality = varargin{11};
+0201 <span class="keyword">end</span>
+0202 
+0203 <span class="comment">% Are we closing the figures after saving them?</span>
+0204 <span class="keyword">if</span> saveQuality &gt; 0
+0205     isClose = true;
+0206 <span class="keyword">else</span>
+0207     isClose = false;
+0208 <span class="keyword">end</span>
+0209 <span class="keyword">if</span> length(varargin) &gt; 11
+0210     isClose = varargin{12};
+0211 <span class="keyword">end</span>
+0212 <span class="keyword">if</span> ~isShow
+0213     isClose = true;
+0214 <span class="keyword">end</span>
+0215 
+0216 <span class="comment">% Are we displaying the progress?</span>
+0217 isVerbose = true;
+0218 <span class="keyword">if</span> length(varargin) &gt; 12
+0219     isVerbose = varargin{13};
+0220 <span class="keyword">end</span>
+0221 
+0222 <span class="comment">% Construct the file name.</span>
+0223 <span class="keyword">if</span> saveQuality &gt; 0
+0224     
+0225     <span class="comment">% Remove the TIF extension.</span>
+0226     tifExt = <span class="string">'.tif'</span>;
+0227     tifName = filename;
+0228     <span class="keyword">if</span> length(tifName) &gt;= length(tifExt) &amp;&amp; <span class="keyword">...</span>
+0229             strcmp(filename((end - length(tifExt) + 1):end), tifExt)
+0230         tifName = filename(1:(end - length(tifExt)));
+0231     <span class="keyword">end</span>
+0232     
+0233     <span class="comment">% Create the filename.</span>
+0234     <span class="keyword">if</span> isempty(tifName)
+0235         <span class="keyword">if</span> isempty(controlName)
+0236             tifName = [wormName <span class="string">' info'</span>];
+0237         <span class="keyword">else</span>
+0238             tifName = [wormName <span class="string">' vs '</span> controlName <span class="string">' info'</span>];
+0239         <span class="keyword">end</span>
+0240     <span class="keyword">end</span>
+0241     
+0242     <span class="comment">% Add the TIF extension.</span>
+0243     filename = [tifName <span class="string">'.tif'</span>];
+0244 
+0245 <span class="comment">% We are not saving a file.</span>
+0246 <span class="keyword">else</span>
+0247     filename = [];
+0248 <span class="keyword">end</span>
+0249 
+0250 <span class="comment">% Create the table of contents and ontology information.</span>
+0251 <span class="keyword">if</span> isVerbose
+0252     disp(<span class="string">'Printing TOC and ontology ...'</span>);
+0253 <span class="keyword">end</span>
+0254 page = 0;
+0255 [filename pages] = <a href="worm2TOCOntologyTIF.html" class="code" title="function [filename pages] = worm2TOCOntologyTIF(filename, worm, wormName,varargin)">worm2TOCOntologyTIF</a>(filename, worm, wormName, <span class="keyword">...</span>
+0256     wormInfoFilter, wormFeatFilter, control, controlName, <span class="keyword">...</span>
+0257     controlInfoFilter, controlFeatFilter, significance, isShow, page, <span class="keyword">...</span>
+0258     saveQuality, isClose, isVerbose);
+0259 
+0260 <span class="comment">% Create the summary information.</span>
+0261 <span class="keyword">if</span> isVerbose
+0262     disp(<span class="string">'Printing summary ...'</span>);
+0263 <span class="keyword">end</span>
+0264 page = page + pages;
+0265 [filename pages] = <a href="worm2summaryTIF.html" class="code" title="function [filename pages] = worm2summaryTIF(filename, worm, wormName,varargin)">worm2summaryTIF</a>(filename, worm, wormName, <span class="keyword">...</span>
+0266     wormInfoFilter, wormFeatFilter, control, controlName, <span class="keyword">...</span>
+0267     controlInfoFilter, controlFeatFilter, significance, isShow, page, <span class="keyword">...</span>
+0268     saveQuality, isClose, isVerbose);
+0269 
+0270 <span class="comment">% Create the detailed information.</span>
+0271 <span class="keyword">if</span> isVerbose
+0272     disp(<span class="string">'Printing details ...'</span>);
+0273 <span class="keyword">end</span>
+0274 page = page + pages;
+0275 [filename pages] = <a href="worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>(filename, worm, wormName, <span class="keyword">...</span>
+0276     wormInfoFilter, wormFeatFilter, control, controlName, <span class="keyword">...</span>
+0277     controlInfoFilter, controlFeatFilter, significance, isShow, page, <span class="keyword">...</span>
+0278     saveQuality, isClose, isVerbose);
+0279 
+0280 <span class="comment">% Create the path information.</span>
+0281 <span class="keyword">if</span> isVerbose
+0282     disp(<span class="string">'Printing paths ...'</span>);
+0283 <span class="keyword">end</span>
+0284 page = page + pages;
+0285 [filename pages] = <a href="worm2pathTIF.html" class="code" title="function [filename pages] = worm2pathTIF(filename, worm, wormName, varargin)">worm2pathTIF</a>(filename, worm, wormName, <span class="keyword">...</span>
+0286     wormInfoFilter, wormFeatFilter, wormFeatDir, control, controlName, <span class="keyword">...</span>
+0287     controlInfoFilter, controlFeatFilter, controlFeatDir, <span class="keyword">...</span>
+0288     isShow, page, saveQuality, isClose, isVerbose);
+0289 
+0290 <span class="comment">% Create the methods information.</span>
+0291 <span class="keyword">if</span> isVerbose
+0292     disp(<span class="string">'Printing methods ...'</span>);
+0293 <span class="keyword">end</span>
+0294 page = page + pages;
+0295 <a href="methodsTIF.html" class="code" title="function [filename pages] = methodsTIF(filename, varargin)">methodsTIF</a>(filename, isShow, page, saveQuality, isClose, isVerbose);
+0296 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

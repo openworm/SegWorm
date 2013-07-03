@@ -1,0 +1,359 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormStats2Matrix</title>
+  <meta name="keywords" content="wormStats2Matrix">
+  <meta name="description" content="WORMSTATS2MATRIX Construct and save a worms x features matrix.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>wormStats2Matrix
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMSTATS2MATRIX Construct and save a worms x features matrix.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function wormStats2Matrix(filename, wormFiles, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMSTATS2MATRIX Construct and save a worms x features matrix.
+
+   WORM2STATSINFO(FILENAME, WORMFILES)
+
+   WORM2STATSINFO(FILENAME, WORMFILES, ISVERBOSE)
+
+   Inputs:
+       filename - the file name for the worm statistics information;
+                  a file containing structures with fields:
+
+                  dataInfo:
+
+                  name     = the feature's name
+                  units    = the feature's units
+                  title1   = the feature's 1st title
+                  title1I  = the feature's 1st title index
+                  title2   = the feature's 2nd title
+                  title2I  = the feature's 2nd title index
+                  title3   = the feature's 3rd title
+                  title3I   = the feature's 3rd title index
+                  field    = the feature's path; a struct where:
+
+                             histogram  = the histogram data path
+                             statistics = the statistics data path
+
+                  index    = the feature's field index
+                  isMain   = is this a main feature?
+                  category = the feature's category, where:
+
+                             m = morphology
+                             s = posture (shape)
+                             l = locomotion
+                             p = path
+
+                  type     = the feature's type, where:
+
+                             s = simple data
+                             m = motion data
+                             d = event summary data
+                             e = event data
+                             i = inter-event data
+
+                  subType  = the feature's sub-type, where:
+
+                             n = none
+                             f = forward motion data
+                             b = backward motion data
+                             p = paused data
+                             t = time data
+                             d = distance data
+                             h = frequency data (Hz)
+
+                  sign     = the feature's sign, where:
+
+                             s = signed data
+                             u = unsigned data
+                             a = the absolute value of the data
+                             p = the positive data
+                             n = the negative data
+
+
+                  worm.info:
+
+                  strain   = the worm strain
+                  genotype = the worm genotyope
+                  gene     = the worm's mutant gene(s)
+                  allele   = the worm's mutant allele(s)
+
+
+                  worm.stats &amp; control.stats (worms x features):
+                  mean    = the mean, per feature
+                  stdDev  = the standard deviation, per feature
+                  samples = the samples, per feature
+                  pNormal = the Shapiro-Wilk p-values, per feature
+                  qNormal.all = the Shapiro-Wilk q-values, per feature,
+                                correcting across all strains
+                  qNormal.strain = the Shapiro-Wilk q-values, per feature,
+                                   correcting per strain
+                  zScore  = the z-scores (for worms only), per feature
+
+
+                  worm.sig &amp; control.stats:
+                  pTValue = the Student's t-test p-value, per feature
+                  qTValue.all = the Student's t-test q-value,
+                                per feature, correcting across all strains
+                  qTValue.strain = the Student's t-test q-value,
+                                   per feature, correcting per strain
+                  pWValue = the Wilcoxon rank-sum p-value, per feature
+                  qWValue.all = the Wilcoxon rank-sum q-value,
+                                per feature, correcting across all strains
+                  qWValue.strain = the Wilcoxon rank-sum q-value,
+                                   per feature, correcting per strain
+
+       wormFiles - the worm statistics information files
+       isVerbose - verbose mode displays the progress;
+                   the default is yes (true)
+
+ See also <a href="worm2StatsInfo.html" class="code" title="function worm2StatsInfo(filename, wormFiles, varargin)">WORM2STATSINFO</a>, <a href="wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">WORMSTATSINFO</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="worm2AlleleLabel.html" class="code" title="function label = worm2AlleleLabel(wormInfo)">worm2AlleleLabel</a>	WORM2ALLELELABEL Label the worm allele.</li><li><a href="worm2GeneLabel.html" class="code" title="function label = worm2GeneLabel(wormInfo)">worm2GeneLabel</a>	WORM2GENELABEL Label the worm gene.</li><li><a href="worm2GenotypeLabel.html" class="code" title="function label = worm2GenotypeLabel(wormInfo)">worm2GenotypeLabel</a>	WORM2GENOTYPELABEL Label the worm genotype.</li><li><a href="worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>	WORM2STRAINLABEL Label the worm strain.</li><li><a href="wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>	WORMFEATUREINFO Get information for computing the worm statistics.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function wormStats2Matrix(filename, wormFiles, varargin)</a>
+0002 <span class="comment">%WORMSTATS2MATRIX Construct and save a worms x features matrix.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   WORM2STATSINFO(FILENAME, WORMFILES)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   WORM2STATSINFO(FILENAME, WORMFILES, ISVERBOSE)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Inputs:</span>
+0009 <span class="comment">%       filename - the file name for the worm statistics information;</span>
+0010 <span class="comment">%                  a file containing structures with fields:</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%                  dataInfo:</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%                  name     = the feature's name</span>
+0015 <span class="comment">%                  units    = the feature's units</span>
+0016 <span class="comment">%                  title1   = the feature's 1st title</span>
+0017 <span class="comment">%                  title1I  = the feature's 1st title index</span>
+0018 <span class="comment">%                  title2   = the feature's 2nd title</span>
+0019 <span class="comment">%                  title2I  = the feature's 2nd title index</span>
+0020 <span class="comment">%                  title3   = the feature's 3rd title</span>
+0021 <span class="comment">%                  title3I   = the feature's 3rd title index</span>
+0022 <span class="comment">%                  field    = the feature's path; a struct where:</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%                             histogram  = the histogram data path</span>
+0025 <span class="comment">%                             statistics = the statistics data path</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%                  index    = the feature's field index</span>
+0028 <span class="comment">%                  isMain   = is this a main feature?</span>
+0029 <span class="comment">%                  category = the feature's category, where:</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%                             m = morphology</span>
+0032 <span class="comment">%                             s = posture (shape)</span>
+0033 <span class="comment">%                             l = locomotion</span>
+0034 <span class="comment">%                             p = path</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%                  type     = the feature's type, where:</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%                             s = simple data</span>
+0039 <span class="comment">%                             m = motion data</span>
+0040 <span class="comment">%                             d = event summary data</span>
+0041 <span class="comment">%                             e = event data</span>
+0042 <span class="comment">%                             i = inter-event data</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%                  subType  = the feature's sub-type, where:</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%                             n = none</span>
+0047 <span class="comment">%                             f = forward motion data</span>
+0048 <span class="comment">%                             b = backward motion data</span>
+0049 <span class="comment">%                             p = paused data</span>
+0050 <span class="comment">%                             t = time data</span>
+0051 <span class="comment">%                             d = distance data</span>
+0052 <span class="comment">%                             h = frequency data (Hz)</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%                  sign     = the feature's sign, where:</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">%                             s = signed data</span>
+0057 <span class="comment">%                             u = unsigned data</span>
+0058 <span class="comment">%                             a = the absolute value of the data</span>
+0059 <span class="comment">%                             p = the positive data</span>
+0060 <span class="comment">%                             n = the negative data</span>
+0061 <span class="comment">%</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">%                  worm.info:</span>
+0064 <span class="comment">%</span>
+0065 <span class="comment">%                  strain   = the worm strain</span>
+0066 <span class="comment">%                  genotype = the worm genotyope</span>
+0067 <span class="comment">%                  gene     = the worm's mutant gene(s)</span>
+0068 <span class="comment">%                  allele   = the worm's mutant allele(s)</span>
+0069 <span class="comment">%</span>
+0070 <span class="comment">%</span>
+0071 <span class="comment">%                  worm.stats &amp; control.stats (worms x features):</span>
+0072 <span class="comment">%                  mean    = the mean, per feature</span>
+0073 <span class="comment">%                  stdDev  = the standard deviation, per feature</span>
+0074 <span class="comment">%                  samples = the samples, per feature</span>
+0075 <span class="comment">%                  pNormal = the Shapiro-Wilk p-values, per feature</span>
+0076 <span class="comment">%                  qNormal.all = the Shapiro-Wilk q-values, per feature,</span>
+0077 <span class="comment">%                                correcting across all strains</span>
+0078 <span class="comment">%                  qNormal.strain = the Shapiro-Wilk q-values, per feature,</span>
+0079 <span class="comment">%                                   correcting per strain</span>
+0080 <span class="comment">%                  zScore  = the z-scores (for worms only), per feature</span>
+0081 <span class="comment">%</span>
+0082 <span class="comment">%</span>
+0083 <span class="comment">%                  worm.sig &amp; control.stats:</span>
+0084 <span class="comment">%                  pTValue = the Student's t-test p-value, per feature</span>
+0085 <span class="comment">%                  qTValue.all = the Student's t-test q-value,</span>
+0086 <span class="comment">%                                per feature, correcting across all strains</span>
+0087 <span class="comment">%                  qTValue.strain = the Student's t-test q-value,</span>
+0088 <span class="comment">%                                   per feature, correcting per strain</span>
+0089 <span class="comment">%                  pWValue = the Wilcoxon rank-sum p-value, per feature</span>
+0090 <span class="comment">%                  qWValue.all = the Wilcoxon rank-sum q-value,</span>
+0091 <span class="comment">%                                per feature, correcting across all strains</span>
+0092 <span class="comment">%                  qWValue.strain = the Wilcoxon rank-sum q-value,</span>
+0093 <span class="comment">%                                   per feature, correcting per strain</span>
+0094 <span class="comment">%</span>
+0095 <span class="comment">%       wormFiles - the worm statistics information files</span>
+0096 <span class="comment">%       isVerbose - verbose mode displays the progress;</span>
+0097 <span class="comment">%                   the default is yes (true)</span>
+0098 <span class="comment">%</span>
+0099 <span class="comment">% See also WORM2STATSINFO, WORMSTATSINFO</span>
+0100 
+0101 <span class="comment">% Are we displaying the progress?</span>
+0102 isVerbose = false;
+0103 <span class="keyword">if</span> ~isempty(varargin)
+0104     isVerbose = varargin{1};
+0105 <span class="keyword">end</span>
+0106 
+0107 <span class="comment">% Delete the file if it already exists.</span>
+0108 <span class="keyword">if</span> exist(filename, <span class="string">'file'</span>)
+0109     delete(filename);
+0110 <span class="keyword">end</span>
+0111 
+0112 <span class="comment">% Fix the worm files.</span>
+0113 <span class="keyword">if</span> ~iscell(wormFiles)
+0114     wormFiles =  {wormFiles};
+0115 <span class="keyword">end</span>
+0116 
+0117 <span class="comment">% Initialize the feature information.</span>
+0118 dataInfo = <a href="wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>();
+0119 
+0120 <span class="comment">% Construct the feature matrix.</span>
+0121 worm = [];
+0122 control = [];
+0123 worm.info.strain = cell(length(wormFiles), 1);
+0124 worm.info.genotype = cell(length(wormFiles), 1);
+0125 worm.info.gene = cell(length(wormFiles), 1);
+0126 worm.info.allele = cell(length(wormFiles), 1);
+0127 worm.stats.mean = nan(length(wormFiles), length(dataInfo));
+0128 worm.stats.stdDev = nan(length(wormFiles), length(dataInfo));
+0129 worm.stats.samples = nan(length(wormFiles), length(dataInfo));
+0130 worm.stats.pNormal = nan(length(wormFiles), length(dataInfo));
+0131 worm.stats.qNormal.strain = nan(length(wormFiles), length(dataInfo));
+0132 worm.stats.qNormal.all = nan(length(wormFiles), length(dataInfo));
+0133 worm.stats.zScore = nan(length(wormFiles), length(dataInfo));
+0134 control.stats.mean = nan(length(wormFiles), length(dataInfo));
+0135 control.stats.stdDev = nan(length(wormFiles), length(dataInfo));
+0136 control.stats.samples = nan(length(wormFiles), length(dataInfo));
+0137 control.stats.pNormal = nan(length(wormFiles), length(dataInfo));
+0138 control.stats.qNormal.strain = nan(length(wormFiles), length(dataInfo));
+0139 control.stats.qNormal.all = nan(length(wormFiles), length(dataInfo));
+0140 worm.sig.pTValue = nan(length(wormFiles), length(dataInfo));
+0141 worm.sig.pWValue = nan(length(wormFiles), length(dataInfo));
+0142 worm.sig.qTValue.strain = nan(length(wormFiles), length(dataInfo));
+0143 worm.sig.qTValue.all = nan(length(wormFiles), length(dataInfo));
+0144 worm.sig.qWValue.strain = nan(length(wormFiles), length(dataInfo));
+0145 worm.sig.qWValue.all = nan(length(wormFiles), length(dataInfo));
+0146 <span class="comment">%worm.sig.power = nan(length(wormFiles), length(dataInfo));</span>
+0147 <span class="keyword">for</span> i = 1:length(wormFiles)
+0148     
+0149     <span class="keyword">if</span> isVerbose
+0150         disp([<span class="string">'Adding '</span> num2str(i) <span class="string">'/'</span> num2str(length(wormFiles)) <span class="string">' &quot;'</span> <span class="keyword">...</span>
+0151             wormFiles{i} <span class="string">'&quot; ...'</span>]);
+0152     <span class="keyword">end</span>
+0153     
+0154     <span class="comment">% Load the data.</span>
+0155     data = load(wormFiles{i}, <span class="string">'wormInfo'</span>, <span class="string">'wormData'</span>, <span class="string">'controlData'</span>, <span class="keyword">...</span>
+0156         <span class="string">'significance'</span>);
+0157     
+0158     <span class="comment">% Label the worm.</span>
+0159     worm.info.strain{i} = <a href="worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>(data.wormInfo);
+0160     worm.info.genotype{i} = <a href="worm2GenotypeLabel.html" class="code" title="function label = worm2GenotypeLabel(wormInfo)">worm2GenotypeLabel</a>(data.wormInfo);
+0161     worm.info.gene{i} = <a href="worm2GeneLabel.html" class="code" title="function label = worm2GeneLabel(wormInfo)">worm2GeneLabel</a>(data.wormInfo);
+0162     worm.info.allele{i} = <a href="worm2AlleleLabel.html" class="code" title="function label = worm2AlleleLabel(wormInfo)">worm2AlleleLabel</a>(data.wormInfo);
+0163     <span class="keyword">if</span> ~isempty([data.wormData.zScore])
+0164         worm.stats.zScore(i,:) = [data.wormData.zScore];
+0165     <span class="keyword">end</span>
+0166     
+0167     <span class="comment">% Store the worm feature statistics.</span>
+0168     worm.stats.mean(i,:) = [data.wormData.mean];
+0169     worm.stats.stdDev(i,:) = [data.wormData.stdDev];
+0170     worm.stats.samples(i,:) = [data.wormData.samples];
+0171     worm.stats.pNormal(i,:) = [data.wormData.pNormal];
+0172     worm.stats.qNormal.strain(i,:) = [data.wormData.qNormal];
+0173     
+0174     <span class="comment">% Store the control feature statistics.</span>
+0175     <span class="keyword">if</span> isfield(data, <span class="string">'controlData'</span>)
+0176         control.stats.mean(i,:) = [data.controlData.mean];
+0177         control.stats.stdDev(i,:) = [data.controlData.stdDev];
+0178         control.stats.samples(i,:) = [data.controlData.samples];
+0179         control.stats.pNormal(i,:) = [data.controlData.pNormal];
+0180 
+0181         <span class="comment">% Compute the FDR for the strain's feature normality p-values.</span>
+0182         pNormal = [worm.stats.pNormal(i,:); control.stats.pNormal(i,:)];
+0183         qNormal = nan(size(pNormal));
+0184         qNormal(~isnan(pNormal)) = mafdr(pNormal(~isnan(pNormal)));
+0185         worm.stats.qNormal.strain(i,:) = qNormal(1,:);
+0186         control.stats.qNormal.strain(i,:) = qNormal(2,:);
+0187     <span class="keyword">end</span>
+0188     
+0189     <span class="comment">% Store the worm feature significance.</span>
+0190     <span class="keyword">if</span> isfield(data, <span class="string">'significance'</span>)
+0191         worm.sig.pTValue(i,:) = [data.significance.features.pTValue];
+0192         worm.sig.pWValue(i,:) = [data.significance.features.pWValue];
+0193         worm.sig.qTValue.strain(i,:) = [data.significance.features.qTValue];
+0194         worm.sig.qWValue.strain(i,:) = [data.significance.features.qWValue];
+0195 <span class="comment">%         worm.sig.power(i,:) = [data.significance.features.power];</span>
+0196     <span class="keyword">end</span>
+0197 <span class="keyword">end</span>
+0198 
+0199 <span class="comment">% Compute the FDR for all feature normality p-values.</span>
+0200 pNormal = [worm.stats.pNormal; control.stats.pNormal];
+0201 qNormal = nan(size(pNormal));
+0202 qNormal(~isnan(pNormal)) = mafdr(pNormal(~isnan(pNormal)));
+0203 worm.stats.qNormal.all = qNormal(1:size(worm.stats.pNormal, 1),:);
+0204 control.stats.qNormal.all = qNormal((size(worm.stats.pNormal, 1) + 1):<span class="keyword">end</span>,:);
+0205 
+0206 <span class="comment">% Compute the FDR for all feature significance p-values.</span>
+0207 worm.sig.qTValue.all = nan(size(worm.sig.pTValue));
+0208 worm.sig.qTValue.all(~isnan(worm.sig.pTValue)) = <span class="keyword">...</span>
+0209     mafdr(worm.sig.pTValue(~isnan(worm.sig.pTValue)));
+0210 worm.sig.qWValue.all = nan(size(worm.sig.pWValue));
+0211 worm.sig.qWValue.all(~isnan(worm.sig.pWValue)) = <span class="keyword">...</span>
+0212     mafdr(worm.sig.pWValue(~isnan(worm.sig.pWValue)));
+0213 
+0214 <span class="comment">% Save the features matrix.</span>
+0215 save(filename, <span class="string">'dataInfo'</span>, <span class="string">'worm'</span>, <span class="string">'control'</span>, <span class="string">'-v7.3'</span>);
+0216 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

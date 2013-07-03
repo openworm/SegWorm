@@ -1,0 +1,531 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of normWorms</title>
+  <meta name="keywords" content="normWorms">
+  <meta name="description" content="NORMWORMS Normalize the worms' information to a standard, compact set.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Util -->
+<h1>normWorms
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>NORMWORMS Normalize the worms' information to a standard, compact set.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">NORMWORMS Normalize the worms' information to a standard, compact set.
+
+   [VULVACONTOURS NONVULVACONTOURS SKELETONS ANGLES TOUCHINOUTS LENGTHS
+      WIDTHS HEADAREAS TAILAREAS VULVAAREAS NONVULVAAREAS ISNORMED] =
+      NORMWORMS(WORMS, SAMPLES, MOVES, ORIGINS, PIXEL2MICRONSCALE,
+      ROTATION, VERBOSE)
+
+   Inputs:
+       worms             - the worms to normalize (see segWorm)
+       samples           - the number of samples to take
+                           Note 1: the worm information is downsampled
+                           to fit normally and compactly, for example,
+                           within a database.
+                           Note 2: we recommend downsampling to 65 points.
+                           65 points oversample a wild-type C. elegans,
+                           providing, at least, the Nyquist rate of twice
+                           its degrees of freedom. Moreover, 65 points
+                           assigns points to the head, midbody, and tail
+                           with 62 points left over to assign midpoints at
+                           the 1/4, 1/8, 1/16, and 1/32 worm locations.
+       moves             - a 2-D matrix with, respectively, the start and
+                           end frame indices of stage movements
+                           (see findStageMovements, movesI)
+       origins           - the real-world micron origins (stage locations)
+                           for the worms
+                           (see findStageMovements, locations)
+       pixel2MicronScale - the scale for converting pixels to microns
+                           (see readPixels2Microns, pixel2MicronScale)
+       rotation          - the rotation matrix for onscreen pixels
+                           (see readPixels2Microns, rotation)
+       verbose           - verbose mode shows the results in a figure
+
+   Outputs:
+
+       Note 1: all outputs are oriented head to tail.
+       Note 2: all coordinates are oriented as (x,y); in contrast, in the
+       worm structure, coordinates are oriented as (row,column) = (y,x).
+
+       vulvaContours    - the worms' downsampled vulval-side contours
+       nonVulvaContours - the worms' downsampled non-vulval-side contours
+       skeletons        - the worms' downsampled skeletons
+       angles           - the worms' downsampled skeleton angles
+                          Note: positive skeleton angles bulge towards the
+                          vulva; in contrast, in the worm structure,
+                          positive skeleton angles bulge towards the side
+                          clockwise from the worm's head (unless the worm
+                          is flipped).
+       inOutTouches     - in coiled worms, for each skeleton sample:
+                          -1 = the contours are inside the coil
+                          -2 = the contours are outside the coil
+                          -3 = the contours are both inside and outside
+                               the coil (one half of the contour is inside
+                               the coil, the other half of the contour is
+                               outside it)
+                          1+ = the contour is touching itself to form the
+                               coil; the specific number represents the
+                               contraposed skeleton index being touched
+       lengths          - the worms' skeletons' chain-code pixel lengths
+       widths           - the worms' contours downsampled widths
+       headAreas        - the worms' head areas
+       tailAreas        - the worms' tail areas
+       vulvaAreas       - the worms' vulval-side areas
+                          (excluding the head and tail)
+       nonVulvaAreas    - the worms' non-vulval-side areas
+                          (excluding the head and tail)
+       isNormed         - was the worm normalized?
+                          (worms with insufficient sampling points,
+                          dropped frames, stage movements, and
+                          segmentation failures are marked as false)
+
+ See also SEGWORM, FINDSTAGEMOVEMENT, READPIXELS2MICRONS, <a href="norm2Worm.html" class="code" title="function worm = norm2Worm(frame, vulvaContour, nonVulvaContour,skeleton, skeletonAngles, inOutTouch, skeletonLength, widths,headArea, tailArea, vulvaArea, nonVulvaArea,origin, pixel2MicronScale, rotation, worm)">NORM2WORM</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>	INTERPDATA Interpolate data values at the requested chain-code lengths.</li><li><a href="../../../SegWorm/ComputerVision/downSamplePoints.html" class="code" title="function [dsPoints dsIndices dsLengths] =downSamplePoints(points, samples, varargin)">downSamplePoints</a>	DOWNSAMPLEPOINTS Downsample the points to fewer points using the chain</li><li><a href="../../../SegWorm/Worms/StageMovement/pixels2Microns.html" class="code" title="function microns = pixels2Microns(origin, pixels, pixel2MicronScale,rotation)">pixels2Microns</a>	PIXELS2MICRONS Convert onscreen pixel coordinates to real-world micron</li><li><a href="cell2worm.html" class="code" title="function worm = cell2worm(worm)">cell2worm</a>	CELL2WORM Convert a cell array to a worm struct.</li><li><a href="norm2Worm.html" class="code" title="function worm = norm2Worm(frame, vulvaContour, nonVulvaContour,skeleton, skeletonAngles, inOutTouch, skeletonLength, widths,headArea, tailArea, vulvaArea, nonVulvaArea,origin, pixel2MicronScale, rotation, worm)">norm2Worm</a>	NORM2WORM Convert normalized worm information into a worm structure.</li><li><a href="../../../SegWorm/Worms/Video/overlayWormAngles.html" class="code" title="function oImg = overlayWormAngles(img, worm, cRGB360, sRGB360, sRGBNaN,headPattern, headRGB, isHeadOpaque, vulvaPattern, vulvaRGB, isVulvaOpaque)">overlayWormAngles</a>	OVERLAYWORMANGLES Overlay the worm's contour/skeleton angles (curvature)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Features/wormVelocityTest.html" class="code" title="function [velocities centroidVelocities] =wormVelocityTest(wormFile, indices, use, type, scales, isSparse, verbose)">wormVelocityTest</a>	SEGWORMVIDEOFRAMES Segment the worm in a set of video frames and organize</li><li><a href="../../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li><li><a href="../../../SegWorm/Worms/Video/saveWormFrames.html" class="code" title="function failedFrames = saveWormFrames(wormFile, videoFile, frames,blockSize, varargin)">saveWormFrames</a>	SAVEWORMFRAMES Segment the worm in a set of video frames and save</li><li><a href="../../../SegWorm/Worms/Video/segWormVideo.html" class="code" title="function failedFrames = segWormVideo(videoFile, anglesVideoFile,touchVideoFile, debugVideoFile, varargin)">segWormVideo</a>	SEGWORMVIDEO Segment a worm video.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [vulvaContours nonVulvaContours skeletons angles inOutTouches </a><span class="keyword">...</span>
+0002     lengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] = <span class="keyword">...</span>
+0003     normWorms(worms, samples, moves, origins, pixel2MicronScale, <span class="keyword">...</span>
+0004     rotation, verbose)
+0005 <span class="comment">%NORMWORMS Normalize the worms' information to a standard, compact set.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   [VULVACONTOURS NONVULVACONTOURS SKELETONS ANGLES TOUCHINOUTS LENGTHS</span>
+0008 <span class="comment">%      WIDTHS HEADAREAS TAILAREAS VULVAAREAS NONVULVAAREAS ISNORMED] =</span>
+0009 <span class="comment">%      NORMWORMS(WORMS, SAMPLES, MOVES, ORIGINS, PIXEL2MICRONSCALE,</span>
+0010 <span class="comment">%      ROTATION, VERBOSE)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   Inputs:</span>
+0013 <span class="comment">%       worms             - the worms to normalize (see segWorm)</span>
+0014 <span class="comment">%       samples           - the number of samples to take</span>
+0015 <span class="comment">%                           Note 1: the worm information is downsampled</span>
+0016 <span class="comment">%                           to fit normally and compactly, for example,</span>
+0017 <span class="comment">%                           within a database.</span>
+0018 <span class="comment">%                           Note 2: we recommend downsampling to 65 points.</span>
+0019 <span class="comment">%                           65 points oversample a wild-type C. elegans,</span>
+0020 <span class="comment">%                           providing, at least, the Nyquist rate of twice</span>
+0021 <span class="comment">%                           its degrees of freedom. Moreover, 65 points</span>
+0022 <span class="comment">%                           assigns points to the head, midbody, and tail</span>
+0023 <span class="comment">%                           with 62 points left over to assign midpoints at</span>
+0024 <span class="comment">%                           the 1/4, 1/8, 1/16, and 1/32 worm locations.</span>
+0025 <span class="comment">%       moves             - a 2-D matrix with, respectively, the start and</span>
+0026 <span class="comment">%                           end frame indices of stage movements</span>
+0027 <span class="comment">%                           (see findStageMovements, movesI)</span>
+0028 <span class="comment">%       origins           - the real-world micron origins (stage locations)</span>
+0029 <span class="comment">%                           for the worms</span>
+0030 <span class="comment">%                           (see findStageMovements, locations)</span>
+0031 <span class="comment">%       pixel2MicronScale - the scale for converting pixels to microns</span>
+0032 <span class="comment">%                           (see readPixels2Microns, pixel2MicronScale)</span>
+0033 <span class="comment">%       rotation          - the rotation matrix for onscreen pixels</span>
+0034 <span class="comment">%                           (see readPixels2Microns, rotation)</span>
+0035 <span class="comment">%       verbose           - verbose mode shows the results in a figure</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%   Outputs:</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%       Note 1: all outputs are oriented head to tail.</span>
+0040 <span class="comment">%       Note 2: all coordinates are oriented as (x,y); in contrast, in the</span>
+0041 <span class="comment">%       worm structure, coordinates are oriented as (row,column) = (y,x).</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">%       vulvaContours    - the worms' downsampled vulval-side contours</span>
+0044 <span class="comment">%       nonVulvaContours - the worms' downsampled non-vulval-side contours</span>
+0045 <span class="comment">%       skeletons        - the worms' downsampled skeletons</span>
+0046 <span class="comment">%       angles           - the worms' downsampled skeleton angles</span>
+0047 <span class="comment">%                          Note: positive skeleton angles bulge towards the</span>
+0048 <span class="comment">%                          vulva; in contrast, in the worm structure,</span>
+0049 <span class="comment">%                          positive skeleton angles bulge towards the side</span>
+0050 <span class="comment">%                          clockwise from the worm's head (unless the worm</span>
+0051 <span class="comment">%                          is flipped).</span>
+0052 <span class="comment">%       inOutTouches     - in coiled worms, for each skeleton sample:</span>
+0053 <span class="comment">%                          -1 = the contours are inside the coil</span>
+0054 <span class="comment">%                          -2 = the contours are outside the coil</span>
+0055 <span class="comment">%                          -3 = the contours are both inside and outside</span>
+0056 <span class="comment">%                               the coil (one half of the contour is inside</span>
+0057 <span class="comment">%                               the coil, the other half of the contour is</span>
+0058 <span class="comment">%                               outside it)</span>
+0059 <span class="comment">%                          1+ = the contour is touching itself to form the</span>
+0060 <span class="comment">%                               coil; the specific number represents the</span>
+0061 <span class="comment">%                               contraposed skeleton index being touched</span>
+0062 <span class="comment">%       lengths          - the worms' skeletons' chain-code pixel lengths</span>
+0063 <span class="comment">%       widths           - the worms' contours downsampled widths</span>
+0064 <span class="comment">%       headAreas        - the worms' head areas</span>
+0065 <span class="comment">%       tailAreas        - the worms' tail areas</span>
+0066 <span class="comment">%       vulvaAreas       - the worms' vulval-side areas</span>
+0067 <span class="comment">%                          (excluding the head and tail)</span>
+0068 <span class="comment">%       nonVulvaAreas    - the worms' non-vulval-side areas</span>
+0069 <span class="comment">%                          (excluding the head and tail)</span>
+0070 <span class="comment">%       isNormed         - was the worm normalized?</span>
+0071 <span class="comment">%                          (worms with insufficient sampling points,</span>
+0072 <span class="comment">%                          dropped frames, stage movements, and</span>
+0073 <span class="comment">%                          segmentation failures are marked as false)</span>
+0074 <span class="comment">%</span>
+0075 <span class="comment">% See also SEGWORM, FINDSTAGEMOVEMENT, READPIXELS2MICRONS, NORM2WORM</span>
+0076 
+0077 <span class="comment">% Pre-compute values.</span>
+0078 pixel2MicronArea = sum(pixel2MicronScale .^ 2) / 2;
+0079 pixel2MicronMagnitude = sqrt(pixel2MicronArea);
+0080 <span class="keyword">if</span> verbose
+0081     
+0082     <span class="comment">% Construct a pattern to identify the head.</span>
+0083     hImg = [1 1 1 1 1; <span class="keyword">...</span>
+0084         1 1 1 1 1; <span class="keyword">...</span>
+0085         1 1 1 1 1; <span class="keyword">...</span>
+0086         1 1 1 1 1; <span class="keyword">...</span>
+0087         1 1 1 1 1];
+0088     [hPattern(:,1) hPattern(:,2)] = find(hImg == 1);
+0089     hPattern(:,1) = hPattern(:,1) - ceil(size(hImg, 1) / 2);
+0090     hPattern(:,2) = hPattern(:,2) - ceil(size(hImg, 2) / 2);
+0091     
+0092     <span class="comment">% Construct a pattern to identify the vulva.</span>
+0093     vImg = [1 1 1 1 1; <span class="keyword">...</span>
+0094         1 1 1 1 1; <span class="keyword">...</span>
+0095         1 1 1 1 1; <span class="keyword">...</span>
+0096         1 1 1 1 1; <span class="keyword">...</span>
+0097         1 1 1 1 1];
+0098     [vPattern(:,1) vPattern(:,2)] = find(vImg == 1);
+0099     vPattern(:,1) = vPattern(:,1) - ceil(size(vImg, 1) / 2);
+0100     vPattern(:,2) = vPattern(:,2) - ceil(size(vImg, 2) / 2);
+0101     
+0102     <span class="comment">% Construct the values for the contour and skeleton curvature heat map.</span>
+0103     blue = zeros(360, 3);
+0104     blue(:,3) = 1;
+0105     red = zeros(360, 3);
+0106     red(:,1) = 1;
+0107     cRGB = [blue(1:90,:); jet(181); red(1:90,:)]; <span class="comment">% thermal</span>
+0108     sRGB = [blue(1:90,:); jet(181); red(1:90,:)]; <span class="comment">% thermal</span>
+0109     sRGBNaN = [1 0 0]; <span class="comment">% red</span>
+0110     hRGB = [0 1 0]; <span class="comment">% green</span>
+0111     vRGB = [1 0 0]; <span class="comment">% red</span>
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">% Pre-allocate memory.</span>
+0115 vulvaContours(1:samples,1:2,1:length(worms)) = NaN;
+0116 nonVulvaContours(1:samples,1:2,1:length(worms)) = NaN;
+0117 skeletons(1:samples,1:2,1:length(worms)) = NaN;
+0118 angles(1:samples,1:length(worms)) = NaN;
+0119 inOutTouches(1:samples,1:length(worms)) = NaN;
+0120 lengths(1:length(worms)) = NaN;
+0121 widths(1:samples,1:length(worms)) = NaN;
+0122 headAreas(1:length(worms)) = NaN;
+0123 tailAreas(1:length(worms)) = NaN;
+0124 vulvaAreas(1:length(worms)) = NaN;
+0125 nonVulvaAreas(1:length(worms)) = NaN;
+0126 isNormed(1:length(worms)) = false;
+0127 
+0128 <span class="comment">% Downsample the worms and convert them to absolute coordinates.</span>
+0129 j = 1;
+0130 <span class="keyword">for</span> i = 1:length(worms)
+0131     
+0132     <span class="comment">% Get the frame number.</span>
+0133     <span class="comment">% Note: the video indices from 0 whereas Matlab indices from 1;</span>
+0134     <span class="comment">% therefore, we offset the frame number by 1.</span>
+0135     worm = worms{i};
+0136     <span class="keyword">if</span> isstruct(worm)
+0137         frame = worm.video.frame + 1;
+0138     <span class="keyword">elseif</span> iscell(worm)
+0139         frame = worm{1}{1} + 1;
+0140         
+0141     <span class="comment">% Segmentation failed.</span>
+0142     <span class="keyword">else</span>
+0143         <span class="keyword">continue</span>;
+0144     <span class="keyword">end</span>
+0145     
+0146     <span class="comment">% Where is the stage?</span>
+0147     <span class="keyword">while</span> j &lt; size(moves, 1) &amp;&amp; frame &gt;= moves(j + 1,1)
+0148         j = j + 1;
+0149     <span class="keyword">end</span>
+0150     
+0151     <span class="comment">% The stage is moving.</span>
+0152     <span class="keyword">if</span> frame &gt;= moves(j,1) &amp;&amp; frame &lt;= moves(j,2)
+0153 <span class="comment">%         vulvaContours(:,:,i) = NaN;</span>
+0154 <span class="comment">%         nonVulvaContours(:,:,i) = NaN;</span>
+0155 <span class="comment">%         skeletons(:,:,i) = NaN;</span>
+0156 <span class="comment">%         angles(:,i) = NaN;</span>
+0157 <span class="comment">%         inOutTouches(:,i) = NaN;</span>
+0158 <span class="comment">%         lengths(i) = NaN;</span>
+0159 <span class="comment">%         widths(:,i) = NaN;</span>
+0160 <span class="comment">%         areas(i) = NaN;</span>
+0161 <span class="comment">%         headAreas(i) = NaN;</span>
+0162 <span class="comment">%         tailAreas(i) = NaN;</span>
+0163 <span class="comment">%         vulvaAreas(i) = NaN;</span>
+0164 <span class="comment">%         nonVulvaAreas(i) = NaN;</span>
+0165         <span class="keyword">continue</span>;
+0166     <span class="keyword">end</span>
+0167     
+0168     <span class="comment">% The worm information is in a struct.</span>
+0169     <span class="keyword">if</span> isstruct(worm)
+0170         
+0171         <span class="comment">% Extract the contour information.</span>
+0172         cPixels = worm.contour.pixels;
+0173         cHeadI = worm.contour.headI;
+0174         cTailI = worm.contour.tailI;
+0175         cCCLengths = worm.contour.chainCodeLengths;
+0176         
+0177         <span class="comment">% Extract the skeleton information.</span>
+0178         sPixels = worm.skeleton.pixels;
+0179         sAngles = worm.skeleton.angles;
+0180         sCCLengths = worm.skeleton.chainCodeLengths;
+0181         sWidths = worm.skeleton.widths;
+0182         
+0183         <span class="comment">% Extract the area information.</span>
+0184         hArea = worm.head.area;
+0185         tArea = worm.tail.area;
+0186         lArea = worm.left.area;
+0187         rArea = worm.right.area;
+0188         
+0189         <span class="comment">% Extract the orientation information.</span>
+0190         isHeadFlipped = worm.orientation.head.isFlipped;
+0191         isVulvaClockwiseFromHead = <span class="keyword">...</span>
+0192             worm.orientation.vulva.isClockwiseFromHead;
+0193         
+0194     <span class="comment">% The worm information is in a cell.</span>
+0195     <span class="keyword">else</span>
+0196         
+0197         <span class="comment">% Extract the contour information.</span>
+0198         cPixels = worm{2}{1};
+0199         cHeadI = worm{2}{6};
+0200         cTailI = worm{2}{7};
+0201         cCCLengths = worm{2}{8};
+0202         
+0203         <span class="comment">% Extract the skeleton information.</span>
+0204         sPixels = worm{3}{1};
+0205         sAngles = worm{3}{6};
+0206         sCCLengths = worm{3}{8};
+0207         sWidths = worm{3}{9};
+0208         
+0209         <span class="comment">% Extract the area information.</span>
+0210         hArea = worm{4}{3};
+0211         tArea = worm{5}{3};
+0212         lArea = worm{6}{3};
+0213         rArea = worm{7}{3};
+0214         
+0215         <span class="comment">% Extract the orientation information.</span>
+0216         isHeadFlipped = worm{8}{1}{1};
+0217         isVulvaClockwiseFromHead = worm{8}{2}{1};
+0218     <span class="keyword">end</span>
+0219     
+0220     <span class="comment">% Split the contour into sides.</span>
+0221     <span class="comment">% Side1 always goes from head to tail in positive, index increments.</span>
+0222     <span class="comment">% Side2 always goes from head to tail in negative, index increments.</span>
+0223     <span class="keyword">if</span> cHeadI &lt;= cTailI
+0224         side1 = (cHeadI:cTailI)';
+0225         ccl1 = cCCLengths(cHeadI:cTailI) - cCCLengths(cHeadI);
+0226         side2 = [cTailI:size(cPixels,1), 1:cHeadI]';
+0227         ccl2 = [cCCLengths(cTailI:end) - cCCLengths(cTailI); <span class="keyword">...</span>
+0228             cCCLengths(1:cHeadI) + cCCLengths(end) - cCCLengths(cTailI)];
+0229     <span class="keyword">else</span> <span class="comment">% cHeadI &gt; cTailI</span>
+0230         side1 = [cHeadI:size(cPixels,1), 1:cTailI]';
+0231         ccl1 = [cCCLengths(cHeadI:end) - cCCLengths(cHeadI); <span class="keyword">...</span>
+0232             cCCLengths(1:cTailI) + cCCLengths(end) - cCCLengths(cHeadI)];
+0233         side2 = (cTailI:cHeadI)';
+0234         ccl2 = cCCLengths(cTailI:cHeadI) - cCCLengths(cTailI);
+0235     <span class="keyword">end</span>
+0236 
+0237     <span class="comment">% Compute the clockwise and anti-clockwise sides from the head.</span>
+0238     <span class="keyword">if</span> isHeadFlipped
+0239         clockSide = side2;
+0240         clockCCL = ccl2;
+0241         antiSide = flipud(side1);
+0242         antiCCL = flipud(ccl1(end) - ccl1);
+0243     <span class="keyword">else</span>
+0244         clockSide = side1;
+0245         clockCCL = ccl1;
+0246         antiSide = flipud(side2);
+0247         antiCCL = flipud(ccl2(end) - ccl2);
+0248     <span class="keyword">end</span>
+0249         
+0250     <span class="comment">% Compute the vulval and non-vulval sides' contours.</span>
+0251     <span class="keyword">if</span> isVulvaClockwiseFromHead
+0252         vIndices = clockSide;
+0253         vCCLengths = clockCCL;
+0254         nvIndices = antiSide;
+0255         nvCCLengths = antiCCL;
+0256     <span class="keyword">else</span>
+0257         vIndices = antiSide;
+0258         vCCLengths = antiCCL;
+0259         nvIndices = clockSide;
+0260         nvCCLengths = clockCCL;
+0261     <span class="keyword">end</span>
+0262     
+0263     <span class="comment">% Are the contours and skeleton long enough?</span>
+0264     <span class="keyword">if</span> length(vIndices) &lt; samples
+0265         warning(<span class="string">'normWorms:VulvaContourTooShort'</span>, [<span class="string">'The ventral '</span> <span class="keyword">...</span>
+0266             <span class="string">'contour is shorter than the sampling points requested'</span>]);
+0267         <span class="keyword">continue</span>;
+0268     <span class="keyword">end</span>
+0269     <span class="keyword">if</span> length(nvIndices) &lt; samples
+0270         warning(<span class="string">'normWorms:NonVulvaContourTooShort'</span>, [<span class="string">'The dorsal '</span> <span class="keyword">...</span>
+0271             <span class="string">'contour is shorter than the sampling points requested'</span>]);
+0272         <span class="keyword">continue</span>;
+0273     <span class="keyword">end</span>
+0274     <span class="keyword">if</span> size(sPixels, 1) &lt; samples
+0275         warning(<span class="string">'normWorms:SkeletonTooShort'</span>, [<span class="string">'The skeleton is '</span> <span class="keyword">...</span>
+0276             <span class="string">'shorter than the sampling points requested'</span>]);
+0277         <span class="keyword">continue</span>;
+0278     <span class="keyword">end</span>
+0279     
+0280     <span class="comment">% Downsample the contours.</span>
+0281     normVPixels = <a href="../../../SegWorm/ComputerVision/downSamplePoints.html" class="code" title="function [dsPoints dsIndices dsLengths] =downSamplePoints(points, samples, varargin)">downSamplePoints</a>(cPixels(vIndices,:), samples, <span class="keyword">...</span>
+0282         vCCLengths);
+0283     normNVPixels = <a href="../../../SegWorm/ComputerVision/downSamplePoints.html" class="code" title="function [dsPoints dsIndices dsLengths] =downSamplePoints(points, samples, varargin)">downSamplePoints</a>(cPixels(nvIndices,:), samples, <span class="keyword">...</span>
+0284         nvCCLengths);
+0285     
+0286     <span class="comment">% Convert the contours to absolute coordinates.</span>
+0287     vulvaContours(:,:,i) = <a href="../../../SegWorm/Worms/StageMovement/pixels2Microns.html" class="code" title="function microns = pixels2Microns(origin, pixels, pixel2MicronScale,rotation)">pixels2Microns</a>(origins(j,:), <span class="keyword">...</span>
+0288         fliplr(normVPixels), pixel2MicronScale, rotation);
+0289     nonVulvaContours(:,:,i) = <a href="../../../SegWorm/Worms/StageMovement/pixels2Microns.html" class="code" title="function microns = pixels2Microns(origin, pixels, pixel2MicronScale,rotation)">pixels2Microns</a>(origins(j,:), <span class="keyword">...</span>
+0290         fliplr(normNVPixels), pixel2MicronScale, rotation);
+0291     
+0292     <span class="comment">% Downsample the skeleton and convert it to absolute coordinates.</span>
+0293     [normSPixels normSIndices normSLengths] = <span class="keyword">...</span>
+0294         <a href="../../../SegWorm/ComputerVision/downSamplePoints.html" class="code" title="function [dsPoints dsIndices dsLengths] =downSamplePoints(points, samples, varargin)">downSamplePoints</a>(sPixels, samples, sCCLengths);
+0295     skeletons(:,:,i) = <a href="../../../SegWorm/Worms/StageMovement/pixels2Microns.html" class="code" title="function microns = pixels2Microns(origin, pixels, pixel2MicronScale,rotation)">pixels2Microns</a>(origins(j,:), <span class="keyword">...</span>
+0296         fliplr(normSPixels), pixel2MicronScale, rotation);
+0297     lengths(i) = sCCLengths(end) * pixel2MicronMagnitude;
+0298     <span class="keyword">if</span> isHeadFlipped
+0299         skeletons(:,:,i) = flipud(skeletons(:,:,i));
+0300         normSLengths = flipud(normSLengths);
+0301         normSIndices = flipud(normSIndices);
+0302     <span class="keyword">end</span>
+0303     
+0304     <span class="comment">% Downsample the skeleton angles.</span>
+0305     <span class="comment">% Note: the lengths represent the head-to-tail order.</span>
+0306     angles(:,i) = <a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(sAngles, normSLengths, <span class="keyword">...</span>
+0307             sCCLengths, normSIndices);
+0308     <span class="keyword">if</span> isVulvaClockwiseFromHead == isHeadFlipped
+0309         angles(:,i) = -angles(:,i);
+0310     <span class="keyword">end</span>
+0311     
+0312     <span class="comment">% Downsample the widths and convert them to absolute coordinates.</span>
+0313     <span class="comment">% Note: the lengths represent the head-to-tail order.</span>
+0314     widths(:,i) = <a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(sWidths, normSLengths, <span class="keyword">...</span>
+0315         sCCLengths, normSIndices) * pixel2MicronMagnitude;
+0316     
+0317     <span class="comment">% Convert the areas to absolute coordinates.</span>
+0318     <span class="keyword">if</span> isHeadFlipped
+0319         tailAreas(i) = hArea * pixel2MicronArea;
+0320         headAreas(i) = tArea * pixel2MicronArea;
+0321     <span class="keyword">else</span>
+0322         headAreas(i) = hArea * pixel2MicronArea;
+0323         tailAreas(i) = tArea * pixel2MicronArea;
+0324     <span class="keyword">end</span>
+0325     <span class="keyword">if</span> isVulvaClockwiseFromHead == isHeadFlipped
+0326         vulvaAreas(i) = lArea * pixel2MicronArea;
+0327         nonVulvaAreas(i) = rArea * pixel2MicronArea;
+0328     <span class="keyword">else</span>
+0329         vulvaAreas(i) = rArea * pixel2MicronArea;
+0330         nonVulvaAreas(i) = lArea * pixel2MicronArea;
+0331     <span class="keyword">end</span>
+0332     
+0333     <span class="comment">% The worm was normalized.</span>
+0334     isNormed(i) = true;
+0335     
+0336     <span class="comment">% Show the results in a figure.</span>
+0337     <span class="keyword">if</span> verbose
+0338         
+0339         <span class="comment">% Convert the worm to a structure.</span>
+0340         <span class="keyword">if</span> ~isstruct(worm)
+0341             worm = <a href="cell2worm.html" class="code" title="function worm = cell2worm(worm)">cell2worm</a>(worm);
+0342         <span class="keyword">end</span>
+0343 
+0344         <span class="comment">% Construct the normalized worm.</span>
+0345         nWorm = <a href="norm2Worm.html" class="code" title="function worm = norm2Worm(frame, vulvaContour, nonVulvaContour,skeleton, skeletonAngles, inOutTouch, skeletonLength, widths,headArea, tailArea, vulvaArea, nonVulvaArea,origin, pixel2MicronScale, rotation, worm)">norm2Worm</a>(frame, vulvaContours(:,:,i), <span class="keyword">...</span>
+0346             nonVulvaContours(:,:,i), skeletons(:,:,i), angles(:,i), <span class="keyword">...</span>
+0347             inOutTouches(:,i), lengths(i), widths(:,i), headAreas(i), <span class="keyword">...</span>
+0348             tailAreas(i), vulvaAreas(i), nonVulvaAreas(i), <span class="keyword">...</span>
+0349             origins(j,:), pixel2MicronScale, rotation, worm);
+0350         
+0351         <span class="comment">% Determine the worm's MER (minimum enclosing rectangle).</span>
+0352         <span class="comment">% Note: the skeleton can exit the contour.</span>
+0353         wMinX = min(min(worm.contour.pixels(:,2)), <span class="keyword">...</span>
+0354             min(worm.skeleton.pixels(:,2)));
+0355         wMaxX = max(max(worm.contour.pixels(:,2)), <span class="keyword">...</span>
+0356             max(worm.skeleton.pixels(:,2)));
+0357         wMinY = min(min(worm.contour.pixels(:,1)), <span class="keyword">...</span>
+0358             min(worm.skeleton.pixels(:,1)));
+0359         wMaxY = max(max(worm.contour.pixels(:,1)), <span class="keyword">...</span>
+0360             max(worm.skeleton.pixels(:,1)));
+0361         wMinX = min([wMinX, min(nWorm.contour.pixels(:,2)), <span class="keyword">...</span>
+0362             min(nWorm.skeleton.pixels(:,2))]);
+0363         wMaxX = max([wMaxX, max(nWorm.contour.pixels(:,2)), <span class="keyword">...</span>
+0364             max(nWorm.skeleton.pixels(:,2))]);
+0365         wMinY = min([wMinY, min(nWorm.contour.pixels(:,1)), <span class="keyword">...</span>
+0366             min(nWorm.skeleton.pixels(:,1))]);
+0367         wMaxY = max([wMaxY, max(nWorm.contour.pixels(:,1)), <span class="keyword">...</span>
+0368             max(nWorm.skeleton.pixels(:,1))]);
+0369         
+0370         <span class="comment">% Minimize the original worm.</span>
+0371         worm.contour.pixels(:,1) = worm.contour.pixels(:,1) - wMinY + 3;
+0372         worm.contour.pixels(:,2) = worm.contour.pixels(:,2) - wMinX + 3;
+0373         worm.skeleton.pixels(:,1) = worm.skeleton.pixels(:,1) - wMinY + 3;
+0374         worm.skeleton.pixels(:,2) = worm.skeleton.pixels(:,2) - wMinX + 3;
+0375         worm.head.pixels(:,1) = worm.head.pixels(:,1) - wMinY + 3;
+0376         worm.head.pixels(:,2) = worm.head.pixels(:,2) - wMinX + 3;
+0377         worm.tail.pixels(:,1) = worm.tail.pixels(:,1) - wMinY + 3;
+0378         worm.tail.pixels(:,2) = worm.tail.pixels(:,2) - wMinX + 3;
+0379         worm.left.pixels(:,1) = worm.left.pixels(:,1) - wMinY + 3;
+0380         worm.left.pixels(:,2) = worm.left.pixels(:,2) - wMinX + 3;
+0381         worm.right.pixels(:,1) = worm.right.pixels(:,1) - wMinY + 3;
+0382         worm.right.pixels(:,2) = worm.right.pixels(:,2) - wMinX + 3;
+0383         
+0384         <span class="comment">% Minimize the normalized worm.</span>
+0385         nWorm.contour.pixels(:,1) = nWorm.contour.pixels(:,1) - wMinY + 3;
+0386         nWorm.contour.pixels(:,2) = nWorm.contour.pixels(:,2) - wMinX + 3;
+0387         nWorm.skeleton.pixels(:,1) = <span class="keyword">...</span>
+0388             nWorm.skeleton.pixels(:,1) - wMinY + 3;
+0389         nWorm.skeleton.pixels(:,2) = <span class="keyword">...</span>
+0390             nWorm.skeleton.pixels(:,2) - wMinX + 3;
+0391         nWorm.head.pixels(:,1) = nWorm.head.pixels(:,1) - wMinY + 3;
+0392         nWorm.head.pixels(:,2) = nWorm.head.pixels(:,2) - wMinX + 3;
+0393         nWorm.tail.pixels(:,1) = nWorm.tail.pixels(:,1) - wMinY + 3;
+0394         nWorm.tail.pixels(:,2) = nWorm.tail.pixels(:,2) - wMinX + 3;
+0395         nWorm.left.pixels(:,1) = nWorm.left.pixels(:,1) - wMinY + 3;
+0396         nWorm.left.pixels(:,2) = nWorm.left.pixels(:,2) - wMinX + 3;
+0397         nWorm.right.pixels(:,1) = nWorm.right.pixels(:,1) - wMinY + 3;
+0398         nWorm.right.pixels(:,2) = nWorm.right.pixels(:,2) - wMinX + 3;
+0399         
+0400         <span class="comment">% Construct the worm images.</span>
+0401         emptyImg = zeros(wMaxY - wMinY + 5, wMaxX - wMinX + 5);
+0402         oImg = <a href="../../../SegWorm/Worms/Video/overlayWormAngles.html" class="code" title="function oImg = overlayWormAngles(img, worm, cRGB360, sRGB360, sRGBNaN,headPattern, headRGB, isHeadOpaque, vulvaPattern, vulvaRGB, isVulvaOpaque)">overlayWormAngles</a>(emptyImg, worm, cRGB, sRGB, sRGBNaN, <span class="keyword">...</span>
+0403             hPattern, hRGB, 1, vPattern, vRGB, 1);
+0404         nImg = <a href="../../../SegWorm/Worms/Video/overlayWormAngles.html" class="code" title="function oImg = overlayWormAngles(img, worm, cRGB360, sRGB360, sRGBNaN,headPattern, headRGB, isHeadOpaque, vulvaPattern, vulvaRGB, isVulvaOpaque)">overlayWormAngles</a>(emptyImg, nWorm, cRGB, sRGB, sRGBNaN, <span class="keyword">...</span>
+0405             hPattern, hRGB, 1, vPattern, vRGB, 1);
+0406         
+0407         <span class="comment">% Show the worms.</span>
+0408         figure;
+0409         subplot(1,2,1), imshow(nImg);
+0410         title([<span class="string">'Normalized Worm ('</span> num2str(samples) <span class="string">' samples)'</span>]);
+0411         subplot(1,2,2), imshow(oImg);
+0412         title([<span class="string">'Original Worm (frame '</span> num2str(frame - 1) <span class="string">')'</span>]);
+0413     <span class="keyword">end</span>
+0414 <span class="keyword">end</span>
+0415 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

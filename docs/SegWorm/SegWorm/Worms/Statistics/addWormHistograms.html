@@ -1,0 +1,620 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of addWormHistograms</title>
+  <meta name="keywords" content="addWormHistograms">
+  <meta name="description" content="ADDWORMHISTOGRAMS Combine worm histograms.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>addWormHistograms
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>ADDWORMHISTOGRAMS Combine worm histograms.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function addWormHistograms(filename, wormFiles, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">ADDWORMHISTOGRAMS Combine worm histograms.
+
+   ADDWORMHISTOGRAMS(FILENAME, WORMFILES)
+
+   ADDWORMHISTOGRAMS(FILENAME, WORMFILES, CONTROLFILES)
+
+   ADDWORMHISTOGRAMS(FILENAME, WORMFILES, CONTROLFILES, ISOLDCONTROL)
+
+   ADDWORMHISTOGRAMS(FILENAME, WORMFILES, CONTROLFILES, ISOLDCONTROL,
+                     VERBOSE)
+
+   Inputs:
+       filename     - the file name for the histograms;
+                      the file includes:
+
+                      wormInfo    = the worm information
+                      worm        = the worm histograms
+                      controlInfo = the control information (if it exists)
+                      worm        = the control histograms (if they exist)
+
+       wormFiles    - the histogram files to use for the worm(s)
+       controlFiles - the histogram files to use for the control(s);
+                      if empty, the worm has no new control
+       isOldControl - are we adding the old controls?
+                      the default is yes (true)
+       isVerbose    - verbose mode display the progress;
+                      the default is no (false)
+
+ See also <a href="worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">WORM2HISTOGRAM</a>, HISTOGRAM, WORM2CSV, WORMDISPLAYINFO,
+          WORMDATAINFO</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/loadStructField.html" class="code" title="function data = loadStructField(fileName, structName, field)">loadStructField</a>	LOADSTRUCTFIELD Load a struct field from a file.</li><li><a href="../../../SegWorm/Util/nanHistogram.html" class="code" title="function data = nanHistogram(varargin)">nanHistogram</a>	HISTOGRAM Get a histogram full of NaNs.</li><li><a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>	WORMDATAINFO Get information for computing the worm data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function data = loadWormFiles(filenames, wormName, field)</a></li><li><a href="#_sub2" class="code">function saveHistogram(filename, wormFiles, dataInfo, loadName,</a></li><li><a href="#_sub3" class="code">function data = addHistograms(wormFiles, wormName, field)</a></li><li><a href="#_sub4" class="code">function data = addMotionHistograms(wormFiles, wormName, field, motionNames)</a></li><li><a href="#_sub5" class="code">function data = addHistogramData(addData)</a></li><li><a href="#_sub6" class="code">function [normData normBins] = normBinData(data, bins, resolution)</a></li><li><a href="#_sub7" class="code">function data = addEventData(wormFiles, wormName, field)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function addWormHistograms(filename, wormFiles, varargin)</a>
+0002 <span class="comment">%ADDWORMHISTOGRAMS Combine worm histograms.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   ADDWORMHISTOGRAMS(FILENAME, WORMFILES)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   ADDWORMHISTOGRAMS(FILENAME, WORMFILES, CONTROLFILES)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   ADDWORMHISTOGRAMS(FILENAME, WORMFILES, CONTROLFILES, ISOLDCONTROL)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   ADDWORMHISTOGRAMS(FILENAME, WORMFILES, CONTROLFILES, ISOLDCONTROL,</span>
+0011 <span class="comment">%                     VERBOSE)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Inputs:</span>
+0014 <span class="comment">%       filename     - the file name for the histograms;</span>
+0015 <span class="comment">%                      the file includes:</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%                      wormInfo    = the worm information</span>
+0018 <span class="comment">%                      worm        = the worm histograms</span>
+0019 <span class="comment">%                      controlInfo = the control information (if it exists)</span>
+0020 <span class="comment">%                      worm        = the control histograms (if they exist)</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%       wormFiles    - the histogram files to use for the worm(s)</span>
+0023 <span class="comment">%       controlFiles - the histogram files to use for the control(s);</span>
+0024 <span class="comment">%                      if empty, the worm has no new control</span>
+0025 <span class="comment">%       isOldControl - are we adding the old controls?</span>
+0026 <span class="comment">%                      the default is yes (true)</span>
+0027 <span class="comment">%       isVerbose    - verbose mode display the progress;</span>
+0028 <span class="comment">%                      the default is no (false)</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% See also WORM2HISTOGRAM, HISTOGRAM, WORM2CSV, WORMDISPLAYINFO,</span>
+0031 <span class="comment">%          WORMDATAINFO</span>
+0032 
+0033 <span class="comment">% Do we have a control?</span>
+0034 controlFiles = [];
+0035 <span class="keyword">if</span> ~isempty(varargin)
+0036     controlFiles = varargin{1};
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="comment">% Are we adding the old controls?</span>
+0040 isOldControl = true;
+0041 <span class="keyword">if</span> length(varargin) &gt; 1
+0042     isOldControl = varargin{2};
+0043 <span class="keyword">end</span>
+0044 
+0045 <span class="comment">% Are we in verbose mode?</span>
+0046 isVerbose = false;
+0047 <span class="keyword">if</span> length(varargin) &gt; 2
+0048     isVerbose = varargin{3};
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">% Organize the worm files.</span>
+0052 <span class="keyword">if</span> ~iscell(wormFiles)
+0053     wormFiles = {wormFiles};
+0054 <span class="keyword">end</span>
+0055 <span class="keyword">if</span> ~isempty(controlFiles) &amp;&amp; ~iscell(controlFiles)
+0056     controlFiles = {controlFiles};
+0057 <span class="keyword">end</span>
+0058 
+0059 <span class="comment">% Delete the file if it already exists.</span>
+0060 <span class="keyword">if</span> exist(filename, <span class="string">'file'</span>)
+0061     delete(filename);
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="comment">% Save the worm information.</span>
+0065 <span class="keyword">if</span> isVerbose
+0066     disp(<span class="string">'Combining &quot;wormInfo&quot; ...'</span>);
+0067 <span class="keyword">end</span>
+0068 newWormInfo = [];
+0069 <span class="keyword">for</span> i = 1:length(wormFiles)
+0070     wormInfo = [];
+0071     load(wormFiles{i}, <span class="string">'wormInfo'</span>);
+0072     newWormInfo = cat(1, newWormInfo, wormInfo);
+0073 <span class="keyword">end</span>
+0074 wormInfo = newWormInfo;
+0075 save(filename, <span class="string">'wormInfo'</span>, <span class="string">'-v7.3'</span>);
+0076 clear wormInfo;
+0077 
+0078 <span class="comment">% Collect the new control information.</span>
+0079 <span class="keyword">if</span> isVerbose
+0080     disp(<span class="string">'Combining &quot;controlInfo&quot; ...'</span>);
+0081 <span class="keyword">end</span>
+0082 newControlInfo = [];
+0083 <span class="keyword">if</span> ~isempty(controlFiles)
+0084     <span class="keyword">for</span> i = 1:length(controlFiles)
+0085         wormInfo = [];
+0086         load(controlFiles{i}, <span class="string">'wormInfo'</span>);
+0087         newControlInfo =  cat(1, newControlInfo, wormInfo);
+0088     <span class="keyword">end</span>
+0089 <span class="keyword">end</span>
+0090 
+0091 <span class="comment">% Collect the old control information.</span>
+0092 <span class="keyword">if</span> isOldControl
+0093     <span class="keyword">for</span> i = 1:length(wormFiles)
+0094         controlInfo = who(<span class="string">'-FILE'</span>, wormFiles{i}, <span class="string">'controlInfo'</span>);
+0095         <span class="keyword">if</span> ~isempty(controlInfo)
+0096             load(wormFiles{i}, <span class="string">'controlInfo'</span>);
+0097             newControlInfo =  cat(1, newControlInfo, controlInfo);
+0098         <span class="keyword">end</span>
+0099     <span class="keyword">end</span>
+0100 <span class="keyword">end</span>
+0101 
+0102 <span class="comment">% Save the control information.</span>
+0103 <span class="keyword">if</span> ~isempty(newControlInfo)
+0104     controlInfo = newControlInfo;
+0105     save(filename, <span class="string">'controlInfo'</span>, <span class="string">'-append'</span>, <span class="string">'-v7.3'</span>);
+0106 <span class="keyword">end</span>
+0107 clear controlInfo;
+0108 
+0109 <span class="comment">% Initialize the data information.</span>
+0110 dataInfo = <a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>();
+0111 
+0112 <span class="comment">% Save the worm histograms.</span>
+0113 <a href="#_sub2" class="code" title="subfunction saveHistogram(filename, wormFiles, dataInfo, loadName, ">saveHistogram</a>(filename, wormFiles, dataInfo, <span class="string">'worm'</span>, <span class="string">'worm'</span>, isVerbose);
+0114 
+0115 <span class="comment">% Are we adding the old controls?</span>
+0116 <span class="keyword">if</span> isOldControl
+0117     
+0118     <span class="comment">% Initialize the new control names.</span>
+0119     controlNames = cell(length(controlFiles), 1);
+0120     <span class="keyword">for</span> i = 1:length(controlFiles)
+0121         controlNames{i} = <span class="string">'worm'</span>;
+0122     <span class="keyword">end</span>
+0123     
+0124     <span class="comment">% Initialize the old control names.</span>
+0125     <span class="keyword">for</span> i = 1:length(wormFiles)
+0126         control = who(<span class="string">'-FILE'</span>, wormFiles{i}, <span class="string">'control'</span>);
+0127         <span class="keyword">if</span> ~isempty(control)
+0128             controlFiles{end + 1} = wormFiles{i};
+0129             controlNames{end + 1} = <span class="string">'control'</span>;
+0130         <span class="keyword">end</span>
+0131     <span class="keyword">end</span>
+0132     
+0133 <span class="comment">% Initialize the new control names.</span>
+0134 <span class="keyword">else</span>
+0135     controlNames = <span class="string">'worm'</span>;
+0136 <span class="keyword">end</span>
+0137 
+0138 <span class="comment">% Save the control histograms.</span>
+0139 <span class="keyword">if</span> ~isempty(controlFiles)
+0140     <a href="#_sub2" class="code" title="subfunction saveHistogram(filename, wormFiles, dataInfo, loadName, ">saveHistogram</a>(filename, controlFiles, dataInfo, controlNames, <span class="keyword">...</span>
+0141         <span class="string">'control'</span>, isVerbose);
+0142 <span class="keyword">end</span>
+0143 <span class="keyword">end</span>
+0144 
+0145 
+0146 
+0147 <span class="comment">%% Load worm data from files.</span>
+0148 <a name="_sub1" href="#_subfunctions" class="code">function data = loadWormFiles(filenames, wormName, field)</a>
+0149 
+0150 <span class="comment">% Fix the data.</span>
+0151 <span class="keyword">if</span> ~iscell(wormName)
+0152     wormName = {wormName};
+0153 <span class="keyword">end</span>
+0154 
+0155 <span class="comment">% Load each worm by name.</span>
+0156 <span class="keyword">if</span> length(wormName) &gt; 1
+0157     data = cell(length(wormName), 1);
+0158     <span class="keyword">for</span> i = 1:length(wormName)
+0159         data{i} = <a href="../../../SegWorm/Util/loadStructField.html" class="code" title="function data = loadStructField(fileName, structName, field)">loadStructField</a>(filenames{i}, wormName{i}, field);
+0160     <span class="keyword">end</span>
+0161     
+0162 <span class="comment">% Load all worms using the same name.</span>
+0163 <span class="keyword">else</span>
+0164     data = cellfun(@(x) <a href="../../../SegWorm/Util/loadStructField.html" class="code" title="function data = loadStructField(fileName, structName, field)">loadStructField</a>(x, wormName{1}, field), <span class="keyword">...</span>
+0165         filenames, <span class="string">'UniformOutput'</span>, false);
+0166 <span class="keyword">end</span>
+0167 <span class="keyword">end</span>
+0168 
+0169 
+0170 
+0171 <span class="comment">%% Save the worm histograms.</span>
+0172 <a name="_sub2" href="#_subfunctions" class="code">function saveHistogram(filename, wormFiles, dataInfo, loadName, </a><span class="keyword">...</span>
+0173     saveName, isVerbose)
+0174 
+0175 <span class="comment">% Initialize the locomotion modes.</span>
+0176 motionNames = { <span class="keyword">...</span>
+0177     <span class="string">'forward'</span>, <span class="keyword">...</span>
+0178     <span class="string">'paused'</span>, <span class="keyword">...</span>
+0179     <span class="string">'backward'</span>};
+0180 
+0181 <span class="comment">% Combine the histograms.</span>
+0182 <span class="keyword">for</span> i = 1:length(dataInfo)
+0183     field = dataInfo(i).field;
+0184     <span class="keyword">if</span> isVerbose
+0185         disp([<span class="string">'Combining &quot;'</span> field <span class="string">'&quot; ...'</span>]);
+0186     <span class="keyword">end</span>
+0187     <span class="keyword">switch</span> dataInfo(i).type
+0188         
+0189         <span class="comment">% Combine simple histograms.</span>
+0190         <span class="keyword">case</span> <span class="string">'s'</span>
+0191             data = <a href="#_sub3" class="code" title="subfunction data = addHistograms(wormFiles, wormName, field)">addHistograms</a>(wormFiles, loadName, field);
+0192             eval([saveName <span class="string">'.'</span> field <span class="string">'=data;'</span>]);
+0193             
+0194         <span class="comment">% Combine motion histograms.</span>
+0195         <span class="keyword">case</span> <span class="string">'m'</span>
+0196             data = <a href="#_sub4" class="code" title="subfunction data = addMotionHistograms(wormFiles, wormName, field, motionNames)">addMotionHistograms</a>(wormFiles, loadName, field, <span class="keyword">...</span>
+0197                 motionNames);
+0198             eval([saveName <span class="string">'.'</span> field <span class="string">'=data;'</span>]);
+0199             
+0200         <span class="comment">% Combine event histograms.</span>
+0201         <span class="keyword">case</span> <span class="string">'e'</span>
+0202             
+0203             <span class="comment">% Combine the event data.</span>
+0204             subFields = dataInfo(i).subFields.summary;
+0205             <span class="keyword">for</span> j = 1:length(subFields);
+0206                 subField = [field <span class="string">'.'</span> subFields{j}];
+0207                 data = <a href="#_sub7" class="code" title="subfunction data = addEventData(wormFiles, wormName, field)">addEventData</a>(wormFiles, loadName, subField);
+0208                 eval([saveName <span class="string">'.'</span> subField <span class="string">'=data;'</span>]);
+0209             <span class="keyword">end</span>
+0210             
+0211             <span class="comment">% Combine the event histograms.</span>
+0212             subFields = dataInfo(i).subFields.data;
+0213             <span class="keyword">for</span> j = 1:length(subFields);
+0214                 subField = [field <span class="string">'.'</span> subFields{j}];
+0215                 data = <a href="#_sub3" class="code" title="subfunction data = addHistograms(wormFiles, wormName, field)">addHistograms</a>(wormFiles, loadName, subField);
+0216                 eval([saveName <span class="string">'.'</span> subField <span class="string">'=data;'</span>]);
+0217             <span class="keyword">end</span>
+0218     <span class="keyword">end</span>
+0219 <span class="keyword">end</span>
+0220 
+0221 <span class="comment">% Save the histograms.</span>
+0222 save(filename, saveName, <span class="string">'-append'</span>, <span class="string">'-v7.3'</span>);
+0223 <span class="keyword">end</span>
+0224 
+0225 
+0226 
+0227 <span class="comment">%% Combine histograms.</span>
+0228 <a name="_sub3" href="#_subfunctions" class="code">function data = addHistograms(wormFiles, wormName, field)</a>
+0229 addData = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, wormName, field)">loadWormFiles</a>(wormFiles, wormName, field);
+0230 data(length(addData{1})).histogram = [];
+0231 <span class="keyword">for</span> i = 1:length(addData{1})
+0232     subData = cellfun(@(x) x(i).histogram, addData, <span class="string">'UniformOutput'</span>, false);
+0233     data(i).histogram = <a href="#_sub5" class="code" title="subfunction data = addHistogramData(addData)">addHistogramData</a>(subData);
+0234 <span class="keyword">end</span>
+0235 <span class="keyword">end</span>
+0236 
+0237 
+0238 
+0239 <span class="comment">%% Combine motion histograms.</span>
+0240 <a name="_sub4" href="#_subfunctions" class="code">function data = addMotionHistograms(wormFiles, wormName, field, motionNames)</a>
+0241 
+0242 <span class="comment">% Get the data.</span>
+0243 addData = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, wormName, field)">loadWormFiles</a>(wormFiles, wormName, field);
+0244 
+0245 <span class="comment">% Combine the histograms.</span>
+0246 data(length(addData{1})).histogram = [];
+0247 <span class="keyword">for</span> i = 1:length(addData{1})
+0248     
+0249     <span class="comment">% Combine the data histograms.</span>
+0250     subData = cellfun(@(x) x(i).histogram, addData, <span class="string">'UniformOutput'</span>, false);
+0251     data(i).histogram = <a href="#_sub5" class="code" title="subfunction data = addHistogramData(addData)">addHistogramData</a>(subData);
+0252     
+0253     <span class="comment">% Combine the motion histograms.</span>
+0254     <span class="keyword">for</span> j = 1:length(motionNames)
+0255         subData = cellfun(@(x) x(i).(motionNames{j}).histogram, addData, <span class="keyword">...</span>
+0256             <span class="string">'UniformOutput'</span>, false);
+0257         data(i).(motionNames{j}).histogram = <a href="#_sub5" class="code" title="subfunction data = addHistogramData(addData)">addHistogramData</a>(subData);
+0258     <span class="keyword">end</span>
+0259 <span class="keyword">end</span>
+0260 <span class="keyword">end</span>
+0261 
+0262 
+0263 
+0264 <span class="comment">%% Combine histograms.</span>
+0265 <a name="_sub5" href="#_subfunctions" class="code">function data = addHistogramData(addData)</a>
+0266 
+0267 <span class="comment">% Initialize the histogram information and check for consistency.</span>
+0268 data = [];
+0269 resolution = [];
+0270 isZeroBin = [];
+0271 isSigned = [];
+0272 numSets = 0;
+0273 <span class="keyword">for</span> i = 1:length(addData)
+0274     
+0275     <span class="comment">% Add the set(s).</span>
+0276     <span class="keyword">if</span> isempty(addData{i}) || isnan(addData{i}.resolution)
+0277         numSets = numSets + 1;
+0278     <span class="keyword">else</span>
+0279         numSets = numSets + addData{i}.sets.samples;
+0280         
+0281         <span class="comment">% Initialize the histogram information.</span>
+0282         <span class="keyword">if</span> isempty(resolution)
+0283             resolution = addData{i}.resolution;
+0284             isZeroBin = addData{i}.isZeroBin;
+0285             isSigned = addData{i}.isSigned;
+0286             
+0287         <span class="comment">% Check the histograms for consistency.</span>
+0288         <span class="keyword">elseif</span> resolution ~= addData{i}.resolution || <span class="keyword">...</span>
+0289                 isZeroBin ~= addData{i}.isZeroBin
+0290             warning(<span class="string">'addWormHistograms:UnequalBins'</span>, <span class="keyword">...</span>
+0291                 <span class="string">'Two or more histograms have inconsistent bins'</span>);
+0292             data = <a href="../../../SegWorm/Util/nanHistogram.html" class="code" title="function data = nanHistogram(varargin)">nanHistogram</a>(isSigned, numSets);
+0293             <span class="keyword">return</span>;
+0294 
+0295         <span class="comment">% Sign the data.</span>
+0296         <span class="keyword">elseif</span> addData{i}.isSigned
+0297             isSigned = true;
+0298         <span class="keyword">end</span>
+0299     <span class="keyword">end</span>
+0300 <span class="keyword">end</span>
+0301 
+0302 <span class="comment">% Is there any data?</span>
+0303 <span class="keyword">if</span> isempty(resolution)
+0304     data = <a href="../../../SegWorm/Util/nanHistogram.html" class="code" title="function data = nanHistogram(varargin)">nanHistogram</a>(isSigned, numSets);
+0305     <span class="keyword">return</span>;
+0306 <span class="keyword">end</span>
+0307 
+0308 <span class="comment">% Combine the data counts.</span>
+0309 numCounts = 0;
+0310 counts = cell(length(addData), 1);
+0311 bins = cell(length(addData), 1);
+0312 <span class="keyword">for</span> i = 1:length(addData)
+0313     
+0314     <span class="comment">% No data.</span>
+0315     <span class="keyword">if</span> isempty(addData{i})
+0316         numCounts = numCounts + 1;
+0317         counts{numCounts} = 0;
+0318         bins{numCounts} = NaN;
+0319         
+0320     <span class="comment">% Combine the data.</span>
+0321     <span class="keyword">else</span>
+0322         <span class="keyword">for</span> j = 1:size(addData{i}.data.counts, 1)
+0323             numCounts = numCounts + 1;
+0324             counts{numCounts} = addData{i}.data.counts(j,:);
+0325             bins{numCounts} = addData{i}.bins;
+0326         <span class="keyword">end</span>
+0327     <span class="keyword">end</span>
+0328 <span class="keyword">end</span>
+0329 
+0330 <span class="comment">% Normalize the data and bins.</span>
+0331 [counts bins] = <a href="#_sub6" class="code" title="subfunction [normData normBins] = normBinData(data, bins, resolution)">normBinData</a>(counts, bins, resolution);
+0332 <span class="keyword">if</span> isempty(bins) || any(isnan(bins))
+0333     data = [];
+0334     <span class="keyword">return</span>;
+0335 <span class="keyword">end</span>
+0336 
+0337 <span class="comment">% Initialize the histogram.</span>
+0338 <span class="comment">% Note: this must match the field order in worm2histogram.</span>
+0339 data.sets = [];
+0340 data.data = [];
+0341 data.allData = [];
+0342 data.PDF = [];
+0343 data.bins = [];
+0344 data.resolution = [];
+0345 data.isZeroBin = [];
+0346 data.isSigned = [];
+0347 
+0348 <span class="comment">% Combine all the data.</span>
+0349 data.allData.counts = nansum(counts, 1);
+0350 data.allData.samples = 0;
+0351 data.allData.mean.all = 0;
+0352 <span class="keyword">for</span> i = 1:length(addData)
+0353     <span class="keyword">if</span> ~isempty(addData{i}) &amp;&amp; addData{i}.allData.samples &gt; 0
+0354         addSamples = addData{i}.allData.samples;
+0355         data.allData.samples = data.allData.samples + addSamples;
+0356         data.allData.mean.all = data.allData.mean.all + <span class="keyword">...</span>
+0357             addData{i}.allData.mean.all * addSamples;
+0358     <span class="keyword">end</span>
+0359 <span class="keyword">end</span>
+0360 <span class="keyword">if</span> data.allData.samples &gt; 0
+0361     data.allData.mean.all = data.allData.mean.all / data.allData.samples;
+0362 <span class="keyword">else</span>
+0363     data.allData.mean.all = NaN;
+0364 <span class="keyword">end</span>
+0365 data.allData.stdDev.all = NaN; <span class="comment">% unrecoverable</span>
+0366 
+0367 <span class="comment">% Combine all the signed data.</span>
+0368 <span class="keyword">if</span> isSigned
+0369     <span class="keyword">if</span> data.allData.samples &gt; 0
+0370         data.allData.mean.abs = 0;
+0371         <span class="keyword">for</span> i = 1:length(addData)
+0372             <span class="keyword">if</span> ~isempty(addData{i}) &amp;&amp; addData{i}.allData.samples &gt; 0
+0373                 data.allData.mean.abs = data.allData.mean.abs + <span class="keyword">...</span>
+0374                     addData{i}.allData.mean.abs * <span class="keyword">...</span>
+0375                     addData{i}.allData.samples;
+0376             <span class="keyword">end</span>
+0377         <span class="keyword">end</span>
+0378         data.allData.mean.abs = data.allData.mean.abs / <span class="keyword">...</span>
+0379             data.allData.samples;
+0380     <span class="keyword">else</span>
+0381         data.allData.mean.abs = NaN;
+0382     <span class="keyword">end</span>
+0383     data.allData.stdDev.abs = NaN; <span class="comment">% unrecoverable</span>
+0384     data.allData.mean.pos = NaN; <span class="comment">% unrecoverable</span>
+0385     data.allData.stdDev.pos = NaN; <span class="comment">% unrecoverable</span>
+0386     data.allData.mean.neg = NaN; <span class="comment">% unrecoverable</span>
+0387     data.allData.stdDev.neg = NaN; <span class="comment">% unrecoverable</span>
+0388 <span class="keyword">end</span>
+0389 
+0390 <span class="comment">% Combine the data.</span>
+0391 data.data.counts = counts;
+0392 data.data.samples = [];
+0393 data.data.mean.all = [];
+0394 data.data.stdDev.all = [];
+0395 <span class="keyword">for</span> i = 1:length(addData)
+0396     <span class="keyword">if</span> isempty(addData{i})
+0397         data.data.samples = cat(1, data.data.samples, 0);
+0398         data.data.mean.all = cat(1, data.data.mean.all, NaN);
+0399         data.data.stdDev.all = cat(1, data.data.stdDev.all, NaN);
+0400     <span class="keyword">else</span>
+0401         data.data.samples = <span class="keyword">...</span>
+0402             cat(1, data.data.samples, addData{i}.data.samples);
+0403         data.data.mean.all = <span class="keyword">...</span>
+0404             cat(1, data.data.mean.all, addData{i}.data.mean.all);
+0405         data.data.stdDev.all = <span class="keyword">...</span>
+0406             cat(1, data.data.stdDev.all, addData{i}.data.stdDev.all);
+0407     <span class="keyword">end</span>
+0408 <span class="keyword">end</span>
+0409 
+0410 <span class="comment">% Combine the signed data.</span>
+0411 <span class="keyword">if</span> isSigned
+0412     data.data.mean.abs = [];
+0413     data.data.stdDev.abs = [];
+0414     data.data.mean.pos = [];
+0415     data.data.stdDev.pos = [];
+0416     data.data.mean.neg = [];
+0417     data.data.stdDev.neg = [];
+0418     <span class="keyword">for</span> i = 1:length(addData)
+0419         <span class="keyword">if</span> isempty(addData{i})
+0420             data.data.mean.abs = cat(1, data.data.mean.abs, NaN);
+0421             data.data.stdDev.abs = cat(1, data.data.stdDev.abs, NaN);
+0422             data.data.mean.pos = cat(1, data.data.mean.pos, NaN);
+0423             data.data.stdDev.pos = cat(1, data.data.stdDev.pos, NaN);
+0424             data.data.mean.neg = cat(1, data.data.mean.neg, NaN);
+0425             data.data.stdDev.neg = cat(1, data.data.stdDev.neg, NaN);
+0426         <span class="keyword">else</span>
+0427             data.data.mean.abs = <span class="keyword">...</span>
+0428                 cat(1, data.data.mean.abs, addData{i}.data.mean.abs);
+0429             data.data.stdDev.abs = <span class="keyword">...</span>
+0430                 cat(1, data.data.stdDev.abs, addData{i}.data.stdDev.abs);
+0431             data.data.mean.pos = <span class="keyword">...</span>
+0432                 cat(1, data.data.mean.pos, addData{i}.data.mean.pos);
+0433             data.data.stdDev.pos = <span class="keyword">...</span>
+0434                 cat(1, data.data.stdDev.pos, addData{i}.data.stdDev.pos);
+0435             data.data.mean.neg = <span class="keyword">...</span>
+0436                 cat(1, data.data.mean.neg, addData{i}.data.mean.neg);
+0437             data.data.stdDev.neg = <span class="keyword">...</span>
+0438                 cat(1, data.data.stdDev.neg, addData{i}.data.stdDev.neg);
+0439         <span class="keyword">end</span>
+0440     <span class="keyword">end</span>
+0441 <span class="keyword">end</span>
+0442 
+0443 <span class="comment">% Combine the sets.</span>
+0444 data.sets.samples = sum(~isnan(data.data.mean.all));
+0445 data.sets.mean.all = nanmean(data.data.mean.all);
+0446 data.sets.stdDev.all = nanstd(data.data.mean.all);
+0447 <span class="keyword">if</span> isSigned
+0448     data.sets.mean.abs = nanmean(data.data.mean.abs);
+0449     data.sets.stdDev.abs = nanstd(data.data.mean.abs);
+0450     data.sets.mean.pos = nanmean(data.data.mean.pos);
+0451     data.sets.stdDev.pos = nanstd(data.data.mean.pos);
+0452     data.sets.mean.neg = nanmean(data.data.mean.neg);
+0453     data.sets.stdDev.neg = nanstd(data.data.mean.neg);
+0454 <span class="keyword">end</span>
+0455 
+0456 <span class="comment">% Combine the PDFs.</span>
+0457 data.bins = bins;
+0458 data.PDF = zeros(1, length(bins));
+0459 numSets = 0;
+0460 <span class="keyword">for</span> i = 1:length(data.data.samples)
+0461     <span class="keyword">if</span> data.data.samples(i) &gt; 0
+0462         data.PDF = data.PDF + data.data.counts(i,:) ./ data.data.samples(i);
+0463         numSets = numSets + 1;
+0464     <span class="keyword">end</span>
+0465 <span class="keyword">end</span>
+0466 <span class="keyword">if</span> numSets &gt; 0
+0467     data.PDF = data.PDF ./ numSets;
+0468 <span class="keyword">end</span>
+0469 
+0470 <span class="comment">% Set the histogram information.</span>
+0471 data.resolution = resolution;
+0472 data.isZeroBin = isZeroBin;
+0473 data.isSigned = isSigned;
+0474 <span class="keyword">end</span>
+0475 
+0476 
+0477 
+0478 <span class="comment">%% Normalize binned data.</span>
+0479 <a name="_sub6" href="#_subfunctions" class="code">function [normData normBins] = normBinData(data, bins, resolution)</a>
+0480 
+0481 <span class="comment">% Initialize the normalized data and bins.</span>
+0482 normData = [];
+0483 normBins = [];
+0484 <span class="keyword">if</span> isempty(data)
+0485     <span class="keyword">return</span>;
+0486 <span class="keyword">end</span>
+0487 
+0488 <span class="comment">% Compute the normalized bins.</span>
+0489 minBin = min(cellfun(@(x) x(1), bins));
+0490 <span class="keyword">if</span> isnan(minBin)
+0491     <span class="keyword">return</span>;
+0492 <span class="keyword">end</span>
+0493 maxBin = max(cellfun(@(x) x(end), bins));
+0494 numBins = round((maxBin - minBin) / resolution) + 1;
+0495 normBins = linspace(minBin, maxBin, numBins);
+0496 
+0497 <span class="comment">% Normalize the data.</span>
+0498 normData = zeros(length(data), numBins);
+0499 <span class="keyword">for</span> i = 1:length(data)
+0500     
+0501     <span class="comment">% No data.</span>
+0502     <span class="keyword">if</span> isnan(bins{i})
+0503         <span class="keyword">continue</span>;
+0504     <span class="keyword">end</span>
+0505     
+0506     <span class="comment">% Copy the data.</span>
+0507     startI = round((bins{i}(1) - minBin) / resolution) + 1;
+0508     endI = round((bins{i}(end) - minBin) / resolution) + 1;
+0509     normData(i, startI:endI) = data{i};
+0510 <span class="keyword">end</span>
+0511 <span class="keyword">end</span>
+0512 
+0513 
+0514 
+0515 <span class="comment">%% Combine event data.</span>
+0516 <a name="_sub7" href="#_subfunctions" class="code">function data = addEventData(wormFiles, wormName, field)</a>
+0517 
+0518 <span class="comment">% Initialize the combined histogram.</span>
+0519 addData = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, wormName, field)">loadWormFiles</a>(wormFiles, wormName, field);
+0520 data = [];
+0521 <span class="keyword">if</span> isempty(addData)
+0522     data.samples = 0;
+0523     data.data = NaN;
+0524     data.mean = NaN;
+0525     data.stdDev = NaN;
+0526     <span class="keyword">return</span>;
+0527 <span class="keyword">end</span>
+0528 
+0529 <span class="comment">% Combine the data.</span>
+0530 data.data = [];
+0531 <span class="keyword">for</span> i = 1:length(addData)
+0532     <span class="keyword">if</span> isempty(addData{i})
+0533         data.data = cat(1, data.data, NaN);
+0534     <span class="keyword">else</span>
+0535         data.data = cat(1, data.data, addData{i}.data);
+0536     <span class="keyword">end</span>
+0537 <span class="keyword">end</span>
+0538 
+0539 <span class="comment">% Combine the sets.</span>
+0540 data.samples = length(data.data);
+0541 data.mean = nanmean(data.data);
+0542 data.stdDev = nanstd(data.data);
+0543 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

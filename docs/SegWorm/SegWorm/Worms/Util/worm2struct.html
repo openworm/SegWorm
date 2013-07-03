@@ -1,0 +1,528 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of worm2struct</title>
+  <meta name="keywords" content="worm2struct">
+  <meta name="description" content="WORM2STRUCT Organize worm information in a structure.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Util -->
+<h1>worm2struct
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORM2STRUCT Organize worm information in a structure.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORM2STRUCT Organize worm information in a structure.
+
+   WORM = WORM2STRUCT(FRAME,
+       CPIXELS, CTOUCHI, CINI, COUTI, CANGLES, CHEADI, CTAILI,
+       SPIXELS, STOUCHI, SINI, SOUTI, SINOUTI, SANGLES, SLENGTH, SWIDTHS,
+       HLCBOUNDS, HRCBOUNDS, HSBOUNDS, HPIXELS, HCDF, HSTDEV,
+       TLCBOUNDS, TRCBOUNDS, TSBOUNDS, TPIXELS, TCDF, TSTDEV,
+       LCBOUNDS, LSBOUNDS, LPIXELS, LCDF, LSTDEV,
+       RCBOUNDS, RSBOUNDS, RPIXELS, RCDF, RSTDEV
+       ISHEADTAILFLIPPED, ISVULVACLOCKWISEFROMHEAD,
+       HCONFIDENCE, TCONFIDENCE, VCONFIDENCE, NVCONFIDENCE)
+
+   Inputs:
+
+       * Contour *
+
+       cPixels    - the worm's circularly continuous contour pixels,
+                    ordered clockwise
+       cTouchI    - the paired pairs of indices marking, clockwise, the
+                    start and end of the touching contour points
+                    Note: if the worm isn't coiled, this value is empty.
+       cInI       - the paired indices marking, clockwise, the start and
+                    end of the inner contour points
+                    Note: if the worm isn't coiled, this value is empty.
+       cOutI      - the paired indices marking, clockwise, the start and
+                    end of the outer contour points
+                    Note: if the worm isn't coiled, this value is empty.
+       cAngles    - the contour's angles (curvature) at each index
+       cHeadI     - the contour index for the worm's head
+       cTailI     - the contour index for the worm's tail
+       cCCLengths - the contour's circular chain-code pixel length, from
+                    its vector's start to end, up to each contour point
+                    Note: this is a more accurate representation of
+                    locations along the worm's contour than pixel indices
+
+       * Skeleton *
+
+       sPixels    - the worm's continuous skeleton oriented from head to tail
+       sTouchI    - the paired pairs of indices marking, clockwise, the
+                    start and end of the touching skeleton points
+                    Note: if the worm isn't coiled, this value is empty.
+       sInI       - the paired indices marking, clockwise, the start and
+                    end of the inner skeleton points
+                    Note: if the worm isn't coiled, this value is empty.
+       sOutI      - the paired indices marking, clockwise, the start and
+                    end of the outer skeleton points
+                    Note: if the worm isn't coiled, this value is empty.
+       sInOutI    - the pairs of indices marking, from head to tail,
+                    the start and end of the dual inner/outer skeleton points
+                    Note: if the worm isn't coiled, this value is empty.
+       sAngles    - the skeleton's angles (curvature) per point
+                    Note 1: NaNs indicate the end pieces where there is
+                    insufficient information to compute the angle
+                    Note 2: positive skeleton angles bulge towards the side
+                    clockwise from the worm's head (unless the worm is flipped)
+       sLength    - the skeleton's (worm's) chain-code pixel length
+       sCCLengths - the skeleton's (worm's) chain-code pixel length, from
+                    head to tail, up to each skeleton point
+                    Note: this is a more accurate representation of
+                    locations along the worm's skeleton than pixel indices
+       sWidths    - the contour's (worm's) widths, from head to tail, at
+                    each skeleton point
+
+       * Head *
+
+       hlcBounds - the worm head's, left-side (counter clockwise from the head),
+                   contour bounds (the start and end indices of the segment)
+       hrcBounds - the worm head's, right-side (clockwise from the head),
+                   contour bounds (the start and end indices of the segment)
+       hsBounds  - the worm head's, skeleton bounds (the start and end
+                   indices of the segment)
+                   Note: due to the clockwise ordering of the worm contour
+                   and the head-to-tail ordering of the worm skeleton,
+                   the bounds enclose the head as
+                   [hsBounds(1), hrcBounds(1:2), hsBounds(2), hlcBounds(1:2)]
+       hPixels   - the worm head's circularly continuous contour pixels
+       hArea     - the worm head's pixel area
+       hCDF      - the worm head's pixel-intensity, cumulative distribution
+                   function at 2.5%, 25%, 50%, 75%, and 97.5%
+       hStdev    - the worm head's pixel-intensity standard deviation
+
+       * Tail *
+
+       tlcBounds - the worm tail's, left-side (counter clockwise from the head),
+                   contour bounds (the start and end indices of the segment)
+       trcBounds - the worm tail's, right-side (clockwise from the head),
+                   contour bounds (the start and end indices of the segment)
+       tsBounds  - the worm tail's, skeleton bounds (the start and end
+                   indices of the segment)
+                   Note: due to the clockwise ordering of the worm contour
+                   and the head-to-tail ordering of the worm skeleton,
+                   the bounds enclose the tail as
+                   [tsBounds(1), trcBounds(1:2), tsBounds(2), tlcBounds(1:2)]
+       tPixels   - the worm tail's circularly continuous contour pixels
+       tArea     - the worm tail's pixel area
+       tCDF      - the worm tail's pixel-intensity, cumulative distribution
+                   function at 2.5%, 25%, 50%, 75%, and 97.5%
+       tStdev    - the worm tail's pixel-intensity standard deviation
+
+       * Left Side (Counter Clockwise from the Head) *
+
+       lcBounds - the worm's, left-side (counter clockwise from the head),
+                  contour bounds (the start and end indices of the segment)
+       lsBounds - the worm's, left-side (counter clockwise from the head),
+                  skeleton bounds (the start and end indices of the segment)
+                  Note: due to the clockwise ordering of the worm contour
+                  and the head-to-tail ordering of the worm skeleton,
+                  the bounds enclose the left side as
+                  [lcBounds(1:2), lsBounds(2:1)]
+       lPixels  - the worm's left-side (counter clockwise from the head)
+                 circularly continuous contour pixels
+       lArea    - the worm's left-side pixel area
+       lCDF     - the worm's left-side (counter clockwise from the head)
+                  pixel-intensity, cumulative distribution function at
+                  2.5%, 25%, 50%, 75%, and 97.5%
+       lStdev   - the worm's left-side (counter clockwise from the head)
+                  pixel-intensity standard deviation
+
+       * Right Side (Clockwise from the Head) *
+
+       rcBounds - the worm's, right-side (clockwise from the head),
+                  contour bounds (the start and end indices of the segment)
+       rsBounds - the worm's, right-side (clockwise from the head),
+                  skeleton bounds (the start and end indices of the segment)
+                  Note: due to the clockwise ordering of the worm contour
+                  and the head-to-tail ordering of the worm skeleton,
+                  the bounds enclose the left side as
+                  [rcBounds(1:2), rsBounds(2:1)]
+       rPixels  - the worm's right-side (clockwise from the head)
+                  circularly continuous contour pixels
+       rArea    - the worm's right-side pixel area
+       rCDF     - the worm's right-side (clockwise from the head)
+                  pixel-intensity, cumulative distribution function at
+                  2.5%, 25%, 50%, 75%, and 97.5%
+       rStdev   - the worm's right-side (clockwise from the head)
+                  pixel-intensity standard deviation
+
+       * Orientation *
+
+       isHeadTailFlipped        - are the head and tail flipped?
+                                  Note 1: the head and tail may be
+                                  incorrectly assigned. This flag, allows
+                                  the assignment to be easily flipped.
+                                  Note 2: this flag also flips the
+                                  skeleton orientation.
+       hConfidence              - how much confidence do we have in our
+                                  head choice as the worm's head?
+       tConfidence              - how much confidence do we have in our
+                                  tail choice as the worm's head?
+       isVulvaClockwiseFromHead - is the vulva on the side clockwise from
+                                  the head?
+       vConfidence              - how much confidence do we have in our
+                                  vulval-side choice as the worm's
+                                  vulval side?
+       nvConfidence             - how much confidence do we have in our
+                                  non-vulval-side choice as the worm's
+                                  vulval side?
+
+   Output:
+       worm - the worm information organized in a structure
+              This structure contains 8 sub-structures,
+              6 sub-sub-structures, and 4 sub-sub-sub-structures:
+
+              * Video *
+              video = {frame}
+
+              * Contour *
+              contour = {pixels, touchI, inI, outI, angles, headI, tailI,
+                         chainCodeLengths}
+
+              * Skeleton *
+              skeleton = {pixels, touchI, inI, outI, inOutI, angles,
+                          length, chainCodeLengths, widths}
+
+              Note: positive skeleton angles bulge towards the side
+              clockwise from the worm's head (unless the worm is flipped).
+
+              * Head *
+              head = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              head.bounds{contour.left (indices for [start end]),
+                          contour.right (indices for [start end]),
+                          skeleton indices for [start end]}
+
+              * Tail *
+              tail = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              tail.bounds{contour.left (indices for [start end]),
+                          contour.right (indices for [start end]),
+                          skeleton indices for [start end]}
+
+              * Left Side (Counter Clockwise from the Head) *
+              left = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              left.bounds{contour (indices for [start end]),
+                          skeleton (indices for [start end])}
+
+              * Right Side (Clockwise from the Head) *
+              right = {bounds, pixels, area,
+                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              right.bounds{contour (indices for [start end]),
+                           skeleton (indices for [start end])}
+
+              * Orientation *
+              orientation = {head, vulva}
+              orientation.head = {isFlipped,
+                                  confidence.head, confidence.tail}
+              orientation.vulva = {isClockwiseFromHead,
+                                  confidence.vulva, confidence.nonVulva}
+
+   See also <a href="worm2cell.html" class="code" title="function worm = worm2cell(worm)">WORM2CELL</a>, <a href="cell2worm.html" class="code" title="function worm = cell2worm(worm)">CELL2WORM</a>, SEGWORM</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li><li><a href="norm2Worm.html" class="code" title="function worm = norm2Worm(frame, vulvaContour, nonVulvaContour,skeleton, skeletonAngles, inOutTouch, skeletonLength, widths,headArea, tailArea, vulvaArea, nonVulvaArea,origin, pixel2MicronScale, rotation, worm)">norm2Worm</a>	NORM2WORM Convert normalized worm information into a worm structure.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm = worm2struct(frame, </a><span class="keyword">...</span>
+0002     cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths, <span class="keyword">...</span>
+0003     sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles, <span class="keyword">...</span>
+0004     sLength, sCCLengths, sWidths, <span class="keyword">...</span>
+0005     hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev, <span class="keyword">...</span>
+0006     tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev, <span class="keyword">...</span>
+0007     lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev, <span class="keyword">...</span>
+0008     rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev, <span class="keyword">...</span>
+0009     isHeadTailFlipped, hConfidence, tConfidence,<span class="keyword">...</span>
+0010     isVulvaClockwiseFromHead, vConfidence, nvConfidence)
+0011 <span class="comment">%WORM2STRUCT Organize worm information in a structure.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   WORM = WORM2STRUCT(FRAME,</span>
+0014 <span class="comment">%       CPIXELS, CTOUCHI, CINI, COUTI, CANGLES, CHEADI, CTAILI,</span>
+0015 <span class="comment">%       SPIXELS, STOUCHI, SINI, SOUTI, SINOUTI, SANGLES, SLENGTH, SWIDTHS,</span>
+0016 <span class="comment">%       HLCBOUNDS, HRCBOUNDS, HSBOUNDS, HPIXELS, HCDF, HSTDEV,</span>
+0017 <span class="comment">%       TLCBOUNDS, TRCBOUNDS, TSBOUNDS, TPIXELS, TCDF, TSTDEV,</span>
+0018 <span class="comment">%       LCBOUNDS, LSBOUNDS, LPIXELS, LCDF, LSTDEV,</span>
+0019 <span class="comment">%       RCBOUNDS, RSBOUNDS, RPIXELS, RCDF, RSTDEV</span>
+0020 <span class="comment">%       ISHEADTAILFLIPPED, ISVULVACLOCKWISEFROMHEAD,</span>
+0021 <span class="comment">%       HCONFIDENCE, TCONFIDENCE, VCONFIDENCE, NVCONFIDENCE)</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   Inputs:</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%       * Contour *</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%       cPixels    - the worm's circularly continuous contour pixels,</span>
+0028 <span class="comment">%                    ordered clockwise</span>
+0029 <span class="comment">%       cTouchI    - the paired pairs of indices marking, clockwise, the</span>
+0030 <span class="comment">%                    start and end of the touching contour points</span>
+0031 <span class="comment">%                    Note: if the worm isn't coiled, this value is empty.</span>
+0032 <span class="comment">%       cInI       - the paired indices marking, clockwise, the start and</span>
+0033 <span class="comment">%                    end of the inner contour points</span>
+0034 <span class="comment">%                    Note: if the worm isn't coiled, this value is empty.</span>
+0035 <span class="comment">%       cOutI      - the paired indices marking, clockwise, the start and</span>
+0036 <span class="comment">%                    end of the outer contour points</span>
+0037 <span class="comment">%                    Note: if the worm isn't coiled, this value is empty.</span>
+0038 <span class="comment">%       cAngles    - the contour's angles (curvature) at each index</span>
+0039 <span class="comment">%       cHeadI     - the contour index for the worm's head</span>
+0040 <span class="comment">%       cTailI     - the contour index for the worm's tail</span>
+0041 <span class="comment">%       cCCLengths - the contour's circular chain-code pixel length, from</span>
+0042 <span class="comment">%                    its vector's start to end, up to each contour point</span>
+0043 <span class="comment">%                    Note: this is a more accurate representation of</span>
+0044 <span class="comment">%                    locations along the worm's contour than pixel indices</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%       * Skeleton *</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%       sPixels    - the worm's continuous skeleton oriented from head to tail</span>
+0049 <span class="comment">%       sTouchI    - the paired pairs of indices marking, clockwise, the</span>
+0050 <span class="comment">%                    start and end of the touching skeleton points</span>
+0051 <span class="comment">%                    Note: if the worm isn't coiled, this value is empty.</span>
+0052 <span class="comment">%       sInI       - the paired indices marking, clockwise, the start and</span>
+0053 <span class="comment">%                    end of the inner skeleton points</span>
+0054 <span class="comment">%                    Note: if the worm isn't coiled, this value is empty.</span>
+0055 <span class="comment">%       sOutI      - the paired indices marking, clockwise, the start and</span>
+0056 <span class="comment">%                    end of the outer skeleton points</span>
+0057 <span class="comment">%                    Note: if the worm isn't coiled, this value is empty.</span>
+0058 <span class="comment">%       sInOutI    - the pairs of indices marking, from head to tail,</span>
+0059 <span class="comment">%                    the start and end of the dual inner/outer skeleton points</span>
+0060 <span class="comment">%                    Note: if the worm isn't coiled, this value is empty.</span>
+0061 <span class="comment">%       sAngles    - the skeleton's angles (curvature) per point</span>
+0062 <span class="comment">%                    Note 1: NaNs indicate the end pieces where there is</span>
+0063 <span class="comment">%                    insufficient information to compute the angle</span>
+0064 <span class="comment">%                    Note 2: positive skeleton angles bulge towards the side</span>
+0065 <span class="comment">%                    clockwise from the worm's head (unless the worm is flipped)</span>
+0066 <span class="comment">%       sLength    - the skeleton's (worm's) chain-code pixel length</span>
+0067 <span class="comment">%       sCCLengths - the skeleton's (worm's) chain-code pixel length, from</span>
+0068 <span class="comment">%                    head to tail, up to each skeleton point</span>
+0069 <span class="comment">%                    Note: this is a more accurate representation of</span>
+0070 <span class="comment">%                    locations along the worm's skeleton than pixel indices</span>
+0071 <span class="comment">%       sWidths    - the contour's (worm's) widths, from head to tail, at</span>
+0072 <span class="comment">%                    each skeleton point</span>
+0073 <span class="comment">%</span>
+0074 <span class="comment">%       * Head *</span>
+0075 <span class="comment">%</span>
+0076 <span class="comment">%       hlcBounds - the worm head's, left-side (counter clockwise from the head),</span>
+0077 <span class="comment">%                   contour bounds (the start and end indices of the segment)</span>
+0078 <span class="comment">%       hrcBounds - the worm head's, right-side (clockwise from the head),</span>
+0079 <span class="comment">%                   contour bounds (the start and end indices of the segment)</span>
+0080 <span class="comment">%       hsBounds  - the worm head's, skeleton bounds (the start and end</span>
+0081 <span class="comment">%                   indices of the segment)</span>
+0082 <span class="comment">%                   Note: due to the clockwise ordering of the worm contour</span>
+0083 <span class="comment">%                   and the head-to-tail ordering of the worm skeleton,</span>
+0084 <span class="comment">%                   the bounds enclose the head as</span>
+0085 <span class="comment">%                   [hsBounds(1), hrcBounds(1:2), hsBounds(2), hlcBounds(1:2)]</span>
+0086 <span class="comment">%       hPixels   - the worm head's circularly continuous contour pixels</span>
+0087 <span class="comment">%       hArea     - the worm head's pixel area</span>
+0088 <span class="comment">%       hCDF      - the worm head's pixel-intensity, cumulative distribution</span>
+0089 <span class="comment">%                   function at 2.5%, 25%, 50%, 75%, and 97.5%</span>
+0090 <span class="comment">%       hStdev    - the worm head's pixel-intensity standard deviation</span>
+0091 <span class="comment">%</span>
+0092 <span class="comment">%       * Tail *</span>
+0093 <span class="comment">%</span>
+0094 <span class="comment">%       tlcBounds - the worm tail's, left-side (counter clockwise from the head),</span>
+0095 <span class="comment">%                   contour bounds (the start and end indices of the segment)</span>
+0096 <span class="comment">%       trcBounds - the worm tail's, right-side (clockwise from the head),</span>
+0097 <span class="comment">%                   contour bounds (the start and end indices of the segment)</span>
+0098 <span class="comment">%       tsBounds  - the worm tail's, skeleton bounds (the start and end</span>
+0099 <span class="comment">%                   indices of the segment)</span>
+0100 <span class="comment">%                   Note: due to the clockwise ordering of the worm contour</span>
+0101 <span class="comment">%                   and the head-to-tail ordering of the worm skeleton,</span>
+0102 <span class="comment">%                   the bounds enclose the tail as</span>
+0103 <span class="comment">%                   [tsBounds(1), trcBounds(1:2), tsBounds(2), tlcBounds(1:2)]</span>
+0104 <span class="comment">%       tPixels   - the worm tail's circularly continuous contour pixels</span>
+0105 <span class="comment">%       tArea     - the worm tail's pixel area</span>
+0106 <span class="comment">%       tCDF      - the worm tail's pixel-intensity, cumulative distribution</span>
+0107 <span class="comment">%                   function at 2.5%, 25%, 50%, 75%, and 97.5%</span>
+0108 <span class="comment">%       tStdev    - the worm tail's pixel-intensity standard deviation</span>
+0109 <span class="comment">%</span>
+0110 <span class="comment">%       * Left Side (Counter Clockwise from the Head) *</span>
+0111 <span class="comment">%</span>
+0112 <span class="comment">%       lcBounds - the worm's, left-side (counter clockwise from the head),</span>
+0113 <span class="comment">%                  contour bounds (the start and end indices of the segment)</span>
+0114 <span class="comment">%       lsBounds - the worm's, left-side (counter clockwise from the head),</span>
+0115 <span class="comment">%                  skeleton bounds (the start and end indices of the segment)</span>
+0116 <span class="comment">%                  Note: due to the clockwise ordering of the worm contour</span>
+0117 <span class="comment">%                  and the head-to-tail ordering of the worm skeleton,</span>
+0118 <span class="comment">%                  the bounds enclose the left side as</span>
+0119 <span class="comment">%                  [lcBounds(1:2), lsBounds(2:1)]</span>
+0120 <span class="comment">%       lPixels  - the worm's left-side (counter clockwise from the head)</span>
+0121 <span class="comment">%                 circularly continuous contour pixels</span>
+0122 <span class="comment">%       lArea    - the worm's left-side pixel area</span>
+0123 <span class="comment">%       lCDF     - the worm's left-side (counter clockwise from the head)</span>
+0124 <span class="comment">%                  pixel-intensity, cumulative distribution function at</span>
+0125 <span class="comment">%                  2.5%, 25%, 50%, 75%, and 97.5%</span>
+0126 <span class="comment">%       lStdev   - the worm's left-side (counter clockwise from the head)</span>
+0127 <span class="comment">%                  pixel-intensity standard deviation</span>
+0128 <span class="comment">%</span>
+0129 <span class="comment">%       * Right Side (Clockwise from the Head) *</span>
+0130 <span class="comment">%</span>
+0131 <span class="comment">%       rcBounds - the worm's, right-side (clockwise from the head),</span>
+0132 <span class="comment">%                  contour bounds (the start and end indices of the segment)</span>
+0133 <span class="comment">%       rsBounds - the worm's, right-side (clockwise from the head),</span>
+0134 <span class="comment">%                  skeleton bounds (the start and end indices of the segment)</span>
+0135 <span class="comment">%                  Note: due to the clockwise ordering of the worm contour</span>
+0136 <span class="comment">%                  and the head-to-tail ordering of the worm skeleton,</span>
+0137 <span class="comment">%                  the bounds enclose the left side as</span>
+0138 <span class="comment">%                  [rcBounds(1:2), rsBounds(2:1)]</span>
+0139 <span class="comment">%       rPixels  - the worm's right-side (clockwise from the head)</span>
+0140 <span class="comment">%                  circularly continuous contour pixels</span>
+0141 <span class="comment">%       rArea    - the worm's right-side pixel area</span>
+0142 <span class="comment">%       rCDF     - the worm's right-side (clockwise from the head)</span>
+0143 <span class="comment">%                  pixel-intensity, cumulative distribution function at</span>
+0144 <span class="comment">%                  2.5%, 25%, 50%, 75%, and 97.5%</span>
+0145 <span class="comment">%       rStdev   - the worm's right-side (clockwise from the head)</span>
+0146 <span class="comment">%                  pixel-intensity standard deviation</span>
+0147 <span class="comment">%</span>
+0148 <span class="comment">%       * Orientation *</span>
+0149 <span class="comment">%</span>
+0150 <span class="comment">%       isHeadTailFlipped        - are the head and tail flipped?</span>
+0151 <span class="comment">%                                  Note 1: the head and tail may be</span>
+0152 <span class="comment">%                                  incorrectly assigned. This flag, allows</span>
+0153 <span class="comment">%                                  the assignment to be easily flipped.</span>
+0154 <span class="comment">%                                  Note 2: this flag also flips the</span>
+0155 <span class="comment">%                                  skeleton orientation.</span>
+0156 <span class="comment">%       hConfidence              - how much confidence do we have in our</span>
+0157 <span class="comment">%                                  head choice as the worm's head?</span>
+0158 <span class="comment">%       tConfidence              - how much confidence do we have in our</span>
+0159 <span class="comment">%                                  tail choice as the worm's head?</span>
+0160 <span class="comment">%       isVulvaClockwiseFromHead - is the vulva on the side clockwise from</span>
+0161 <span class="comment">%                                  the head?</span>
+0162 <span class="comment">%       vConfidence              - how much confidence do we have in our</span>
+0163 <span class="comment">%                                  vulval-side choice as the worm's</span>
+0164 <span class="comment">%                                  vulval side?</span>
+0165 <span class="comment">%       nvConfidence             - how much confidence do we have in our</span>
+0166 <span class="comment">%                                  non-vulval-side choice as the worm's</span>
+0167 <span class="comment">%                                  vulval side?</span>
+0168 <span class="comment">%</span>
+0169 <span class="comment">%   Output:</span>
+0170 <span class="comment">%       worm - the worm information organized in a structure</span>
+0171 <span class="comment">%              This structure contains 8 sub-structures,</span>
+0172 <span class="comment">%              6 sub-sub-structures, and 4 sub-sub-sub-structures:</span>
+0173 <span class="comment">%</span>
+0174 <span class="comment">%              * Video *</span>
+0175 <span class="comment">%              video = {frame}</span>
+0176 <span class="comment">%</span>
+0177 <span class="comment">%              * Contour *</span>
+0178 <span class="comment">%              contour = {pixels, touchI, inI, outI, angles, headI, tailI,</span>
+0179 <span class="comment">%                         chainCodeLengths}</span>
+0180 <span class="comment">%</span>
+0181 <span class="comment">%              * Skeleton *</span>
+0182 <span class="comment">%              skeleton = {pixels, touchI, inI, outI, inOutI, angles,</span>
+0183 <span class="comment">%                          length, chainCodeLengths, widths}</span>
+0184 <span class="comment">%</span>
+0185 <span class="comment">%              Note: positive skeleton angles bulge towards the side</span>
+0186 <span class="comment">%              clockwise from the worm's head (unless the worm is flipped).</span>
+0187 <span class="comment">%</span>
+0188 <span class="comment">%              * Head *</span>
+0189 <span class="comment">%              head = {bounds, pixels, area,</span>
+0190 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0191 <span class="comment">%              head.bounds{contour.left (indices for [start end]),</span>
+0192 <span class="comment">%                          contour.right (indices for [start end]),</span>
+0193 <span class="comment">%                          skeleton indices for [start end]}</span>
+0194 <span class="comment">%</span>
+0195 <span class="comment">%              * Tail *</span>
+0196 <span class="comment">%              tail = {bounds, pixels, area,</span>
+0197 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0198 <span class="comment">%              tail.bounds{contour.left (indices for [start end]),</span>
+0199 <span class="comment">%                          contour.right (indices for [start end]),</span>
+0200 <span class="comment">%                          skeleton indices for [start end]}</span>
+0201 <span class="comment">%</span>
+0202 <span class="comment">%              * Left Side (Counter Clockwise from the Head) *</span>
+0203 <span class="comment">%              left = {bounds, pixels, area,</span>
+0204 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0205 <span class="comment">%              left.bounds{contour (indices for [start end]),</span>
+0206 <span class="comment">%                          skeleton (indices for [start end])}</span>
+0207 <span class="comment">%</span>
+0208 <span class="comment">%              * Right Side (Clockwise from the Head) *</span>
+0209 <span class="comment">%              right = {bounds, pixels, area,</span>
+0210 <span class="comment">%                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0211 <span class="comment">%              right.bounds{contour (indices for [start end]),</span>
+0212 <span class="comment">%                           skeleton (indices for [start end])}</span>
+0213 <span class="comment">%</span>
+0214 <span class="comment">%              * Orientation *</span>
+0215 <span class="comment">%              orientation = {head, vulva}</span>
+0216 <span class="comment">%              orientation.head = {isFlipped,</span>
+0217 <span class="comment">%                                  confidence.head, confidence.tail}</span>
+0218 <span class="comment">%              orientation.vulva = {isClockwiseFromHead,</span>
+0219 <span class="comment">%                                  confidence.vulva, confidence.nonVulva}</span>
+0220 <span class="comment">%</span>
+0221 <span class="comment">%   See also WORM2CELL, CELL2WORM, SEGWORM</span>
+0222 
+0223 <span class="comment">% Organize the video information.</span>
+0224 video = struct(<span class="string">'frame'</span>, frame);
+0225 
+0226 <span class="comment">% Organize the contour.</span>
+0227 contour = struct(<span class="string">'pixels'</span>, cPixels, <span class="string">'touchI'</span>, cTouchI, <span class="keyword">...</span>
+0228     <span class="string">'inI'</span>, cInI, <span class="string">'outI'</span>, cOutI, <span class="string">'angles'</span>, cAngles, <span class="keyword">...</span>
+0229     <span class="string">'headI'</span>, cHeadI, <span class="string">'tailI'</span>, cTailI, <span class="string">'chainCodeLengths'</span>, cCCLengths);
+0230 
+0231 <span class="comment">% Organize the skeleton.</span>
+0232 skeleton = struct(<span class="string">'pixels'</span>, sPixels, <span class="keyword">...</span>
+0233     <span class="string">'touchI'</span>, sTouchI, <span class="string">'inI'</span>, sInI, <span class="string">'outI'</span>, sOutI, <span class="string">'inOutI'</span>, sInOutI, <span class="keyword">...</span>
+0234     <span class="string">'angles'</span>, sAngles, <span class="string">'length'</span>, sLength, <span class="keyword">...</span>
+0235     <span class="string">'chainCodeLengths'</span>, sCCLengths, <span class="string">'widths'</span>, sWidths);
+0236 
+0237 <span class="comment">% Organize the head.</span>
+0238 hContour = struct(<span class="string">'left'</span>, hlcBounds, <span class="string">'right'</span>, hrcBounds);
+0239 hBounds = struct(<span class="string">'contour'</span>, hContour, <span class="string">'skeleton'</span>, hsBounds);
+0240 head = struct(<span class="string">'bounds'</span>, hBounds, <span class="string">'pixels'</span>, hPixels, <span class="string">'area'</span>, hArea, <span class="keyword">...</span>
+0241     <span class="string">'cdf'</span>, hCDF, <span class="string">'stdev'</span>, hStdev);
+0242 
+0243 <span class="comment">% Organize the tail.</span>
+0244 tContour = struct(<span class="string">'left'</span>, tlcBounds, <span class="string">'right'</span>, trcBounds);
+0245 tBounds = struct(<span class="string">'contour'</span>, tContour, <span class="string">'skeleton'</span>, tsBounds);
+0246 tail = struct(<span class="string">'bounds'</span>, tBounds, <span class="string">'pixels'</span>, tPixels, <span class="string">'area'</span>, tArea, <span class="keyword">...</span>
+0247     <span class="string">'cdf'</span>, tCDF, <span class="string">'stdev'</span>, tStdev);
+0248 
+0249 <span class="comment">% Organize the worm's left side (counter clockwise from the head) .</span>
+0250 lBounds = struct(<span class="string">'contour'</span>, lcBounds, <span class="string">'skeleton'</span>, lsBounds);
+0251 left = struct(<span class="string">'bounds'</span>, lBounds, <span class="string">'pixels'</span>, lPixels, <span class="string">'area'</span>, lArea, <span class="keyword">...</span>
+0252     <span class="string">'cdf'</span>, lCDF, <span class="string">'stdev'</span>, lStdev);
+0253 
+0254 <span class="comment">% Organize the worm's right side (clockwise from the head) .</span>
+0255 rBounds = struct(<span class="string">'contour'</span>, rcBounds, <span class="string">'skeleton'</span>, rsBounds);
+0256 right = struct(<span class="string">'bounds'</span>, rBounds, <span class="string">'pixels'</span>, rPixels, <span class="string">'area'</span>, rArea, <span class="keyword">...</span>
+0257     <span class="string">'cdf'</span>, rCDF, <span class="string">'stdev'</span>, rStdev);
+0258 
+0259 <span class="comment">% Organize the worm's orientation.</span>
+0260 headConfidence = struct(<span class="string">'head'</span>, hConfidence, <span class="string">'tail'</span>, tConfidence);
+0261 headOrientation = struct(<span class="string">'isFlipped'</span>, isHeadTailFlipped, <span class="keyword">...</span>
+0262     <span class="string">'confidence'</span>, headConfidence);
+0263 vulvaConfidence = struct(<span class="string">'vulva'</span>, vConfidence, <span class="string">'nonVulva'</span>, nvConfidence);
+0264 vulvaOrientation = struct(<span class="string">'isClockwiseFromHead'</span>, isVulvaClockwiseFromHead, <span class="keyword">...</span>
+0265     <span class="string">'confidence'</span>, vulvaConfidence);
+0266 orientation = struct(<span class="string">'head'</span>, headOrientation, <span class="string">'vulva'</span>, vulvaOrientation);
+0267 
+0268 <span class="comment">% Organize the worm.</span>
+0269 worm = struct(<span class="string">'video'</span>, video, <span class="string">'contour'</span>, contour, <span class="string">'skeleton'</span>, skeleton, <span class="keyword">...</span>
+0270     <span class="string">'head'</span>, head, <span class="string">'tail'</span>, tail, <span class="string">'left'</span>, left, <span class="string">'right'</span>, right, <span class="keyword">...</span>
+0271     <span class="string">'orientation'</span>, orientation);
+0272 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

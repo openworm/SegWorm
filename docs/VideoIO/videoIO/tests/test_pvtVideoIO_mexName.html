@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of test_pvtVideoIO_mexName</title>
+  <meta name="keywords" content="test_pvtVideoIO_mexName">
+  <meta name="description" content="This is a regression test for the pseudo-private pvtVideoIO_mexName">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>test_pvtVideoIO_mexName
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a regression test for the pseudo-private pvtVideoIO_mexName</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> This is a regression test for the pseudo-private pvtVideoIO_mexName
+ function.  Normal users should have little use for this test.
+
+ Sometimes it can be easy to forget to run buildVideoIO.  We introduced
+ a &quot;private&quot; function pvtVideoIO_mexName.m to try to detect this
+ situation to produce more user-friendly error messages.  As videoIO has
+ developed, we have introduced both MEX-based and M-file-based plugins.
+ For the MEX-based ones, we are allowing pure-documentation M-files.
+ This has made pvtVideoIO_mexName more complex.  This regression test is
+ meant to verify that we correctly detect all different combinations
+ that need to be considered.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/pvtVideoIO_mexName.html" class="code" title="function n = pvtVideoIO_mexName(ctor, plugin)">pvtVideoIO_mexName</a>	n = pvtVideoIO_mexName(ctor, plugin)</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="testAll.html" class="code" title="">testAll</a>	testAll</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% This is a regression test for the pseudo-private pvtVideoIO_mexName</span>
+0002 <span class="comment">% function.  Normal users should have little use for this test.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Sometimes it can be easy to forget to run buildVideoIO.  We introduced</span>
+0005 <span class="comment">% a &quot;private&quot; function pvtVideoIO_mexName.m to try to detect this</span>
+0006 <span class="comment">% situation to produce more user-friendly error messages.  As videoIO has</span>
+0007 <span class="comment">% developed, we have introduced both MEX-based and M-file-based plugins.</span>
+0008 <span class="comment">% For the MEX-based ones, we are allowing pure-documentation M-files.</span>
+0009 <span class="comment">% This has made pvtVideoIO_mexName more complex.  This regression test is</span>
+0010 <span class="comment">% meant to verify that we correctly detect all different combinations</span>
+0011 <span class="comment">% that need to be considered.</span>
+0012 
+0013 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>;
+0014 
+0015 w = warning;
+0016 warning off; <span class="comment">%#ok&lt;WNOFF&gt;</span>
+0017 
+0018 <span class="comment">% we use some fake constructor and plugin names to avoid name conflicts.</span>
+0019 ctor   = <span class="string">'test'</span>;
+0020 plugin = strrep(mfilename, <span class="string">'_'</span>, <span class="string">''</span>);
+0021 
+0022 <span class="keyword">for</span> implPresent = 0:1
+0023   <span class="keyword">for</span> implIsMex = 0:1
+0024     <span class="keyword">for</span> hasMDoc = 0:implIsMex
+0025       <span class="keyword">for</span> hasOtherMex = 0:implIsMex
+0026         n = [ctor <span class="string">'_'</span> plugin];
+0027         <span class="comment">% clean up from old runs</span>
+0028         delete([n <span class="string">'*'</span>]);
+0029         
+0030         <span class="comment">% write implementation file</span>
+0031         <span class="keyword">if</span> implPresent
+0032           <span class="keyword">if</span> implIsMex
+0033             dlmwrite([n <span class="string">'.'</span> mexext], []);
+0034           <span class="keyword">else</span>
+0035             dlmwrite([n <span class="string">'.m'</span>], <span class="string">'executable'</span>, <span class="string">'delimiter'</span>,<span class="string">' '</span>);
+0036           <span class="keyword">end</span>
+0037         <span class="keyword">end</span>
+0038         
+0039         <span class="comment">% write doc file</span>
+0040         <span class="keyword">if</span> hasMDoc
+0041           dlmwrite([n <span class="string">'.m'</span>], <span class="string">'% comment'</span>, <span class="string">'delimiter'</span>,<span class="string">' '</span>);
+0042         <span class="keyword">end</span>
+0043         
+0044         <span class="comment">% write other mex files</span>
+0045         <span class="keyword">if</span> hasOtherMex
+0046           <span class="keyword">try</span>
+0047             exts = mexext(<span class="string">'all'</span>); exts = {exts.ext};
+0048           <span class="keyword">catch</span>
+0049             <span class="comment">% mexext('all') was introduced in Matlab R14sp3 (at least</span>
+0050             <span class="comment">% on linux). Use all known extensions.</span>
+0051             exts = {<span class="string">'mex'</span>, <span class="keyword">...</span><span class="comment"> % really old versions </span>
+0052                     <span class="string">'mexsol'</span>,<span class="string">'mexhpux'</span>,<span class="string">'mexglx'</span>,<span class="string">'mexi64'</span>,<span class="string">'mexmac'</span>,<span class="string">'dll'</span>,<span class="keyword">...</span>
+0053                     <span class="string">'mexhp7'</span>,<span class="string">'mexa64'</span>,<span class="string">'mexs64'</span>,<span class="string">'mexw32'</span>,<span class="string">'mexw64'</span>,<span class="string">'mexmaci'</span><span class="keyword">...</span>
+0054                    };
+0055           <span class="keyword">end</span>
+0056           
+0057           otherExts = setdiff(exts, mexext);
+0058           otherExt = otherExts{1};
+0059           
+0060           dlmwrite([n <span class="string">'.'</span> otherExt], []);
+0061         <span class="keyword">end</span>
+0062       
+0063         <span class="comment">% test pvtVideoIO_mexName</span>
+0064         errDescr = <span class="string">''</span>;
+0065         <span class="keyword">try</span>
+0066           <a href="../../videoIO/pvtVideoIO_mexName.html" class="code" title="function n = pvtVideoIO_mexName(ctor, plugin)">pvtVideoIO_mexName</a>(ctor,plugin);
+0067           <span class="keyword">if</span> ~implPresent
+0068             errDescr = [<span class="string">'Implementation file does not exist, but '</span> <span class="keyword">...</span>
+0069                         <span class="string">'pvtVideoIO_mexName thinks it does.'</span>];
+0070           <span class="keyword">end</span>
+0071         <span class="keyword">catch</span>
+0072           <span class="keyword">if</span> implPresent
+0073             errDescr = [<span class="string">'Implementation file does exist, but '</span> <span class="keyword">...</span>
+0074                         <span class="string">'pvtVideoIO_mexName thinks it does not.'</span>];
+0075           <span class="keyword">elseif</span> hasOtherMex
+0076             err = lasterror;
+0077             <span class="keyword">if</span> isempty(strfind(err.message, otherExt))
+0078               errDescr = [<span class="string">'A &quot;'</span> otherExt <span class="string">'&quot; MEX file for another '</span> <span class="keyword">...</span>
+0079                           <span class="string">'platform is present, but it was not '</span> <span class="keyword">...</span>
+0080                           <span class="string">'found by pvtVideoIO_mexName.'</span>];
+0081             <span class="keyword">end</span>
+0082           <span class="keyword">end</span>
+0083         <span class="keyword">end</span>
+0084         
+0085         <span class="keyword">if</span> ~isempty(errDescr)
+0086           error(sprintf(<span class="keyword">...</span>
+0087               [<span class="string">'ERROR: '</span> errDescr <span class="string">'\n'</span><span class="keyword">...</span>
+0088                <span class="string">'  implementation is present:   '</span> num2str(implPresent) <span class="string">'\n'</span><span class="keyword">...</span>
+0089                <span class="string">'  implementation is mex:       '</span> num2str(implIsMex) <span class="string">'\n'</span><span class="keyword">...</span>
+0090                <span class="string">'  has .m documentation if mex: '</span> num2str(hasMDoc) <span class="string">'\n'</span><span class="keyword">...</span>
+0091                <span class="string">'  other mex is present:        '</span> num2str(hasOtherMex) <span class="string">'\n'</span><span class="keyword">...</span>
+0092               ])); <span class="comment">%#ok&lt;SPERR&gt; -- backward compatability</span>
+0093         <span class="keyword">end</span>
+0094       
+0095         <span class="comment">% clean up from this run</span>
+0096         delete([n <span class="string">'*'</span>]);
+0097         clear otherExt otherExts;
+0098       <span class="keyword">end</span>
+0099     <span class="keyword">end</span>
+0100   <span class="keyword">end</span>
+0101 <span class="keyword">end</span>
+0102 
+0103 warning(w);
+0104 
+0105 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>;</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

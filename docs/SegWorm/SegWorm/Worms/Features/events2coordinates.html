@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of events2coordinates</title>
+  <meta name="keywords" content="events2coordinates">
+  <meta name="description" content="EVENT2COORDINATES Convert events to their coordinate locations.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>events2coordinates
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>EVENT2COORDINATES Convert events to their coordinate locations.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function coordinates = events2coordinates(skeleton, points, frames) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">EVENT2COORDINATES Convert events to their coordinate locations.
+
+   COORDINATES = EVENT2COORDINATES(SKELETON, POINTS, EVENTS)
+
+   Inputs:
+       skeleton - the worm skeleton matrix (points x coordinates x frames)
+       points   - the skeleton points (array) to average
+       frames   - the frames at which the event took place;
+                  a structure array with fields:
+
+                  start = the start frame
+                  end   = the end frame
+
+   Output:
+       coordinates - the events coordinates (XY coordinates x event number)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function coordinates = events2coordinates(skeleton, points, frames)</a>
+0002 <span class="comment">%EVENT2COORDINATES Convert events to their coordinate locations.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   COORDINATES = EVENT2COORDINATES(SKELETON, POINTS, EVENTS)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       skeleton - the worm skeleton matrix (points x coordinates x frames)</span>
+0008 <span class="comment">%       points   - the skeleton points (array) to average</span>
+0009 <span class="comment">%       frames   - the frames at which the event took place;</span>
+0010 <span class="comment">%                  a structure array with fields:</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%                  start = the start frame</span>
+0013 <span class="comment">%                  end   = the end frame</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Output:</span>
+0016 <span class="comment">%       coordinates - the events coordinates (XY coordinates x event number)</span>
+0017 
+0018 <span class="comment">% Compute the event coordinates.</span>
+0019 coordinates = nan(2, length(events));
+0020 <span class="keyword">for</span> i = 1:length(events)
+0021     
+0022     <span class="comment">% Find a starting index with a skeleton.</span>
+0023     startI = [];
+0024     j = frames(i).start + 1;
+0025     <span class="keyword">while</span> j &gt;= 1 &amp;&amp; isnan(skeleton(1,1,j))
+0026         j = j - 1;
+0027     <span class="keyword">end</span>
+0028     <span class="keyword">if</span> j &gt;= 1
+0029         startI = j;
+0030     <span class="keyword">end</span>
+0031     
+0032     <span class="comment">% Find an ending index with a skeleton.</span>
+0033     endI = [];
+0034     j = frames(i).end + 1;
+0035     <span class="keyword">while</span> j &lt;= size(skeleton,3) &amp;&amp; isnan(skeleton(1,1,j))
+0036         j = j + 1;
+0037     <span class="keyword">end</span>
+0038     <span class="keyword">if</span> j &lt;= size(skeleton,3)
+0039         endI = j;
+0040     <span class="keyword">end</span>
+0041     
+0042     <span class="comment">% Compute the event coordinates.</span>
+0043     startSkeleton = NaN;
+0044     <span class="keyword">if</span> ~isempty(startI)
+0045         startSkeleton = mean(skeleton(points, :, startI), 1);
+0046     <span class="keyword">end</span>
+0047     endSkeleton = NaN;
+0048     <span class="keyword">if</span> ~isempty(endI)
+0049         endSkeleton = mean(skeleton(points, :, endI), 1);
+0050     <span class="keyword">end</span>
+0051     coordinates(:,i) = squeeze(nanmean([startSkeleton, endSkeleton], 1));
+0052 <span class="keyword">end</span>
+0053 <span class="keyword">end</span>
+0054</pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

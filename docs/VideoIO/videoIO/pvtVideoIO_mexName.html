@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of pvtVideoIO_mexName</title>
+  <meta name="keywords" content="pvtVideoIO_mexName">
+  <meta name="description" content="n = pvtVideoIO_mexName(ctor, plugin)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>pvtVideoIO_mexName
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>n = pvtVideoIO_mexName(ctor, plugin)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function n = pvtVideoIO_mexName(ctor, plugin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">n = pvtVideoIO_mexName(ctor, plugin)
+  PRIVATE function for the VideoIO Library.  Typical users should not use
+  this function.  This function is shared by multiple components in a way
+  that it cannot sit in a private/ directory, hence the verbose name.
+
+  Takes the name of a constructor ('videoReader' or 'videoWriter'), and a
+  user-style plugin name ('DirectShow', 'ffmpegPopen2', etc.) and returns
+  the function name for its implementation.  It also searches for that
+  function in the current path and generates a user-friendly message if
+  the function does not exist.
+
+  EXAMPLE:
+    &gt; pvtVideoIO_mexName('videoReader', 'ffmpegPopen2')
+    'videoReader_ffmpegPopen2.mexglx'
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="isMFileWithCode.html" class="code" title="function mexe = isMFileWithCode(pathname)">isMFileWithCode</a>	mexe = isMFileWithCode(pathname)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>	videoWriter class constructor</li><li><a href="defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>	pluginName = defaultVideoIOPlugin(ctor)</li><li><a href="../videoIO/tests/test_pvtVideoIO_mexName.html" class="code" title="">test_pvtVideoIO_mexName</a>	This is a regression test for the pseudo-private pvtVideoIO_mexName</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function v = findAllFuncExts(m)</a></li><li><a href="#_sub2" class="code">function w = wordWrap(s,c)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function n = pvtVideoIO_mexName(ctor, plugin)</a>
+0002 <span class="comment">%n = pvtVideoIO_mexName(ctor, plugin)</span>
+0003 <span class="comment">%  PRIVATE function for the VideoIO Library.  Typical users should not use</span>
+0004 <span class="comment">%  this function.  This function is shared by multiple components in a way</span>
+0005 <span class="comment">%  that it cannot sit in a private/ directory, hence the verbose name.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Takes the name of a constructor ('videoReader' or 'videoWriter'), and a</span>
+0008 <span class="comment">%  user-style plugin name ('DirectShow', 'ffmpegPopen2', etc.) and returns</span>
+0009 <span class="comment">%  the function name for its implementation.  It also searches for that</span>
+0010 <span class="comment">%  function in the current path and generates a user-friendly message if</span>
+0011 <span class="comment">%  the function does not exist.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%  EXAMPLE:</span>
+0014 <span class="comment">%    &gt; pvtVideoIO_mexName('videoReader', 'ffmpegPopen2')</span>
+0015 <span class="comment">%    'videoReader_ffmpegPopen2.mexglx'</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0018 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0019 <span class="comment">%when using this library on GNU/Linux).</span>
+0020 
+0021 n = [ctor <span class="string">'_'</span> plugin];
+0022 
+0023 <span class="keyword">if</span> exist([n <span class="string">'.'</span> mexext], <span class="string">'file'</span>)
+0024   <span class="comment">% looks like a mex implementation that has been successfully compiled</span>
+0025 
+0026 <span class="keyword">elseif</span> <a href="isMFileWithCode.html" class="code" title="function mexe = isMFileWithCode(pathname)">isMFileWithCode</a>(which(n))
+0027   <span class="comment">% looks like an M-file implementation</span>
+0028 
+0029 <span class="keyword">else</span>
+0030   exts = <a href="#_sub1" class="code" title="subfunction v = findAllFuncExts(m)">findAllFuncExts</a>(n);
+0031   <span class="keyword">if</span> isempty(exts)
+0032     extsMsg = [<span class="keyword">...</span>
+0033       <span class="string">'The plugin (a) has not been compiled for this platform (with '</span><span class="keyword">...</span>
+0034       <span class="string">'extension '</span> mexext <span class="string">'), (b) it is misspelled, or (c) it is not '</span><span class="keyword">...</span>
+0035       <span class="string">'supported on this platform.'</span>];
+0036   <span class="keyword">else</span>
+0037     extsMsg = sprintf([<span class="keyword">...</span>
+0038       <span class="string">'The plugin has not been compiled for this platform (with '</span><span class="keyword">...</span>
+0039       <span class="string">'extension %s), but it has been for others (%s exists on your system '</span><span class="keyword">...</span>
+0040       <span class="string">'with the following extensions:%s).  '</span>],<span class="keyword">...</span>
+0041       mexext, n, sprintf(<span class="string">' %s'</span>, exts{:}));
+0042   <span class="keyword">end</span>
+0043   
+0044   errMsg = sprintf([<span class="keyword">...</span>
+0045     <span class="string">'Cannot find the %s plugin.  '</span><span class="keyword">...</span>
+0046     <span class="string">'\n\n'</span><span class="keyword">...</span>
+0047     <span class="string">'%sType ''help %s'' for a list of official plugins and on which '</span><span class="keyword">...</span>
+0048     <span class="string">'platforms they are supported.'</span><span class="keyword">...</span>
+0049     <span class="string">'\n\n'</span><span class="keyword">...</span>
+0050     <span class="string">'If you have spelled the plugin name correctly, try running '</span><span class="keyword">...</span>
+0051     <span class="string">'&quot;buildVideoIO&quot; (without quotes) at the Matlab prompt.  '</span><span class="keyword">...</span>
+0052     <span class="string">'\n\n'</span><span class="keyword">...</span>
+0053     <span class="string">'If you have further difficulties, follow the instructions in '</span><span class="keyword">...</span>
+0054     <span class="string">'INSTALL.dshow.html on Windows or INSTALL.ffmpeg.txt on Linux.'</span>], <span class="keyword">...</span>
+0055     n, extsMsg, ctor);
+0056   
+0057   error(<a href="#_sub2" class="code" title="subfunction w = wordWrap(s,c)">wordWrap</a>(errMsg, 80));
+0058 <span class="keyword">end</span>
+0059 
+0060 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0061 <a name="_sub1" href="#_subfunctions" class="code">function v = findAllFuncExts(m)</a>
+0062 <span class="comment">%v = findAllFuncExts(m)</span>
+0063 <span class="comment">%  Takes a Matlab function M and finds all versions of it in the current</span>
+0064 <span class="comment">%  path.  Returns the extensions for each of these.</span>
+0065 <span class="comment">%</span>
+0066 <span class="comment">%  Example: say FOO.M, FOO.MEXA64, and FOO.MEXGLX exist in the current</span>
+0067 <span class="comment">%  Matlab path.  Then FINDALLFUNCEXTS will return 'm', 'mexa64', and 'mexglx'.</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">%  Motivation: when making multi-platform mex functions, it can be handy to</span>
+0070 <span class="comment">%  find versions for other platforms to help people know when they need to</span>
+0071 <span class="comment">%  recompile.</span>
+0072 
+0073 <span class="keyword">if</span> <a href="isMFileWithCode.html" class="code" title="function mexe = isMFileWithCode(pathname)">isMFileWithCode</a>(which([m <span class="string">'.m'</span>]))
+0074   v = {[m <span class="string">'.m'</span>]}; 
+0075 <span class="keyword">else</span>
+0076   v = {};
+0077 <span class="keyword">end</span>
+0078 
+0079 <span class="keyword">try</span>
+0080   exts = mexext(<span class="string">'all'</span>); exts = {exts.ext};
+0081 <span class="keyword">catch</span>
+0082   <span class="comment">% mexext('all') was introduced in Matlab R14sp3 (at least on linux).</span>
+0083   <span class="comment">% Use all known extensions.</span>
+0084   exts = {<span class="string">'mex'</span>, <span class="keyword">...</span><span class="comment"> % really old versions </span>
+0085           <span class="string">'mexsol'</span>,<span class="string">'mexhpux'</span>,<span class="string">'mexglx'</span>,<span class="string">'mexi64'</span>,<span class="string">'mexmac'</span>,<span class="string">'dll'</span>,<span class="keyword">...</span><span class="comment">% R14sp2</span>
+0086           <span class="string">'mexhp7'</span>,<span class="string">'mexa64'</span>,<span class="string">'mexs64'</span>,<span class="string">'mexw32'</span>,<span class="string">'mexw64'</span>,<span class="string">'mexmaci'</span><span class="keyword">...</span><span class="comment">%R14sp3+ </span>
+0087           };
+0088 <span class="keyword">end</span>
+0089 
+0090 <span class="keyword">for</span> ee=exts
+0091   e = ee{1};
+0092   <span class="keyword">if</span> exist([m <span class="string">'.'</span> e], <span class="string">'file'</span>)
+0093     v{end+1} = e; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0094   <span class="keyword">end</span>
+0095 <span class="keyword">end</span> 
+0096 
+0097 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0098 <a name="_sub2" href="#_subfunctions" class="code">function w = wordWrap(s,c)</a>
+0099 <span class="comment">% w = wordWrap(s,c)</span>
+0100 <span class="comment">%  Wordwraps string s at column c</span>
+0101 
+0102 <span class="comment">% Note: we don't use the 'last' form of FIND because it's not available</span>
+0103 <span class="comment">% in some older versions of Matlab.</span>
+0104 
+0105 newline = sprintf(<span class="string">'\n'</span>);
+0106 w = <span class="string">''</span>;
+0107 <span class="keyword">while</span> ~isempty(s) <span class="comment">% until we have no more string left</span>
+0108   <span class="keyword">if</span> numel(s) &lt;= c <span class="comment">% last little string</span>
+0109     w = [w s newline]; <span class="comment">%#ok&lt;AGROW&gt; -- these strings aren't *that* big</span>
+0110     s = <span class="string">''</span>;
+0111   <span class="keyword">else</span> 
+0112     nlIdx = find(s(1:c+1)==newline);
+0113     <span class="keyword">if</span> isempty(nlIdx) 
+0114       <span class="comment">% no existing newlines, so we have to make one</span>
+0115       wsIdx = find(isspace(s(1:c+1)));
+0116       <span class="keyword">if</span> isempty(wsIdx)
+0117         <span class="comment">% can't find a good breaking point--just clip mid-word</span>
+0118         w = [w s(1:c)]; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0119         s = s(c+1:end);
+0120       <span class="keyword">else</span>
+0121         <span class="comment">% Found whitespace: break there</span>
+0122         w = [w s(1:wsIdx(end)-1) newline]; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0123         s = s(wsIdx(end)+1:end);
+0124       <span class="keyword">end</span>
+0125     <span class="keyword">else</span>     
+0126       <span class="comment">% Use an existing newline</span>
+0127       w = [w s(1:nlIdx(end))]; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0128       s = s(nlIdx(end)+1:end);
+0129     <span class="keyword">end</span>
+0130   <span class="keyword">end</span>
+0131 <span class="keyword">end</span>
+0132   
+0133 <span class="keyword">if</span> ~isempty(w)
+0134   w = w(1:end-1);
+0135 <span class="keyword">end</span>
+0136 
+0137</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

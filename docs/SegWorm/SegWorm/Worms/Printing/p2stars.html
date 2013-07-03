@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of p2stars</title>
+  <meta name="keywords" content="p2stars">
+  <meta name="description" content="P2STARS Convert a p-value to a string of stars representing significance.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>p2stars
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>P2STARS Convert a p-value to a string of stars representing significance.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function stars = p2stars(p) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">P2STARS Convert a p-value to a string of stars representing significance.
+
+   STARS = P2STARS(P)
+
+   Input:
+       p - the p-value
+
+   Output:
+       stars - a string representing the p-value significance</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="worm2TOCOntologyTIF.html" class="code" title="function [filename pages] = worm2TOCOntologyTIF(filename, worm, wormName,varargin)">worm2TOCOntologyTIF</a>	WORM2TOCONTOLOGYTIF Save worm details to a TIF.</li><li><a href="worm2detailsPDF2.html" class="code" title="function [filename pages] = worm2detailsPDF(filename, worm, wormName,varargin)">worm2detailsPDF2</a>	WORM2DETAILSPDF Save worm details to a PDF.</li><li><a href="worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>	WORM2DETAILSTIF Save worm details to a TIF.</li><li><a href="wormStats2OntologyCSV.html" class="code" title="function wormStats2OntologyCSV(filename, wormFiles, varargin)">wormStats2OntologyCSV</a>	WORMSTATS2ONTOLOGYCSV Convert a worm's significant features to an ontology</li><li><a href="wormStatsInfo2CSV.html" class="code" title="function wormStatsInfo2CSV(filename, wormFile, varargin)">wormStatsInfo2CSV</a>	WORMSTATSINFO2CSV Convert the worm statistics to a set of CSV files.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function stars = p2stars(p)</a>
+0002 <span class="comment">%P2STARS Convert a p-value to a string of stars representing significance.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   STARS = P2STARS(P)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Input:</span>
+0007 <span class="comment">%       p - the p-value</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Output:</span>
+0010 <span class="comment">%       stars - a string representing the p-value significance</span>
+0011 
+0012 <span class="comment">% The p-value is not significant.</span>
+0013 stars = <span class="string">'n.s.'</span>;
+0014 
+0015 <span class="comment">% Determine the significance of the p-value.</span>
+0016 <span class="keyword">if</span> p &lt;= 0.0001
+0017     stars = <span class="string">'****'</span>;
+0018 <span class="keyword">elseif</span> p &lt;= 0.001
+0019     stars = <span class="string">'***'</span>;
+0020 <span class="keyword">elseif</span> p &lt;= 0.01
+0021     stars = <span class="string">'**'</span>;
+0022 <span class="keyword">elseif</span> p &lt;= 0.05
+0023     stars = <span class="string">'*'</span>;
+0024 <span class="keyword">end</span>
+0025 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

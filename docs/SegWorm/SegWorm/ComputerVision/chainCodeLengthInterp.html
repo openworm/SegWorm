@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of chainCodeLengthInterp</title>
+  <meta name="keywords" content="chainCodeLengthInterp">
+  <meta name="description" content="INTERPDATA Interpolate data values at the requested chain-code lengths.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>chainCodeLengthInterp
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>INTERPDATA Interpolate data values at the requested chain-code lengths.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">INTERPDATA Interpolate data values at the requested chain-code lengths.
+
+   [INTERPDATA INDICES] = CHAINCODELENGTHINTERP(DATA, LENGTHS,
+       CHAINCODELENGTHS)
+
+   [INTERPDATA INDICES] = CHAINCODELENGTHINTERP(DATA, LENGTHS,
+       CHAINCODELENGTHS, INDICES)
+
+   Inputs:
+       data             - the original data values
+       lengths          - the lengths at which to interpolate data values
+       chainCodeLengths - an ascending array of chain code lengths
+                          Note: the chain code lengths must increase at
+                          every successive index
+       indices          - the indices for the elements closest to the
+                          desired lengths; if empty, the indices are
+                          computed using chainCodeLength2Index
+
+   Outputs:
+       interpData       - the interpolated data values
+       indices          - the indices for the elements closest to the
+                          desired lengths
+
+ See also <a href="computeChainCodeLengths.html" class="code" title="function lengths = computeChainCodeLengths(points)">COMPUTECHAINCODELENGTHS</a>, <a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">CHAINCODELENGTH2INDEX</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>	CHAINCODELENGTH2INDEX Translate a length into an index. The index</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="downSamplePoints.html" class="code" title="function [dsPoints dsIndices dsLengths] =downSamplePoints(points, samples, varargin)">downSamplePoints</a>	DOWNSAMPLEPOINTS Downsample the points to fewer points using the chain</li><li><a href="../../SegWorm/Worms/Orientation/headTailMovementConfidence.html" class="code" title="function [headOrthoConfidence tailOrthoConfidenceheadParaConfidence tailParaConfidenceheadMagConfidence tailMagConfidence] =headTailMovementConfidence(worm1, worm2, varargin)">headTailMovementConfidence</a>	HEADTAILMOVEMENTCONFIDENCE How much confidence do we have in the head and</li><li><a href="../../SegWorm/Worms/Orientation/orientWorm.html" class="code" title="function [worm2 confidence flippedConfidence] =orientWorm(worm1, worm2, samples, varargin)">orientWorm</a>	ORIENTWORM Orient worm2 to match worm1's orientation (by setting</li><li><a href="../../SegWorm/Worms/Orientation/orientWormAtCentroid.html" class="code" title="function [worm2 confidence flippedConfidence] =orientWormAtCentroid(worm1, worm2, samples, varargin)">orientWormAtCentroid</a>	ORIENTWORMATCENTROID Orient worm2 to match worm1's orientation (by setting</li><li><a href="../../SegWorm/Worms/Util/norm2Worm.html" class="code" title="function worm = norm2Worm(frame, vulvaContour, nonVulvaContour,skeleton, skeletonAngles, inOutTouch, skeletonLength, widths,headArea, tailArea, vulvaArea, nonVulvaArea,origin, pixel2MicronScale, rotation, worm)">norm2Worm</a>	NORM2WORM Convert normalized worm information into a worm structure.</li><li><a href="../../SegWorm/Worms/Util/normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">normWorms</a>	NORMWORMS Normalize the worms' information to a standard, compact set.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [interpData indices] = chainCodeLengthInterp(data, lengths, </a><span class="keyword">...</span>
+0002     chainCodeLengths, varargin)
+0003 <span class="comment">%INTERPDATA Interpolate data values at the requested chain-code lengths.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   [INTERPDATA INDICES] = CHAINCODELENGTHINTERP(DATA, LENGTHS,</span>
+0006 <span class="comment">%       CHAINCODELENGTHS)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   [INTERPDATA INDICES] = CHAINCODELENGTHINTERP(DATA, LENGTHS,</span>
+0009 <span class="comment">%       CHAINCODELENGTHS, INDICES)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Inputs:</span>
+0012 <span class="comment">%       data             - the original data values</span>
+0013 <span class="comment">%       lengths          - the lengths at which to interpolate data values</span>
+0014 <span class="comment">%       chainCodeLengths - an ascending array of chain code lengths</span>
+0015 <span class="comment">%                          Note: the chain code lengths must increase at</span>
+0016 <span class="comment">%                          every successive index</span>
+0017 <span class="comment">%       indices          - the indices for the elements closest to the</span>
+0018 <span class="comment">%                          desired lengths; if empty, the indices are</span>
+0019 <span class="comment">%                          computed using chainCodeLength2Index</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   Outputs:</span>
+0022 <span class="comment">%       interpData       - the interpolated data values</span>
+0023 <span class="comment">%       indices          - the indices for the elements closest to the</span>
+0024 <span class="comment">%                          desired lengths</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% See also COMPUTECHAINCODELENGTHS, CHAINCODELENGTH2INDEX</span>
+0027 
+0028 <span class="comment">% Is the data 2 dimensional?</span>
+0029 <span class="keyword">if</span> ndims(data) &gt; 2 || (size(data, 1) &gt; 2 &amp;&amp; size(data, 2) &gt; 2)
+0030     error(<span class="string">'chainCodeLengthInterp:dataSize'</span>, <span class="keyword">...</span>
+0031         <span class="string">'The input data must be, at most, 2 dimensional'</span>)
+0032 <span class="keyword">end</span>
+0033 
+0034 <span class="comment">% Transpose the data.</span>
+0035 isTransposed = false;
+0036 <span class="keyword">if</span> size(data, 2) &gt; 2
+0037     data = data';
+0038     isTransposed = true;
+0039 <span class="keyword">end</span>
+0040 
+0041 <span class="comment">% Are there indices for the lengths?</span>
+0042 <span class="keyword">if</span> length(varargin) == 1
+0043     indices = varargin{1};
+0044 <span class="keyword">else</span>
+0045     indices = <a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(lengths, chainCodeLengths);
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="comment">% Interpolate the in-between data.</span>
+0049 sqrt2 = sqrt(2);
+0050 interpData = data(indices,:);
+0051 <span class="keyword">for</span> i = 1:numel(lengths)
+0052     
+0053     <span class="comment">% Compute the difference between the indexed and requested length.</span>
+0054     <span class="keyword">if</span> indices(i) == 1 &amp;&amp; lengths(i) &gt; chainCodeLengths(end)
+0055         dLength = chainCodeLengths(1) - lengths(i) + <span class="keyword">...</span>
+0056             chainCodeLengths(end);
+0057     <span class="keyword">elseif</span> indices(i) == length(chainCodeLengths) &amp;&amp; <span class="keyword">...</span>
+0058             lengths(i) &lt; chainCodeLengths(1)
+0059         dLength = -lengths(i);
+0060     <span class="keyword">else</span>
+0061         dLength = chainCodeLengths(indices(i)) - lengths(i);
+0062     <span class="keyword">end</span>
+0063     
+0064     <span class="comment">% The requested length is between the previous and current index.</span>
+0065     <span class="keyword">if</span> dLength &gt; 0
+0066         nextI = indices(i) - 1;
+0067         <span class="keyword">if</span> nextI &lt; 1
+0068             
+0069             <span class="comment">% Is the data circularly connected?</span>
+0070             <span class="keyword">if</span> chainCodeLengths(1) &gt; 0
+0071                 nextI = nextI + length(chainCodeLengths);
+0072             <span class="keyword">else</span>
+0073                 dLength = 0;
+0074             <span class="keyword">end</span>
+0075         <span class="keyword">end</span>
+0076         
+0077     <span class="comment">% The requested length is between the current and next index.</span>
+0078     <span class="keyword">elseif</span> dLength &lt; 0
+0079         nextI = indices(i) + 1;
+0080         <span class="keyword">if</span> nextI &gt; length(chainCodeLengths)
+0081         
+0082             <span class="comment">% Is the data circularly connected?</span>
+0083             <span class="keyword">if</span> chainCodeLengths(1) &gt; 0
+0084                 nextI = nextI - length(chainCodeLengths);
+0085             <span class="keyword">else</span>
+0086                 dLength = 0;
+0087             <span class="keyword">end</span>
+0088         <span class="keyword">end</span>
+0089     <span class="keyword">end</span>
+0090     
+0091     <span class="comment">% Interpolate the data.</span>
+0092     <span class="keyword">if</span> dLength ~= 0
+0093         
+0094         <span class="comment">% The data is 1 dimensional.</span>
+0095         dLength = abs(dLength);
+0096         <span class="keyword">if</span> size(data, 2) == 1
+0097             
+0098             <span class="comment">% Interpolate the data by adding the previous and next data</span>
+0099             <span class="comment">% values weighted by their distance from the requested length.</span>
+0100             dNextLength = abs(chainCodeLengths(nextI) - lengths(i));
+0101             interpData(i) = (dNextLength * data(indices(i)) + <span class="keyword">...</span>
+0102                 dLength * data(nextI)) / (dLength + dNextLength);
+0103             
+0104         <span class="comment">% The data is 2 dimensional.</span>
+0105         <span class="keyword">else</span>
+0106             
+0107             <span class="comment">% Interpolate the data by:</span>
+0108             <span class="comment">%</span>
+0109             <span class="comment">% 1. Compute the line between the previous and next data values.</span>
+0110             <span class="comment">% 2. Compute the location of the requested length on this line.</span>
+0111             <span class="comment">% 3. The coordinates for the location of the requested length</span>
+0112             <span class="comment">%    correspond to the interpolated data values.</span>
+0113             <span class="comment">%</span>
+0114             <span class="comment">% Note: the data values at the requested length lie on the line</span>
+0115             <span class="comment">% separating the closest data values (index = indices(i)) and</span>
+0116             <span class="comment">% the second closest data values, at the next or previous index</span>
+0117             <span class="comment">% (index = nextI). Now, we need to add the magnitude of the</span>
+0118             <span class="comment">% difference between the requested and real distance (dLength)</span>
+0119             <span class="comment">% to the closest data values (indices(i)), going in a line</span>
+0120             <span class="comment">% towards the second closest data values (nextI). Therefore, we</span>
+0121             <span class="comment">% need to solve the difference between the requested data</span>
+0122             <span class="comment">% values and the closest ones. Remember the requested data</span>
+0123             <span class="comment">% values lie on the slope between the closest (indices(i)) and</span>
+0124             <span class="comment">% second closest (nextI) data values. Therefore, the slope can</span>
+0125             <span class="comment">% be computed from the difference:</span>
+0126             <span class="comment">%</span>
+0127             <span class="comment">%   dData = data(nextI,:) - data(indices(i),:)</span>
+0128             <span class="comment">%</span>
+0129             <span class="comment">% As the slope m:</span>
+0130             <span class="comment">%</span>
+0131             <span class="comment">%   dData(1) = m * dData(2)</span>
+0132             <span class="comment">%</span>
+0133             <span class="comment">% We want to solve:</span>
+0134             <span class="comment">%</span>
+0135             <span class="comment">%   dLength = sqrt(dData(1)^2 + dData(2)^2)</span>
+0136             <span class="comment">%</span>
+0137             <span class="comment">% Plugging in the slope m and re-arranging the inequalities,</span>
+0138             <span class="comment">% we get the data offsets:</span>
+0139             <span class="comment">%</span>
+0140             <span class="comment">%   offData(1) = dLength / sqrt(1 + (dData(2) / dData(1)) ^ 2)</span>
+0141             <span class="comment">%   offData(2) = dLength / sqrt(1 + (dData(1) / dData(2)) ^ 2)</span>
+0142             <span class="comment">%</span>
+0143             <span class="comment">% Finally, signing the offsets and adding them to the previous</span>
+0144             <span class="comment">% data values, we solve the interpolated data values as:</span>
+0145             <span class="comment">%</span>
+0146             <span class="comment">%   interpData = offData .* sign(dData) + data(prevI,:)</span>
+0147             dData = data(nextI,:) - data(indices(i),:);
+0148             <span class="keyword">if</span> any(dData == 0)
+0149                 interpData(i,:) = dLength .* sign(dData) + <span class="keyword">...</span>
+0150                     data(indices(i),:);
+0151             <span class="keyword">elseif</span> all(abs(dData) == 1)
+0152                 interpData(i,:) = (dLength / sqrt2) .* dData + <span class="keyword">...</span>
+0153                     data(indices(i),:);
+0154             <span class="keyword">else</span>
+0155                 offData1 = dLength / sqrt(1 + (dData(2) / dData(1)) ^ 2);
+0156                 offData2 = dLength / sqrt(1 + (dData(1) / dData(2)) ^ 2);
+0157                 interpData(i,:) = [offData1 offData2] .* sign(dData) + <span class="keyword">...</span>
+0158                     data(indices(i),:);
+0159             <span class="keyword">end</span>
+0160         <span class="keyword">end</span>
+0161     <span class="keyword">end</span>
+0162 <span class="keyword">end</span>
+0163 
+0164 <span class="comment">% Transpose the interpolated data.</span>
+0165 <span class="keyword">if</span> isTransposed
+0166     interpData = interpData';
+0167 <span class="keyword">end</span>
+0168 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

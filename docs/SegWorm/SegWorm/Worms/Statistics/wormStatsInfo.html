@@ -1,0 +1,452 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormStatsInfo</title>
+  <meta name="keywords" content="wormStatsInfo">
+  <meta name="description" content="WORMFEATUREINFO Get information for computing the worm statistics.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>wormStatsInfo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMFEATUREINFO Get information for computing the worm statistics.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function info = wormStatsInfo() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMFEATUREINFO Get information for computing the worm statistics.
+
+   INFO = WORMSTATSINFO()
+
+   Output:
+       info - information for computing the worm data; a structure where:
+
+              name     = the feature's name
+              units    = the feature's units
+              title1   = the feature's 1st title
+              title1I  = the feature's 1st title index
+              title2   = the feature's 2nd title
+              title2I  = the feature's 2nd title index
+              title3   = the feature's 3rd title
+              title3I   = the feature's 3rd title index
+              field    = the feature's path; a struct where:
+
+                         histogram  = the histogram data path
+                         statistics = the statistics data path
+
+              index    = the feature's field index
+              isMain   = is this a main feature?
+              category = the feature's category, where:
+
+                         m = morphology
+                         s = posture (shape)
+                         l = locomotion
+                         p = path
+
+              type     = the feature's type, where:
+
+                         s = simple data
+                         m = motion data
+                         d = event summary data
+                         e = event data
+                         i = inter-event data
+
+              subType  = the feature's sub-type, where:
+
+                         n = none
+                         f = forward motion data
+                         b = backward motion data
+                         p = paused data
+                         t = time data
+                         d = distance data
+                         h = frequency data (Hz)
+
+              sign     = the feature's sign, where:
+
+                         s = signed data
+                         u = unsigned data
+                         a = the absolute value of the data
+                         p = the positive data
+                         n = the negative data
+
+ See also <a href="worm2StatsInfo.html" class="code" title="function worm2StatsInfo(filename, wormFiles, varargin)">WORM2STATSINFO</a>, <a href="worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">WORM2HISTOGRAM</a>, <a href="addWormHistograms.html" class="code" title="function addWormHistograms(filename, wormFiles, varargin)">ADDWORMHISTOGRAMS</a>, <a href="worm2stats.html" class="code" title="function worm2stats(filename, wormFiles, varargin)">WORM2STATS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>	GETSTRUCTFIELD Get a field in a structure.</li><li><a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>	WORMDATAINFO Get information for computing the worm data.</li><li><a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>	WORMDISPLAYINFO Get information for displaying the worm data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Printing/plotWormStatsMatrix.html" class="code" title="function plotWormStatsMatrix(wormFile, varargin)">plotWormStatsMatrix</a>	PLOTWORMSTATSMATRIX Plot a worms x features matrix.</li><li><a href="../../../SegWorm/Worms/Printing/printWormStatsMatrix.html" class="code" title="function printWormStatsMatrix(filename, wormFile, varargin)">printWormStatsMatrix</a>	PRINTWORMSTATSMATRIX Print a worms x features matrix to a CSV file.</li><li><a href="../../../SegWorm/Worms/Printing/worm2TOCOntologyTIF.html" class="code" title="function [filename pages] = worm2TOCOntologyTIF(filename, worm, wormName,varargin)">worm2TOCOntologyTIF</a>	WORM2TOCONTOLOGYTIF Save worm details to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2detailsPDF2.html" class="code" title="function [filename pages] = worm2detailsPDF(filename, worm, wormName,varargin)">worm2detailsPDF2</a>	WORM2DETAILSPDF Save worm details to a PDF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>	WORM2DETAILSTIF Save worm details to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2summaryTIF.html" class="code" title="function [filename pages] = worm2summaryTIF(filename, worm, wormName,varargin)">worm2summaryTIF</a>	WORM2SUMMARYTIF Save a worm summary to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/wormStatsInfo2CSV.html" class="code" title="function wormStatsInfo2CSV(filename, wormFile, varargin)">wormStatsInfo2CSV</a>	WORMSTATSINFO2CSV Convert the worm statistics to a set of CSV files.</li><li><a href="../../../SegWorm/Worms/Printing/wormStatsMatrix2CSV.html" class="code" title="function wormStatsMatrix2CSV(filename, wormFile, varargin)">wormStatsMatrix2CSV</a>	WORMSTATSMATRIX2CSV Print a worms x features CSV matrix.</li><li><a href="worm2StatsInfo.html" class="code" title="function worm2StatsInfo(filename, wormFiles, varargin)">worm2StatsInfo</a>	WORM2STATSINFO Compute worm statistics information and save it to a file.</li><li><a href="wormStats2Matrix.html" class="code" title="function wormStats2Matrix(filename, wormFiles, varargin)">wormStats2Matrix</a>	WORMSTATS2MATRIX Construct and save a worms x features matrix.</li><li><a href="wormStats2Ontology.html" class="code" title="function strains = wormStats2Ontology(filenames, varargin)">wormStats2Ontology</a>	WORMSTATS2ONTOLOGY Convert a worm's significant features to ontology.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function info = addInfo(info, histInfo, featureI, field, category, type)</a></li><li><a href="#_sub2" class="code">function info = addEventInfo(info, histInfo, featureI, offset,</a></li><li><a href="#_sub3" class="code">function [info offset] = addEventSummaryInfo(info, histInfo, featureI,</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function info = wormStatsInfo()</a>
+0002 <span class="comment">%WORMFEATUREINFO Get information for computing the worm statistics.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   INFO = WORMSTATSINFO()</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Output:</span>
+0007 <span class="comment">%       info - information for computing the worm data; a structure where:</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%              name     = the feature's name</span>
+0010 <span class="comment">%              units    = the feature's units</span>
+0011 <span class="comment">%              title1   = the feature's 1st title</span>
+0012 <span class="comment">%              title1I  = the feature's 1st title index</span>
+0013 <span class="comment">%              title2   = the feature's 2nd title</span>
+0014 <span class="comment">%              title2I  = the feature's 2nd title index</span>
+0015 <span class="comment">%              title3   = the feature's 3rd title</span>
+0016 <span class="comment">%              title3I   = the feature's 3rd title index</span>
+0017 <span class="comment">%              field    = the feature's path; a struct where:</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%                         histogram  = the histogram data path</span>
+0020 <span class="comment">%                         statistics = the statistics data path</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%              index    = the feature's field index</span>
+0023 <span class="comment">%              isMain   = is this a main feature?</span>
+0024 <span class="comment">%              category = the feature's category, where:</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%                         m = morphology</span>
+0027 <span class="comment">%                         s = posture (shape)</span>
+0028 <span class="comment">%                         l = locomotion</span>
+0029 <span class="comment">%                         p = path</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%              type     = the feature's type, where:</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%                         s = simple data</span>
+0034 <span class="comment">%                         m = motion data</span>
+0035 <span class="comment">%                         d = event summary data</span>
+0036 <span class="comment">%                         e = event data</span>
+0037 <span class="comment">%                         i = inter-event data</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%              subType  = the feature's sub-type, where:</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%                         n = none</span>
+0042 <span class="comment">%                         f = forward motion data</span>
+0043 <span class="comment">%                         b = backward motion data</span>
+0044 <span class="comment">%                         p = paused data</span>
+0045 <span class="comment">%                         t = time data</span>
+0046 <span class="comment">%                         d = distance data</span>
+0047 <span class="comment">%                         h = frequency data (Hz)</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%              sign     = the feature's sign, where:</span>
+0050 <span class="comment">%</span>
+0051 <span class="comment">%                         s = signed data</span>
+0052 <span class="comment">%                         u = unsigned data</span>
+0053 <span class="comment">%                         a = the absolute value of the data</span>
+0054 <span class="comment">%                         p = the positive data</span>
+0055 <span class="comment">%                         n = the negative data</span>
+0056 <span class="comment">%</span>
+0057 <span class="comment">% See also WORM2STATSINFO, WORM2HISTOGRAM, ADDWORMHISTOGRAMS, WORM2STATS</span>
+0058 
+0059 <span class="comment">% Initialize the event summary data type.</span>
+0060 eventSummaryType = <span class="string">'d'</span>;
+0061 
+0062 <span class="comment">% Initialize the feature information.</span>
+0063 dataInfo = <a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>();
+0064 histInfo = <a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>();
+0065 
+0066 <span class="comment">% What features do we have?</span>
+0067 info = [];
+0068 <span class="keyword">for</span> i = 1:length(dataInfo)
+0069     field = dataInfo(i).field;
+0070     category = dataInfo(i).category;
+0071     type = dataInfo(i).type;
+0072     <span class="keyword">switch</span> type
+0073         
+0074         <span class="comment">% Add simple features.</span>
+0075         <span class="keyword">case</span> <span class="string">'s'</span>
+0076             info = <a href="#_sub1" class="code" title="subfunction info = addInfo(info, histInfo, featureI, field, category, type)">addInfo</a>(info, histInfo, i, field, category, type);
+0077             
+0078         <span class="comment">% Add motion features.</span>
+0079         <span class="keyword">case</span> <span class="string">'m'</span>
+0080             info = <a href="#_sub1" class="code" title="subfunction info = addInfo(info, histInfo, featureI, field, category, type)">addInfo</a>(info, histInfo, i, field, category, type);
+0081             
+0082         <span class="comment">% Count the event features.</span>
+0083         <span class="keyword">case</span> <span class="string">'e'</span>
+0084             
+0085             <span class="comment">% Add the event summary features.</span>
+0086             subFields = dataInfo(i).subFields.summary;
+0087             [info offset] = <a href="#_sub3" class="code" title="subfunction [info offset] = addEventSummaryInfo(info, histInfo, featureI, ">addEventSummaryInfo</a>(info, histInfo, i, <span class="keyword">...</span>
+0088                 field, subFields, category, eventSummaryType);
+0089             
+0090             <span class="comment">% Add the event data features.</span>
+0091             subFields = dataInfo(i).subFields.data;
+0092             info = <a href="#_sub2" class="code" title="subfunction info = addEventInfo(info, histInfo, featureI, offset, ">addEventInfo</a>(info, histInfo, i, offset, <span class="keyword">...</span>
+0093                 field, subFields, category);
+0094     <span class="keyword">end</span>
+0095 <span class="keyword">end</span>
+0096 <span class="keyword">end</span>
+0097 
+0098 
+0099 
+0100 <span class="comment">%% Add the feature information.</span>
+0101 <a name="_sub1" href="#_subfunctions" class="code">function info = addInfo(info, histInfo, featureI, field, category, type)</a>
+0102 
+0103 <span class="comment">% Initialize the data fields.</span>
+0104 histStr = <span class="string">'.histogram.'</span>;
+0105 statStr = <span class="string">'.statistics.'</span>;
+0106 
+0107 <span class="comment">% Initialize the locomotion fields.</span>
+0108 motionNames = { <span class="keyword">...</span>
+0109     <span class="string">''</span>, <span class="keyword">...</span>
+0110     <span class="string">'Forward '</span>, <span class="keyword">...</span>
+0111     <span class="string">'Paused '</span>, <span class="keyword">...</span>
+0112     <span class="string">'Backward '</span>};
+0113 motionFields = { <span class="keyword">...</span>
+0114     <span class="string">''</span>, <span class="keyword">...</span>
+0115     <span class="string">'.forward'</span>, <span class="keyword">...</span>
+0116     <span class="string">'.paused'</span>, <span class="keyword">...</span>
+0117     <span class="string">'.backward'</span>};
+0118 motionTypes = {
+0119     <span class="string">'n'</span>
+0120     <span class="string">'f'</span>
+0121     <span class="string">'p'</span>
+0122     <span class="string">'b'</span>};
+0123 
+0124 <span class="comment">% Initialize the signed fields.</span>
+0125 signNames = {
+0126     <span class="string">''</span>
+0127     <span class="string">'Absolute '</span>
+0128     <span class="string">'Positive '</span>
+0129     <span class="string">'Negative '</span>
+0130     };
+0131 signFields = {
+0132     <span class="string">'data.mean.all'</span>
+0133     <span class="string">'data.mean.abs'</span>
+0134     <span class="string">'data.mean.pos'</span>
+0135     <span class="string">'data.mean.neg'</span>};
+0136 unsignedType = {<span class="string">'u'</span>};
+0137 signedTypes = {
+0138     <span class="string">'s'</span>
+0139     <span class="string">'a'</span>
+0140     <span class="string">'p'</span>
+0141     <span class="string">'n'</span>};
+0142 
+0143 <span class="comment">% Is the feature subdivided by motion?</span>
+0144 motionEndI = 1;
+0145 <span class="keyword">if</span> type == <span class="string">'m'</span>
+0146     motionEndI = length(motionNames);
+0147 <span class="keyword">end</span>
+0148 
+0149 <span class="comment">% Get the feature information.</span>
+0150 feature = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field);
+0151 
+0152 <span class="comment">% Add the feature information.</span>
+0153 <span class="keyword">for</span> i = 1:length(feature)
+0154     
+0155     
+0156     <span class="comment">% Is the feature signed?</span>
+0157     signEndI = 1;
+0158     signTypes = unsignedType;
+0159     <span class="keyword">if</span> feature(i).isSigned
+0160         signEndI = length(signNames);
+0161         signTypes = signedTypes;
+0162     <span class="keyword">end</span>
+0163     
+0164     <span class="comment">% Create the new feature.</span>
+0165     <span class="keyword">for</span> j = 1:motionEndI
+0166         <span class="keyword">for</span> k = 1:signEndI
+0167             newInfo = [];
+0168             newInfo.name = <span class="keyword">...</span>
+0169                 [signNames{k} motionNames{j} feature(i).name];
+0170             newInfo.unit = feature(i).unit;
+0171             newInfo.title1 = feature(i).name;
+0172             newInfo.title2 = motionNames{j}(1:(end - 1));
+0173             newInfo.title3 = signNames{k}(1:(end - 1));
+0174             newInfo.title1I = featureI;
+0175             newInfo.title2I = j;
+0176             newInfo.title3I = k;
+0177             indexStr = <span class="string">''</span>;
+0178             newInfo.index = nan;
+0179             <span class="keyword">if</span> length(feature) &gt; 1
+0180                 indexStr = [<span class="string">'('</span> num2str(i) <span class="string">')'</span>];
+0181                 newInfo.index = i;
+0182             <span class="keyword">end</span>
+0183             newInfo.field.histogram = <span class="keyword">...</span>
+0184                 [field indexStr motionFields{j} histStr signFields{k}];
+0185             newInfo.field.statistics = <span class="keyword">...</span>
+0186                 [field indexStr motionFields{j} statStr signFields{k}];
+0187             newInfo.isMain = j == 1 &amp;&amp; k == 1;
+0188             newInfo.category = category;
+0189             newInfo.type = type;
+0190             newInfo.subType = motionTypes{j};
+0191             newInfo.sign = signTypes{k};
+0192             
+0193             <span class="comment">% Add the new feature.</span>
+0194             info = cat(1, info, newInfo);
+0195         <span class="keyword">end</span>
+0196     <span class="keyword">end</span>
+0197 <span class="keyword">end</span>
+0198 <span class="keyword">end</span>
+0199 
+0200 
+0201 
+0202 <span class="comment">%% Add the event information.</span>
+0203 <a name="_sub2" href="#_subfunctions" class="code">function info = addEventInfo(info, histInfo, featureI, offset, </a><span class="keyword">...</span>
+0204     field, subFields, category)
+0205 
+0206 <span class="comment">% Initialize the feature type.</span>
+0207 eventType = <span class="string">'e'</span>;
+0208 interType = <span class="string">'i'</span>;
+0209 interStr = <span class="string">'inter'</span>;
+0210 
+0211 <span class="comment">% Initialize the data fields.</span>
+0212 histStr = <span class="string">'.histogram.'</span>;
+0213 statStr = <span class="string">'.statistics.'</span>;
+0214 
+0215 <span class="comment">% Initialize the signed fields.</span>
+0216 signNames = {
+0217     <span class="string">''</span>
+0218     <span class="string">'Absolute '</span>
+0219     <span class="string">'Positive '</span>
+0220     <span class="string">'Negative '</span>
+0221     };
+0222 signFields = {
+0223     <span class="string">'data.mean.all'</span>
+0224     <span class="string">'data.mean.abs'</span>
+0225     <span class="string">'data.mean.pos'</span>
+0226     <span class="string">'data.mean.neg'</span>};
+0227 unsignedType = {<span class="string">'u'</span>};
+0228 signedTypes = {
+0229     <span class="string">'s'</span>
+0230     <span class="string">'a'</span>
+0231     <span class="string">'p'</span>
+0232     <span class="string">'n'</span>};
+0233 
+0234 <span class="comment">% Get the feature information.</span>
+0235 feature = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field);
+0236 
+0237 <span class="comment">% Add the feature information.</span>
+0238 <span class="keyword">for</span> i = 1:length(feature)
+0239     <span class="keyword">for</span> j = 1:length(subFields)
+0240         
+0241         <span class="comment">% Get the feature information.</span>
+0242         subFeature = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(feature(i), subFields{j});
+0243         
+0244         <span class="comment">% Determine the feature type.</span>
+0245         <span class="keyword">if</span> strncmp(subFields{j}, interStr, length(interStr))
+0246             type = interType;
+0247             subType = lower(subFields{j}(length(interStr) + 1));
+0248         <span class="keyword">else</span>
+0249             type = eventType;
+0250             subType = subFields{j}(1);
+0251         <span class="keyword">end</span>
+0252         
+0253         <span class="comment">% Is the feature signed?</span>
+0254         signEndI = 1;
+0255         signTypes = unsignedType;
+0256         <span class="keyword">if</span> subFeature(i).isSigned
+0257             signEndI = length(signNames);
+0258             signTypes = signedTypes;
+0259         <span class="keyword">end</span>
+0260         
+0261         <span class="comment">% Create the new feature.</span>
+0262         <span class="keyword">for</span> k = 1:signEndI
+0263             newInfo = [];
+0264             newInfo.name = [signNames{k} subFeature.name];
+0265             newInfo.unit = subFeature.unit;
+0266             newInfo.title1 = feature(i).name;
+0267             newInfo.title2 = subFeature.shortName;
+0268             newInfo.title3 = signNames{k}(1:(end - 1));
+0269             newInfo.title1I = featureI;
+0270             newInfo.title2I = j + offset;
+0271             newInfo.title3I = k;
+0272             indexStr = <span class="string">'.'</span>;
+0273             newInfo.index = nan;
+0274             <span class="keyword">if</span> length(feature) &gt; 1
+0275                 indexStr = [<span class="string">'('</span> num2str(i) <span class="string">').'</span>];
+0276                 newInfo.index = i;
+0277             <span class="keyword">end</span>
+0278             newInfo.field.histogram = <span class="keyword">...</span>
+0279                 [field indexStr subFields{j} histStr signFields{k}];
+0280             newInfo.field.statistics = <span class="keyword">...</span>
+0281                 [field indexStr subFields{j} statStr signFields{k}];
+0282             newInfo.isMain = k == 1;
+0283             newInfo.category = category;
+0284             newInfo.type = type;
+0285             newInfo.subType = subType;
+0286             newInfo.sign = signTypes{k};
+0287             
+0288             <span class="comment">% Add the new feature.</span>
+0289             info = cat(1, info, newInfo);
+0290         <span class="keyword">end</span>
+0291     <span class="keyword">end</span>
+0292 <span class="keyword">end</span>
+0293 <span class="keyword">end</span>
+0294 
+0295 
+0296 
+0297 <span class="comment">%% Add the event summary information.</span>
+0298 <a name="_sub3" href="#_subfunctions" class="code">function [info offset] = addEventSummaryInfo(info, histInfo, featureI, </a><span class="keyword">...</span>
+0299     field, subFields, category, type)
+0300 
+0301 <span class="comment">% Initialize the summary features sign.</span>
+0302 summarySign = <span class="string">'u'</span>;
+0303 
+0304 <span class="comment">%I nitialize the event summary fields.</span>
+0305 dataStr = <span class="string">'.data'</span>;
+0306 ratioStr = <span class="string">'ratio.'</span>;
+0307 
+0308 <span class="comment">% Add the event summary sub fields.</span>
+0309 <span class="keyword">for</span> i = 1:length(subFields)
+0310     
+0311     <span class="comment">% Get the feature information.</span>
+0312     feature = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field);
+0313     subFeature = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(feature, subFields{i});
+0314     
+0315     <span class="comment">% Determine the sub-feature type.</span>
+0316     <span class="keyword">if</span> subFields{i}(1) == <span class="string">'f'</span>
+0317         subType = <span class="string">'h'</span>;
+0318     <span class="keyword">elseif</span> subFields{i}(1) == ratioStr(1)
+0319         subType = subFields{i}(length(ratioStr) + 1);
+0320     <span class="keyword">else</span>
+0321         subType = subFields{i}(1);
+0322     <span class="keyword">end</span>
+0323         
+0324     <span class="comment">% Create the new feature.</span>
+0325     newInfo = [];
+0326     newInfo.name = subFeature.name;
+0327     newInfo.unit = subFeature.unit;
+0328     newInfo.title1 = feature.name;
+0329     newInfo.title2 = subFeature.shortName;
+0330     newInfo.title3 = <span class="string">''</span>;
+0331     newInfo.title1I = featureI;
+0332     newInfo.title2I = i;
+0333     newInfo.title3I = 1;
+0334     newInfo.field.histogram = [field <span class="string">'.'</span> subFields{i} dataStr];
+0335     newInfo.field.statistics = newInfo.field.histogram;
+0336     newInfo.index = nan;
+0337     newInfo.isMain = false;
+0338     newInfo.category = category;
+0339     newInfo.type = type;
+0340     newInfo.subType = subType;
+0341     newInfo.sign = summarySign;
+0342     
+0343     <span class="comment">% Add the new feature.</span>
+0344     info = cat(1, info, newInfo);
+0345 <span class="keyword">end</span>
+0346 
+0347 <span class="comment">% Set the offset.</span>
+0348 offset = i;
+0349 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

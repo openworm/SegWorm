@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of xmlReadTag</title>
+  <meta name="keywords" content="xmlReadTag">
+  <meta name="description" content="XMLREADTAG Read a tag from an XML document.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>xmlReadTag
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>XMLREADTAG Read a tag from an XML document.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function values = xmlReadTag(xml, tag) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">XMLREADTAG Read a tag from an XML document.
+
+   VALUES = XMLREADTAG(XML, TAG)
+
+   Inputs:
+       xml - the xml document
+       tag - the period-delimited path for the tag
+
+   Output:
+       values - the values for the given tag</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/StageMovement/findStageMovement.html" class="code" title="function [frames movesI locations] =findStageMovement(infoFile, logFile, diffFile, verbose, varargin)">findStageMovement</a>	FINDSTAGEMOVEMENT Find stage movements in a worm experiment.</li><li><a href="../../SegWorm/Worms/StageMovement/readPixels2Microns.html" class="code" title="function [pixel2MicronScale rotation] = readPixels2Microns(infoFile)">readPixels2Microns</a>	READPIXELS2MICRONS Read the experiment information file and compute the</li><li><a href="../../SegWorm/Worms/Video/video2Vignette.html" class="code" title="function vignette = video2Vignette(videoFile, frames, threshold,otsuStdDev, dilatePixels, erodePixels, smoothPixels, varargin)">video2Vignette</a>	VIDEO2VIGNETTE Compute the vignette from a video. Exclude the largest</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function values = getElement(element, path, i)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function values = xmlReadTag(xml, tag)</a>
+0002 <span class="comment">%XMLREADTAG Read a tag from an XML document.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   VALUES = XMLREADTAG(XML, TAG)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       xml - the xml document</span>
+0008 <span class="comment">%       tag - the period-delimited path for the tag</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Output:</span>
+0011 <span class="comment">%       values - the values for the given tag</span>
+0012 
+0013 <span class="comment">% Translate the tag to a path.</span>
+0014 path = [];
+0015 i = 1;
+0016 <span class="keyword">while</span> ~isempty(tag)
+0017     [name tag] = strtok(tag, <span class="string">'.'</span>);
+0018     <span class="keyword">if</span> ~isempty(name)
+0019         path{i} = name;
+0020         i = i + 1;
+0021     <span class="keyword">end</span>
+0022 <span class="keyword">end</span>
+0023 
+0024 <span class="comment">% Get the values associated with the tag.</span>
+0025 values = char(<a href="#_sub1" class="code" title="subfunction values = getElement(element, path, i)">getElement</a>(xml, path, 1));
+0026 <span class="keyword">end</span>
+0027 
+0028 <span class="comment">% Get the values associated with a path.</span>
+0029 <a name="_sub1" href="#_subfunctions" class="code">function values = getElement(element, path, i)</a>
+0030 
+0031 <span class="comment">% We've reached the requested node.</span>
+0032 values = [];
+0033 <span class="keyword">if</span> i == length(path) + 1
+0034     
+0035     <span class="comment">% Search for text (value) nodes.</span>
+0036     k = 1;
+0037     nodes = element.getChildNodes;
+0038     <span class="keyword">for</span> j = 0:(nodes.getLength - 1)
+0039         <span class="keyword">if</span> nodes.item(j).getNodeType == element.TEXT_NODE
+0040             value = strtrim(char(nodes.item(j).getNodeValue));
+0041             
+0042             <span class="comment">% Add the value to the list.</span>
+0043             <span class="keyword">if</span> ~isempty(value)
+0044                 values{k} = value;
+0045                 k = k + 1;
+0046             <span class="keyword">end</span>
+0047         <span class="keyword">end</span>
+0048     <span class="keyword">end</span>
+0049 
+0050 <span class="comment">% Search for the next node in the path.</span>
+0051 <span class="keyword">else</span>
+0052     nodes = element.getElementsByTagName(path{i});
+0053     <span class="keyword">for</span> j = 0:(nodes.getLength - 1)
+0054         
+0055         <span class="comment">% Follow the node.</span>
+0056         <span class="keyword">if</span> nodes.item(j).hasChildNodes
+0057             values = cat(2, values, <a href="#_sub1" class="code" title="subfunction values = getElement(element, path, i)">getElement</a>(nodes.item(j), path, i + 1));
+0058         <span class="keyword">end</span>
+0059     <span class="keyword">end</span>
+0060 <span class="keyword">end</span>
+0061 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

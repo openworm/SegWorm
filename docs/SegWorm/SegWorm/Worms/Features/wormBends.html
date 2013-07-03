@@ -1,0 +1,1053 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormBends</title>
+  <meta name="keywords" content="wormBends">
+  <meta name="description" content="WORMBENDS Compute the temporal bending frequency at the nose, head,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>wormBends
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMBENDS Compute the temporal bending frequency at the nose, head,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function bends = wormBends(wormFile, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMBENDS Compute the temporal bending frequency at the nose, head,
+midbody, and tail.
+
+   bends = WORMBENDS(WORMFILE)
+
+   bends = WORMBENDS(WORMFILE, MOTIONMODE)
+
+   bends = WORMBENDS(WORMFILE, MOTIONMODE, VENTRALMODE)
+
+   Inputs:
+       wormFile    - the name of the file containing normalized worms (see
+                     saveWormFrames). The file format is MAT (Matlab's
+                     '.mat') and contains the following variables:
+                   
+                     samples      = the samples per normalized worm; if
+                                    empty, the worms are in structs
+                     fps          = frames/seconds
+                     firstFrame   = the first frame number (in block1)
+                     lastFrame    = the last frame number (in the last block)
+                     blockSize    = the size of a block
+                     blocks       = the number of blocks
+                     block1       = the first block
+                     ...
+                     blockN       = the N-th (last) block
+
+                     If the data is normalized, the blocks are cell arrays
+                     with following structure (see normWorms):
+
+                     blockN{1}  = status:
+                                  s = segmented
+                                  f = segmentation failed
+                                  m = stage movement
+                                  d = dropped frame
+                     blockN{2}  = vulvaContours
+                     blockN{3}  = nonVulvaContours
+                     blockN{4}  = skeletons
+                     blockN{5}  = angles
+                     blockN{6}  = inOutTouches
+                     blockN{7}  = lengths
+                     blockN{8}  = widths
+                     blockN{9}  = headAreas
+                     blockN{10} = tailAreas
+                     blockN{11} = vulvaAreas
+                     blockN{12} = nonVulvaAreas
+
+                     Otherwise, the blocks are just cell arrays of worm
+                     cells; missing worms are labeled with their frame
+                     status instead:
+
+                     blockN = 1 to, at most, blockSize number of worm cells;
+                              or, for missing worms, their frame status:
+                              f = segmentation failed
+                              m = stage movement
+                              d = dropped frame
+
+       motionMode  - the locomotion mode. An optional argument, that when
+                     present, removes non-foraging bending frequencies
+                     measured during pauses in locomotion (e.g.,
+                     frequencies measured as a result of defecation).
+                     The modes are:
+
+                     -1 = backward locomotion
+                      0 = no locomotion (the worm is paused)
+                      1 = forward locomotion
+
+       ventralMode - the ventral side mode:
+
+                     0 = the ventral side is unknown
+                     1 = the ventral side is clockwise
+                     2 = the ventral side is anticlockwise
+
+   Outputs:
+       bends - the bend information as a struct with the subfields for the
+               &quot;nose&quot;, &quot;head&quot;, &quot;midbody&quot;, and &quot;tail&quot; bends; each of these 
+               subfields is a struct containing their &quot;amplitude&quot; and
+               &quot;frequency&quot;, except foraging which contains an &quot;amplitude&quot;
+               and an &quot;angleSpeed&quot; (an angular speed in place of the
+               frequency). Each value maintains its dorsal/ventral sign.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/maxPeaksDist.html" class="code" title="function [peaks indices] = maxPeaksDist(x, dist, varargin)">maxPeaksDist</a>	MAXPEAKSDIST Find the maximum peaks in a vector. The peaks</li><li><a href="../../../SegWorm/Util/minPeaksDist.html" class="code" title="function [peaks indices] = minPeaksDist(x, dist, varargin)">minPeaksDist</a>	MINPEAKSDIST Find the minimum peaks in a vector. The peaks</li><li><a href="../../../SegWorm/Worms/Util/worm2func.html" class="code" title="function data = worm2func(func, state, wormFile, startFrame, endFrame,backScale, frontScale, varargin)">worm2func</a>	WORM2FUNC Apply a function to worm data (normalized within blocks).</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="bendAndSpeedTest.html" class="code" title="">bendAndSpeedTest</a>	Initialize our variables.</li><li><a href="wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [bends state] = bendFunc(dataInfo, state)</a></li><li><a href="#_sub2" class="code">function [amps freqs] = bendData(data, startI, endI,</a></li><li><a href="#_sub3" class="code">function [amps speeds] = foragingData(data, startI, endI, minWinSize, fps)</a></li><li><a href="#_sub4" class="code">function zeroI = findZeroCrossing(data, i, increment)</a></li><li><a href="#_sub5" class="code">function peakI = findMinPeak(data, i, winSize, increment)</a></li><li><a href="#_sub6" class="code">function peakI = findMaxPeak(data, i, winSize, increment)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function bends = wormBends(wormFile, varargin)</a>
+0002 <span class="comment">%WORMBENDS Compute the temporal bending frequency at the nose, head,</span>
+0003 <span class="comment">%midbody, and tail.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   bends = WORMBENDS(WORMFILE)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   bends = WORMBENDS(WORMFILE, MOTIONMODE)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   bends = WORMBENDS(WORMFILE, MOTIONMODE, VENTRALMODE)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Inputs:</span>
+0012 <span class="comment">%       wormFile    - the name of the file containing normalized worms (see</span>
+0013 <span class="comment">%                     saveWormFrames). The file format is MAT (Matlab's</span>
+0014 <span class="comment">%                     '.mat') and contains the following variables:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%                     samples      = the samples per normalized worm; if</span>
+0017 <span class="comment">%                                    empty, the worms are in structs</span>
+0018 <span class="comment">%                     fps          = frames/seconds</span>
+0019 <span class="comment">%                     firstFrame   = the first frame number (in block1)</span>
+0020 <span class="comment">%                     lastFrame    = the last frame number (in the last block)</span>
+0021 <span class="comment">%                     blockSize    = the size of a block</span>
+0022 <span class="comment">%                     blocks       = the number of blocks</span>
+0023 <span class="comment">%                     block1       = the first block</span>
+0024 <span class="comment">%                     ...</span>
+0025 <span class="comment">%                     blockN       = the N-th (last) block</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%                     If the data is normalized, the blocks are cell arrays</span>
+0028 <span class="comment">%                     with following structure (see normWorms):</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%                     blockN{1}  = status:</span>
+0031 <span class="comment">%                                  s = segmented</span>
+0032 <span class="comment">%                                  f = segmentation failed</span>
+0033 <span class="comment">%                                  m = stage movement</span>
+0034 <span class="comment">%                                  d = dropped frame</span>
+0035 <span class="comment">%                     blockN{2}  = vulvaContours</span>
+0036 <span class="comment">%                     blockN{3}  = nonVulvaContours</span>
+0037 <span class="comment">%                     blockN{4}  = skeletons</span>
+0038 <span class="comment">%                     blockN{5}  = angles</span>
+0039 <span class="comment">%                     blockN{6}  = inOutTouches</span>
+0040 <span class="comment">%                     blockN{7}  = lengths</span>
+0041 <span class="comment">%                     blockN{8}  = widths</span>
+0042 <span class="comment">%                     blockN{9}  = headAreas</span>
+0043 <span class="comment">%                     blockN{10} = tailAreas</span>
+0044 <span class="comment">%                     blockN{11} = vulvaAreas</span>
+0045 <span class="comment">%                     blockN{12} = nonVulvaAreas</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">%                     Otherwise, the blocks are just cell arrays of worm</span>
+0048 <span class="comment">%                     cells; missing worms are labeled with their frame</span>
+0049 <span class="comment">%                     status instead:</span>
+0050 <span class="comment">%</span>
+0051 <span class="comment">%                     blockN = 1 to, at most, blockSize number of worm cells;</span>
+0052 <span class="comment">%                              or, for missing worms, their frame status:</span>
+0053 <span class="comment">%                              f = segmentation failed</span>
+0054 <span class="comment">%                              m = stage movement</span>
+0055 <span class="comment">%                              d = dropped frame</span>
+0056 <span class="comment">%</span>
+0057 <span class="comment">%       motionMode  - the locomotion mode. An optional argument, that when</span>
+0058 <span class="comment">%                     present, removes non-foraging bending frequencies</span>
+0059 <span class="comment">%                     measured during pauses in locomotion (e.g.,</span>
+0060 <span class="comment">%                     frequencies measured as a result of defecation).</span>
+0061 <span class="comment">%                     The modes are:</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">%                     -1 = backward locomotion</span>
+0064 <span class="comment">%                      0 = no locomotion (the worm is paused)</span>
+0065 <span class="comment">%                      1 = forward locomotion</span>
+0066 <span class="comment">%</span>
+0067 <span class="comment">%       ventralMode - the ventral side mode:</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">%                     0 = the ventral side is unknown</span>
+0070 <span class="comment">%                     1 = the ventral side is clockwise</span>
+0071 <span class="comment">%                     2 = the ventral side is anticlockwise</span>
+0072 <span class="comment">%</span>
+0073 <span class="comment">%   Outputs:</span>
+0074 <span class="comment">%       bends - the bend information as a struct with the subfields for the</span>
+0075 <span class="comment">%               &quot;nose&quot;, &quot;head&quot;, &quot;midbody&quot;, and &quot;tail&quot; bends; each of these</span>
+0076 <span class="comment">%               subfields is a struct containing their &quot;amplitude&quot; and</span>
+0077 <span class="comment">%               &quot;frequency&quot;, except foraging which contains an &quot;amplitude&quot;</span>
+0078 <span class="comment">%               and an &quot;angleSpeed&quot; (an angular speed in place of the</span>
+0079 <span class="comment">%               frequency). Each value maintains its dorsal/ventral sign.</span>
+0080 
+0081 <span class="comment">% Are we using the locomotion mode to remove non-foraging bends?</span>
+0082 pausedMotion = [];
+0083 <span class="keyword">if</span> ~isempty(varargin)
+0084     motionMode = varargin{1};
+0085     pausedMotion = (motionMode == 0);
+0086 <span class="keyword">end</span>
+0087 
+0088 <span class="comment">% Where is the ventral side located?</span>
+0089 ventralMode = 0;
+0090 <span class="keyword">if</span> length(varargin) &gt; 1
+0091     ventralMode = varargin{2};
+0092 <span class="keyword">end</span>
+0093 
+0094 <span class="comment">% Check the worm file.</span>
+0095 <span class="keyword">if</span> ~exist(wormFile, <span class="string">'file'</span>)
+0096     error(<span class="string">'multiScaleWorm:BadWormFile'</span>, [<span class="string">'Cannot find '''</span> wormFile <span class="string">''''</span>]);
+0097 <span class="keyword">end</span>
+0098 
+0099 <span class="comment">% Are the normalized blocks separate?</span>
+0100 <span class="keyword">global</span> blockFilePath;
+0101 blockFilePath = [];
+0102 load(wormFile, <span class="string">'block1'</span>);
+0103 <span class="keyword">if</span> ~exist(<span class="string">'block1'</span>, <span class="string">'var'</span>)
+0104     
+0105     <span class="comment">% Get the path from the file.</span>
+0106     blockFilePath = fileparts(wormFile);
+0107     
+0108     <span class="comment">% Use the current path.</span>
+0109     <span class="keyword">if</span> isempty(blockFilePath)
+0110         blockFilePath = pwd;
+0111     <span class="keyword">end</span>
+0112     
+0113 <span class="comment">% Clean up memory.</span>
+0114 <span class="keyword">else</span>
+0115     clear(<span class="string">'block1'</span>);
+0116 <span class="keyword">end</span>
+0117 
+0118 <span class="comment">% Determine the variables (the blocks are in separate files).</span>
+0119 <span class="keyword">if</span> ~isempty(blockFilePath)
+0120     
+0121     <span class="comment">% Load the worm information.</span>
+0122     load(wormFile, <span class="string">'myAviInfo'</span>, <span class="string">'normBlockList'</span>);
+0123     
+0124     <span class="comment">% Check the variables.</span>
+0125     varName = <span class="string">'myAviInfo'</span>;
+0126     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0127         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0128             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0129     <span class="keyword">else</span>
+0130         fps = myAviInfo.fps;
+0131     <span class="keyword">end</span>
+0132     varName = <span class="string">'normBlockList'</span>;
+0133     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0134         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0135             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0136     <span class="keyword">end</span>
+0137     
+0138     <span class="comment">% Determine the number of blocks.</span>
+0139     blocks = length(normBlockList);
+0140     
+0141     <span class="comment">% Determine the block size.</span>
+0142     load(fullfile(blockFilePath, normBlockList{1}));
+0143     eval([<span class="string">'block = '</span> normBlockList{1} <span class="string">';'</span>]);
+0144     clear(normBlockList{1});
+0145     blockSize = size(block{1}, 2);
+0146     
+0147     <span class="comment">% Determine the last frame.</span>
+0148     load(fullfile(blockFilePath, normBlockList{end}));
+0149     eval([<span class="string">'block = '</span> normBlockList{end} <span class="string">';'</span>]);
+0150     clear(normBlockList{end});
+0151     lastBlockSize = size(block{1}, 2);
+0152     lastFrame = (blocks - 1) * blockSize + lastBlockSize - 1; 
+0153     clear(<span class="string">'block'</span>);
+0154     
+0155 <span class="comment">% Check the variables (the blocks are in a single file).</span>
+0156 <span class="keyword">else</span>
+0157     
+0158     <span class="comment">% Load the worm information.</span>
+0159     load(wormFile, <span class="string">'fps'</span>, <span class="string">'lastFrame'</span>);
+0160     
+0161     <span class="comment">% Check the variables.</span>
+0162     varName = <span class="string">'fps'</span>;
+0163     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0164         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0165             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0166     <span class="keyword">end</span>
+0167     varName = <span class="string">'lastFrame'</span>;
+0168     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0169         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0170             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0171     <span class="keyword">end</span>
+0172 <span class="keyword">end</span>
+0173 
+0174 <span class="comment">% Correct the data types.</span>
+0175 fps = double(fps);
+0176 
+0177 <span class="comment">% Compute the number of frames.</span>
+0178 frames = lastFrame + 1;
+0179 
+0180 <span class="comment">% Initialize the function state.</span>
+0181 <span class="comment">%</span>
+0182 <span class="comment">% Note: empirically I've found the values below achieve good signal.</span>
+0183 <span class="comment">%</span>
+0184 <span class="comment">% Furthermore ...</span>
+0185 <span class="comment">%</span>
+0186 <span class="comment">% Huang et al. in 2006, measure foraging frequencies for several worms and</span>
+0187 <span class="comment">% find the signal centered at roughly 4Hz. For N2 worms, they see a second</span>
+0188 <span class="comment">% signal at 10Hz but I find this value too close to the background noise</span>
+0189 <span class="comment">% present in segmentation. Visually inspecting the foraging signal, as the</span>
+0190 <span class="comment">% bend between the nose and neck, corroborates a roughly 4Hz signal. But,</span>
+0191 <span class="comment">% foraging usually encompasses only half to a quarter cycle. In other</span>
+0192 <span class="comment">% words, the worm bends it nose sharply and sometimes bends it back but a</span>
+0193 <span class="comment">% full wave, akin to a body bend, occurs far less frequently. Therefore I</span>
+0194 <span class="comment">% chose to measure angular speed for foraging.</span>
+0195 <span class="comment">%</span>
+0196 <span class="comment">% The body bend frequency is much easier to see. The N2 signal is clearly</span>
+0197 <span class="comment">% centered around 1/3Hz in both the literature and through visual</span>
+0198 <span class="comment">% inspection.</span>
+0199 <span class="comment">%</span>
+0200 <span class="comment">% I chose a high-frequency threshold of 4 frames. With 4 frames a 3-frame</span>
+0201 <span class="comment">% tick, resulting from segmentation noise, will be diluted by the</span>
+0202 <span class="comment">% additional frame.</span>
+0203 <span class="comment">%</span>
+0204 <span class="comment">% I chose a low-frequency threshold that requires at least half of the</span>
+0205 <span class="comment">% signal cycle to be present in the measurement window. In practice, this</span>
+0206 <span class="comment">% threshold appears to be unecessary as the data rarely, if ever, violates</span>
+0207 <span class="comment">% it.</span>
+0208 minNoseWin = round(0.1 * fps);
+0209 maxNoseWinTime = 15;
+0210 maxNoseWin = round(maxNoseWinTime * fps);
+0211 noseState = struct( <span class="keyword">...</span>
+0212     <span class="string">'minWin'</span>, minNoseWin, <span class="keyword">...</span>
+0213     <span class="string">'maxWin'</span>, maxNoseWin, <span class="keyword">...</span>
+0214     <span class="keyword">...</span><span class="comment"> %'res', 2^11, ... % the FFT is quantized below this resolution</span>
+0215     <span class="string">'noseI'</span>, fliplr(1:4), <span class="keyword">...</span><span class="comment"> % half the head (1/12 the worm)</span>
+0216     <span class="string">'neckI'</span>, fliplr(5:8)); <span class="comment">% half the head (1/12 the worm)</span>
+0217     <span class="comment">%'minFreq', 1 / (4 * maxNoseWinTime), ... % require at least 50% of the wave</span>
+0218     <span class="comment">%'maxFreq', fps / 4, ... % with 4 frames we can resolve 75% of a wave</span>
+0219     <span class="comment">%'minAmp', 15);</span>
+0220 minBodyWinTime = .5;
+0221 minBodyWin = round(minBodyWinTime * fps);
+0222 maxBodyWinTime = 15;
+0223 maxBodyWin = round(maxBodyWinTime * fps);
+0224 bodyState = struct( <span class="keyword">...</span>
+0225     <span class="string">'minWin'</span>, minBodyWin, <span class="keyword">...</span>
+0226     <span class="string">'maxWin'</span>, maxBodyWin, <span class="keyword">...</span>
+0227     <span class="string">'res'</span>, 2^14, <span class="keyword">...</span><span class="comment"> % the FFT is quantized below this resolution</span>
+0228     <span class="string">'headI'</span>, 6:10, <span class="keyword">...</span><span class="comment"> % centered at the head (1/6 the worm)</span>
+0229     <span class="string">'midI'</span>, 23:27, <span class="keyword">...</span><span class="comment"> % centered at the middle of the worm</span>
+0230     <span class="string">'tailI'</span>, 40:44, <span class="keyword">...</span><span class="comment"> % centered at the tail (1/6 the worm)</span>
+0231     <span class="string">'minFreq'</span>, 1 / (4 * maxBodyWinTime), <span class="keyword">...</span><span class="comment"> % require at least 50% of the wave</span>
+0232     <span class="string">'maxFreq'</span>, fps / 4); <span class="comment">% with 4 frames we can resolve 75% of a wave</span>
+0233     <span class="comment">%'minAmp', 15);</span>
+0234 bendState = struct( <span class="keyword">...</span>
+0235     <span class="string">'nose'</span>, noseState, <span class="keyword">...</span>
+0236     <span class="string">'body'</span>, bodyState);
+0237 
+0238 <span class="comment">% Compute the bends.</span>
+0239 win = max(bendState.nose.maxWin / fps, bendState.body.maxWin / fps);
+0240 data = <a href="../../../SegWorm/Worms/Util/worm2func.html" class="code" title="function data = worm2func(func, state, wormFile, startFrame, endFrame,backScale, frontScale, varargin)">worm2func</a>(@<a href="#_sub1" class="code" title="subfunction [bends state] = bendFunc(dataInfo, state)">bendFunc</a>, bendState, wormFile, [], [], win, win);
+0241 <a href="#_sub2" class="code" title="subfunction [amps freqs] = bendData(data, startI, endI, ">bendData</a> = [];
+0242 <span class="keyword">for</span> i = 1:length(data)
+0243     <a href="#_sub2" class="code" title="subfunction [amps freqs] = bendData(data, startI, endI, ">bendData</a> = cat(1, <a href="#_sub2" class="code" title="subfunction [amps freqs] = bendData(data, startI, endI, ">bendData</a>, data{i});
+0244 <span class="keyword">end</span>
+0245 
+0246 <span class="comment">% Organize the data.</span>
+0247 foragingBend = struct(<span class="keyword">...</span>
+0248     <span class="string">'amplitude'</span>, [], <span class="keyword">...</span>
+0249     <span class="string">'angleSpeed'</span>, []);
+0250 bodyBend = struct(<span class="keyword">...</span>
+0251     <span class="string">'amplitude'</span>, [], <span class="keyword">...</span>
+0252     <span class="string">'frequency'</span>, []);
+0253 bends = struct( <span class="keyword">...</span>
+0254     <span class="string">'foraging'</span>, foragingBend, <span class="keyword">...</span>
+0255     <span class="string">'head'</span>, bodyBend, <span class="keyword">...</span>
+0256     <span class="string">'midbody'</span>, bodyBend, <span class="keyword">...</span>
+0257     <span class="string">'tail'</span>, bodyBend);
+0258 
+0259 <span class="comment">% Clean up and offset the nose data.</span>
+0260 <span class="comment">%noseOff = round(bendState.nose.win * fps / 2);</span>
+0261 <span class="comment">%noseOff = round(bendState.nose.win * fps);</span>
+0262 noseOff = 0;
+0263 noseAmps = [bendData.noseAmps];
+0264 noseFreqs = [bendData.noseFreqs];
+0265 <span class="keyword">if</span> ventralMode &gt; 1
+0266     noseAmps = -noseAmps;
+0267     noseFreqs = -noseFreqs;
+0268 <span class="keyword">end</span>
+0269 bends.foraging.amplitude = nan(1,frames);
+0270 bends.foraging.angleSpeed = nan(1,frames);
+0271 bends.foraging.amplitude((1 + noseOff):(length(noseAmps) + noseOff)) = <span class="keyword">...</span>
+0272     noseAmps;
+0273 bends.foraging.angleSpeed((1 + noseOff):(length(noseFreqs) + noseOff)) = <span class="keyword">...</span>
+0274     noseFreqs;
+0275 
+0276 <span class="comment">% Clean up and offset the head data.</span>
+0277 <span class="comment">%bodyOff = round(bendState.body.win * fps / 2);</span>
+0278 <span class="comment">%bodyOff = round(bendState.body.win * fps);</span>
+0279 bodyOff = 0;
+0280 headAmps = [bendData.headAmps];
+0281 headFreqs = [bendData.headFreqs];
+0282 bends.head.amplitude = nan(1,frames);
+0283 bends.head.frequency = nan(1,frames);
+0284 bends.head.amplitude((1 + bodyOff):(length(headAmps) + bodyOff)) = <span class="keyword">...</span>
+0285     headAmps;
+0286 bends.head.frequency((1 + bodyOff):(length(headFreqs) + bodyOff)) = <span class="keyword">...</span>
+0287     headFreqs;
+0288 <span class="keyword">if</span> ~isempty(pausedMotion)
+0289     bends.head.amplitude(pausedMotion) = NaN;
+0290     bends.head.frequency(pausedMotion) = NaN;
+0291 <span class="keyword">end</span>
+0292 
+0293 <span class="comment">% Clean up and offset the midbody data.</span>
+0294 midAmps = [bendData.midAmps];
+0295 midFreqs = [bendData.midFreqs];
+0296 bends.midbody.amplitude = nan(1,frames);
+0297 bends.midbody.frequency = nan(1,frames);
+0298 bends.midbody.amplitude((1 + bodyOff):(length(midAmps) + bodyOff)) = <span class="keyword">...</span>
+0299     midAmps;
+0300 bends.midbody.frequency((1 + bodyOff):(length(midFreqs) + bodyOff)) = <span class="keyword">...</span>
+0301     midFreqs;
+0302 <span class="keyword">if</span> ~isempty(pausedMotion)
+0303     bends.midbody.amplitude(pausedMotion) = NaN;
+0304     bends.midbody.frequency(pausedMotion) = NaN;
+0305 <span class="keyword">end</span>
+0306 
+0307 <span class="comment">% Clean up and offset the tail data.</span>
+0308 tailAmps = [bendData.tailAmps];
+0309 tailFreqs = [bendData.tailFreqs];
+0310 bends.tail.amplitude = nan(1,frames);
+0311 bends.tail.frequency = nan(1,frames);
+0312 bends.tail.amplitude((1 + bodyOff):(length(tailAmps) + bodyOff)) = <span class="keyword">...</span>
+0313     tailAmps;
+0314 bends.tail.frequency((1 + bodyOff):(length(tailFreqs) + bodyOff)) = <span class="keyword">...</span>
+0315     tailFreqs;
+0316 <span class="keyword">if</span> ~isempty(pausedMotion)
+0317     bends.tail.amplitude(pausedMotion) = NaN;
+0318     bends.tail.frequency(pausedMotion) = NaN;
+0319 <span class="keyword">end</span>
+0320 <span class="keyword">end</span>
+0321 
+0322 
+0323 
+0324 <span class="comment">%% Compute the bend angles at the nose, head, midbody, and tail.</span>
+0325 <a name="_sub1" href="#_subfunctions" class="code">function [bends state] = bendFunc(dataInfo, state)</a>
+0326 
+0327 <span class="comment">% No worm data.</span>
+0328 fps = dataInfo.fps;
+0329 data = dataInfo.data;
+0330 isData = data{1} == <span class="string">'s'</span>;
+0331 startI = dataInfo.startDataFrameI;
+0332 endI = dataInfo.endDataFrameI;
+0333 <span class="keyword">if</span> all(~isData)
+0334     nanData = nan(1, endI - startI + 1);
+0335     bends = struct( <span class="keyword">...</span>
+0336         <span class="string">'noseAmps'</span>, nanData, <span class="keyword">...</span>
+0337         <span class="string">'noseFreqs'</span>, nanData, <span class="keyword">...</span>
+0338         <span class="string">'headAmps'</span>, nanData, <span class="keyword">...</span>
+0339         <span class="string">'headFreqs'</span>, nanData, <span class="keyword">...</span>
+0340         <span class="string">'midAmps'</span>, nanData, <span class="keyword">...</span>
+0341         <span class="string">'midFreqs'</span>, nanData, <span class="keyword">...</span>
+0342         <span class="string">'tailAmps'</span>, nanData, <span class="keyword">...</span>
+0343         <span class="string">'tailFreqs'</span>, nanData);
+0344     <span class="keyword">return</span>;
+0345 <span class="keyword">end</span>
+0346 
+0347 <span class="comment">% Find the start and end indices for missing data chunks.</span>
+0348 isNotData = ~isData;
+0349 isInterpNoseData = isNotData;
+0350 diffIsNotData = diff(isNotData);
+0351 startNotDataI = find(diffIsNotData == 1);
+0352 endNotDataI = find(diffIsNotData == -1);
+0353 
+0354 <span class="comment">% Don't interpolate missing data at the very start and end.</span>
+0355 <span class="keyword">if</span> ~isempty(startNotDataI) &amp;&amp; <span class="keyword">...</span>
+0356         (isempty(endNotDataI) || startNotDataI(end) &gt; endNotDataI(end))
+0357     isInterpNoseData(startNotDataI(end):end) = false;
+0358     startNotDataI(end) = [];
+0359 <span class="keyword">end</span>
+0360 <span class="keyword">if</span> ~isempty(endNotDataI) &amp;&amp; <span class="keyword">...</span>
+0361         (isempty(startNotDataI) || startNotDataI(1) &gt; endNotDataI(1))
+0362     isInterpNoseData(1:endNotDataI(1)) = false;
+0363     endNotDataI(1) = [];
+0364 <span class="keyword">end</span>
+0365 
+0366 <span class="comment">% Don't interpolate large missing chunks of data.</span>
+0367 maxNoseInterp = 2 * state.nose.minWin - 1;
+0368 <span class="keyword">for</span> i = 1:length(startNotDataI)
+0369     <span class="keyword">if</span> endNotDataI(i) - startNotDataI(i) &gt; maxNoseInterp
+0370         isInterpNoseData(startNotDataI(i):endNotDataI(i)) = false;
+0371     <span class="keyword">end</span>
+0372 <span class="keyword">end</span>
+0373 
+0374 <span class="comment">% Extract the nose and neck data.</span>
+0375 noseSkeletons = data{4}(state.nose.noseI,:,:);
+0376 neckSkeletons = data{4}(state.nose.neckI,:,:);
+0377 
+0378 <span class="comment">% Extract the body data.</span>
+0379 headBends = mean(data{5}(state.body.headI,:), 1);
+0380 midBends = mean(data{5}(state.body.midI,:), 1);
+0381 tailBends = mean(data{5}(state.body.tailI,:), 1);
+0382 
+0383 <span class="comment">% Interpolate the missing data.</span>
+0384 <span class="comment">%interpType = 'cubic';</span>
+0385 <span class="comment">%interpType = 'spline';</span>
+0386 interpType = <span class="string">'linear'</span>;
+0387 dataI = find(isData);
+0388 interpI = find(isNotData);
+0389 noseInterpI = find(isInterpNoseData);
+0390 <span class="keyword">if</span> ~isempty(interpI) &amp;&amp; length(dataI) &gt; 1
+0391     
+0392     <span class="comment">% Interpolate the nose data.</span>
+0393     <span class="keyword">for</span> i = 1:length(state.nose.noseI)
+0394         noseSkeletons(i,1,noseInterpI) = <span class="keyword">...</span>
+0395             interp1(dataI, squeeze(noseSkeletons(i,1,dataI)), <span class="keyword">...</span>
+0396             noseInterpI, interpType, NaN);
+0397         noseSkeletons(i,2,noseInterpI) = <span class="keyword">...</span>
+0398             interp1(dataI, squeeze(noseSkeletons(i,2,dataI)), <span class="keyword">...</span>
+0399             noseInterpI, interpType, NaN);
+0400     <span class="keyword">end</span>
+0401     
+0402     <span class="comment">% Interpolate the neck data.</span>
+0403     <span class="keyword">for</span> i = 1:length(state.nose.neckI)
+0404         neckSkeletons(i,1,noseInterpI) = <span class="keyword">...</span>
+0405             interp1(dataI, squeeze(neckSkeletons(i,1,dataI)), <span class="keyword">...</span>
+0406             noseInterpI, interpType, NaN);
+0407         neckSkeletons(i,2,noseInterpI) = <span class="keyword">...</span>
+0408             interp1(dataI, squeeze(neckSkeletons(i,2,dataI)), <span class="keyword">...</span>
+0409             noseInterpI, interpType, NaN);
+0410     <span class="keyword">end</span>
+0411     
+0412     <span class="comment">% Interpolate the body data.</span>
+0413     headBends(interpI) = <span class="keyword">...</span>
+0414         interp1(dataI, headBends(dataI), interpI, interpType, NaN);
+0415     midBends(interpI) = <span class="keyword">...</span>
+0416         interp1(dataI, midBends(dataI), interpI, interpType, NaN);
+0417     tailBends(interpI) = <span class="keyword">...</span>
+0418         interp1(dataI, tailBends(dataI), interpI, interpType, NaN);
+0419 <span class="keyword">end</span>
+0420 
+0421 <span class="comment">% Compute the nose bend angles.</span>
+0422 noseDiffs = diff(noseSkeletons, 1, 1);
+0423 <span class="keyword">if</span> size(noseDiffs, 1) &gt; 1
+0424     noseDiffs = mean(noseDiffs, 1);
+0425 <span class="keyword">end</span>
+0426 noseAngles = squeeze(atan2(noseDiffs(:,2,:), noseDiffs(:,1,:)));
+0427 neckDiffs = diff(neckSkeletons, 1, 1);
+0428 <span class="keyword">if</span> size(neckDiffs, 1) &gt; 1
+0429     neckDiffs = mean(neckDiffs, 1);
+0430 <span class="keyword">end</span>
+0431 neckAngles = squeeze(atan2(neckDiffs(:,2,:), neckDiffs(:,1,:)));
+0432 noseBends = (noseAngles - neckAngles)';
+0433 wrap = noseBends &gt; pi;
+0434 noseBends(wrap) = noseBends(wrap) - 2 * pi;
+0435 wrap = noseBends &lt; -pi;
+0436 noseBends(wrap) = noseBends(wrap) + 2 * pi;
+0437 noseBends = noseBends * 180 / pi;
+0438 
+0439 <span class="comment">% Compute the worm bends.</span>
+0440 [noseAmps noseFreqs] = <a href="#_sub3" class="code" title="subfunction [amps speeds] = foragingData(data, startI, endI, minWinSize, fps)">foragingData</a>(noseBends, startI, endI, <span class="keyword">...</span>
+0441     state.nose.minWin, fps);
+0442 [headAmps headFreqs] = <a href="#_sub2" class="code" title="subfunction [amps freqs] = bendData(data, startI, endI, ">bendData</a>(headBends, startI, endI, <span class="keyword">...</span>
+0443     state.body.minWin, state.body.maxWin, fps, state.body.res, false);
+0444 [midAmps midFreqs] = <a href="#_sub2" class="code" title="subfunction [amps freqs] = bendData(data, startI, endI, ">bendData</a>(midBends, startI, endI, <span class="keyword">...</span>
+0445     state.body.minWin, state.body.maxWin, fps, state.body.res, false);
+0446 [tailAmps tailFreqs] = <a href="#_sub2" class="code" title="subfunction [amps freqs] = bendData(data, startI, endI, ">bendData</a>(tailBends, startI, endI, <span class="keyword">...</span>
+0447     state.body.minWin, state.body.maxWin, fps,  state.body.res, false);
+0448 
+0449 <span class="comment">% Remove the noise.</span>
+0450 <span class="comment">%noseFreqs(noseFreqs &gt; state.nose.maxThr) = NaN;</span>
+0451 <span class="comment">%noseFreqs(noseFreqs &lt; state.nose.minThr) = NaN;</span>
+0452 noseAmps(isnan(noseFreqs)) = NaN;
+0453 headFreqs(abs(headFreqs) &gt; state.body.maxFreq) = NaN;
+0454 headFreqs(abs(headFreqs) &lt; state.body.minFreq) = NaN;
+0455 <span class="comment">%headFreqs(abs(headAmps) &lt; state.body.minAmp) = NaN;</span>
+0456 headAmps(isnan(headFreqs)) = NaN;
+0457 midFreqs(abs(midFreqs) &gt; state.body.maxFreq) = NaN;
+0458 midFreqs(abs(midFreqs) &lt; state.body.minFreq) = NaN;
+0459 <span class="comment">%midFreqs(abs(midAmps) &lt; state.body.minAmp) = NaN;</span>
+0460 midAmps(isnan(midFreqs)) = NaN;
+0461 tailFreqs(abs(tailFreqs) &gt; state.body.maxFreq) = NaN;
+0462 tailFreqs(abs(tailFreqs) &lt; state.body.minFreq) = NaN;
+0463 <span class="comment">%tailFreqs(abs(tailAmps) &lt; state.body.minAmp) = NaN;</span>
+0464 tailAmps(isnan(tailFreqs)) = NaN;
+0465 
+0466 <span class="comment">% Organize the data.</span>
+0467 bends = struct( <span class="keyword">...</span>
+0468     <span class="string">'noseAmps'</span>, noseAmps, <span class="keyword">...</span>
+0469     <span class="string">'noseFreqs'</span>, noseFreqs, <span class="keyword">...</span>
+0470     <span class="string">'headAmps'</span>, headAmps, <span class="keyword">...</span>
+0471     <span class="string">'headFreqs'</span>, headFreqs, <span class="keyword">...</span>
+0472     <span class="string">'midAmps'</span>, midAmps, <span class="keyword">...</span>
+0473     <span class="string">'midFreqs'</span>, midFreqs, <span class="keyword">...</span>
+0474     <span class="string">'tailAmps'</span>, tailAmps, <span class="keyword">...</span>
+0475     <span class="string">'tailFreqs'</span>, tailFreqs);
+0476 <span class="keyword">end</span>
+0477 
+0478 
+0479 
+0480 <span class="comment">%% Compute the bend amplitude and frequency.</span>
+0481 <a name="_sub2" href="#_subfunctions" class="code">function [amps freqs] = bendData(data, startI, endI, </a><span class="keyword">...</span>
+0482     minWinSize, maxWinSize, fps, fftRes, isCentering)
+0483 
+0484 <span class="comment">% Compute the short-time Fourier transforms (STFT).</span>
+0485 <span class="comment">%dcThr = 0;</span>
+0486 fftI = 1:((fftRes + 1) / 2);
+0487 amps = nan(1, endI - startI + 1);
+0488 freqs = nan(size(amps));
+0489 <span class="keyword">for</span> i = 1:length(amps)
+0490     
+0491     <span class="comment">% Pull out the time window.</span>
+0492     dataI = startI + i - 1;
+0493     startDataWinI = max(1, dataI - maxWinSize);
+0494     endDataWinI = min(length(data), dataI + maxWinSize);
+0495     dataWin = data(startDataWinI:endDataWinI);
+0496     dataWinI = dataI - startDataWinI + 1;
+0497     
+0498     <span class="comment">% Center the signal.</span>
+0499     <span class="keyword">if</span> isCentering
+0500         dataWin = dataWin - mean(dataWin);
+0501     <span class="keyword">end</span>
+0502 
+0503     <span class="comment">% Find the first zero crossing backwards.</span>
+0504     backZeroI = <a href="#_sub4" class="code" title="subfunction zeroI = findZeroCrossing(data, i, increment)">findZeroCrossing</a>(dataWin, dataWinI, -1);
+0505     <span class="keyword">if</span> isempty(backZeroI)
+0506         <span class="keyword">continue</span>;
+0507     <span class="keyword">end</span>
+0508     
+0509     <span class="comment">% Find the first zero crossing forwards.</span>
+0510     frontZeroI = <a href="#_sub4" class="code" title="subfunction zeroI = findZeroCrossing(data, i, increment)">findZeroCrossing</a>(dataWin, dataWinI, 1);
+0511     <span class="keyword">if</span> isempty(frontZeroI)
+0512         <span class="keyword">continue</span>;
+0513     <span class="keyword">end</span>
+0514     
+0515     <span class="comment">% Expand the zero-crossing window.</span>
+0516     <span class="comment">%numZeros = 2;</span>
+0517     <span class="keyword">while</span> frontZeroI - backZeroI + 1 &lt; minWinSize <span class="comment">%&amp;&amp; numZeros &lt; 3</span>
+0518         <span class="keyword">if</span> dataWinI - backZeroI &lt; frontZeroI - dataWinI
+0519             backZeroI = <a href="#_sub4" class="code" title="subfunction zeroI = findZeroCrossing(data, i, increment)">findZeroCrossing</a>(dataWin, backZeroI - 1, -1);
+0520             <span class="keyword">if</span> isempty(backZeroI)
+0521                 <span class="keyword">break</span>;
+0522             <span class="keyword">end</span>
+0523         <span class="keyword">else</span>
+0524             frontZeroI = <a href="#_sub4" class="code" title="subfunction zeroI = findZeroCrossing(data, i, increment)">findZeroCrossing</a>(dataWin, frontZeroI + 1, 1);
+0525             <span class="keyword">if</span> isempty(frontZeroI)
+0526                 <span class="keyword">break</span>;
+0527             <span class="keyword">end</span>
+0528         <span class="keyword">end</span>
+0529         <span class="comment">%numZeros = numZeros + 1;</span>
+0530     <span class="keyword">end</span>
+0531     <span class="keyword">if</span> isempty(backZeroI) || isempty(frontZeroI)
+0532         <span class="keyword">continue</span>;
+0533     <span class="keyword">end</span>
+0534     
+0535     <span class="comment">% Center the window.</span>
+0536     <span class="comment">%dataWinSize = round((frontZeroI - backZeroI - 1) / 2);</span>
+0537     dataWinSize = max(dataWinI - backZeroI, frontZeroI - dataWinI);
+0538     backZeroI = dataWinI - dataWinSize;
+0539     <span class="keyword">if</span> backZeroI &lt; 1
+0540         <span class="keyword">continue</span>;
+0541     <span class="keyword">end</span>
+0542     frontZeroI = dataWinI + dataWinSize;
+0543     <span class="keyword">if</span> frontZeroI &gt; length(dataWin)
+0544         <span class="keyword">continue</span>;
+0545     <span class="keyword">end</span>
+0546     
+0547     <span class="comment">% Cut the window off at the zero crossings.</span>
+0548     dataWin = dataWin(backZeroI:frontZeroI);
+0549     peakWinSize = round(sqrt(length(dataWin)));
+0550     
+0551     <span class="comment">% Compute the real part of the STFT.</span>
+0552     fftData = fft(dataWin, fftRes);
+0553     fftData = abs(fftData(fftI));
+0554     
+0555     <span class="comment">% Find the peak frequency.</span>
+0556     [maxPeaks, maxPeaksI] = <a href="../../../SegWorm/Util/maxPeaksDist.html" class="code" title="function [peaks indices] = maxPeaksDist(x, dist, varargin)">maxPeaksDist</a>(fftData, peakWinSize);
+0557     [~, maxI] = max(maxPeaks);
+0558     maxPeakI = maxPeaksI(maxI);
+0559     maxPeak = fftData(maxPeakI);
+0560     
+0561     <span class="comment">% Find the peak bandwidth.</span>
+0562     [~, minPeaksI] = <a href="../../../SegWorm/Util/minPeaksDist.html" class="code" title="function [peaks indices] = minPeaksDist(x, dist, varargin)">minPeaksDist</a>(fftData, peakWinSize);
+0563     peakStartI = minPeaksI(minPeaksI &lt; maxPeakI);
+0564     <span class="keyword">if</span> ~isempty(peakStartI)
+0565         peakStartI = peakStartI(end);
+0566     <span class="keyword">end</span>
+0567     peakEndI = minPeaksI(minPeaksI &gt; maxPeakI);
+0568     <span class="keyword">if</span> ~isempty(peakEndI)
+0569         peakEndI = peakEndI(1);
+0570     <span class="keyword">end</span>
+0571     
+0572     <span class="comment">% If the peak is not distinguished, we have no signal.</span>
+0573     peakBandThr = .5;
+0574     peakEnergyThr = .5;
+0575     <span class="keyword">if</span> isempty(peakStartI) || isempty(peakEndI) || <span class="keyword">...</span>
+0576             fftData(peakStartI) / maxPeak &gt; peakBandThr || <span class="keyword">...</span>
+0577             fftData(peakEndI) / maxPeak &gt; peakBandThr || <span class="keyword">...</span>
+0578             sum(fftData(peakStartI:peakEndI) .^ 2) / sum(fftData .^ 2) <span class="keyword">...</span>
+0579             &lt; peakEnergyThr
+0580         maxPeakI = NaN;
+0581     <span class="keyword">end</span>
+0582     
+0583     <span class="comment">% Convert the peak to a time frequency.</span>
+0584     <span class="keyword">if</span> ~isnan(maxPeakI)
+0585         dataSign = sign(mean(dataWin)); <span class="comment">% sign the data</span>
+0586         amps(i) = (2 * fftData(maxPeakI) / length(dataWin)) * dataSign;
+0587         freqs(i) = (fps / 2) * ((maxPeakI - 1) / (length(fftI) - 1)) * dataSign;
+0588     <span class="keyword">end</span>
+0589     
+0590     <span class="comment">% Plot the STFT.</span>
+0591     <span class="comment">% y = 2 * fftData / length(dataWin);</span>
+0592     <span class="comment">% x = (fps / 2) * linspace(0, 1, length(fftI));</span>
+0593     <span class="comment">% figure, plot(x, y);</span>
+0594     <span class="comment">% xlabel('Frequency (Hz)');</span>
+0595     <span class="comment">% ylabel('|Y(f)|');</span>
+0596     <span class="comment">%</span>
+0597     <span class="comment">% Plot the data signal.</span>
+0598     <span class="comment">% figure, plot(dataWin);</span>
+0599 <span class="keyword">end</span>
+0600 <span class="keyword">end</span>
+0601 
+0602 
+0603 
+0604 <span class="comment">%% Compute the foraging amplitude and angular speed.</span>
+0605 <a name="_sub3" href="#_subfunctions" class="code">function [amps speeds] = foragingData(data, startI, endI, minWinSize, fps)</a>
+0606 
+0607 <span class="comment">% Initialize the amplitude and speed.</span>
+0608 amps = nan(1, endI - startI + 1);
+0609 speeds = nan(size(amps));
+0610 
+0611 <span class="comment">% Clean up the signal with a gaussian filter.</span>
+0612 <span class="keyword">if</span> minWinSize &gt; 0
+0613     gaussFilter = gausswin(2 * minWinSize + 1) / minWinSize;
+0614     data = conv(data, gaussFilter, <span class="string">'same'</span>);
+0615     data(1:minWinSize) = NaN;
+0616     data((end - minWinSize + 1):end) = NaN;
+0617 <span class="keyword">end</span>
+0618 
+0619 <span class="comment">% Compute the amplitudes between zero crossings.</span>
+0620 dataSign = sign(data);
+0621 dataAmps = nan(1,length(data));
+0622 numAmps = 0;
+0623 <span class="keyword">for</span> i = 1:(length(data) - 1)
+0624     
+0625     <span class="comment">% Compute the amplitude for the region.</span>
+0626     <span class="comment">% Note: data at the zero crossing has NaN (unknown) amplitude.</span>
+0627     <span class="keyword">if</span> dataSign(i) ~= dataSign(i + 1);
+0628         <span class="keyword">if</span> dataSign(i) &gt; 0
+0629             dataAmps((i - numAmps):i) = max(data((i - numAmps):i));
+0630         <span class="keyword">elseif</span> dataSign(i) &lt; 0
+0631             dataAmps((i - numAmps):i) = min(data((i - numAmps):i));
+0632         <span class="keyword">end</span>
+0633         
+0634         <span class="comment">% Reset the count.</span>
+0635         numAmps = 0;
+0636         
+0637     <span class="comment">% Advance.</span>
+0638     <span class="keyword">else</span>
+0639         numAmps = numAmps + 1;
+0640     <span class="keyword">end</span>
+0641 <span class="keyword">end</span>
+0642 
+0643 <span class="comment">% Compute the amplitude for the end region.</span>
+0644 <span class="comment">% Note: data at the zero crossing has NaN (unknown) amplitude.</span>
+0645 <span class="keyword">if</span> dataSign(end) &gt; 0
+0646     dataAmps((end - numAmps):end) = max(data((end - numAmps):end));
+0647 <span class="keyword">elseif</span> dataSign(end) &lt; 0
+0648     dataAmps((end - numAmps):end) = min(data((end - numAmps):end));
+0649 <span class="keyword">end</span>
+0650 
+0651 <span class="comment">% Compute the amplitude for our data.</span>
+0652 amps = dataAmps(startI:endI);
+0653 
+0654 <span class="comment">% Compute the speed centered between the back and front foraging movements.</span>
+0655 <span class="keyword">if</span> startI == 1 &amp;&amp; endI == length(data)
+0656     dData = diff(data(startI:endI)) * fps;
+0657     speeds(2:end-1) = (dData(1:(end - 1)) + dData(2:end)) / 2;
+0658 <span class="keyword">elseif</span> startI == 1
+0659     dData = diff(data(startI:(endI + 1))) * fps;
+0660     speeds(2:end) = (dData(1:(end - 1)) + dData(2:end)) / 2;
+0661 <span class="keyword">elseif</span> endI == length(data)
+0662     dData = diff(data((startI - 1):endI)) * fps;
+0663     speeds(1:(end-1)) = (dData(1:(end - 1)) + dData(2:end)) / 2;
+0664 <span class="keyword">else</span>
+0665     dData = diff(data((startI - 1):(endI + 1))) * fps;
+0666     speeds(1:end) = (dData(1:(end - 1)) + dData(2:end)) / 2;
+0667 <span class="keyword">end</span>
+0668 <span class="keyword">end</span>
+0669 
+0670 
+0671 
+0672 <span class="comment">%% Compute the foraging amplitude and angular speed.</span>
+0673 <span class="comment">% function [amps speeds] = foragingData(data, startI, endI, ...</span>
+0674 <span class="comment">%     minWinSize, maxWinSize, fps, isCentering)</span>
+0675 <span class="comment">%</span>
+0676 <span class="comment">% % Compute the amplitude and speed.</span>
+0677 <span class="comment">% amps = nan(1, endI - startI + 1);</span>
+0678 <span class="comment">% speeds = nan(size(amps));</span>
+0679 <span class="comment">% for i = 1:length(amps)</span>
+0680 <span class="comment">%</span>
+0681 <span class="comment">%     % Pull out the time window.</span>
+0682 <span class="comment">%     dataI = startI + i - 1;</span>
+0683 <span class="comment">%     startDataWinI = max(1, dataI - maxWinSize);</span>
+0684 <span class="comment">%     endDataWinI = min(length(data), dataI + maxWinSize);</span>
+0685 <span class="comment">%     dataWin = data(startDataWinI:endDataWinI);</span>
+0686 <span class="comment">%     dataWinI = dataI - startDataWinI + 1;</span>
+0687 <span class="comment">%</span>
+0688 <span class="comment">%     % The data point cannot be at the bounds of the time window.</span>
+0689 <span class="comment">%     if dataWinI &lt;= 1 || dataWinI &gt;= length(dataWin)</span>
+0690 <span class="comment">%         continue;</span>
+0691 <span class="comment">%     end</span>
+0692 <span class="comment">%</span>
+0693 <span class="comment">%     % Center the signal.</span>
+0694 <span class="comment">%     if isCentering</span>
+0695 <span class="comment">%         dataWin = dataWin - mean(dataWin);</span>
+0696 <span class="comment">%     end</span>
+0697 <span class="comment">%</span>
+0698 <span class="comment">%     % The data is at the zero crossing.</span>
+0699 <span class="comment">%     if dataWin(dataWinI) == 0</span>
+0700 <span class="comment">%         zeroI = dataWinI;</span>
+0701 <span class="comment">%         zeroMode = 0;</span>
+0702 <span class="comment">%</span>
+0703 <span class="comment">%     % Find the nearest zero crossing.</span>
+0704 <span class="comment">%     else</span>
+0705 <span class="comment">%         backZeroI = findZeroCrossing(dataWin, dataWinI, -1);</span>
+0706 <span class="comment">%         frontZeroI = findZeroCrossing(dataWin, dataWinI, 1);</span>
+0707 <span class="comment">%</span>
+0708 <span class="comment">%         % The zero crossing cannot be at the bounds of the time window.</span>
+0709 <span class="comment">%         if backZeroI == 1</span>
+0710 <span class="comment">%             backZeroI = [];</span>
+0711 <span class="comment">%         end</span>
+0712 <span class="comment">%         if frontZeroI == length(dataWin)</span>
+0713 <span class="comment">%             frontZeroI = [];</span>
+0714 <span class="comment">%         end</span>
+0715 <span class="comment">%</span>
+0716 <span class="comment">%         % Is there a zero crossing in range?</span>
+0717 <span class="comment">%         if isempty(backZeroI) &amp;&amp; isempty(frontZeroI)</span>
+0718 <span class="comment">%             continue;</span>
+0719 <span class="comment">%         end</span>
+0720 <span class="comment">%</span>
+0721 <span class="comment">%         % Which zero crossing is nearest?</span>
+0722 <span class="comment">%         if isempty(backZeroI)</span>
+0723 <span class="comment">%             zeroI = frontZeroI;</span>
+0724 <span class="comment">%             zeroMode = 1;</span>
+0725 <span class="comment">%         elseif isempty(frontZeroI)</span>
+0726 <span class="comment">%             zeroI = backZeroI;</span>
+0727 <span class="comment">%             zeroMode = -1;</span>
+0728 <span class="comment">%         elseif dataWinI - backZeroI &lt; frontZeroI - dataWinI</span>
+0729 <span class="comment">%             zeroI = backZeroI;</span>
+0730 <span class="comment">%             zeroMode = -1;</span>
+0731 <span class="comment">%         else</span>
+0732 <span class="comment">%             zeroI = frontZeroI;</span>
+0733 <span class="comment">%             zeroMode = 1;</span>
+0734 <span class="comment">%         end</span>
+0735 <span class="comment">%     end</span>
+0736 <span class="comment">%</span>
+0737 <span class="comment">%     % Try the nearest zero crossing.</span>
+0738 <span class="comment">%     numTries = 2;</span>
+0739 <span class="comment">%     while numTries &gt; 0</span>
+0740 <span class="comment">%</span>
+0741 <span class="comment">%         % Find the peak on the back side of the zero crossing.</span>
+0742 <span class="comment">%         j = zeroI;</span>
+0743 <span class="comment">%         if zeroMode == -1</span>
+0744 <span class="comment">%             j = zeroI + 1;</span>
+0745 <span class="comment">%         end</span>
+0746 <span class="comment">%         minPeakI = findMinPeak(dataWin, j, minWinSize, -1);</span>
+0747 <span class="comment">%         maxPeakI = findMaxPeak(dataWin, j, minWinSize, -1);</span>
+0748 <span class="comment">%         if minPeakI &gt;= zeroI</span>
+0749 <span class="comment">%             backPeakI = maxPeakI;</span>
+0750 <span class="comment">%         elseif maxPeakI &gt;= zeroI</span>
+0751 <span class="comment">%             backPeakI = minPeakI;</span>
+0752 <span class="comment">%         else</span>
+0753 <span class="comment">%             backPeakI = min(minPeakI, maxPeakI);</span>
+0754 <span class="comment">%         end</span>
+0755 <span class="comment">%</span>
+0756 <span class="comment">%         % Find the peak on the front side of the zero crossing.</span>
+0757 <span class="comment">%         j = zeroI;</span>
+0758 <span class="comment">%         if zeroMode == 1</span>
+0759 <span class="comment">%             j = zeroI - 1;</span>
+0760 <span class="comment">%         end</span>
+0761 <span class="comment">%         minPeakI = findMinPeak(dataWin, j, minWinSize, 1);</span>
+0762 <span class="comment">%         maxPeakI = findMaxPeak(dataWin, j, minWinSize, 1);</span>
+0763 <span class="comment">%         if minPeakI &lt;= zeroI</span>
+0764 <span class="comment">%             frontPeakI = maxPeakI;</span>
+0765 <span class="comment">%         elseif maxPeakI &lt;= zeroI</span>
+0766 <span class="comment">%             frontPeakI = minPeakI;</span>
+0767 <span class="comment">%         else</span>
+0768 <span class="comment">%             frontPeakI = min(minPeakI, maxPeakI);</span>
+0769 <span class="comment">%         end</span>
+0770 <span class="comment">%</span>
+0771 <span class="comment">%         % Are we in the foraging window?</span>
+0772 <span class="comment">%         if dataWinI &gt;= backPeakI &amp;&amp; dataWinI &lt;= frontPeakI</span>
+0773 <span class="comment">%             break;</span>
+0774 <span class="comment">%</span>
+0775 <span class="comment">%         % Try again.</span>
+0776 <span class="comment">%         else</span>
+0777 <span class="comment">%             if numTries &gt; 1</span>
+0778 <span class="comment">%</span>
+0779 <span class="comment">%                 % Try the front side of the zero crossing.</span>
+0780 <span class="comment">%                 numTries = numTries - 1;</span>
+0781 <span class="comment">%                 if zeroMode == -1 &amp;&amp; ~isempty(frontZeroI)</span>
+0782 <span class="comment">%                     zeroI = frontZeroI;</span>
+0783 <span class="comment">%                     continue;</span>
+0784 <span class="comment">%</span>
+0785 <span class="comment">%                 % Try the back side of the zero crossing.</span>
+0786 <span class="comment">%                 elseif zeroMode == 1 &amp;&amp; ~isempty(backZeroI)</span>
+0787 <span class="comment">%                     zeroI = backZeroI;</span>
+0788 <span class="comment">%                     continue;</span>
+0789 <span class="comment">%                 end</span>
+0790 <span class="comment">%             end</span>
+0791 <span class="comment">%</span>
+0792 <span class="comment">%             % Fail.</span>
+0793 <span class="comment">%             numTries = 0;</span>
+0794 <span class="comment">%             zeroI = [];</span>
+0795 <span class="comment">%         end</span>
+0796 <span class="comment">%     end</span>
+0797 <span class="comment">%</span>
+0798 <span class="comment">%     % Are we in a foraging window?</span>
+0799 <span class="comment">%     if isempty(zeroI)</span>
+0800 <span class="comment">%         continue;</span>
+0801 <span class="comment">%     end</span>
+0802 <span class="comment">%</span>
+0803 <span class="comment">%     % Compute the foraging speed.</span>
+0804 <span class="comment">%     amps(i) = dataWin(frontPeakI) - dataWin(backPeakI);</span>
+0805 <span class="comment">%     speeds(i) = mean(diff(dataWin((dataWinI - 1):(dataWinI + 1)))) * fps;</span>
+0806 <span class="comment">% end</span>
+0807 <span class="comment">% end</span>
+0808 
+0809 
+0810 
+0811 <span class="comment">%% Find the next zero crossing.</span>
+0812 <a name="_sub4" href="#_subfunctions" class="code">function zeroI = findZeroCrossing(data, i, increment)</a>
+0813 
+0814 <span class="comment">% Is the index valid?</span>
+0815 zeroI = [];
+0816 <span class="keyword">if</span> i &lt; 1 || i &gt; length(data)
+0817     <span class="keyword">return</span>;
+0818 <span class="keyword">end</span>
+0819 
+0820 <span class="comment">% Is the index at a zero crossing?</span>
+0821 <span class="keyword">if</span> data(i) == 0
+0822     zeroI = i;
+0823     <span class="keyword">return</span>;
+0824 <span class="keyword">end</span>
+0825 
+0826 <span class="comment">% Find the next zero crossing forward.</span>
+0827 prevSign = sign(data(i));
+0828 i = i + increment;
+0829 <span class="keyword">if</span> increment &gt; 0
+0830     <span class="keyword">while</span> i &lt;= length(data)
+0831 
+0832         <span class="comment">% Did we cross zero?</span>
+0833         <span class="keyword">if</span> sign(data(i)) ~= prevSign
+0834             zeroI = i;
+0835             <span class="keyword">return</span>;
+0836         <span class="keyword">end</span>
+0837         prevSign = sign(data(i));
+0838         
+0839         <span class="comment">% Advance.</span>
+0840         i = i + increment;
+0841     <span class="keyword">end</span>
+0842     
+0843 <span class="comment">% Find the next zero crossing backward.</span>
+0844 <span class="keyword">elseif</span> increment &lt; 0
+0845     <span class="keyword">while</span> i &gt;= 1
+0846         
+0847         <span class="comment">% Did we cross zero?</span>
+0848         <span class="keyword">if</span> sign(data(i)) ~= prevSign
+0849             zeroI = i;
+0850             <span class="keyword">return</span>;
+0851         <span class="keyword">end</span>
+0852         prevSign = sign(data(i));
+0853         
+0854         <span class="comment">% Advance.</span>
+0855         i = i + increment;
+0856     <span class="keyword">end</span>
+0857 <span class="keyword">end</span>
+0858 <span class="keyword">end</span>
+0859 
+0860 
+0861 
+0862 <span class="comment">%% Find the next minimum peak.</span>
+0863 <a name="_sub5" href="#_subfunctions" class="code">function peakI = findMinPeak(data, i, winSize, increment)</a>
+0864 
+0865 <span class="comment">% Find the next minimum peak backward.</span>
+0866 peakI = i;
+0867 i = i + increment;
+0868 <span class="keyword">if</span> increment &lt; 0
+0869     <span class="keyword">while</span> i &gt;= 1 &amp;&amp; peakI - i &lt;= winSize
+0870         
+0871         <span class="comment">% Record the new peak.</span>
+0872         <span class="keyword">if</span> data(i) &lt; data(peakI)
+0873             peakI = i;
+0874         <span class="keyword">end</span>
+0875         
+0876         <span class="comment">% Advance.</span>
+0877         i = i + increment;
+0878     <span class="keyword">end</span>
+0879     
+0880 <span class="comment">% Find the next minimum peak forward.</span>
+0881 <span class="keyword">else</span>
+0882     <span class="keyword">while</span> i &lt;= length(data) &amp;&amp; i - peakI &lt;= winSize
+0883         
+0884         <span class="comment">% Record the new peak.</span>
+0885         <span class="keyword">if</span> data(i) &lt; data(peakI)
+0886             peakI = i;
+0887         <span class="keyword">end</span>
+0888         
+0889         <span class="comment">% Advance.</span>
+0890         i = i + increment;
+0891     <span class="keyword">end</span>
+0892 <span class="keyword">end</span>
+0893 <span class="keyword">end</span>
+0894 
+0895 
+0896 
+0897 <span class="comment">%% Find the next maximum peak.</span>
+0898 <a name="_sub6" href="#_subfunctions" class="code">function peakI = findMaxPeak(data, i, winSize, increment)</a>
+0899 
+0900 <span class="comment">% Find the next maximum peak backward.</span>
+0901 peakI = i;
+0902 i = i + increment;
+0903 <span class="keyword">if</span> increment &lt; 0
+0904     <span class="keyword">while</span> i &gt;= 1 &amp;&amp; peakI - i &lt;= winSize
+0905         
+0906         <span class="comment">% Record the new peak.</span>
+0907         <span class="keyword">if</span> data(i) &gt; data(peakI)
+0908             peakI = i;
+0909         <span class="keyword">end</span>
+0910         
+0911         <span class="comment">% Advance.</span>
+0912         i = i + increment;
+0913     <span class="keyword">end</span>
+0914     
+0915 <span class="comment">% Find the next maximum peak forward.</span>
+0916 <span class="keyword">else</span>
+0917     <span class="keyword">while</span> i &lt;= length(data) &amp;&amp; i - peakI &lt;= winSize
+0918         
+0919         <span class="comment">% Record the new peak.</span>
+0920         <span class="keyword">if</span> data(i) &gt; data(peakI)
+0921             peakI = i;
+0922         <span class="keyword">end</span>
+0923         
+0924         <span class="comment">% Advance.</span>
+0925         i = i + increment;
+0926     <span class="keyword">end</span>
+0927 <span class="keyword">end</span>
+0928 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

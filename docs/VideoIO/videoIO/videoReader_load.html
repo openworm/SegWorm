@@ -1,0 +1,289 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoReader_load</title>
+  <meta name="keywords" content="videoReader_load">
+  <meta name="description" content="videoReader_load">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>videoReader_load
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>videoReader_load</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [out,out2] = videoReader_load(cmd, handle, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">videoReader_load
+  This is a videoReader plugin that uses Matlab's LOAD function to read
+  one variable from an individual .mat as if it were a video frame.
+
+  This function provides the documentation and implementation for the
+  plugin.  Users should not call this function directly.  Instead they
+  should use the videoReader constructor and specify the 'load'
+  plugin.
+
+  vr = videoReader(FILEPATTERN,'load',...)
+  vr = videoReader(FILEPATTERN,...,'plugin','load',...)
+  vr = videoReader(...[as above]..., 'varname',VARNAME)
+    Indexes a set of .mat files so they can be accessed via the
+    videoReader interface.  FILEPATTERN is treated the same way as it is
+    for the 'imread' plugin (type &quot;help videoReader_imread&quot; without
+    quotes for details).  It may either use wildcards or a sprintf-like
+    string. 
+
+    If VARNAME is specified, the variable with that name is the one
+    loaded by the videoReader.  For example, if the .mat files in
+    question have variables 'stats' and 'image' and VARNAME is set to
+    'image', then the 'image' variable is loaded and the 'stats'
+    variable in the .mat files is ignored.
+
+    If VARNAME is not specified, a set of heuristics are used to guess
+    which variable was desired.   Variables that look like images (are
+    2D or 3D numeric matrices) are more likely to be chosen.  Variables
+    with more elements are also more likely to be chosen.
+
+    This plugin is similar to the 'matrix' plugin, but this one assumes
+    that each .mat file contains exactly one frame.  When the 'matrix'
+    loads data from a file, it assumes the entire video is stored in a
+    single data structure.  
+
+    This plugin is implemented as an M-file, so no compilation is
+    required. 
+
+ EXAMPLE:
+     % make a few video frames -- a rotating gradient
+     for i=1:10
+       frame = repmat(mod([0:99]/99 + (i-1)/10, 1), [75,1]);
+       save(sprintf('%04d.mat', i), 'frame');
+     end
+
+     % read in the video and show it as a movie
+     vr = videoReader('%04d.mat', 'plugin','load');
+     for i=1:10
+       seek(vr,i);
+       imshow(getframe(vr));
+       title(sprintf('frame %d', i));
+       pause(1);
+     end
+     vr = close(vr);
+
+ SEE ALSO:
+     load
+     videoReader
+     <a href="videoReader_imread.html" class="code" title="function [out,out2] = videoReader_imread(cmd, handle, varargin)">videoReader_imread</a>
+     <a href="videoReader_matrix.html" class="code" title="function [out,out2] = videoReader_matrix(cmd, handle, varargin)">videoReader_matrix</a>
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details
+(especially when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../videoIO/private/argExtract.html" class="code" title="function [val,args] = argExtract(args, key, defaultVal)">argExtract</a>	[val,args] = argExtract(args, key, defaultVal)</li><li><a href="../videoIO/private/getFileList.html" class="code" title="function [dirname,filenames] = getFileList(filepattern)">getFileList</a>	[dirname,filenames] = getFileList(filepattern)</li><li><a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>	HANDLEMANAGER</li><li><a href="../videoIO/private/loadMat.html" class="code" title="function out = loadMat(varname, fname, asframe)">loadMat</a>	out = loadMat(varname, fname, asframe)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [out,out2] = videoReader_load(cmd, handle, varargin)</a>
+0002 <span class="comment">%videoReader_load</span>
+0003 <span class="comment">%  This is a videoReader plugin that uses Matlab's LOAD function to read</span>
+0004 <span class="comment">%  one variable from an individual .mat as if it were a video frame.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%  This function provides the documentation and implementation for the</span>
+0007 <span class="comment">%  plugin.  Users should not call this function directly.  Instead they</span>
+0008 <span class="comment">%  should use the videoReader constructor and specify the 'load'</span>
+0009 <span class="comment">%  plugin.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%  vr = videoReader(FILEPATTERN,'load',...)</span>
+0012 <span class="comment">%  vr = videoReader(FILEPATTERN,...,'plugin','load',...)</span>
+0013 <span class="comment">%  vr = videoReader(...[as above]..., 'varname',VARNAME)</span>
+0014 <span class="comment">%    Indexes a set of .mat files so they can be accessed via the</span>
+0015 <span class="comment">%    videoReader interface.  FILEPATTERN is treated the same way as it is</span>
+0016 <span class="comment">%    for the 'imread' plugin (type &quot;help videoReader_imread&quot; without</span>
+0017 <span class="comment">%    quotes for details).  It may either use wildcards or a sprintf-like</span>
+0018 <span class="comment">%    string.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%    If VARNAME is specified, the variable with that name is the one</span>
+0021 <span class="comment">%    loaded by the videoReader.  For example, if the .mat files in</span>
+0022 <span class="comment">%    question have variables 'stats' and 'image' and VARNAME is set to</span>
+0023 <span class="comment">%    'image', then the 'image' variable is loaded and the 'stats'</span>
+0024 <span class="comment">%    variable in the .mat files is ignored.</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%    If VARNAME is not specified, a set of heuristics are used to guess</span>
+0027 <span class="comment">%    which variable was desired.   Variables that look like images (are</span>
+0028 <span class="comment">%    2D or 3D numeric matrices) are more likely to be chosen.  Variables</span>
+0029 <span class="comment">%    with more elements are also more likely to be chosen.</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%    This plugin is similar to the 'matrix' plugin, but this one assumes</span>
+0032 <span class="comment">%    that each .mat file contains exactly one frame.  When the 'matrix'</span>
+0033 <span class="comment">%    loads data from a file, it assumes the entire video is stored in a</span>
+0034 <span class="comment">%    single data structure.</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%    This plugin is implemented as an M-file, so no compilation is</span>
+0037 <span class="comment">%    required.</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">% EXAMPLE:</span>
+0040 <span class="comment">%     % make a few video frames -- a rotating gradient</span>
+0041 <span class="comment">%     for i=1:10</span>
+0042 <span class="comment">%       frame = repmat(mod([0:99]/99 + (i-1)/10, 1), [75,1]);</span>
+0043 <span class="comment">%       save(sprintf('%04d.mat', i), 'frame');</span>
+0044 <span class="comment">%     end</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%     % read in the video and show it as a movie</span>
+0047 <span class="comment">%     vr = videoReader('%04d.mat', 'plugin','load');</span>
+0048 <span class="comment">%     for i=1:10</span>
+0049 <span class="comment">%       seek(vr,i);</span>
+0050 <span class="comment">%       imshow(getframe(vr));</span>
+0051 <span class="comment">%       title(sprintf('frame %d', i));</span>
+0052 <span class="comment">%       pause(1);</span>
+0053 <span class="comment">%     end</span>
+0054 <span class="comment">%     vr = close(vr);</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">% SEE ALSO:</span>
+0057 <span class="comment">%     load</span>
+0058 <span class="comment">%     videoReader</span>
+0059 <span class="comment">%     videoReader_imread</span>
+0060 <span class="comment">%     videoReader_matrix</span>
+0061 <span class="comment">%</span>
+0062 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0063 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details</span>
+0064 <span class="comment">%(especially when using this library on GNU/Linux).</span>
+0065 
+0066 <span class="comment">% We use private/handleManager under the covers to map handles to objects.</span>
+0067 
+0068 <span class="keyword">if</span> strcmp(cmd, <span class="string">'open'</span>)
+0069   <span class="comment">%........................................................................</span>
+0070   <span class="comment">% OPEN COMMAND</span>
+0071   
+0072   <span class="keyword">if</span> (mod(length(varargin)-1,2) ~= 0)
+0073     error(<span class="string">'Optional arguments must come in name-value pairs'</span>);
+0074   <span class="keyword">end</span>
+0075   
+0076   filepattern = varargin{1};
+0077   
+0078   [varname,args] = <a href="../videoIO/private/argExtract.html" class="code" title="function [val,args] = argExtract(args, key, defaultVal)">argExtract</a>({varargin{2:end}}, <span class="string">'varname'</span>, <span class="string">''</span>);
+0079   <span class="keyword">if</span> ~isempty(args)
+0080     error([<span class="string">'Unrecognized optional parameter name: '</span>, args{1}]);
+0081   <span class="keyword">end</span>
+0082   
+0083   [dirname, filenames] = <a href="../videoIO/private/getFileList.html" class="code" title="function [dirname,filenames] = getFileList(filepattern)">getFileList</a>(filepattern);
+0084   img = <a href="../videoIO/private/loadMat.html" class="code" title="function out = loadMat(varname, fname, asframe)">loadMat</a>(varname, fullfile(dirname, filenames{end}), true);
+0085 
+0086   obj = struct;
+0087   obj.currFrame = -1;
+0088   obj.varname   = varname;
+0089   obj.dirname   = dirname;
+0090   obj.filenames = filenames;
+0091   obj.info = struct(<span class="keyword">...</span>
+0092       <span class="string">'url'</span>,                varargin{1}, <span class="keyword">...</span>
+0093       <span class="string">'fps'</span>,               -1, <span class="keyword">...</span>
+0094       <span class="string">'height'</span>,             size(img,1), <span class="keyword">...</span>
+0095       <span class="string">'width'</span>,              size(img,2), <span class="keyword">...</span>
+0096       <span class="string">'numFrames'</span>,          length(filenames), <span class="keyword">...</span>
+0097       <span class="string">'fourcc'</span>,             <span class="string">''</span>,<span class="keyword">...</span>
+0098       <span class="string">'nHiddenFinalFrames'</span>, 0,<span class="keyword">...</span>
+0099       <span class="string">'varname'</span>,            varname);
+0100   out = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>([], obj);
+0101   
+0102 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'close'</span>),
+0103   <span class="comment">%........................................................................</span>
+0104   <span class="comment">% CLOSE COMMAND</span>
+0105   <span class="keyword">if</span> ~isempty(varargin)
+0106     error(<span class="string">'The &quot;close&quot; command does not take any optional arguments'</span>);
+0107   <span class="keyword">end</span>
+0108   <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle, <span class="string">'close'</span>);
+0109   
+0110 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'getframe'</span>)
+0111   <span class="comment">%........................................................................</span>
+0112   <span class="comment">% GETFRAME COMMAND</span>
+0113   <span class="keyword">if</span> ~isempty(varargin)
+0114     error(<span class="string">'The &quot;getframe&quot; command does not take any optional arguments'</span>);
+0115   <span class="keyword">end</span>
+0116   obj     = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle);
+0117   dirname = obj.dirname;
+0118   fname   = obj.filenames{obj.currFrame+1};
+0119   out     = <a href="../videoIO/private/loadMat.html" class="code" title="function out = loadMat(varname, fname, asframe)">loadMat</a>(obj.varname, fullfile(dirname, fname), true);
+0120   
+0121 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'get'</span>)
+0122   <span class="comment">%........................................................................</span>
+0123   <span class="comment">% GET COMMAND</span>
+0124   <span class="keyword">if</span> ~isempty(varargin)
+0125     error(<span class="string">'The &quot;get&quot; command does not take any optional arguments'</span>);
+0126   <span class="keyword">end</span>
+0127   obj                 = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle);
+0128   info                = obj.info;
+0129   info.currFrame      = obj.currFrame;
+0130   info.approxFrameNum = obj.currFrame;
+0131   out                 = fieldnames(info);
+0132   out2                = struct2cell(info);
+0133   
+0134 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'next'</span>)
+0135   <span class="comment">%........................................................................</span>
+0136   <span class="comment">% NEXT COMMAND</span>
+0137   <span class="keyword">if</span> ~isempty(varargin)
+0138     error(<span class="string">'The &quot;next&quot; command does not take any optional arguments'</span>);
+0139   <span class="keyword">end</span>
+0140   obj = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle);
+0141   obj.currFrame = obj.currFrame + 1;
+0142   <span class="keyword">if</span> obj.currFrame &lt; obj.info.numFrames
+0143     out = int32(1);
+0144   <span class="keyword">else</span>
+0145     out = int32(0);
+0146   <span class="keyword">end</span>
+0147   <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle, obj);
+0148   
+0149 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'seek'</span>)
+0150   <span class="comment">%........................................................................</span>
+0151   <span class="comment">% SEEK COMMAND</span>
+0152   <span class="keyword">if</span> length(varargin) ~= 1
+0153     error(<span class="string">'The &quot;seek&quot; command takes exactly one argument'</span>);
+0154   <span class="keyword">end</span>
+0155   obj           = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle);
+0156   obj.currFrame = varargin{1};
+0157   <span class="keyword">if</span> obj.currFrame &lt; obj.info.numFrames 
+0158     out = int32(1);
+0159   <span class="keyword">else</span>
+0160     out = int32(0);
+0161   <span class="keyword">end</span>
+0162   <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle, obj);
+0163   
+0164 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'step'</span>)
+0165   <span class="comment">%........................................................................</span>
+0166   <span class="comment">% STEP COMMAND</span>
+0167   <span class="keyword">if</span> length(varargin) ~= 1
+0168     error(<span class="string">'The &quot;step&quot; command takes exactly one argument'</span>);
+0169   <span class="keyword">end</span>
+0170   obj = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle);
+0171   obj.currFrame = obj.currFrame + varargin{1};
+0172   <span class="keyword">if</span> obj.currFrame &lt; obj.info.numFrames 
+0173     out = int32(1);
+0174   <span class="keyword">else</span>
+0175     out = int32(0);
+0176   <span class="keyword">end</span>
+0177   <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle, obj);
+0178   
+0179 <span class="keyword">else</span>
+0180   error([<span class="string">'Unrecognized command: &quot;'</span> cmd <span class="string">'&quot;'</span>]);
+0181 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

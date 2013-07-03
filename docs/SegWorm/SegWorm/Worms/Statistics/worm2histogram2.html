@@ -1,0 +1,578 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of worm2histogram2</title>
+  <meta name="keywords" content="worm2histogram2">
+  <meta name="description" content="WORM2HISTOGRAM Convert worm features to their histogram.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>worm2histogram2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORM2HISTOGRAM Convert worm features to their histogram.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm2histogram(filename, wormFiles, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORM2HISTOGRAM Convert worm features to their histogram.
+
+   WORM2HISTOGRAM(FILENAME, WORMFILES)
+
+   WORM2HISTOGRAM(FILENAME, WORMFILES, CONTROLFILES)
+
+   Inputs:
+       filename     - the file name for the histograms;
+                      the file includes:
+
+                      wormInfo    = the worm information
+                      worm        = the worm histograms
+                      controlInfo = the control information (if it exists)
+                      worm        = the control histograms (if they exist)
+
+       wormFiles    - the feature files to use for the worm
+       controlFiles - the feature files to use for the control;
+                      if empty, the worm has no control
+
+ See also WORM2CSV, WORMDISPLAYINFO, HISTOGRAM</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>	GETSTRUCTFIELD Get a field in a structure.</li><li><a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>	HISTOGRAM Compute the data's histogram.</li><li><a href="../../../SegWorm/Util/loadStructField.html" class="code" title="function data = loadStructField(fileName, structName, field)">loadStructField</a>	LOADSTRUCTFIELD Load a struct field from a file.</li><li><a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>	SETSTRUCTFIELD Set a field in a structure.</li><li><a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>	WORMDISPLAYINFO Get information for displaying the worm data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function data = loadWormFiles(filenames, field)</a></li><li><a href="#_sub2" class="code">function saveHistogram(wormFiles, histInfo, wormName, filename)</a></li><li><a href="#_sub3" class="code">function histData = motion2histograms(data, motionEvents,</a></li><li><a href="#_sub4" class="code">function histData = event2histograms(data, statFields, eventFields,</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm2histogram(filename, wormFiles, varargin)</a>
+0002 <span class="comment">%WORM2HISTOGRAM Convert worm features to their histogram.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   WORM2HISTOGRAM(FILENAME, WORMFILES)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   WORM2HISTOGRAM(FILENAME, WORMFILES, CONTROLFILES)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Inputs:</span>
+0009 <span class="comment">%       filename     - the file name for the histograms;</span>
+0010 <span class="comment">%                      the file includes:</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%                      wormInfo    = the worm information</span>
+0013 <span class="comment">%                      worm        = the worm histograms</span>
+0014 <span class="comment">%                      controlInfo = the control information (if it exists)</span>
+0015 <span class="comment">%                      worm        = the control histograms (if they exist)</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%       wormFiles    - the feature files to use for the worm</span>
+0018 <span class="comment">%       controlFiles - the feature files to use for the control;</span>
+0019 <span class="comment">%                      if empty, the worm has no control</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% See also WORM2CSV, WORMDISPLAYINFO, HISTOGRAM</span>
+0022 
+0023 <span class="comment">% Do we have a control?</span>
+0024 controlFiles = [];
+0025 <span class="keyword">if</span> ~isempty(varargin)
+0026     controlFiles = varargin{1};
+0027 <span class="keyword">end</span>
+0028 
+0029 <span class="comment">% Organize the worm files.</span>
+0030 <span class="keyword">if</span> ~iscell(wormFiles)
+0031     wormFiles = {wormFiles};
+0032 <span class="keyword">end</span>
+0033 <span class="keyword">if</span> ~isempty(controlFiles) &amp;&amp; ~iscell(controlFiles)
+0034     controlFiles = {controlFiles};
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="comment">% Delete the file if it already exists.</span>
+0038 <span class="keyword">if</span> exist(filename, <span class="string">'file'</span>)
+0039     delete(filename);
+0040 <span class="keyword">end</span>
+0041 
+0042 <span class="comment">% Save the worm information.</span>
+0043 wormInfo = cellfun(@(x) load(x, <span class="string">'info'</span>), wormFiles);
+0044 <span class="keyword">if</span> isempty(controlFiles)
+0045     save(filename, <span class="string">'wormInfo'</span>);
+0046 <span class="keyword">else</span>
+0047     controlInfo = cellfun(@(x) load(x, <span class="string">'info'</span>), controlFiles);
+0048     save(filename, <span class="string">'wormInfo'</span>, <span class="string">'controlInfo'</span>);
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">% Free memory.</span>
+0052 clear(<span class="string">'wormInfo'</span>, <span class="string">'controlInfo'</span>);
+0053 
+0054 <span class="comment">% Initialize the histogram display information.</span>
+0055 histInfo = <a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>();
+0056 
+0057 <span class="comment">% Save the worm histograms.</span>
+0058 <a href="#_sub2" class="code" title="subfunction saveHistogram(wormFiles, histInfo, wormName, filename)">saveHistogram</a>(wormFiles, histInfo, <span class="string">'worm'</span>, filename);
+0059 
+0060 <span class="comment">% Save the control histograms.</span>
+0061 <span class="keyword">if</span> ~isempty(controlFiles)
+0062     <a href="#_sub2" class="code" title="subfunction saveHistogram(wormFiles, histInfo, wormName, filename)">saveHistogram</a>(controlFiles, histInfo, <span class="string">'control'</span>, filename);
+0063 <span class="keyword">end</span>
+0064 <span class="keyword">end</span>
+0065 
+0066 
+0067 
+0068 <span class="comment">%% Load worm data from files.</span>
+0069 <a name="_sub1" href="#_subfunctions" class="code">function data = loadWormFiles(filenames, field)</a>
+0070 data = cellfun(@(x) <a href="../../../SegWorm/Util/loadStructField.html" class="code" title="function data = loadStructField(fileName, structName, field)">loadStructField</a>(x, <span class="string">'worm'</span>, field), filenames, <span class="keyword">...</span>
+0071     <span class="string">'UniformOutput'</span>, false);
+0072 <span class="keyword">end</span>
+0073 
+0074 
+0075 
+0076 <span class="comment">%% Save the worm histograms.</span>
+0077 <a name="_sub2" href="#_subfunctions" class="code">function saveHistogram(wormFiles, histInfo, wormName, filename)</a>
+0078 
+0079 <span class="comment">% Determine the locomotion modes.</span>
+0080 motionModes = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, <span class="string">'locomotion.motion.mode'</span>);
+0081 motionNames = { <span class="keyword">...</span>
+0082     <span class="string">'forward'</span>, <span class="keyword">...</span>
+0083     <span class="string">'paused'</span>, <span class="keyword">...</span>
+0084     <span class="string">'backward'</span>};
+0085 motionEvents = { <span class="keyword">...</span>
+0086     cellfun(@(x) x == 1, motionModes, <span class="string">'UniformOutput'</span>, false), <span class="keyword">...</span>
+0087     cellfun(@(x) x == 0, motionModes, <span class="string">'UniformOutput'</span>, false), <span class="keyword">...</span>
+0088     cellfun(@(x) x == -1, motionModes, <span class="string">'UniformOutput'</span>, false)};
+0089 
+0090 
+0091 
+0092 <span class="comment">%% Compute the morphology histograms.</span>
+0093 
+0094 <span class="comment">% Compute the length histograms.</span>
+0095 field = <span class="string">'morphology.length'</span>;
+0096 data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, field);
+0097 histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0098     <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field));
+0099 eval([wormName <span class="string">'.'</span> field <span class="string">'=histData;'</span>]);
+0100 
+0101 <span class="comment">% Compute the width histograms.</span>
+0102 fields = { <span class="keyword">...</span>
+0103     <span class="string">'morphology.width.head'</span>, <span class="keyword">...</span>
+0104     <span class="string">'morphology.width.midbody'</span>, <span class="keyword">...</span>
+0105     <span class="string">'morphology.width.tail'</span>};
+0106 <span class="keyword">for</span> i = 1:length(fields)
+0107     data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, fields{i});
+0108     histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0109         <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, fields{i}));
+0110     eval([wormName <span class="string">'.'</span> fields{i} <span class="string">'=histData;'</span>]);
+0111 <span class="keyword">end</span>
+0112 
+0113 <span class="comment">% Compute the area histograms.</span>
+0114 field = <span class="string">'morphology.area'</span>;
+0115 data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, field);
+0116 histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0117    <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field));
+0118 eval([wormName <span class="string">'.'</span> field <span class="string">'=histData;'</span>]);
+0119 
+0120 <span class="comment">% Compute the area/length histograms.</span>
+0121 field = <span class="string">'morphology.areaPerLength'</span>;
+0122 data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, field);
+0123 histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0124     <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field));
+0125 eval([wormName <span class="string">'.'</span> field <span class="string">'=histData;'</span>]);
+0126 
+0127 <span class="comment">% Compute the width/length histograms.</span>
+0128 field = <span class="string">'morphology.widthPerLength'</span>;
+0129 data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, field);
+0130 histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0131     <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field));
+0132 eval([wormName <span class="string">'.'</span> field <span class="string">'=histData;'</span>]);
+0133 
+0134 
+0135 
+0136 <span class="comment">%% Compute the posture histograms.</span>
+0137 
+0138 <span class="comment">% Compute the bend histograms.</span>
+0139 fields = { <span class="keyword">...</span>
+0140     <span class="string">'posture.bends.head.mean'</span>, <span class="keyword">...</span>
+0141     <span class="string">'posture.bends.head.stdDev'</span>, <span class="keyword">...</span>
+0142     <span class="string">'posture.bends.neck.mean'</span>, <span class="keyword">...</span>
+0143     <span class="string">'posture.bends.neck.stdDev'</span>, <span class="keyword">...</span>
+0144     <span class="string">'posture.bends.midbody.mean'</span>, <span class="keyword">...</span>
+0145     <span class="string">'posture.bends.midbody.stdDev'</span>, <span class="keyword">...</span>
+0146     <span class="string">'posture.bends.hips.mean'</span>, <span class="keyword">...</span>
+0147     <span class="string">'posture.bends.hips.stdDev'</span>, <span class="keyword">...</span>
+0148     <span class="string">'posture.bends.tail.mean'</span>, <span class="keyword">...</span>
+0149     <span class="string">'posture.bends.tail.stdDev'</span>};
+0150 <span class="keyword">for</span> i = 1:length(fields)
+0151     data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, fields{i});
+0152     histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0153         <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, fields{i}));
+0154     eval([wormName <span class="string">'.'</span> fields{i} <span class="string">'=histData;'</span>]);
+0155 <span class="keyword">end</span>
+0156 
+0157 <span class="comment">% Compute the amplitude histograms.</span>
+0158 fields = { <span class="keyword">...</span>
+0159     <span class="string">'posture.amplitude.max'</span>, <span class="keyword">...</span>
+0160     <span class="string">'posture.amplitude.ratio'</span>};
+0161 <span class="keyword">for</span> i = 1:length(fields)
+0162     data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, fields{i});
+0163     histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0164         <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, fields{i}));
+0165     eval([wormName <span class="string">'.'</span> fields{i} <span class="string">'=histData;'</span>]);
+0166 <span class="keyword">end</span>
+0167 
+0168 <span class="comment">% Compute the wavelength histograms.</span>
+0169 fields = { <span class="keyword">...</span>
+0170     <span class="string">'posture.wavelength.primary'</span>, <span class="keyword">...</span>
+0171     <span class="string">'posture.wavelength.secondary'</span>};
+0172 <span class="keyword">for</span> i = 1:length(fields)
+0173     data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, fields{i});
+0174     histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0175         <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, fields{i}));
+0176     eval([wormName <span class="string">'.'</span> fields{i} <span class="string">'=histData;'</span>]);
+0177 <span class="keyword">end</span>
+0178 
+0179 <span class="comment">% Compute the track length histograms.</span>
+0180 field = <span class="string">'posture.tracklength'</span>;
+0181 data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, field);
+0182 histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0183     <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field));
+0184 eval([wormName <span class="string">'.'</span> field <span class="string">'=histData;'</span>]);
+0185 
+0186 <span class="comment">% Compute the eccentricity histograms.</span>
+0187 field = <span class="string">'posture.eccentricity'</span>;
+0188 data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, field);
+0189 histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0190     <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field));
+0191 eval([wormName <span class="string">'.'</span> field <span class="string">'=histData;'</span>]);
+0192 
+0193 <span class="comment">% Compute the kinks histograms.</span>
+0194 field = <span class="string">'posture.kinks'</span>;
+0195 data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, field);
+0196 histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0197     <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field));
+0198 eval([wormName <span class="string">'.'</span> field <span class="string">'=histData;'</span>]);
+0199 
+0200 <span class="comment">% Compute the coils histograms.</span>
+0201 field = <span class="string">'posture.coils'</span>;
+0202 statFields = { <span class="keyword">...</span>
+0203     <span class="string">'frequency'</span>, <span class="keyword">...</span>
+0204     <span class="string">'timeRatio'</span>};
+0205 eventFields = { <span class="keyword">...</span>
+0206     <span class="string">'time'</span>, <span class="keyword">...</span>
+0207     <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0208     <span class="string">'interDistance'</span>};
+0209 data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, field);
+0210 infos = cell(length(eventFields),1);
+0211 <span class="keyword">if</span> ~isempty(histInfo)
+0212     <span class="keyword">for</span> i = 1: length(eventFields)
+0213         infos{i} = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, [field <span class="string">'.'</span> eventFields{i}]);
+0214     <span class="keyword">end</span>
+0215 <span class="keyword">end</span>
+0216 histData = <a href="#_sub4" class="code" title="subfunction histData = event2histograms(data, statFields, eventFields, ">event2histograms</a>(data, statFields, eventFields, infos);
+0217 eval([wormName <span class="string">'.'</span> field <span class="string">'=histData;'</span>]);
+0218 
+0219 <span class="comment">% Compute the directions histograms.</span>
+0220 fields = { <span class="keyword">...</span>
+0221     <span class="string">'posture.directions.tail2head'</span>, <span class="keyword">...</span>
+0222     <span class="string">'posture.directions.head'</span>, <span class="keyword">...</span>
+0223     <span class="string">'posture.directions.tail'</span>};
+0224 <span class="keyword">for</span> i = 1:length(fields)
+0225     data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, fields{i});
+0226     histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0227         <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, fields{i}));
+0228     eval([wormName <span class="string">'.'</span> fields{i} <span class="string">'=histData;'</span>]);
+0229 <span class="keyword">end</span>
+0230 
+0231 <span class="comment">% Compute the eigen projection histograms.</span>
+0232 field = <span class="string">'posture.eigenProjection'</span>;
+0233 data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, field);
+0234 histData(:) = [];
+0235 info = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field);
+0236 <span class="keyword">for</span> i = 1:size(data{1},1)
+0237     subData = cellfun(@(x) x(i,:), data, <span class="string">'UniformOutput'</span>, false);
+0238     histData(i) = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(subData, motionEvents, motionNames, <span class="keyword">...</span>
+0239         info);
+0240 <span class="keyword">end</span>
+0241 eval([wormName <span class="string">'.'</span> field <span class="string">'=histData;'</span>]);
+0242 
+0243 
+0244 
+0245 <span class="comment">%% Compute the locomotion histograms.</span>
+0246 
+0247 <span class="comment">% Compute the motion histograms.</span>
+0248 fields = { <span class="keyword">...</span>
+0249     <span class="string">'locomotion.motion.forward'</span>, <span class="keyword">...</span>
+0250     <span class="string">'locomotion.motion.paused'</span>, <span class="keyword">...</span>
+0251     <span class="string">'locomotion.motion.backward'</span>};
+0252 statFields = { <span class="keyword">...</span>
+0253     <span class="string">'frequency'</span>, <span class="keyword">...</span>
+0254     <span class="string">'ratio.time'</span>, <span class="keyword">...</span>
+0255     <span class="string">'ratio.distance'</span>, <span class="keyword">...</span>
+0256     };
+0257 eventFields = { <span class="keyword">...</span>
+0258     <span class="string">'time'</span>, <span class="keyword">...</span>
+0259     <span class="string">'distance'</span>, <span class="keyword">...</span>
+0260     <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0261     <span class="string">'interDistance'</span>};
+0262 <span class="keyword">for</span> i = 1:length(fields)
+0263     data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, fields{i});
+0264     infos = cell(length(eventFields),1);
+0265     <span class="keyword">if</span> ~isempty(histInfo)
+0266         <span class="keyword">for</span> j = 1: length(eventFields)
+0267             infos{j} = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, <span class="keyword">...</span>
+0268                 [fields{i} <span class="string">'.'</span> eventFields{j}]);
+0269         <span class="keyword">end</span>
+0270     <span class="keyword">end</span>
+0271     histData = <a href="#_sub4" class="code" title="subfunction histData = event2histograms(data, statFields, eventFields, ">event2histograms</a>(data, statFields, eventFields, infos);
+0272     eval([wormName <span class="string">'.'</span> fields{i} <span class="string">'=histData;'</span>]);
+0273 <span class="keyword">end</span>
+0274 
+0275 <span class="comment">% Compute the velocity histograms.</span>
+0276 fields = { <span class="keyword">...</span>
+0277     <span class="string">'locomotion.velocity.headTip.speed'</span>, <span class="keyword">...</span>
+0278     <span class="string">'locomotion.velocity.headTip.direction'</span>, <span class="keyword">...</span>
+0279     <span class="string">'locomotion.velocity.head.speed'</span>, <span class="keyword">...</span>
+0280     <span class="string">'locomotion.velocity.head.direction'</span>, <span class="keyword">...</span>
+0281     <span class="string">'locomotion.velocity.midbody.speed'</span>, <span class="keyword">...</span>
+0282     <span class="string">'locomotion.velocity.midbody.direction'</span>, <span class="keyword">...</span>
+0283     <span class="string">'locomotion.velocity.tail.speed'</span>, <span class="keyword">...</span>
+0284     <span class="string">'locomotion.velocity.tail.direction'</span>, <span class="keyword">...</span>
+0285     <span class="string">'locomotion.velocity.tailTip.speed'</span>, <span class="keyword">...</span>
+0286     <span class="string">'locomotion.velocity.tailTip.direction'</span>};
+0287 <span class="keyword">for</span> i = 1:length(fields)
+0288     data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, fields{i});
+0289     histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0290         <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, fields{i}));
+0291     eval([wormName <span class="string">'.'</span> fields{i} <span class="string">'=histData;'</span>]);
+0292 <span class="keyword">end</span>
+0293 
+0294 <span class="comment">% Compute the bend histograms.</span>
+0295 fields = { <span class="keyword">...</span>
+0296     <span class="string">'locomotion.bends.foraging.amplitude'</span>, <span class="keyword">...</span>
+0297     <span class="string">'locomotion.bends.foraging.angleSpeed'</span>, <span class="keyword">...</span>
+0298     <span class="string">'locomotion.bends.head.amplitude'</span>, <span class="keyword">...</span>
+0299     <span class="string">'locomotion.bends.head.frequency'</span>, <span class="keyword">...</span>
+0300     <span class="string">'locomotion.bends.midbody.amplitude'</span>, <span class="keyword">...</span>
+0301     <span class="string">'locomotion.bends.midbody.frequency'</span>, <span class="keyword">...</span>
+0302     <span class="string">'locomotion.bends.tail.amplitude'</span>, <span class="keyword">...</span>
+0303     <span class="string">'locomotion.bends.tail.frequency'</span>};
+0304 <span class="keyword">for</span> i = 1:length(fields)
+0305     data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, fields{i});
+0306     histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0307         <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, fields{i}));
+0308     eval([wormName <span class="string">'.'</span> fields{i} <span class="string">'=histData;'</span>]);
+0309 <span class="keyword">end</span>
+0310 
+0311 <span class="comment">% Compute the turn histograms.</span>
+0312 fields = { <span class="keyword">...</span>
+0313     <span class="string">'locomotion.turns.omegas'</span>, <span class="keyword">...</span>
+0314     <span class="string">'locomotion.turns.upsilons'</span>};
+0315 statFields = { <span class="keyword">...</span>
+0316     <span class="string">'frequency'</span>, <span class="keyword">...</span>
+0317     <span class="string">'timeRatio'</span>, <span class="keyword">...</span>
+0318     };
+0319 eventFields = { <span class="keyword">...</span>
+0320     <span class="string">'time'</span>, <span class="keyword">...</span>
+0321     <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0322     <span class="string">'interDistance'</span>};
+0323 isSigned = [ <span class="keyword">...</span>
+0324     true, <span class="keyword">...</span>
+0325     true, <span class="keyword">...</span>
+0326     true];
+0327 <span class="keyword">for</span> i = 1:length(fields)
+0328     data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, fields{i});
+0329     infos = cell(length(eventFields),1);
+0330     <span class="keyword">if</span> ~isempty(histInfo)
+0331         <span class="keyword">for</span> j = 1: length(eventFields)
+0332             infos{j} = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, <span class="keyword">...</span>
+0333                 [fields{i} <span class="string">'.'</span> eventFields{j}]);
+0334         <span class="keyword">end</span>
+0335     <span class="keyword">end</span>
+0336     histData = <a href="#_sub4" class="code" title="subfunction histData = event2histograms(data, statFields, eventFields, ">event2histograms</a>(data, statFields, eventFields, infos, <span class="keyword">...</span>
+0337         isSigned);
+0338     eval([wormName <span class="string">'.'</span> fields{i} <span class="string">'=histData;'</span>]);
+0339 <span class="keyword">end</span>
+0340 
+0341 
+0342 
+0343 <span class="comment">%% Compute the path histograms.</span>
+0344 
+0345 <span class="comment">% Compute the curvature histograms.</span>
+0346 field = <span class="string">'path.curvature'</span>;
+0347 data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, field);
+0348 histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0349     <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field));
+0350 eval([wormName <span class="string">'.'</span> field <span class="string">'=histData;'</span>]);
+0351 
+0352 <span class="comment">% Compute the range histograms.</span>
+0353 field = <span class="string">'path.range'</span>;
+0354 data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, field);
+0355 histData = <a href="#_sub3" class="code" title="subfunction histData = motion2histograms(data, motionEvents, ">motion2histograms</a>(data, motionEvents, motionNames, <span class="keyword">...</span>
+0356     <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field));
+0357 eval([wormName <span class="string">'.'</span> field <span class="string">'=histData;'</span>]);
+0358 
+0359 <span class="comment">% Compute the duration histograms.</span>
+0360 fields = { <span class="keyword">...</span>
+0361     <span class="string">'path.duration.worm'</span>, <span class="keyword">...</span>
+0362     <span class="string">'path.duration.head'</span>, <span class="keyword">...</span>
+0363     <span class="string">'path.duration.midbody'</span>, <span class="keyword">...</span>
+0364     <span class="string">'path.duration.tail'</span>};
+0365 clear histData;
+0366 <span class="keyword">for</span> i = 1:length(fields)
+0367     data = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(filenames, field)">loadWormFiles</a>(wormFiles, [fields{i} <span class="string">'.times'</span>]);
+0368     info = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, fields{i});
+0369     histData.histogram = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(data, info.resolution, <span class="keyword">...</span>
+0370         info.isZeroBin, info.isSigned);
+0371     eval([wormName <span class="string">'.'</span> fields{i} <span class="string">'=histData;'</span>]);
+0372 <span class="keyword">end</span>
+0373 
+0374 <span class="comment">%% Save the histograms.</span>
+0375 save(filename, wormName, <span class="string">'-append'</span>);
+0376 <span class="keyword">end</span>
+0377 
+0378 
+0379 
+0380 <span class="comment">%% Convert motion data to a set of histograms.</span>
+0381 <a name="_sub3" href="#_subfunctions" class="code">function histData = motion2histograms(data, motionEvents, </a><span class="keyword">...</span>
+0382     motionNames, histInfo)
+0383 
+0384 <span class="comment">% Get the histogram information.</span>
+0385 resolution = [];
+0386 isZeroBin = [];
+0387 isSigned = [];
+0388 <span class="keyword">if</span> ~isempty(histInfo)
+0389     resolution = histInfo.resolution;
+0390     isZeroBin = histInfo.isZeroBin;
+0391     isSigned = histInfo.isSigned;
+0392 <span class="keyword">end</span>
+0393 
+0394 <span class="comment">% Create the histogram structures.</span>
+0395 histData.histogram = [];
+0396 <span class="keyword">for</span> i = 1:length(motionNames)
+0397     histData.(motionNames{i}).histogram = [];
+0398 <span class="keyword">end</span>
+0399 
+0400 <span class="comment">% Compute the data histogram.</span>
+0401 histData.histogram = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(data, resolution, isZeroBin);
+0402 
+0403 <span class="comment">% Compute the motion histograms.</span>
+0404 <span class="keyword">for</span> i = 1:length(motionEvents)
+0405     
+0406     <span class="comment">% Organize the motion data.</span>
+0407     isData = false;
+0408     motionData = cell(length(data),1);
+0409     <span class="keyword">for</span> j = 1:length(data)
+0410         motionData{j} = data{j}(motionEvents{i}{j});
+0411         <span class="keyword">if</span> ~isempty(motionData{j})
+0412             isData = true;
+0413         <span class="keyword">end</span>
+0414     <span class="keyword">end</span>
+0415     
+0416     <span class="comment">% Compute the motion histogram.</span>
+0417     <span class="keyword">if</span> isData
+0418         histData.(motionNames{i}).histogram = <span class="keyword">...</span>
+0419             <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(motionData, resolution, isZeroBin, isSigned);
+0420     <span class="keyword">end</span>
+0421 <span class="keyword">end</span>
+0422 <span class="keyword">end</span>
+0423 
+0424 
+0425 
+0426 <span class="comment">%% Convert event data to a set of histograms.</span>
+0427 <span class="comment">%</span>
+0428 <span class="comment">% varargin:</span>
+0429 <span class="comment">%</span>
+0430 <span class="comment">% isSigned - are we signing the event field (dorsal/ventral = -/+)?</span>
+0431 <a name="_sub4" href="#_subfunctions" class="code">function histData = event2histograms(data, statFields, eventFields, </a><span class="keyword">...</span>
+0432     histInfos, varargin)
+0433 
+0434 <span class="comment">% Are we signing the event field (dorsal/ventral = -/+)?</span>
+0435 isEventSigned = false(length(eventFields));
+0436 <span class="keyword">if</span> ~isempty(varargin)
+0437     isEventSigned = varargin{1};
+0438 <span class="keyword">end</span>
+0439 
+0440 <span class="comment">% Create the statistics structures.</span>
+0441 histData = [];
+0442 <span class="keyword">for</span> i = 1:length(statFields)
+0443     histData = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(histData, statFields{i}, []);
+0444 <span class="keyword">end</span>
+0445 
+0446 <span class="comment">% Compute the event statistics.</span>
+0447 <span class="keyword">for</span> i = 1:length(statFields)
+0448 
+0449     <span class="comment">% Organize the event data.</span>
+0450     isData = false;
+0451     eventData = nan(length(data),1);
+0452     <span class="keyword">for</span> j = 1:length(data)
+0453         field = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(data{j}, statFields{i});
+0454         <span class="keyword">if</span> ~isempty(field)
+0455             eventData(j) = field;
+0456             isData = true;
+0457         <span class="keyword">end</span>
+0458     <span class="keyword">end</span>
+0459     
+0460     <span class="comment">% Compute the event statistics.</span>
+0461     <span class="keyword">if</span> isData
+0462         histData = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(histData, [statFields{i} <span class="string">'.mean'</span>], <span class="keyword">...</span>
+0463             nanmean(eventData));
+0464         histData = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(histData, [statFields{i} <span class="string">'.stdDev'</span>], <span class="keyword">...</span>
+0465             nanstd(eventData));
+0466     <span class="keyword">end</span>
+0467 <span class="keyword">end</span>
+0468 
+0469 <span class="comment">% Create the histogram structures.</span>
+0470 <span class="keyword">for</span> i = 1:length(eventFields)
+0471     histData.(eventFields{i}).histogram = [];
+0472 <span class="keyword">end</span>
+0473 
+0474 <span class="comment">% Compute the event histograms.</span>
+0475 <span class="keyword">for</span> i = 1:length(eventFields)
+0476     
+0477     <span class="comment">% Organize the event data.</span>
+0478     isData = false;
+0479     eventData = cell(length(data),1);
+0480     isSigning = isEventSigned(i);
+0481     <span class="keyword">for</span> j = 1:length(data)
+0482         field = data{j}.frames;
+0483         <span class="keyword">if</span> ~isempty(field)
+0484             eventData{j} = [field.(eventFields{i})];
+0485             
+0486             <span class="comment">% Sign the event.</span>
+0487             <span class="keyword">if</span> isSigning
+0488                 ventral = [field.isVentral];
+0489                 eventData{j}(~ventral) = -eventData{j}(~ventral);
+0490             <span class="keyword">end</span>
+0491             isData = true;
+0492         <span class="keyword">end</span>
+0493     <span class="keyword">end</span>
+0494     
+0495     <span class="comment">% Get the histogram information.</span>
+0496     resolution = [];
+0497     isZeroBin = [];
+0498     isSigned = [];
+0499     <span class="keyword">if</span> ~isempty(histInfos(i))
+0500         resolution = histInfos{i}.resolution;
+0501         isZeroBin = histInfos{i}.isZeroBin;
+0502         isSigned = histInfos{i}.isSigned;
+0503     <span class="keyword">end</span>
+0504 
+0505     <span class="comment">% Compute the event histogram.</span>
+0506     <span class="keyword">if</span> isData
+0507         histData.(eventFields{i}).histogram = <span class="keyword">...</span>
+0508             <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(eventData, resolution, isZeroBin, isSigned);
+0509     <span class="keyword">end</span>
+0510 <span class="keyword">end</span>
+0511 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

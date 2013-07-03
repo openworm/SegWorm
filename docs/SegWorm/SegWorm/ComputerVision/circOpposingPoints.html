@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of circOpposingPoints</title>
+  <meta name="keywords" content="circOpposingPoints">
+  <meta name="description" content="CIRCOPPOSINGPOINTS Find the equivalent point indices on the opposing side">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>circOpposingPoints
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CIRCOPPOSINGPOINTS Find the equivalent point indices on the opposing side</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function pointsI = circOpposingPoints(pointsI, startI, endI, vLength,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CIRCOPPOSINGPOINTS Find the equivalent point indices on the opposing side
+   of a circular vector.
+
+   POINTSI = CIRCOPPOSINGPOINTS(POINTSI, STARTI, ENDI, VSIZE)
+
+   POINTSI = CIRCOPPOSINGPOINTS(POINTSI, STARTI, ENDI, VSIZE,
+                                CHAINCODELENGTHS)
+
+   Inputs:
+       pointsI          - the point indices to find on the opposing side
+       startI           - the index in the vector where the split, between
+                          opposing sides, starts
+       endI             - the index in the vector where the split, between
+                          opposing sides, ends
+       vLength          - the vector length
+       chainCodeLengths - the chain-code length at each point;
+                          if empty, the array indices are used instead
+
+   Output:
+       pointsI - the equivalent point indices on the opposing side
+
+ See also <a href="circComputeChainCodeLengths.html" class="code" title="function lengths = circComputeChainCodeLengths(points)">CIRCCOMPUTECHAINCODELENGTHS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>	CHAINCODELENGTH2INDEX Translate a length into an index. The index</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>	CIRCOPPOSINGNEARESTPOINTS Find the nearest equivalent point indices on the</li><li><a href="../../SegWorm/Worms/Segmentation/linearSkeleton3.html" class="code" title="function [skeleton cWidths] =linearSkeleton3(headI, tailI, minP, minI, contour, wormSegSize)">linearSkeleton3</a>	LINEARSKELETON3 Skeletonize a linear (non-looped) worm. The worm is</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function pointsI = circOpposingPoints(pointsI, startI, endI, vLength, </a><span class="keyword">...</span>
+0002     varargin)
+0003 <span class="comment">%CIRCOPPOSINGPOINTS Find the equivalent point indices on the opposing side</span>
+0004 <span class="comment">%   of a circular vector.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   POINTSI = CIRCOPPOSINGPOINTS(POINTSI, STARTI, ENDI, VSIZE)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   POINTSI = CIRCOPPOSINGPOINTS(POINTSI, STARTI, ENDI, VSIZE,</span>
+0009 <span class="comment">%                                CHAINCODELENGTHS)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Inputs:</span>
+0012 <span class="comment">%       pointsI          - the point indices to find on the opposing side</span>
+0013 <span class="comment">%       startI           - the index in the vector where the split, between</span>
+0014 <span class="comment">%                          opposing sides, starts</span>
+0015 <span class="comment">%       endI             - the index in the vector where the split, between</span>
+0016 <span class="comment">%                          opposing sides, ends</span>
+0017 <span class="comment">%       vLength          - the vector length</span>
+0018 <span class="comment">%       chainCodeLengths - the chain-code length at each point;</span>
+0019 <span class="comment">%                          if empty, the array indices are used instead</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   Output:</span>
+0022 <span class="comment">%       pointsI - the equivalent point indices on the opposing side</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% See also CIRCCOMPUTECHAINCODELENGTHS</span>
+0025 
+0026 <span class="comment">% Re-order the start and end to make life simple.</span>
+0027 <span class="keyword">if</span> startI &gt; endI
+0028     tmp = startI;
+0029     startI = endI;
+0030     endI = tmp;
+0031 <span class="keyword">end</span>
+0032 
+0033 <span class="comment">% The points are degenerate.</span>
+0034 <span class="keyword">if</span> endI - startI &lt; 2 || startI + vLength - endI &lt; 2
+0035     pointsI = [];
+0036     <span class="keyword">return</span>;
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="comment">% Are there chain-code lengths?</span>
+0040 <span class="keyword">if</span> length(varargin) == 1
+0041     chainCodeLengths = varargin{1};
+0042     
+0043 <span class="comment">% Use the array indices for length.</span>
+0044 <span class="keyword">else</span>
+0045     chainCodeLengths = 1:vLength;
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="comment">% Separate the points onto sides.</span>
+0049 <span class="comment">% Note: ignore start and end points, they stay the same.</span>
+0050 <span class="comment">% Side1 always goes from start to end in positive, index increments.</span>
+0051 <span class="comment">% Side2 always goes from start to end in negative, index increments.</span>
+0052 side1 = pointsI &gt; startI &amp; pointsI &lt; endI;
+0053 side2 = pointsI &lt; startI | pointsI &gt; endI;
+0054 side12 = side1 | side2;
+0055 
+0056 <span class="comment">% Compute the size of side 1.</span>
+0057 start1I = startI + 1;
+0058 end1I = endI - 1;
+0059 sSize1 = chainCodeLengths(end1I) - chainCodeLengths(start1I);
+0060 
+0061 <span class="comment">% Compute the size of side 2.</span>
+0062 start2I = startI - 1;
+0063 <span class="keyword">if</span> start2I &lt; 1
+0064     start2I = vLength;
+0065 <span class="keyword">end</span>
+0066 end2I = endI + 1;
+0067 <span class="keyword">if</span> end2I &gt; vLength
+0068     end2I = 1;
+0069 <span class="keyword">end</span>
+0070 <span class="keyword">if</span> start2I &lt; end2I
+0071     sSize2 = chainCodeLengths(start2I) + <span class="keyword">...</span>
+0072         chainCodeLengths(vLength) - chainCodeLengths(end2I);
+0073 <span class="keyword">else</span> <span class="comment">% one of the ends wrapped</span>
+0074     sSize2 = chainCodeLengths(start2I) - chainCodeLengths(end2I);
+0075 <span class="keyword">end</span>
+0076 
+0077 <span class="comment">% Compute the scale between sides.</span>
+0078 scale1to2 = sSize2 / sSize1;
+0079 scale2to1 = sSize1 / sSize2;
+0080 
+0081 <span class="comment">% Find the distance of the side 1 points from the start, scale them for</span>
+0082 <span class="comment">% side 2, then find the equivalent point, at the scaled distance</span>
+0083 <span class="comment">% from the start, on side 2.</span>
+0084 pointsI(side1) = chainCodeLengths(start2I) - <span class="keyword">...</span>
+0085     (chainCodeLengths(pointsI(side1)) - chainCodeLengths(start1I)) <span class="keyword">...</span>
+0086     * scale1to2;
+0087 
+0088 <span class="comment">% Find the distance of the side 2 points from the start, scale them for</span>
+0089 <span class="comment">% side 1, then find the equivalent point, at the scaled distance</span>
+0090 <span class="comment">% from the start, on side 1.</span>
+0091 minPoints2 = pointsI(side2) &lt;= start2I;
+0092 minSide2 = false(length(pointsI),1);
+0093 maxSide2 = false(length(pointsI),1);
+0094 minSide2(side2) = minPoints2;
+0095 maxSide2(side2) = ~minPoints2;
+0096 pointsI(minSide2) = chainCodeLengths(start1I) + <span class="keyword">...</span>
+0097     (chainCodeLengths(start2I) - chainCodeLengths(pointsI(minSide2))) <span class="keyword">...</span>
+0098     * scale2to1;
+0099 pointsI(maxSide2) = chainCodeLengths(start1I) + <span class="keyword">...</span>
+0100     (chainCodeLengths(start2I) + chainCodeLengths(vLength) - <span class="keyword">...</span>
+0101     chainCodeLengths(pointsI(maxSide2))) * scale2to1;
+0102 
+0103 <span class="comment">% Correct any wrapped points.</span>
+0104 wrap(side12) = pointsI(side12) &lt; 0;
+0105 pointsI(wrap) = pointsI(wrap) + chainCodeLengths(vLength);
+0106 wrap(side12) = pointsI(side12) &gt; chainCodeLengths(vLength);
+0107 pointsI(wrap) = pointsI(wrap) - chainCodeLengths(vLength);
+0108 
+0109 <span class="comment">% Translate the chain-code lengths to indices.</span>
+0110 pointsI(side12) = <a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(pointsI(side12), chainCodeLengths);
+0111 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

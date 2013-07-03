@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormFrameAnnotation</title>
+  <meta name="keywords" content="wormFrameAnnotation">
+  <meta name="description" content="FRAMEANNOTATIONCODES Get the video frame annotation information for worm">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Util -->
+<h1>wormFrameAnnotation
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>FRAMEANNOTATIONCODES Get the video frame annotation information for worm</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function annotation = wormFrameAnnotation() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FRAMEANNOTATIONCODES Get the video frame annotation information for worm
+segmentation.
+
+   ANNOTATION = WORMFRAMEANNOTATION()
+
+   Output:
+       annotation - a struct of the the video frame annotation information
+                    for worm segmentation; the fields are:
+                    
+                    id       = the annotation id
+                    function = a string describing the function which
+                               generated the annotation
+                    message  = a message describing the annotation
+
+ See also SEGWORM, FINDSTAGEMOVEMENT, <a href="normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">NORMWORMS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Features/wormTouchFrames.html" class="code" title="function touchFrames = wormTouchFrames(frameCodes, fps)">wormTouchFrames</a>	WORMTOUCHFRAMES Find the frames where the worm touches itself (i.e., coils).</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function annotation = wormFrameAnnotation()</a>
+0002 <span class="comment">%FRAMEANNOTATIONCODES Get the video frame annotation information for worm</span>
+0003 <span class="comment">%segmentation.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   ANNOTATION = WORMFRAMEANNOTATION()</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Output:</span>
+0008 <span class="comment">%       annotation - a struct of the the video frame annotation information</span>
+0009 <span class="comment">%                    for worm segmentation; the fields are:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%                    id       = the annotation id</span>
+0012 <span class="comment">%                    function = a string describing the function which</span>
+0013 <span class="comment">%                               generated the annotation</span>
+0014 <span class="comment">%                    message  = a message describing the annotation</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% See also SEGWORM, FINDSTAGEMOVEMENT, NORMWORMS</span>
+0017 
+0018 <span class="comment">% The video frame annotation for worm segmentation.</span>
+0019 annotation = struct( <span class="keyword">...</span>
+0020     <span class="keyword">...</span><span class="comment"> % Annotation IDs.</span>
+0021     <span class="string">'id'</span>, <span class="keyword">...</span>
+0022     { 1, <span class="keyword">...</span>
+0023       2, <span class="keyword">...</span>
+0024       3, <span class="keyword">...</span>
+0025       101, <span class="keyword">...</span>
+0026       102, <span class="keyword">...</span>
+0027       103, <span class="keyword">...</span>
+0028       104, <span class="keyword">...</span>
+0029       105, <span class="keyword">...</span>
+0030       106, <span class="keyword">...</span>
+0031       107, <span class="keyword">...</span>
+0032       108, <span class="keyword">...</span>
+0033       109, <span class="keyword">...</span>
+0034       110, <span class="keyword">...</span>
+0035       111, <span class="keyword">...</span>
+0036       1001}, <span class="keyword">...</span>
+0037     <span class="keyword">...</span><span class="comment"> % Annotation function signatures. </span>
+0038     <span class="string">'function'</span>, <span class="keyword">...</span>
+0039     { <span class="string">'segWorm:Success'</span>, <span class="keyword">...</span>
+0040       <span class="string">'findStageMovement:StageMovement'</span>, <span class="keyword">...</span>
+0041       <span class="string">'segWorm:DroppedFrame'</span>, <span class="keyword">...</span>
+0042       <span class="string">'segWorm:NoWormFound'</span>, <span class="keyword">...</span>
+0043       <span class="string">'segWorm:ContourTouchesBoundary'</span>, <span class="keyword">...</span>
+0044       <span class="string">'segWorm:ContourTooSmall'</span>, <span class="keyword">...</span>
+0045       <span class="string">'segWorm:TooManyEnds'</span>, <span class="keyword">...</span>
+0046       <span class="string">'segWorm:TooFewEnds'</span>, <span class="keyword">...</span>
+0047       <span class="string">'segWorm:DoubleLengthSide'</span>, <span class="keyword">...</span>
+0048       <span class="string">'segWorm:DoubleHeadWidth'</span>, <span class="keyword">...</span>
+0049       <span class="string">'segWorm:DoubleTailWidth'</span>, <span class="keyword">...</span>
+0050       <span class="string">'segWorm:SmallTail'</span>, <span class="keyword">...</span>
+0051       <span class="string">'segWorm:SmallHead'</span>, <span class="keyword">...</span>
+0052       <span class="string">'segWorm:SmallHeadTail'</span>, <span class="keyword">...</span>
+0053       <span class="string">'normWorms:TooShort'</span>}, <span class="keyword">...</span>
+0054     <span class="keyword">...</span><span class="comment"> % Annotation function signatures. </span>
+0055     <span class="string">'message'</span>, <span class="keyword">...</span>
+0056     { <span class="string">'The worm was successfully segmented.'</span>, <span class="keyword">...</span>
+0057       <span class="string">'The video frame contains stage motion.'</span>, <span class="keyword">...</span>
+0058       <span class="string">'The video frame was dropped.'</span>, <span class="keyword">...</span>
+0059       <span class="string">'No worm was found in the video frame.'</span>, <span class="keyword">...</span>
+0060       <span class="string">'The worm contour touches the image boundary.'</span>, <span class="keyword">...</span>
+0061       <span class="string">'The worm contour is too small.'</span>, <span class="keyword">...</span>
+0062       [<span class="string">'The worm has 3 or more low-frequency sampled convexities '</span> <span class="keyword">...</span>
+0063       <span class="string">'sharper than 90 degrees (possible head/tail points).'</span>], <span class="keyword">...</span>
+0064       [<span class="string">'The worm contour has less than 2 high-frequency sampled '</span> <span class="keyword">...</span>
+0065       <span class="string">'convexities sharper than 60 degrees (the head and tail). '</span> <span class="keyword">...</span>
+0066       <span class="string">'Therefore, the worm is coiled or obscured and cannot be '</span> <span class="keyword">...</span>
+0067       <span class="string">'segmented.'</span>], <span class="keyword">...</span>
+0068       [<span class="string">'The worm length, from head to tail, is more than twice as '</span> <span class="keyword">...</span>
+0069       <span class="string">'large on one side than it is on the other. Therefore, the worm '</span> <span class="keyword">...</span>
+0070       <span class="string">'is coiled or obscured and cannot be segmented.'</span>], <span class="keyword">...</span>
+0071       [<span class="string">'The worm more than doubles its width from the end of its head. '</span> <span class="keyword">...</span>
+0072       <span class="string">'Therefore, the worm is coiled, laid an egg, and/or is '</span> <span class="keyword">...</span>
+0073       <span class="string">'significantly obscured and cannot be segmented'</span>], <span class="keyword">...</span>
+0074       [<span class="string">'The worm more than doubles its width from the end of its tail. '</span> <span class="keyword">...</span>
+0075       <span class="string">'Therefore, the worm is coiled, laid an egg, and/or is '</span> <span class="keyword">...</span>
+0076       <span class="string">'significantly obscured and cannot be segmented.'</span>], <span class="keyword">...</span>
+0077       [<span class="string">'The worm tail is less than half the size of its head. '</span> <span class="keyword">...</span>
+0078       <span class="string">'Therefore, the worm is significantly obscured and cannot be '</span> <span class="keyword">...</span>
+0079       <span class="string">'segmented.'</span>], <span class="keyword">...</span>
+0080       [<span class="string">'The worm head is less than half the size of its tail. '</span> <span class="keyword">...</span>
+0081       <span class="string">'Therefore, the worm is significantly obscured and cannot be '</span> <span class="keyword">...</span>
+0082       <span class="string">'segmented.'</span>], <span class="keyword">...</span>
+0083       [<span class="string">'The worm head and tail are less than 1/4 the size of its '</span> <span class="keyword">...</span>
+0084       <span class="string">'remaining body. Therefore, the worm is significantly obscured '</span> <span class="keyword">...</span>
+0085       <span class="string">'and cannot be segmented.'</span>], <span class="keyword">...</span>
+0086       <span class="string">'The worm is shorter than the sampling points requested.'</span>});
+0087 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

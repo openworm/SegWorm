@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormKinks</title>
+  <meta name="keywords" content="wormKinks">
+  <meta name="description" content="WORMKINKS Compute the kinks in a worm.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>wormKinks
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMKINKS Compute the kinks in a worm.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [numKinks kinkAngles kinkIndices] =wormKinks(wormAngles, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMKINKS Compute the kinks in a worm.
+
+   [NUMKINKS KINKANGLES KINKINDICES] = WORMKINKS(WORMANGLES)
+
+   [NUMKINKS KINKANGLES KINKINDICES] = WORMKINKS(WORMANGLES, LENGTHTHR)
+
+   [NUMKINKS KINKANGLES KINKINDICES] = WORMKINKS(WORMANGLES, LENGTHTHR,
+                                                 AMPTHR)
+
+   [NUMKINKS KINKANGLES KINKINDICES] = WORMKINKS(WORMANGLES, LENGTHTHR,
+                                                 AMPTHR, ISSMOOTHING)
+
+   [NUMKINKS KINKANGLES KINKINDICES] = WORMKINKS(WORMANGLES, LENGTHTHR,
+                                                 AMPTHR, ISSMOOTHING,
+                                                 WORMSKELETONS)
+
+   Inputs:
+       wormAngles    - the worm(s) bend angles at each skeleton point
+       lengthThr     - the bend segment length threshold, shorter segments
+                       are considered noise, not bends;
+                       the default is 1/12 of the worm
+       ampThr        - the bend amplitude threshold, smaller amplitudes
+                       are considered noise, not bends;
+                       the default is 0 degrees
+       issmoothing   - are we smoothing the worm angles? If so, the angles
+                       are convolved with a gaussian filter of the same
+                       size as the length threshold; the default is true
+       wormSkeletons - a 3-D matrix of worms (the first 2 dimensions are
+                       the x and y coordinates and the 3rd dimension is
+                       worms); when present, the worm kinks are displayed
+
+   Outputs:
+       numKinks - the number of kinks
+       indices  - the indices of the kinks</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [numKinks kinkAngles kinkIndices] = </a><span class="keyword">...</span>
+0002     wormKinks(wormAngles, varargin)
+0003 <span class="comment">%WORMKINKS Compute the kinks in a worm.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   [NUMKINKS KINKANGLES KINKINDICES] = WORMKINKS(WORMANGLES)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   [NUMKINKS KINKANGLES KINKINDICES] = WORMKINKS(WORMANGLES, LENGTHTHR)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   [NUMKINKS KINKANGLES KINKINDICES] = WORMKINKS(WORMANGLES, LENGTHTHR,</span>
+0010 <span class="comment">%                                                 AMPTHR)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   [NUMKINKS KINKANGLES KINKINDICES] = WORMKINKS(WORMANGLES, LENGTHTHR,</span>
+0013 <span class="comment">%                                                 AMPTHR, ISSMOOTHING)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   [NUMKINKS KINKANGLES KINKINDICES] = WORMKINKS(WORMANGLES, LENGTHTHR,</span>
+0016 <span class="comment">%                                                 AMPTHR, ISSMOOTHING,</span>
+0017 <span class="comment">%                                                 WORMSKELETONS)</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   Inputs:</span>
+0020 <span class="comment">%       wormAngles    - the worm(s) bend angles at each skeleton point</span>
+0021 <span class="comment">%       lengthThr     - the bend segment length threshold, shorter segments</span>
+0022 <span class="comment">%                       are considered noise, not bends;</span>
+0023 <span class="comment">%                       the default is 1/12 of the worm</span>
+0024 <span class="comment">%       ampThr        - the bend amplitude threshold, smaller amplitudes</span>
+0025 <span class="comment">%                       are considered noise, not bends;</span>
+0026 <span class="comment">%                       the default is 0 degrees</span>
+0027 <span class="comment">%       issmoothing   - are we smoothing the worm angles? If so, the angles</span>
+0028 <span class="comment">%                       are convolved with a gaussian filter of the same</span>
+0029 <span class="comment">%                       size as the length threshold; the default is true</span>
+0030 <span class="comment">%       wormSkeletons - a 3-D matrix of worms (the first 2 dimensions are</span>
+0031 <span class="comment">%                       the x and y coordinates and the 3rd dimension is</span>
+0032 <span class="comment">%                       worms); when present, the worm kinks are displayed</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%   Outputs:</span>
+0035 <span class="comment">%       numKinks - the number of kinks</span>
+0036 <span class="comment">%       indices  - the indices of the kinks</span>
+0037 
+0038 <span class="comment">% Determine the bend segment length threshold.</span>
+0039 lengthThr = round(size(wormAngles, 1) / 12);
+0040 <span class="keyword">if</span> ~isempty(varargin) &amp;&amp; ~isempty(varargin{1})
+0041     lengthThr = varargin{1};
+0042 <span class="keyword">end</span>
+0043 <span class="comment">%endLengthThr = round(lengthThr / 2) + 1;</span>
+0044 <span class="comment">%endLengthThr = round(lengthThr * 0.75);</span>
+0045 endLengthThr = lengthThr;
+0046 
+0047 <span class="comment">% Determine the bend amplitude threshold.</span>
+0048 ampThr = 0;
+0049 <span class="keyword">if</span> length(varargin) &gt; 1 &amp;&amp; ~isempty(varargin{2})
+0050     ampThr = varargin{2};
+0051 <span class="keyword">end</span>
+0052 
+0053 <span class="comment">% Are we smoothing the worm angles?</span>
+0054 isSmoothing = true;
+0055 <span class="keyword">if</span> length(varargin) &gt; 2
+0056     isSmoothing = varargin{3};
+0057 <span class="keyword">end</span>
+0058 
+0059 <span class="comment">% Should we show the results on the worm(s)?</span>
+0060 wormSkeletons = [];
+0061 <span class="keyword">if</span> length(varargin) &gt; 3
+0062     wormSkeletons = squeeze(varargin{4});
+0063 <span class="keyword">end</span>
+0064 
+0065 <span class="comment">% Orient the worm correctly.</span>
+0066 wormAngles = squeeze(wormAngles);
+0067 <span class="keyword">if</span> size(wormAngles, 1) == 1
+0068     wormAngles = wormAngles';
+0069 <span class="keyword">end</span>
+0070 
+0071 <span class="comment">% Compute a guassian filter for the angles.</span>
+0072 <span class="keyword">if</span> isSmoothing
+0073     halfLengthThr = round(lengthThr / 2);
+0074     gaussFilter = gausswin(halfLengthThr * 2 + 1) / halfLengthThr;
+0075 <span class="keyword">end</span>
+0076 
+0077 <span class="comment">% Compute the kinks for the worms.</span>
+0078 numWorms = size(wormAngles, 2);
+0079 numKinks = nan(1, numWorms);
+0080 kinkAngles = cell(1, numWorms);
+0081 kinkIndices = cell(1, numWorms);
+0082 <span class="keyword">for</span> i = 1:size(wormAngles, 2)
+0083     
+0084     <span class="comment">% Do we have a worm?</span>
+0085     bends = wormAngles(:,i);
+0086     nanBends = isnan(bends);
+0087     <span class="keyword">if</span> all(nanBends)
+0088         <span class="keyword">continue</span>;
+0089     <span class="keyword">end</span>
+0090     
+0091     <span class="comment">% Filter the worm bends.</span>
+0092     <span class="keyword">if</span> isSmoothing
+0093         bends = conv(bends, gaussFilter, <span class="string">'same'</span>);
+0094     <span class="keyword">end</span>
+0095     
+0096     <span class="comment">% Compute the kinks.</span>
+0097     bendSigns = sign(bends);
+0098     kinkAngle = nan(1, length(bendSigns));
+0099     kinkIndex = nan(1, length(bendSigns));
+0100     numKink = 0;
+0101     numSameSign = 0; <span class="comment">% the number of adjacent bends with the same sign</span>
+0102     <span class="keyword">for</span> j = 1:(length(bendSigns) - 1) <span class="comment">% the last bend is NaN</span>
+0103         
+0104         <span class="comment">% Compute the kink information.</span>
+0105         <span class="comment">% Note: data at the zero crossing is counted for both bend sides.</span>
+0106         <span class="keyword">if</span> bendSigns(j) ~= 0 &amp;&amp; ~isnan(bendSigns(j)) &amp;&amp; <span class="keyword">...</span>
+0107                 ~isnan(bendSigns(j + 1)) &amp;&amp; <span class="keyword">...</span>
+0108                 bendSigns(j) ~= bendSigns(j + 1)
+0109             <span class="keyword">if</span> bendSigns(j) &gt; 0
+0110                 amp = max(bends((j - numSameSign):j));
+0111             <span class="keyword">elseif</span> bendSigns(j) &lt; 0
+0112                 amp = min(bends((j - numSameSign):j));
+0113             <span class="keyword">else</span>
+0114                 amp = 0;
+0115             <span class="keyword">end</span>
+0116             
+0117             <span class="comment">% Compute the bend length.</span>
+0118             <span class="keyword">if</span> numKink == 0
+0119                 bendLength = j;
+0120             <span class="keyword">else</span>
+0121                 bendLength = numSameSign + 1;
+0122             <span class="keyword">end</span>
+0123             
+0124             <span class="comment">% Include the zero bend.</span>
+0125             <span class="keyword">if</span> bendSigns(j+1) == 0
+0126                 bendLength = bendLength + 1;
+0127             <span class="keyword">end</span>
+0128             
+0129             <span class="comment">% Add the first kink.</span>
+0130             <span class="keyword">if</span> numKink == 0
+0131                 <span class="keyword">if</span> bendLength &gt;= endLengthThr &amp;&amp; abs(amp) &gt;= ampThr
+0132                     numKink = numKink + 1;
+0133                     kinkAngle(numKink) = amp;
+0134                     kinkIndex(numKink) = j - (bendLength - 1) / 2;
+0135                 <span class="keyword">end</span>
+0136                 
+0137             <span class="comment">% Add the kink.</span>
+0138             <span class="keyword">else</span>
+0139                 <span class="keyword">if</span> bendLength &gt;= lengthThr &amp;&amp; abs(amp) &gt;= ampThr
+0140                     numKink = numKink + 1;
+0141                     kinkAngle(numKink) = amp;
+0142                     kinkIndex(numKink) = j - (bendLength - 1) / 2;
+0143                 <span class="keyword">end</span>
+0144             <span class="keyword">end</span>
+0145             
+0146             <span class="comment">% Reset the count for adjacent bends with the same sign.</span>
+0147             numSameSign = 0;
+0148             
+0149         <span class="comment">% Advance.</span>
+0150         <span class="keyword">else</span>
+0151             numSameSign = numSameSign + 1;
+0152         <span class="keyword">end</span>
+0153     <span class="keyword">end</span>
+0154 
+0155     <span class="comment">% Compute the kink information for the last bend.</span>
+0156     bendLength = numSameSign + 1;
+0157     segSigns = bendSigns((end - bendLength + 1):end);
+0158     segSigns = segSigns(~isnan(segSigns));
+0159     <span class="keyword">if</span> isempty(segSigns) || segSigns(1) == 0
+0160         amp = 0;
+0161     <span class="keyword">elseif</span> segSigns(1) == 1
+0162         amp = max(bends((end - bendLength + 1):end));
+0163     <span class="keyword">else</span> <span class="comment">% if segSigns(1) == -1</span>
+0164         amp = min(bends((end - bendLength + 1):end));
+0165     <span class="keyword">end</span>
+0166     <span class="keyword">if</span> bendLength &gt;= endLengthThr &amp;&amp; abs(amp) &gt;= ampThr
+0167         numKink = numKink + 1;
+0168         kinkAngle(numKink) = amp;
+0169         kinkIndex(numKink) = length(bends) - (bendLength - 1) / 2;
+0170     <span class="keyword">end</span>
+0171     
+0172     <span class="comment">% Clean up the kink information.</span>
+0173     kinkAngle((numKink + 1):end) = [];
+0174     kinkIndex((numKink + 1):end) = [];
+0175     
+0176     <span class="comment">% Record the kink information.</span>
+0177     numKinks(i) = numKink;
+0178     kinkAngles{i} = kinkAngle;
+0179     kinkIndices{i} = kinkIndex;
+0180     
+0181     <span class="comment">% Show the results.</span>
+0182     <span class="keyword">if</span> ~isempty(wormSkeletons)
+0183         
+0184         <span class="comment">% Orient the worm correctly.</span>
+0185         worm = squeeze(wormSkeletons(:,:,i));
+0186         <span class="keyword">if</span> size(worm, 1) == 2
+0187             worm = worm';
+0188         <span class="keyword">end</span>
+0189             
+0190         <span class="comment">% Show the results.</span>
+0191         figure;
+0192         hold on;
+0193         plot(worm(:,1), worm(:,2), <span class="string">'k.'</span>);
+0194         plot(worm(nanBends,1), worm(nanBends,2), <span class="string">'r.'</span>);
+0195         <span class="keyword">if</span> numKinks(i) &gt; 0
+0196             indices = round(kinkIndices{i});
+0197             plot(worm(indices,1), worm(indices,2), <span class="string">'g.'</span>);
+0198         <span class="keyword">end</span>
+0199         axis image;
+0200     <span class="keyword">end</span>
+0201 <span class="keyword">end</span>
+0202 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

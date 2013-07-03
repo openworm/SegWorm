@@ -1,0 +1,405 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotWormStatsMatrix2</title>
+  <meta name="keywords" content="plotWormStatsMatrix2">
+  <meta name="description" content="PLOTWORMSTATSMATRIX Plot a features x worms matrix.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>plotWormStatsMatrix2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>PLOTWORMSTATSMATRIX Plot a features x worms matrix.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function plotWormStatsMatrix(wormFile, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOTWORMSTATSMATRIX Plot a features x worms matrix.
+
+   PLOTWORMSTATSMATRIX(WORMFILES, ISSCALE, SHOWTYPE, ISSHOWMAIN,
+                       ISSHOWABS, ISSHOWPOS, ISSHOWNEG, ISHOWNSIGN,
+                       ISSHOWMOTION, ISSHOWEVENT, SHOWI)
+
+   Inputs:
+       wormFile - the features x worms matrix file
+
+                  stats    = the features x worms matrix
+                  gene     = the worm gene
+                  allele   = the worm allele
+                  strain   = the worm strain
+                  genotype = the worm genotype
+                  sex      = the worm sex
+                  food     = the worm food
+                  name     = the feature names
+                  type     = the feature type per row:
+
+                             m = morphology
+                             s = posture (shape)
+                             l = locomotion
+                             p = path
+
+                  isMain   = for each row, is it a main feature?
+                  isAbs    = for each row, is it an absolute feature?
+                  isPos    = for each row, is it a positive feature?
+                  isNeg    = for each row, is it a negative feature?
+                  isMotion = for each row, is it a motion feature subset?
+                  isEvent  = for each row, is it an event feature subset?
+
+       isScale      - are we scaling feature colors to the maximum range?
+                      the default is no (false)
+       showType     - which feature types are we showing?
+                      if empty, all feature types are shown
+                      the default is all ([])
+
+                      m = morphology
+                      s = posture (shape)
+                      l = locomotion
+                      p = path
+
+       isShowMain   - are we showing the main features?
+                      the default is yes (true)
+       isShowAbs    - are we showing the absolute features?
+                      the default is yes (true)
+       isShowPos    - are we showing the positive features?
+                      the default is yes (true)
+       isShowNeg    - are we showing the negative features?
+                      the default is yes (true)
+       isShowSign   - are we showing the signed features?
+                      the default is yes (true)
+       isShowMotion - are we showing the motion feature subsets?
+                      the default is yes (true)
+       isShowEvent  - are we showing the event feature subsets?
+                      the default is yes (true)
+       showI        - the indices of the features to show
+                      if empty, all features are shown
+                      the default is all ([])
+
+ See also WORM2STATSMATRIX</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function plotWormStatsMatrix(wormFile, varargin)</a>
+0002 <span class="comment">%PLOTWORMSTATSMATRIX Plot a features x worms matrix.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   PLOTWORMSTATSMATRIX(WORMFILES, ISSCALE, SHOWTYPE, ISSHOWMAIN,</span>
+0005 <span class="comment">%                       ISSHOWABS, ISSHOWPOS, ISSHOWNEG, ISHOWNSIGN,</span>
+0006 <span class="comment">%                       ISSHOWMOTION, ISSHOWEVENT, SHOWI)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Inputs:</span>
+0009 <span class="comment">%       wormFile - the features x worms matrix file</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%                  stats    = the features x worms matrix</span>
+0012 <span class="comment">%                  gene     = the worm gene</span>
+0013 <span class="comment">%                  allele   = the worm allele</span>
+0014 <span class="comment">%                  strain   = the worm strain</span>
+0015 <span class="comment">%                  genotype = the worm genotype</span>
+0016 <span class="comment">%                  sex      = the worm sex</span>
+0017 <span class="comment">%                  food     = the worm food</span>
+0018 <span class="comment">%                  name     = the feature names</span>
+0019 <span class="comment">%                  type     = the feature type per row:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%                             m = morphology</span>
+0022 <span class="comment">%                             s = posture (shape)</span>
+0023 <span class="comment">%                             l = locomotion</span>
+0024 <span class="comment">%                             p = path</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%                  isMain   = for each row, is it a main feature?</span>
+0027 <span class="comment">%                  isAbs    = for each row, is it an absolute feature?</span>
+0028 <span class="comment">%                  isPos    = for each row, is it a positive feature?</span>
+0029 <span class="comment">%                  isNeg    = for each row, is it a negative feature?</span>
+0030 <span class="comment">%                  isMotion = for each row, is it a motion feature subset?</span>
+0031 <span class="comment">%                  isEvent  = for each row, is it an event feature subset?</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%       isScale      - are we scaling feature colors to the maximum range?</span>
+0034 <span class="comment">%                      the default is no (false)</span>
+0035 <span class="comment">%       showType     - which feature types are we showing?</span>
+0036 <span class="comment">%                      if empty, all feature types are shown</span>
+0037 <span class="comment">%                      the default is all ([])</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%                      m = morphology</span>
+0040 <span class="comment">%                      s = posture (shape)</span>
+0041 <span class="comment">%                      l = locomotion</span>
+0042 <span class="comment">%                      p = path</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%       isShowMain   - are we showing the main features?</span>
+0045 <span class="comment">%                      the default is yes (true)</span>
+0046 <span class="comment">%       isShowAbs    - are we showing the absolute features?</span>
+0047 <span class="comment">%                      the default is yes (true)</span>
+0048 <span class="comment">%       isShowPos    - are we showing the positive features?</span>
+0049 <span class="comment">%                      the default is yes (true)</span>
+0050 <span class="comment">%       isShowNeg    - are we showing the negative features?</span>
+0051 <span class="comment">%                      the default is yes (true)</span>
+0052 <span class="comment">%       isShowSign   - are we showing the signed features?</span>
+0053 <span class="comment">%                      the default is yes (true)</span>
+0054 <span class="comment">%       isShowMotion - are we showing the motion feature subsets?</span>
+0055 <span class="comment">%                      the default is yes (true)</span>
+0056 <span class="comment">%       isShowEvent  - are we showing the event feature subsets?</span>
+0057 <span class="comment">%                      the default is yes (true)</span>
+0058 <span class="comment">%       showI        - the indices of the features to show</span>
+0059 <span class="comment">%                      if empty, all features are shown</span>
+0060 <span class="comment">%                      the default is all ([])</span>
+0061 <span class="comment">%</span>
+0062 <span class="comment">% See also WORM2STATSMATRIX</span>
+0063 
+0064 <span class="comment">% Are we scaling all feature colors to the maximum range?</span>
+0065 isScale = false;
+0066 <span class="keyword">if</span> ~isempty(varargin)
+0067     isScale = varargin{1};
+0068 <span class="keyword">end</span>
+0069 
+0070 <span class="comment">% Which feature types are we showing?</span>
+0071 showType = [];
+0072 <span class="keyword">if</span> length(varargin) &gt; 1
+0073     showType = varargin{2};
+0074 <span class="keyword">end</span>
+0075 
+0076 <span class="comment">% Are we showing the main features?</span>
+0077 isShowMain = true;
+0078 <span class="keyword">if</span> length(varargin) &gt; 2
+0079     isShowMain = varargin{3};
+0080 <span class="keyword">end</span>
+0081 
+0082 <span class="comment">% Are we showing the absolute features?</span>
+0083 isShowAbs = false;
+0084 <span class="keyword">if</span> length(varargin) &gt; 3
+0085     isShowAbs = varargin{4};
+0086 <span class="keyword">end</span>
+0087 
+0088 <span class="comment">% Are we showing the positive features?</span>
+0089 isShowPos = false;
+0090 <span class="keyword">if</span> length(varargin) &gt; 4
+0091     isShowPos = varargin{5};
+0092 <span class="keyword">end</span>
+0093 
+0094 <span class="comment">% Are we showing the negative features?</span>
+0095 isShowNeg = false;
+0096 <span class="keyword">if</span> length(varargin) &gt; 5
+0097     isShowNeg = varargin{6};
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="comment">% Are we showing the signed features?</span>
+0101 isShowSign = true;
+0102 <span class="keyword">if</span> length(varargin) &gt; 6
+0103     isShowSign = varargin{7};
+0104 <span class="keyword">end</span>
+0105 
+0106 <span class="comment">% Are we showing the motion features?</span>
+0107 isShowMotion = true;
+0108 <span class="keyword">if</span> length(varargin) &gt; 7
+0109     isShowMotion = varargin{8};
+0110 <span class="keyword">end</span>
+0111 
+0112 <span class="comment">% Are we showing the event features?</span>
+0113 isShowEvent = true;
+0114 <span class="keyword">if</span> length(varargin) &gt; 8
+0115     isShowEvent = varargin{9};
+0116 <span class="keyword">end</span>
+0117 
+0118 <span class="comment">% Determine the indices of the features to show.</span>
+0119 showI = [];
+0120 <span class="keyword">if</span> length(varargin) &gt; 9
+0121     showI = varargin{10};
+0122 <span class="keyword">end</span>
+0123 
+0124 <span class="comment">% Load the matrix.</span>
+0125 worms = load(wormFile);
+0126 stats = worms.stats;
+0127 
+0128 <span class="comment">% Remove unwanted features.</span>
+0129 isShow = true(size(worms.stats, 1), 1);
+0130 <span class="keyword">if</span> ~isempty(showType)
+0131     unShow = arrayfun(@(x) ~any(x == showType), worms.type);
+0132     isShow(unShow) = false;
+0133 <span class="keyword">end</span>
+0134 <span class="keyword">if</span> ~isShowMain
+0135     isShow(logical(worms.isMain)) = false;
+0136 <span class="keyword">end</span>
+0137 <span class="keyword">if</span> ~isShowAbs
+0138     isShow(logical(worms.isAbs)) = false;
+0139 <span class="keyword">end</span>
+0140 <span class="keyword">if</span> ~isShowPos
+0141     isShow(logical(worms.isPos)) = false;
+0142 <span class="keyword">end</span>
+0143 <span class="keyword">if</span> ~isShowNeg
+0144     isShow(logical(worms.isNeg)) = false;
+0145 <span class="keyword">end</span>
+0146 <span class="keyword">if</span> ~isShowSign
+0147     isShow(logical(worms.isSign)) = false;
+0148 <span class="keyword">end</span>
+0149 <span class="keyword">if</span> ~isShowMotion
+0150     isShow(logical(worms.isMotion)) = false;
+0151 <span class="keyword">end</span>
+0152 <span class="keyword">if</span> ~isShowEvent
+0153     isShow(logical(worms.isEvent)) = false;
+0154 <span class="keyword">end</span>
+0155 <span class="keyword">if</span> ~isempty(showI)
+0156     unShowI = setDiff(1:size(stats, 1), showI);
+0157     isShow(unShowI) = false;
+0158 <span class="keyword">end</span>
+0159 
+0160 <span class="comment">% Compute the z scores.</span>
+0161 featureMeans = nanmean(stats, 2);
+0162 featureStds = nanstd(stats, 0, 2);
+0163 zstats = nan(size(stats));
+0164 <span class="keyword">for</span> i = 1:size(stats, 2)
+0165     zstats(:,i) = (stats(:,i) - featureMeans) ./ featureStds;
+0166 <span class="keyword">end</span>
+0167 
+0168 <span class="comment">% Construct the worm names.</span>
+0169 N2I = [];
+0170 wormnames = cell(length(worms.genotype), 1);
+0171 <span class="keyword">for</span> i = 1:length(wormnames)
+0172     <span class="keyword">if</span> strcmp(worms.strain{i}, <span class="string">'N2'</span>)
+0173         N2I(end + 1) = i;
+0174         <span class="keyword">if</span> ~isempty(strfind(worms.food{i}, <span class="string">'OP50'</span>))
+0175             food = <span class="string">'on food'</span>;
+0176         <span class="keyword">else</span>
+0177             food = <span class="string">'off food'</span>;
+0178         <span class="keyword">end</span>
+0179         wormnames{i} = [<span class="string">'Lab Reference N2 '</span> worms.sex{i} <span class="string">' '</span> food];
+0180     <span class="keyword">elseif</span> ~isempty(strfind(lower(worms.strain{i}), <span class="string">'aq2947'</span>))
+0181         wormnames{i} = [<span class="string">'CGC Reference N2 '</span> worms.strain{i}];
+0182     <span class="keyword">elseif</span> ~isempty(strfind(lower(worms.strain{i}), <span class="string">'ps312'</span>))
+0183         wormnames{i} = [<span class="string">'Pristionchus '</span> worms.strain{i}];
+0184     <span class="keyword">elseif</span> ~isempty(strfind(lower(worms.genotype{i}), <span class="string">'isolate'</span>))
+0185         wormnames{i} = [worms.genotype{i} <span class="string">' '</span> worms.strain{i}];
+0186     <span class="keyword">elseif</span> isempty(worms.genotype{i})
+0187         wormnames{i} = worms.strain{i};
+0188     <span class="keyword">else</span>
+0189         wormnames{i} = worms.genotype{i};
+0190     <span class="keyword">end</span>
+0191 <span class="keyword">end</span>
+0192 
+0193 <span class="comment">% Always show the N2.</span>
+0194 noN2 = setdiff(1:length(wormnames), N2I);
+0195 
+0196 <span class="comment">% Cluster the worms.</span>
+0197 showI = logical(worms.isMain) | logical(worms.isAbs) | <span class="keyword">...</span>
+0198     logical(worms.isMotion);
+0199 <span class="comment">%showI = true(size(worms.isMain));</span>
+0200 zstats = zstats(showI,:);
+0201 <span class="comment">% wormI = 1:length(wormnames);</span>
+0202 <span class="comment">% zstats(isnan(zstats)) = 0;</span>
+0203 <span class="comment">% cgo = clustergram(zstats(:,wormI), 'Linkage', 'average', ...</span>
+0204 <span class="comment">%     'ColumnPDist', 'euclidean', 'RowPDist', 'euclidean', ...</span>
+0205 <span class="comment">%     'Standardize', 'row', 'Dendrogram', 0, 'Colormap', redbluecmap);</span>
+0206 <span class="comment">% set(cgo, 'RowLabels', worms.name(showI));</span>
+0207 <span class="comment">% set(cgo, 'ColumnLabels', wormnames(wormI));</span>
+0208 maxNum = 300;
+0209 <span class="keyword">if</span> 1
+0210 wormI = [noN2(1:(maxNum - length(N2I))) N2I];
+0211 zstats(isnan(zstats)) = 0;
+0212 cgo = clustergram(zstats(:,wormI), <span class="string">'Linkage'</span>, <span class="string">'average'</span>, <span class="keyword">...</span>
+0213     <span class="string">'ColumnPDist'</span>, <span class="string">'euclidean'</span>, <span class="string">'RowPDist'</span>, <span class="string">'euclidean'</span>, <span class="keyword">...</span>
+0214     <span class="string">'Standardize'</span>, <span class="string">'row'</span>, <span class="string">'Dendrogram'</span>, 0, <span class="string">'Colormap'</span>, redbluecmap);
+0215 set(cgo, <span class="string">'RowLabels'</span>, worms.name(showI));
+0216 set(cgo, <span class="string">'ColumnLabels'</span>, wormnames(wormI));
+0217 <span class="keyword">end</span>
+0218 <span class="keyword">if</span> 0
+0219 maxHalf = floor((length(noN2) - maxNum) / 2);
+0220 wormI = [noN2((maxHalf + 2):(length(noN2) - maxHalf - length(N2I))) N2I];
+0221 zstats(isnan(zstats)) = 0;
+0222 cgo = clustergram(zstats(:,wormI), <span class="string">'Linkage'</span>, <span class="string">'average'</span>, <span class="keyword">...</span>
+0223     <span class="string">'ColumnPDist'</span>, <span class="string">'euclidean'</span>, <span class="string">'RowPDist'</span>, <span class="string">'euclidean'</span>, <span class="keyword">...</span>
+0224     <span class="string">'Standardize'</span>, <span class="string">'row'</span>, <span class="string">'Dendrogram'</span>, 0, <span class="string">'Colormap'</span>, redbluecmap);
+0225 set(cgo, <span class="string">'RowLabels'</span>, worms.name(showI));
+0226 set(cgo, <span class="string">'ColumnLabels'</span>, wormnames(wormI));
+0227 <span class="keyword">end</span>
+0228 <span class="keyword">if</span> 0
+0229 wormI = [noN2((length(noN2) - maxNum + 1 + length(N2I)):length(noN2)) N2I];
+0230 zstats(isnan(zstats)) = 0;
+0231 cgo = clustergram(zstats(:,wormI), <span class="string">'Linkage'</span>, <span class="string">'average'</span>, <span class="keyword">...</span>
+0232     <span class="string">'ColumnPDist'</span>, <span class="string">'euclidean'</span>, <span class="string">'RowPDist'</span>, <span class="string">'euclidean'</span>, <span class="keyword">...</span>
+0233     <span class="string">'Standardize'</span>, <span class="string">'row'</span>, <span class="string">'Dendrogram'</span>, 0, <span class="string">'Colormap'</span>, redbluecmap);
+0234 set(cgo, <span class="string">'RowLabels'</span>, worms.name(showI));
+0235 set(cgo, <span class="string">'ColumnLabels'</span>, wormnames(wormI));
+0236 <span class="keyword">end</span>
+0237 <span class="comment">% cgo = clustergram(zstats', 'Linkage', 'average', ...</span>
+0238 <span class="comment">%     'ColumnPDist', 'euclidean', 'RowPDist', 'euclidean', ...</span>
+0239 <span class="comment">%     'Standardize', 'column', 'Dendrogram', 0, 'Colormap', redbluecmap);</span>
+0240 <span class="comment">% set(cgo, 'RowLabels', wormnames);</span>
+0241 <span class="comment">% set(cgo, 'ColumnLabels', worms.name(logical(worms.isMain)));</span>
+0242 
+0243 <span class="comment">%clustergram(zstats','RowLabels', name(isShow), 'ColumnLabels', strain);</span>
+0244 
+0245 <span class="comment">% % Initialize the colors.</span>
+0246 <span class="comment">% minShade = -0.75;</span>
+0247 <span class="comment">% maxShade = 0.75;</span>
+0248 <span class="comment">% shadeScale = 2^12;</span>
+0249 <span class="comment">% mColors = str2colors('g', linspace(minShade, maxShade, shadeScale));</span>
+0250 <span class="comment">% sColors = str2colors('r', linspace(minShade, maxShade, shadeScale));</span>
+0251 <span class="comment">% lColors = str2colors('b', linspace(minShade, maxShade, shadeScale));</span>
+0252 <span class="comment">% pColors = str2colors('o', linspace(minShade, maxShade, shadeScale));</span>
+0253 <span class="comment">%</span>
+0254 <span class="comment">% % Convert the z scores to an image.</span>
+0255 <span class="comment">% types = worms.type(isShow);</span>
+0256 <span class="comment">% rgbImg = nan(size(zstats,1), size(zstats,2), 3);</span>
+0257 <span class="comment">% for i = 1:size(stats, 1)</span>
+0258 <span class="comment">%     data = zstats(i,:);</span>
+0259 <span class="comment">%     data = data - min(data);</span>
+0260 <span class="comment">%     maxData = max(data);</span>
+0261 <span class="comment">%     if maxData ~= 0</span>
+0262 <span class="comment">%         data = data / max(data);</span>
+0263 <span class="comment">%     end</span>
+0264 <span class="comment">%     colorI = round(data * (shadeScale - 1)) + 1;</span>
+0265 <span class="comment">%     colors = [];</span>
+0266 <span class="comment">%     switch types(i)</span>
+0267 <span class="comment">%         case 'm'</span>
+0268 <span class="comment">%             colors = mColors;</span>
+0269 <span class="comment">%         case 's'</span>
+0270 <span class="comment">%             colors = sColors;</span>
+0271 <span class="comment">%         case 'l'</span>
+0272 <span class="comment">%             colors = lColors;</span>
+0273 <span class="comment">%         case 'p'</span>
+0274 <span class="comment">%             colors = pColors;</span>
+0275 <span class="comment">%     end</span>
+0276 <span class="comment">%     for j = 1:length(colorI)</span>
+0277 <span class="comment">%         if ~isnan(colorI(j))</span>
+0278 <span class="comment">%             rgbImg(i,j,:) = colors(colorI(j),:);</span>
+0279 <span class="comment">%         end</span>
+0280 <span class="comment">%     end</span>
+0281 <span class="comment">% end</span>
+0282 <span class="comment">% %imshow(rgbImg);</span>
+0283 <span class="comment">% imagesc(zstats');</span>
+0284 <span class="comment">% genes = cell(1, length(worms.gene));</span>
+0285 <span class="comment">% for i = 1:length(worms.gene)</span>
+0286 <span class="comment">%     if isempty(worms.gene{i})</span>
+0287 <span class="comment">%         genes{i} = 'WTI';</span>
+0288 <span class="comment">%     else</span>
+0289 <span class="comment">%         genes{i} = worms.gene{i}(1:3);</span>
+0290 <span class="comment">%     end</span>
+0291 <span class="comment">% end</span>
+0292 <span class="comment">% [genes, ~, indices] = unique(genes);</span>
+0293 <span class="comment">% ticks = nan(1, length(genes));</span>
+0294 <span class="comment">% % set(gca, 'XTick', 1:length(worms.gene));</span>
+0295 <span class="comment">% % set(gca, 'XTickLabel', worms.gene);</span>
+0296 <span class="comment">% set(gca, 'XTick', ticks);</span>
+0297 <span class="comment">% set(gca, 'XTickLabel', genes);</span>
+0298 <span class="comment">% xticklabel_rotate();</span>
+0299 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

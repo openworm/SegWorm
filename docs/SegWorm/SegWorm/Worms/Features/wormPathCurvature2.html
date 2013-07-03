@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormPathCurvature2</title>
+  <meta name="keywords" content="wormPathCurvature2">
+  <meta name="description" content="WORMDIRECTION Compute the worm path curvature (angle/distance).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>wormPathCurvature2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMDIRECTION Compute the worm path curvature (angle/distance).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function curvature = wormPathCurvature(wormFile, useSamples, type,scales, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMDIRECTION Compute the worm path curvature (angle/distance).
+
+   CURVATURE = WORMDIRECTION(WORMFILE, USESAMPLES, TYPE, SCALES)
+
+   CURVATURE = WORMDIRECTION(WORMFILE, USESAMPLES, TYPE, SCALES,
+                             VENTRALMODE)
+
+   Inputs:
+       wormFile   - the name of the file containing normalized worms (see
+                    saveWormFrames). The file format is MAT (Matlab's
+                    '.mat') and contains the following variables:
+                   
+                    samples      = the samples per normalized worm; if
+                                   empty, the worms are in structs
+                    fps          = frames/seconds
+                    firstFrame   = the first frame number (in block1)
+                    lastFrame    = the last frame number (in the last block)
+                    blockSize    = the size of a block
+                    blocks       = the number of blocks
+                    block1       = the first block
+                    ...
+                    blockN       = the N-th (last) block
+
+                    If the data is normalized, the blocks are cell arrays
+                    with following structure (see normWorms):
+
+                    blockN{1}  = status:
+                                 s = segmented
+                                 f = segmentation failed
+                                 m = stage movement
+                                 d = dropped frame
+                    blockN{2}  = vulvaContours
+                    blockN{3}  = nonVulvaContours
+                    blockN{4}  = skeletons
+                    blockN{5}  = angles
+                    blockN{6}  = inOutTouches
+                    blockN{7}  = lengths
+                    blockN{8}  = widths
+                    blockN{9}  = headAreas
+                    blockN{10} = tailAreas
+                    blockN{11} = vulvaAreas
+                    blockN{12} = nonVulvaAreas
+
+                    Otherwise, the blocks are just cell arrays of worm
+                    cells; missing worms are labeled with their frame
+                    status instead:
+
+                    blockN = 1 to, at most, blockSize number of worm cells;
+                             or, for missing worms, their frame status:
+                             f = segmentation failed
+                             m = stage movement
+                             d = dropped frame
+
+       useSamples - the worm samples to use. Samples can be:
+                    
+                    empty      = use all samples
+                    fractional = the fraction of samples to use
+                    vector     = the samplig points to use
+                    cell array = each cell element is a group of sampling
+                                 points to average together; or, if you
+                                 include just a a single fractional
+                                 element, the worm will be fractionated
+                                 into these groups and each group will be
+                                 averaged; e.g., {1/7} produces 7 averaged
+                                 groups, each is 1/7 the worm
+
+       type       - the type of algorithm to use when replacing unusable
+                    data samples (e.g., due to stage movements or failed
+                    segmentation). Differentiation is expressed as:
+
+                    dX/dT = -(X1 - X2)/(T1 - T2)
+
+                    type is a 1 or 2 letter string indicating which
+                    method to use when replacing an unusable X1 and/or
+                    X2. If type is 2 characters long:
+
+                    type(1) = X1
+                    type(2) = X2
+
+                    Otherwise, type(1) is used for both X1 and X2. The
+                    methods are as follows:
+
+                    i = linearly interpolate unusable data
+                        (type(2) is ignored)
+                    e = exact match, if data is unusable, the result is NaN
+                    b = backwards nearest neighbor
+                    f = forwards nearest neighbor
+                    n = nearest neighbor
+
+                    Note: the nearest-neighbor type algorithms adjust
+                    the time accordingly. If there is no nearest
+                    neighbor, differentiation results in NaN.
+       scales     - a vector of the scales (in seconds) to use for
+                    spacing X1 from X2
+
+
+       ventralMode - the ventral side mode:
+
+                     0 = the ventral side is unknown
+                     1 = the ventral side is clockwise
+                     2 = the ventral side is anticlockwise
+
+   Output:
+       curvature - the worm path curvature (the angle between every 3 
+                   subsequent locations at the given scale, divided by the
+                   distance traveled between these 3 subsequent locations)
+
+   See also <a href="multiScaleWorm.html" class="code" title="function [diffData startFrame endFrame fps useSamples] =multiScaleWorm(wormFile, startFrame, endFrame, useSamples,useFrames, type, scales, isSparse, offMode, isNoisy, htDirMode,isAbsDir, varargin)">MULTISCALEWORM</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a>	CURVATURE Compute the curvature for a vector of points.</li><li><a href="multiScaleWorm.html" class="code" title="function [diffData startFrame endFrame fps useSamples] =multiScaleWorm(wormFile, startFrame, endFrame, useSamples,useFrames, type, scales, isSparse, offMode, isNoisy, htDirMode,isAbsDir, varargin)">multiScaleWorm</a>	MULTISCALEWORM Differentiate worm data at multiple scales.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function curvature =</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function curvature = wormPathCurvature(wormFile, useSamples, type, </a><span class="keyword">...</span>
+0002     scales, varargin)
+0003 <span class="comment">%WORMDIRECTION Compute the worm path curvature (angle/distance).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   CURVATURE = WORMDIRECTION(WORMFILE, USESAMPLES, TYPE, SCALES)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   CURVATURE = WORMDIRECTION(WORMFILE, USESAMPLES, TYPE, SCALES,</span>
+0008 <span class="comment">%                             VENTRALMODE)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Inputs:</span>
+0011 <span class="comment">%       wormFile   - the name of the file containing normalized worms (see</span>
+0012 <span class="comment">%                    saveWormFrames). The file format is MAT (Matlab's</span>
+0013 <span class="comment">%                    '.mat') and contains the following variables:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%                    samples      = the samples per normalized worm; if</span>
+0016 <span class="comment">%                                   empty, the worms are in structs</span>
+0017 <span class="comment">%                    fps          = frames/seconds</span>
+0018 <span class="comment">%                    firstFrame   = the first frame number (in block1)</span>
+0019 <span class="comment">%                    lastFrame    = the last frame number (in the last block)</span>
+0020 <span class="comment">%                    blockSize    = the size of a block</span>
+0021 <span class="comment">%                    blocks       = the number of blocks</span>
+0022 <span class="comment">%                    block1       = the first block</span>
+0023 <span class="comment">%                    ...</span>
+0024 <span class="comment">%                    blockN       = the N-th (last) block</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%                    If the data is normalized, the blocks are cell arrays</span>
+0027 <span class="comment">%                    with following structure (see normWorms):</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%                    blockN{1}  = status:</span>
+0030 <span class="comment">%                                 s = segmented</span>
+0031 <span class="comment">%                                 f = segmentation failed</span>
+0032 <span class="comment">%                                 m = stage movement</span>
+0033 <span class="comment">%                                 d = dropped frame</span>
+0034 <span class="comment">%                    blockN{2}  = vulvaContours</span>
+0035 <span class="comment">%                    blockN{3}  = nonVulvaContours</span>
+0036 <span class="comment">%                    blockN{4}  = skeletons</span>
+0037 <span class="comment">%                    blockN{5}  = angles</span>
+0038 <span class="comment">%                    blockN{6}  = inOutTouches</span>
+0039 <span class="comment">%                    blockN{7}  = lengths</span>
+0040 <span class="comment">%                    blockN{8}  = widths</span>
+0041 <span class="comment">%                    blockN{9}  = headAreas</span>
+0042 <span class="comment">%                    blockN{10} = tailAreas</span>
+0043 <span class="comment">%                    blockN{11} = vulvaAreas</span>
+0044 <span class="comment">%                    blockN{12} = nonVulvaAreas</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%                    Otherwise, the blocks are just cell arrays of worm</span>
+0047 <span class="comment">%                    cells; missing worms are labeled with their frame</span>
+0048 <span class="comment">%                    status instead:</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">%                    blockN = 1 to, at most, blockSize number of worm cells;</span>
+0051 <span class="comment">%                             or, for missing worms, their frame status:</span>
+0052 <span class="comment">%                             f = segmentation failed</span>
+0053 <span class="comment">%                             m = stage movement</span>
+0054 <span class="comment">%                             d = dropped frame</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">%       useSamples - the worm samples to use. Samples can be:</span>
+0057 <span class="comment">%</span>
+0058 <span class="comment">%                    empty      = use all samples</span>
+0059 <span class="comment">%                    fractional = the fraction of samples to use</span>
+0060 <span class="comment">%                    vector     = the samplig points to use</span>
+0061 <span class="comment">%                    cell array = each cell element is a group of sampling</span>
+0062 <span class="comment">%                                 points to average together; or, if you</span>
+0063 <span class="comment">%                                 include just a a single fractional</span>
+0064 <span class="comment">%                                 element, the worm will be fractionated</span>
+0065 <span class="comment">%                                 into these groups and each group will be</span>
+0066 <span class="comment">%                                 averaged; e.g., {1/7} produces 7 averaged</span>
+0067 <span class="comment">%                                 groups, each is 1/7 the worm</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">%       type       - the type of algorithm to use when replacing unusable</span>
+0070 <span class="comment">%                    data samples (e.g., due to stage movements or failed</span>
+0071 <span class="comment">%                    segmentation). Differentiation is expressed as:</span>
+0072 <span class="comment">%</span>
+0073 <span class="comment">%                    dX/dT = -(X1 - X2)/(T1 - T2)</span>
+0074 <span class="comment">%</span>
+0075 <span class="comment">%                    type is a 1 or 2 letter string indicating which</span>
+0076 <span class="comment">%                    method to use when replacing an unusable X1 and/or</span>
+0077 <span class="comment">%                    X2. If type is 2 characters long:</span>
+0078 <span class="comment">%</span>
+0079 <span class="comment">%                    type(1) = X1</span>
+0080 <span class="comment">%                    type(2) = X2</span>
+0081 <span class="comment">%</span>
+0082 <span class="comment">%                    Otherwise, type(1) is used for both X1 and X2. The</span>
+0083 <span class="comment">%                    methods are as follows:</span>
+0084 <span class="comment">%</span>
+0085 <span class="comment">%                    i = linearly interpolate unusable data</span>
+0086 <span class="comment">%                        (type(2) is ignored)</span>
+0087 <span class="comment">%                    e = exact match, if data is unusable, the result is NaN</span>
+0088 <span class="comment">%                    b = backwards nearest neighbor</span>
+0089 <span class="comment">%                    f = forwards nearest neighbor</span>
+0090 <span class="comment">%                    n = nearest neighbor</span>
+0091 <span class="comment">%</span>
+0092 <span class="comment">%                    Note: the nearest-neighbor type algorithms adjust</span>
+0093 <span class="comment">%                    the time accordingly. If there is no nearest</span>
+0094 <span class="comment">%                    neighbor, differentiation results in NaN.</span>
+0095 <span class="comment">%       scales     - a vector of the scales (in seconds) to use for</span>
+0096 <span class="comment">%                    spacing X1 from X2</span>
+0097 <span class="comment">%</span>
+0098 <span class="comment">%</span>
+0099 <span class="comment">%       ventralMode - the ventral side mode:</span>
+0100 <span class="comment">%</span>
+0101 <span class="comment">%                     0 = the ventral side is unknown</span>
+0102 <span class="comment">%                     1 = the ventral side is clockwise</span>
+0103 <span class="comment">%                     2 = the ventral side is anticlockwise</span>
+0104 <span class="comment">%</span>
+0105 <span class="comment">%   Output:</span>
+0106 <span class="comment">%       curvature - the worm path curvature (the angle between every 3</span>
+0107 <span class="comment">%                   subsequent locations at the given scale, divided by the</span>
+0108 <span class="comment">%                   distance traveled between these 3 subsequent locations)</span>
+0109 <span class="comment">%</span>
+0110 <span class="comment">%   See also MULTISCALEWORM</span>
+0111 
+0112 <span class="comment">% Where is the ventral side located?</span>
+0113 ventralMode = 0;
+0114 <span class="keyword">if</span> ~isempty(varargin)
+0115     ventralMode = varargin{1};
+0116 <span class="keyword">end</span>
+0117 
+0118 <span class="comment">% Determine the worm direction.</span>
+0119 isSparse = false;
+0120 offMode = 1;
+0121 isNoisy = false;
+0122 htDirMode = 3;
+0123 isAbsDir = true;
+0124 [diffData, ~, ~, fps, ~] = <a href="multiScaleWorm.html" class="code" title="function [diffData startFrame endFrame fps useSamples] =multiScaleWorm(wormFile, startFrame, endFrame, useSamples,useFrames, type, scales, isSparse, offMode, isNoisy, htDirMode,isAbsDir, varargin)">multiScaleWorm</a>(wormFile, [], [], useSamples, <span class="keyword">...</span>
+0125     [], type, scales, isSparse, offMode, isNoisy, htDirMode, isAbsDir);
+0126 
+0127 
+0128 <span class="comment">% Compute the worm direction and path curvature for each scale.</span>
+0129 <a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a> = cell(length(scales),1);
+0130 <span class="keyword">for</span> i = 1:length(scales)
+0131     <a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a>{i} = <span class="keyword">...</span>
+0132         computeCurvature(diffData{8}{i}, diffData{7}{i}, scales(i), <span class="keyword">...</span>
+0133         fps, offMode);
+0134     <span class="keyword">if</span> ventralMode &gt; 1
+0135         <a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a>{i} = -<a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a>{i};
+0136     <span class="keyword">end</span>
+0137 <span class="keyword">end</span>
+0138 <span class="keyword">end</span>
+0139 
+0140 <span class="comment">% Compute the worm path curvature.</span>
+0141 <a name="_sub1" href="#_subfunctions" class="code">function curvature = </a><span class="keyword">...</span>
+0142     computeCurvature(direction, speed, scale, fps, offMode)
+0143 
+0144 <span class="comment">% Compute the angle differentials and distances.</span>
+0145 frameScale = round(scale * fps);
+0146 speed = abs(speed);
+0147 dDir = nan(size(speed));
+0148 distance = nan(size(dDir));
+0149 <span class="keyword">switch</span> offMode
+0150     <span class="keyword">case</span> 1
+0151         startOff = round((frameScale + 1) / 2);
+0152         endOff = frameScale - startOff;
+0153     <span class="keyword">case</span> 2
+0154         startOff = 0;
+0155         endOff = frameScale;
+0156     <span class="keyword">case</span> 3
+0157         startOff = frameScale;
+0158         endOff = 0;
+0159 <span class="keyword">end</span>
+0160 dDir(:,1:(end - frameScale + 1)) = <span class="keyword">...</span>
+0161     direction(:,frameScale:end) - direction(:,1:(end - frameScale + 1));
+0162 distanceI = startOff:(length(speed) - frameScale);
+0163 distance(:,distanceI) = (speed(:,distanceI) * scale + <span class="keyword">...</span>
+0164     speed(:,distanceI + frameScale) * scale) / 2;
+0165 
+0166 <span class="comment">% Wrap the direction.</span>
+0167 wrap = dDir &gt;= 180;
+0168 dDir(wrap) = dDir(wrap) - 360;
+0169 wrap = dDir &lt;= -180;
+0170 dDir(wrap) = dDir(wrap) + 360;
+0171 
+0172 <span class="comment">% Compute the worm path curvature.</span>
+0173 <span class="comment">%curvature = dDir .* distance;</span>
+0174 distance(distance &lt; 1) = NaN;
+0175 <a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a> = (dDir ./ distance) * (pi / 180);
+0176 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormVelocity</title>
+  <meta name="keywords" content="wormVelocity">
+  <meta name="description" content="WORMVELOCITY Compute the worm velocity (speed &amp; direction) at the">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>wormVelocity
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMVELOCITY Compute the worm velocity (speed &amp; direction) at the</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [velocity events] = wormVelocity(x, y, fps, lengths, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMVELOCITY Compute the worm velocity (speed &amp; direction) at the
+head-tip/head/midbody/tail/tail-tip, forward/paused/backward events, and
+motion mode.
+
+   [VELOCITY EVENTS] = WORMVELOCITY(X, Y, FPS, LENGTHS)
+
+   [VELOCITY EVENTS] = WORMVELOCITY(X, Y, FPS, LENGTHS, VENTRALMODE)
+
+   Inputs:
+       x           - the worm skeleton's x-axis coordinates
+       y           - the worm skeleton's y-axis coordinates
+       fps         - the frames/seconds
+       lengths     - the worm length per frame
+       ventralMode - the ventral side mode:
+
+                     0 = the ventral side is unknown
+                     1 = the ventral side is clockwise
+                     2 = the ventral side is anticlockwise
+
+   Outputs:
+       velocity - the worm velocity; each field has subfields for the
+                  &quot;speed&quot; and &quot;direction&quot;:
+
+                  headTip = the tip of the head (1/12 the worm at 0.25s)
+                  head    = the head (1/6 the worm at 0.5s)
+                  midbody = the midbody (2/6 the worm at 0.5s)
+                  tail    = the tail (1/6 the worm at 0.5s)
+                  tailTip = the tip of the tail (1/12 the worm at 0.25s)
+
+       events   - the locomotion events; a struct with event fields:
+
+                  forward  = forward locomotion
+                  paused   = no locomotion (the worm is paused)
+                  backward = backward locomotion
+                  mode     = the locomotion mode:
+
+                             -1 = backward locomotion
+                              0 = no locomotion (the worm is paused)
+                              1 = forward locomotion</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>	EVENTS2ARRAY Convert a set of events into a logical array.</li><li><a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>	EVENTS2STATS Compute the event statistics.</li><li><a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>	FINDEVENT Find an event within an array of data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function velocity = computeVelocity(x, y, bodyAngle, pointsI, fps,</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [velocity events] = wormVelocity(x, y, fps, lengths, varargin)</a>
+0002 <span class="comment">%WORMVELOCITY Compute the worm velocity (speed &amp; direction) at the</span>
+0003 <span class="comment">%head-tip/head/midbody/tail/tail-tip, forward/paused/backward events, and</span>
+0004 <span class="comment">%motion mode.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [VELOCITY EVENTS] = WORMVELOCITY(X, Y, FPS, LENGTHS)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   [VELOCITY EVENTS] = WORMVELOCITY(X, Y, FPS, LENGTHS, VENTRALMODE)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Inputs:</span>
+0011 <span class="comment">%       x           - the worm skeleton's x-axis coordinates</span>
+0012 <span class="comment">%       y           - the worm skeleton's y-axis coordinates</span>
+0013 <span class="comment">%       fps         - the frames/seconds</span>
+0014 <span class="comment">%       lengths     - the worm length per frame</span>
+0015 <span class="comment">%       ventralMode - the ventral side mode:</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%                     0 = the ventral side is unknown</span>
+0018 <span class="comment">%                     1 = the ventral side is clockwise</span>
+0019 <span class="comment">%                     2 = the ventral side is anticlockwise</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   Outputs:</span>
+0022 <span class="comment">%       velocity - the worm velocity; each field has subfields for the</span>
+0023 <span class="comment">%                  &quot;speed&quot; and &quot;direction&quot;:</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%                  headTip = the tip of the head (1/12 the worm at 0.25s)</span>
+0026 <span class="comment">%                  head    = the head (1/6 the worm at 0.5s)</span>
+0027 <span class="comment">%                  midbody = the midbody (2/6 the worm at 0.5s)</span>
+0028 <span class="comment">%                  tail    = the tail (1/6 the worm at 0.5s)</span>
+0029 <span class="comment">%                  tailTip = the tip of the tail (1/12 the worm at 0.25s)</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%       events   - the locomotion events; a struct with event fields:</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%                  forward  = forward locomotion</span>
+0034 <span class="comment">%                  paused   = no locomotion (the worm is paused)</span>
+0035 <span class="comment">%                  backward = backward locomotion</span>
+0036 <span class="comment">%                  mode     = the locomotion mode:</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%                             -1 = backward locomotion</span>
+0039 <span class="comment">%                              0 = no locomotion (the worm is paused)</span>
+0040 <span class="comment">%                              1 = forward locomotion</span>
+0041 
+0042 <span class="comment">% Where is the ventral side located?</span>
+0043 ventralMode = 0;
+0044 <span class="keyword">if</span> ~isempty(varargin)
+0045     ventralMode = varargin{1};
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="comment">%% Compute the lcocomotion velocity.</span>
+0049 
+0050 <span class="comment">% Initialize the body parts.</span>
+0051 samples = size(x, 1);
+0052 size12 = floor(samples / 12);
+0053 size6 = floor(samples / 6);
+0054 middleI = round((samples + 1) / 2);
+0055 headTipI = 1:size12;
+0056 headI = 1:size6;
+0057 midbodyI = (middleI - size12):(middleI + size12);
+0058 tailI = (samples - size6 + 1):samples;
+0059 tailTipI = (samples - size12 + 1):samples;
+0060 
+0061 <span class="comment">% Initialize the velocity derivative scale.</span>
+0062 fps = double(fps);
+0063 tipDiff = 0.25;
+0064 bodyDiff = 0.5;
+0065 
+0066 <span class="comment">% Compute the tail-to-head direction.</span>
+0067 bodyI = fliplr((headI(end) + 1):(tailI(1) - 1));
+0068 diffX = nanmean(diff(x(bodyI,:), 1, 1), 1);
+0069 diffY = nanmean(diff(y(bodyI,:), 1, 1), 1);
+0070 bodyAngle = atan2(diffY, diffX) * (180 / pi);
+0071 
+0072 <span class="comment">% Compute the velocity.</span>
+0073 velocity.headTip = <a href="#_sub1" class="code" title="subfunction velocity = computeVelocity(x, y, bodyAngle, pointsI, fps, ">computeVelocity</a>(x, y, bodyAngle, headTipI, fps, <span class="keyword">...</span>
+0074     tipDiff, ventralMode);
+0075 velocity.head = <a href="#_sub1" class="code" title="subfunction velocity = computeVelocity(x, y, bodyAngle, pointsI, fps, ">computeVelocity</a>(x, y, bodyAngle, headI, fps, <span class="keyword">...</span>
+0076     bodyDiff, ventralMode);
+0077 velocity.midbody = <a href="#_sub1" class="code" title="subfunction velocity = computeVelocity(x, y, bodyAngle, pointsI, fps, ">computeVelocity</a>(x, y, bodyAngle, midbodyI, fps, <span class="keyword">...</span>
+0078     bodyDiff, ventralMode);
+0079 velocity.tail = <a href="#_sub1" class="code" title="subfunction velocity = computeVelocity(x, y, bodyAngle, pointsI, fps, ">computeVelocity</a>(x, y, bodyAngle, tailI, fps, <span class="keyword">...</span>
+0080     bodyDiff, ventralMode);
+0081 velocity.tailTip = <a href="#_sub1" class="code" title="subfunction velocity = computeVelocity(x, y, bodyAngle, pointsI, fps, ">computeVelocity</a>(x, y, bodyAngle, tailTipI, fps, <span class="keyword">...</span>
+0082     tipDiff, ventralMode);
+0083 
+0084 
+0085 
+0086 <span class="comment">%% Compute the locomotion events.</span>
+0087 events = [];
+0088 
+0089 <span class="comment">% Initialize the worm speed and video frames.</span>
+0090 speed = velocity.midbody.speed;
+0091 totalFrames = length(speed);
+0092 
+0093 <span class="comment">% Compute the distance.</span>
+0094 distance = abs(speed / fps);
+0095 
+0096 <span class="comment">% Interpolate the missing lengths.</span>
+0097 isNotData = isnan(lengths);
+0098 isData = ~isNotData;
+0099 dataI = find(isData);
+0100 interpI = find(isNotData);
+0101 <span class="keyword">if</span> ~isempty(interpI) &amp;&amp; length(dataI) &gt; 1
+0102     lengths(interpI) = interp1(dataI, lengths(dataI), interpI, <span class="string">'linear'</span>);
+0103 <span class="keyword">end</span>
+0104 
+0105 
+0106 
+0107 <span class="comment">%% Find the forward motion.</span>
+0108 wormSpeedThr = lengths * 0.05; <span class="comment">% 5 percent of its length</span>
+0109 wormDistanceThr = lengths * 0.05; <span class="comment">% 5 percent of its length</span>
+0110 wormEventFramesThr = 0.5 * fps;
+0111 wormEventMinInterFramesThr = 0.25 * fps;
+0112 minForwardSpeed = wormSpeedThr;
+0113 minForwardDistance = wormDistanceThr;
+0114 forwardFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(speed, minForwardSpeed, [], true, <span class="keyword">...</span>
+0115     wormEventFramesThr, [], false, <span class="keyword">...</span>
+0116     minForwardDistance, [], true, distance, wormEventMinInterFramesThr);
+0117 
+0118 <span class="comment">% Compute the forward statistics.</span>
+0119 [forwardEventStats forwardStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(forwardFrames, fps, <span class="keyword">...</span>
+0120     distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0121 
+0122 <span class="comment">% Organize the forward motion.</span>
+0123 events.forward.frames = forwardEventStats;
+0124 events.forward.frequency = [];
+0125 events.forward.ratio = [];
+0126 <span class="keyword">if</span> ~isempty(forwardStats)
+0127     events.forward.frequency = forwardStats.frequency;
+0128     events.forward.ratio = forwardStats.ratio;
+0129 <span class="keyword">end</span>
+0130 
+0131 
+0132 
+0133 <span class="comment">%% Find the backward motion.</span>
+0134 maxBackwardSpeed = -wormSpeedThr;
+0135 minBackwardDistance = wormDistanceThr;
+0136 backwardFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(speed, [], maxBackwardSpeed, true, <span class="keyword">...</span>
+0137     wormEventFramesThr, [], false, <span class="keyword">...</span>
+0138     minBackwardDistance, [], true, distance, wormEventMinInterFramesThr);
+0139 
+0140 <span class="comment">% Compute the backward statistics.</span>
+0141 [backwardEventStats backwardStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(backwardFrames, fps, <span class="keyword">...</span>
+0142     distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0143 
+0144 <span class="comment">% Organize the backward motion.</span>
+0145 events.backward.frames = backwardEventStats;
+0146 events.backward.frequency = [];
+0147 events.backward.ratio = [];
+0148 <span class="keyword">if</span> ~isempty(backwardStats)
+0149     events.backward.frequency = backwardStats.frequency;
+0150     events.backward.ratio = backwardStats.ratio;
+0151 <span class="keyword">end</span>
+0152 
+0153 
+0154 
+0155 <span class="comment">%% Find the paused motion.</span>
+0156 wormPauseThr = lengths * 0.025; <span class="comment">% 2.5 percent of its length</span>
+0157 minPausedSpeed = -wormPauseThr;
+0158 maxPausedSpeed = wormPauseThr;
+0159 pausedFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(speed, minPausedSpeed, maxPausedSpeed, true, <span class="keyword">...</span>
+0160     wormEventFramesThr, [], false, <span class="keyword">...</span>
+0161     [], [], true, distance, wormEventMinInterFramesThr);
+0162 
+0163 <span class="comment">% Compute the paused statistics.</span>
+0164 [pausedEventStats pausedStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(pausedFrames, fps, <span class="keyword">...</span>
+0165     distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0166 
+0167 <span class="comment">% Organize the paused motion.</span>
+0168 events.paused.frames = pausedEventStats;
+0169 events.paused.frequency = [];
+0170 events.paused.ratio = [];
+0171 <span class="keyword">if</span> ~isempty(pausedStats)
+0172     events.paused.frequency = pausedStats.frequency;
+0173     events.paused.ratio = pausedStats.ratio;
+0174 <span class="keyword">end</span>
+0175 
+0176 
+0177 
+0178 <span class="comment">%% Compute the motion mode.</span>
+0179 
+0180 <span class="comment">% Translate the events to logical arrays.</span>
+0181 isForwardFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(forwardFrames, totalFrames);
+0182 isBackwardFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(backwardFrames, totalFrames);
+0183 isPausedFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(pausedFrames, totalFrames);
+0184 
+0185 <span class="comment">% Set forward = 1, backward = -1, paused = 0, and unknown = NaN.</span>
+0186 events.mode = nan(1,totalFrames);
+0187 events.mode(isForwardFrame) = 1;
+0188 events.mode(isBackwardFrame) = -1;
+0189 events.mode(isPausedFrame) = 0;
+0190 <span class="keyword">end</span>
+0191 
+0192 
+0193 
+0194 <span class="comment">%% Compute the velocity.</span>
+0195 <a name="_sub1" href="#_subfunctions" class="code">function velocity = computeVelocity(x, y, bodyAngle, pointsI, fps, </a><span class="keyword">...</span>
+0196     scale, ventralMode)
+0197 
+0198 <span class="comment">% The scale must be odd.</span>
+0199 scale = scale * fps;
+0200 <span class="keyword">if</span> rem(floor(scale), 2)
+0201     scale = floor(scale);
+0202 <span class="keyword">elseif</span> rem(ceil(scale), 2)
+0203     scale = ceil(scale);
+0204 <span class="keyword">else</span>
+0205     scale = round(scale + 1);
+0206 <span class="keyword">end</span>
+0207 
+0208 <span class="comment">% Do we have enough coordinates?</span>
+0209 speed = nan(1, size(x, 2));
+0210 direction = nan(1, length(speed));
+0211 <span class="keyword">if</span> scale &gt; size(x, 2)
+0212     velocity.speed = speed;
+0213     velocity.direction = direction;
+0214     <span class="keyword">return</span>;
+0215 <span class="keyword">end</span>
+0216 
+0217 <span class="comment">% Compute the body part direction.</span>
+0218 diffX = nanmean(diff(x(pointsI,:), 1, 1), 1);
+0219 diffY = nanmean(diff(y(pointsI,:), 1, 1), 1);
+0220 pointAngle = atan2(diffY, diffX) * (180 / pi);
+0221 
+0222 <span class="comment">% Compute the coordinates.</span>
+0223 x = mean(x(pointsI,:), 1);
+0224 y = mean(y(pointsI,:), 1);
+0225 
+0226 <span class="comment">% Compute the speed using back/front nearest neighbors bounded at twice</span>
+0227 <span class="comment">% the scale.</span>
+0228 scaleMinus1 = scale - 1;
+0229 halfScale = scaleMinus1 / 2;
+0230 diff1 = 1;
+0231 diff2 = scale;
+0232 <span class="keyword">for</span> i = (1 + halfScale):(length(speed) - halfScale)
+0233     
+0234     <span class="comment">% Advance the indices for the derivative.</span>
+0235     newDiff1 = i - halfScale;
+0236     <span class="keyword">if</span> ~isnan(x(newDiff1))
+0237         diff1 = newDiff1;
+0238     <span class="keyword">elseif</span> i - diff1 &gt;= scale
+0239         diff1 = i - scale + 1;
+0240     <span class="keyword">end</span>
+0241     newDiff2 = i + halfScale;
+0242     <span class="keyword">if</span> ~isnan(x(newDiff2)) || newDiff2 &gt; diff2
+0243         diff2 = newDiff2;
+0244     <span class="keyword">end</span>
+0245     
+0246     <span class="comment">% Find usable indices for the derivative.</span>
+0247     <span class="keyword">while</span> isnan(x(diff1)) &amp;&amp; diff1 &gt; 1 &amp;&amp; i - diff1 &lt; scaleMinus1
+0248         diff1 = diff1 - 1;
+0249     <span class="keyword">end</span>
+0250     <span class="keyword">while</span> isnan(x(diff2)) &amp;&amp; diff2 &lt; length(speed) &amp;&amp; <span class="keyword">...</span>
+0251             diff2 - i &lt; scaleMinus1
+0252         diff2 = diff2 + 1;
+0253     <span class="keyword">end</span>
+0254     
+0255     <span class="comment">% Compute the speed.</span>
+0256     <span class="keyword">if</span> ~isnan(x(diff1)) &amp;&amp; ~isnan(x(diff2))
+0257         diffX = x(diff2) - x(diff1);
+0258         diffY = y(diff2) - y(diff1);
+0259         distance = sqrt(diffX ^ 2 + diffY ^ 2);
+0260         time = (diff2 - diff1) / fps;
+0261         speed(i) = distance / time;
+0262         
+0263         <span class="comment">% Compute the direction.</span>
+0264         direction(i) = pointAngle(diff2) - pointAngle(diff1);
+0265         <span class="keyword">if</span> direction(i) &lt; -180
+0266             direction(i) = direction(i) + 360;
+0267         <span class="keyword">elseif</span> direction(i) &gt; 180
+0268             direction(i) = direction(i) - 360;
+0269         <span class="keyword">end</span>
+0270         direction(i) = direction(i) / fps;
+0271         
+0272         <span class="comment">% Sign the speed.</span>
+0273         motionDirection = atan2(diffY, diffX) * (180 / pi);
+0274         bodyDirection = motionDirection - bodyAngle(diff1);
+0275         <span class="keyword">if</span> bodyDirection &lt; -180
+0276             bodyDirection = bodyDirection + 360;
+0277         <span class="keyword">elseif</span> bodyDirection &gt; 180
+0278             bodyDirection = bodyDirection - 360;
+0279         <span class="keyword">end</span>
+0280         <span class="keyword">if</span> abs(bodyDirection) &gt; 90
+0281             speed(i) = -speed(i);
+0282         <span class="keyword">end</span>
+0283     <span class="keyword">end</span>
+0284 <span class="keyword">end</span>
+0285 
+0286 <span class="comment">% Sign the direction for dorsal/ventral locomtoion.</span>
+0287 <span class="keyword">if</span> ventralMode &lt; 2 <span class="comment">% + = dorsal direction</span>
+0288     direction = -direction;
+0289 <span class="keyword">end</span>
+0290 
+0291 <span class="comment">% Organize the velocity.</span>
+0292 velocity.speed = speed;
+0293 velocity.direction = direction;
+0294 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

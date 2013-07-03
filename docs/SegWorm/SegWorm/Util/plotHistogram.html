@@ -1,0 +1,760 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotHistogram</title>
+  <meta name="keywords" content="plotHistogram">
+  <meta name="description" content="PLOTHISTOGRAM Plot a histogram(s) of data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>plotHistogram
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>PLOTHISTOGRAM Plot a histogram(s) of data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOTHISTOGRAM Plot a histogram(s) of data.
+
+   PLOTHISTOGRAM(DATA, TITLENAME, XAXISNAME, YAXISPREFIX, DATANAMES,
+                 HISTCOLORS)
+
+   PLOTHISTOGRAM(DATA, TITLENAME, XAXISNAME, YAXISPREFIX, DATANAMES,
+                 HISTCOLORS, STATCOLORS, HISTMODE, STATMODE, MEANMODE,
+                 SEMMODE, LOGMODE, DOWNSAMPLE)
+
+   Inputs:
+       data         - the data vector (see HISTOGRAM) for the histogram(s)
+       titleName    - the title for the figure
+       xAxisName    - the name to label the x axis
+       yAxisPrefix  - the pefix for the y-axis label
+       dataNames    - the name(s) to label the data value(s)
+       histColors   - the color(s) for the histogram(s)
+       statColors   - the color(s) for the summary statistics;
+                      if empty, the summary statistics are not shown
+       histMode     - the histogram(s) display mode:
+
+                      1 = display the histogram(s) as a filled polygon(s);
+                          the default mode is 1
+                      2 = display the histogram(s) as a line(s)
+                      3 = display the histogram(s) as a series of bars
+
+       statMode     - the summary statistics display mode:
+
+                      0 = don't display the statistics in the legend
+                      1 = display the statistics in the legend;
+                          the default mode is 1 when statColors is empty
+                      2 = display the N in the legend
+                          the default mode is 2 when statColors is defined
+                      3 = display the mean and SEM in the legend
+
+       meanMode     - the mean value histogram(s) display mode:
+
+                      0 = display the standard histogram(s);
+                          the default mode is 0
+                      1 = display the positive and negative value
+                          statistics over the standard histogram(s)
+                      2 = display the absolute value
+                          statistics over the standard histogram(s)
+                      3 = display the absolute value histogram(s)
+
+       semMode     - the SEM value histogram(s) display mode:
+
+                      0 = display the SEM for the data sets if possible;
+                          if only one data set exists, show its SEM;
+                          the default mode is 0
+                      1 = display the SEM for the data sets
+                      2 = display the SEM for all the data
+                      3 = display the SD for the data sets
+                      4 = display the SD for all the data
+
+       logMode      - how are we plotting the log of the histogram(s)?
+                      the default is not to plot the log (empty)
+
+       downSample   - how are we downsampling the histogram(s)?
+                      the default is not to downsample (empty)
+
+ See also <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">HISTOGRAM</a>, <a href="logHistogram.html" class="code" title="function histogram = logHistogram(histogram, varargin)">LOGHISTOGRAM</a>, <a href="downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">DOWNSAMPLEHISTOGRAM</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="absHistogram.html" class="code" title="function histogram = absHistogram(histogram)">absHistogram</a>	ABSHISTOGRAM Convert a histogram to its absolute value.</li><li><a href="downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>	DOWNSAMPLEHISTOGRAM Downsample a histogram(s).</li><li><a href="logHistogram.html" class="code" title="function histogram = logHistogram(histogram, varargin)">logHistogram</a>	LOGHISTOGRAM Convert a histogram to its base-10 logarithm.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>	HISTOGRAM Compute the data's histogram.</li><li><a href="../../SegWorm/Worms/Features/worm2pdf.html" class="code" title="function worm2pdf(wormFile, varargin)">worm2pdf</a>	WORM2PDF Show the worm information in a PDF.</li><li><a href="../../SegWorm/Worms/Features/wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li><li><a href="../../SegWorm/Worms/Printing/showWormMorphologyArea.html" class="code" title="function [saveFile pages] = showWormMorphologyArea(worm, varargin)">showWormMorphologyArea</a>	SHOWWORMMORPHOLOGYAREA Show the worm area morphology.</li><li><a href="../../SegWorm/Worms/Printing/showWormMorphologyLength.html" class="code" title="function [saveFile pages] = showWormMorphologyLength(worm, varargin)">showWormMorphologyLength</a>	SHOWWORMMORPHOLOGYLENGTHWIDTH Show the worm length morphology.</li><li><a href="../../SegWorm/Worms/Printing/showWormMorphologyLengthWidth.html" class="code" title="function [saveFile pages] = showWormMorphologyLengthWidth(worm, varargin)">showWormMorphologyLengthWidth</a>	SHOWWORMMORPHOLOGYLENGTHWIDTH Show the worm length and width morphology.</li><li><a href="../../SegWorm/Worms/Printing/showWormPostureBend.html" class="code" title="function showWormBendPosture(worm)">showWormPostureBend</a>	SHOWWORMBENDPOSTURE Show the worm's bending posture.</li><li><a href="../../SegWorm/Worms/Printing/showWormPostureBends1.html" class="code" title="function [saveFile pages] = showWormPostureBends1(worm, varargin)">showWormPostureBends1</a>	SHOWWORMPOSTUREBENDS1 Show the worm bends mean posture.</li><li><a href="../../SegWorm/Worms/Printing/showWormPostureBends2.html" class="code" title="function [saveFile pages] = showWormPostureBends2(worm, varargin)">showWormPostureBends2</a>	SHOWWORMPOSTUREBENDS2 Show the worm bends standard deviation posture.</li><li><a href="../../SegWorm/Worms/Printing/showWormPostureCoilsKinks.html" class="code" title="function [saveFile pages] = showWormPostureWave1(worm, varargin)">showWormPostureCoilsKinks</a>	SHOWWORMPOSTUREWAVE1 Show the worm amplitude and wavelength posture.</li><li><a href="../../SegWorm/Worms/Printing/showWormPostureDirectionOld.html" class="code" title="function showWormPostureDirection(worm)">showWormPostureDirectionOld</a>	SHOWWORMPOSTUREDIRECTION Show the worm posture direction.</li><li><a href="../../SegWorm/Worms/Printing/showWormPostureEigens1.html" class="code" title="function [saveFile pages] = showWormPostureEigens1(worm, varargin)">showWormPostureEigens1</a>	SHOWWORMPOSTUREEIGENS1 Show the first 3 eigenworm posture projections.</li><li><a href="../../SegWorm/Worms/Printing/showWormPostureEigens2.html" class="code" title="function [saveFile pages] = showWormPostureEigens2(worm, varargin)">showWormPostureEigens2</a>	SHOWWORMPOSTUREEIGENS2 Show the eigenworms 4-6 posture projections.</li><li><a href="../../SegWorm/Worms/Printing/showWormPostureOld.html" class="code" title="function showWormPosture(worm)">showWormPostureOld</a>	SHOWWORMPOSTURE Show the worm posture.</li><li><a href="../../SegWorm/Worms/Printing/showWormPostureOrientation.html" class="code" title="function [saveFile pages] = showWormPostureOrientation(worm, varargin)">showWormPostureOrientation</a>	SHOWWORMPOSTUREORIENTATION Show the worm posture direction.</li><li><a href="../../SegWorm/Worms/Printing/showWormPostureWave1.html" class="code" title="function [saveFile pages] = showWormPostureWave1(worm, varargin)">showWormPostureWave1</a>	SHOWWORMPOSTUREWAVE1 Show the worm amplitude and wavelength posture.</li><li><a href="../../SegWorm/Worms/Printing/showWormPostureWave2.html" class="code" title="function [saveFile pages] = showWormPostureWave2(worm, varargin)">showWormPostureWave2</a>	SHOWWORMPOSTUREWAVE2 Show the worm amplitude-ratio, eccentricity, and</li><li><a href="../../SegWorm/Worms/Printing/worm2detailsPDF2.html" class="code" title="function [filename pages] = worm2detailsPDF(filename, worm, wormName,varargin)">worm2detailsPDF2</a>	WORM2DETAILSPDF Save worm details to a PDF.</li><li><a href="../../SegWorm/Worms/Printing/worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>	WORM2DETAILSTIF Save worm details to a TIF.</li><li><a href="../../SegWorm/Worms/Printing/worm2summaryPDF2.html" class="code" title="function [filename pages] = worm2summaryPDF(filename, worm, wormName,varargin)">worm2summaryPDF2</a>	WORM2SUMMARYPDF Save a worm summary to a PDF.</li><li><a href="../../SegWorm/Worms/Printing/worm2summaryTIF.html" class="code" title="function [filename pages] = worm2summaryTIF(filename, worm, wormName,varargin)">worm2summaryTIF</a>	WORM2SUMMARYTIF Save a worm summary to a TIF.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function plotHistogram(data, titleName, xAxisName, yAxisPrefix, </a><span class="keyword">...</span>
+0002     dataNames, histColors, varargin)
+0003 <span class="comment">%PLOTHISTOGRAM Plot a histogram(s) of data.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   PLOTHISTOGRAM(DATA, TITLENAME, XAXISNAME, YAXISPREFIX, DATANAMES,</span>
+0006 <span class="comment">%                 HISTCOLORS)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   PLOTHISTOGRAM(DATA, TITLENAME, XAXISNAME, YAXISPREFIX, DATANAMES,</span>
+0009 <span class="comment">%                 HISTCOLORS, STATCOLORS, HISTMODE, STATMODE, MEANMODE,</span>
+0010 <span class="comment">%                 SEMMODE, LOGMODE, DOWNSAMPLE)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   Inputs:</span>
+0013 <span class="comment">%       data         - the data vector (see HISTOGRAM) for the histogram(s)</span>
+0014 <span class="comment">%       titleName    - the title for the figure</span>
+0015 <span class="comment">%       xAxisName    - the name to label the x axis</span>
+0016 <span class="comment">%       yAxisPrefix  - the pefix for the y-axis label</span>
+0017 <span class="comment">%       dataNames    - the name(s) to label the data value(s)</span>
+0018 <span class="comment">%       histColors   - the color(s) for the histogram(s)</span>
+0019 <span class="comment">%       statColors   - the color(s) for the summary statistics;</span>
+0020 <span class="comment">%                      if empty, the summary statistics are not shown</span>
+0021 <span class="comment">%       histMode     - the histogram(s) display mode:</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%                      1 = display the histogram(s) as a filled polygon(s);</span>
+0024 <span class="comment">%                          the default mode is 1</span>
+0025 <span class="comment">%                      2 = display the histogram(s) as a line(s)</span>
+0026 <span class="comment">%                      3 = display the histogram(s) as a series of bars</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%       statMode     - the summary statistics display mode:</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%                      0 = don't display the statistics in the legend</span>
+0031 <span class="comment">%                      1 = display the statistics in the legend;</span>
+0032 <span class="comment">%                          the default mode is 1 when statColors is empty</span>
+0033 <span class="comment">%                      2 = display the N in the legend</span>
+0034 <span class="comment">%                          the default mode is 2 when statColors is defined</span>
+0035 <span class="comment">%                      3 = display the mean and SEM in the legend</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%       meanMode     - the mean value histogram(s) display mode:</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%                      0 = display the standard histogram(s);</span>
+0040 <span class="comment">%                          the default mode is 0</span>
+0041 <span class="comment">%                      1 = display the positive and negative value</span>
+0042 <span class="comment">%                          statistics over the standard histogram(s)</span>
+0043 <span class="comment">%                      2 = display the absolute value</span>
+0044 <span class="comment">%                          statistics over the standard histogram(s)</span>
+0045 <span class="comment">%                      3 = display the absolute value histogram(s)</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">%       semMode     - the SEM value histogram(s) display mode:</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%                      0 = display the SEM for the data sets if possible;</span>
+0050 <span class="comment">%                          if only one data set exists, show its SEM;</span>
+0051 <span class="comment">%                          the default mode is 0</span>
+0052 <span class="comment">%                      1 = display the SEM for the data sets</span>
+0053 <span class="comment">%                      2 = display the SEM for all the data</span>
+0054 <span class="comment">%                      3 = display the SD for the data sets</span>
+0055 <span class="comment">%                      4 = display the SD for all the data</span>
+0056 <span class="comment">%</span>
+0057 <span class="comment">%       logMode      - how are we plotting the log of the histogram(s)?</span>
+0058 <span class="comment">%                      the default is not to plot the log (empty)</span>
+0059 <span class="comment">%</span>
+0060 <span class="comment">%       downSample   - how are we downsampling the histogram(s)?</span>
+0061 <span class="comment">%                      the default is not to downsample (empty)</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">% See also HISTOGRAM, LOGHISTOGRAM, DOWNSAMPLEHISTOGRAM</span>
+0064 
+0065 <span class="comment">% Are any of the histograms empty?</span>
+0066 empty = true;
+0067 <span class="keyword">if</span> ~isempty(data)
+0068     empty = arrayfun(@(x) (isempty(x.bins) || isnan(x.bins(1))), data);
+0069 <span class="keyword">end</span>
+0070 
+0071 <span class="comment">% Is there any data?</span>
+0072 <span class="keyword">if</span> all(empty)
+0073     
+0074     <span class="comment">% There is no data to plot.</span>
+0075     warning(<span class="string">'plotHistogram:NoData'</span>, <span class="string">'There is no data to plot'</span>);
+0076     
+0077     <span class="comment">% Label the figure.</span>
+0078     title(titleName);
+0079     xlabel(xAxisName);
+0080     ylabel([yAxisPrefix <span class="string">'Probability (\SigmaP(x) = 1)'</span>]);
+0081     set(gca, <span class="string">'XTick'</span>, []);
+0082     set(gca, <span class="string">'XTickLabel'</span>, []);
+0083     set(gca, <span class="string">'YTick'</span>, []);
+0084     set(gca, <span class="string">'YTickLabel'</span>, []);
+0085     set(gca, <span class="string">'Box'</span>, <span class="string">'on'</span>);
+0086     set(zoom(gcf), <span class="string">'Motion'</span>, <span class="string">'horizontal'</span>, <span class="string">'Enable'</span>, <span class="string">'on'</span>);
+0087 
+0088     <span class="comment">% Done.</span>
+0089     <span class="keyword">return</span>;
+0090 <span class="keyword">end</span>
+0091 
+0092 <span class="comment">% Determine the color(s) for the summary statistics.</span>
+0093 statColors = [];
+0094 <span class="keyword">if</span> ~isempty(varargin)
+0095     statColors = varargin{1};
+0096 <span class="keyword">end</span>
+0097 
+0098 <span class="comment">% How are we displaying the histogram(s)?</span>
+0099 histMode = 1;
+0100 <span class="keyword">if</span> length(varargin) &gt; 1
+0101     histMode = varargin{2};
+0102 <span class="keyword">end</span>
+0103 
+0104 <span class="comment">% How are we displaying the summary statistics?</span>
+0105 <span class="keyword">if</span> isempty(statColors)
+0106     statMode = 1;
+0107 <span class="keyword">else</span>
+0108     statMode = 2;
+0109 <span class="keyword">end</span>
+0110 <span class="keyword">if</span> length(varargin) &gt; 2
+0111     statMode = varargin{3};
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">% How are we displaying the mean statistics?</span>
+0115 meanMode = 0;
+0116 <span class="keyword">if</span> length(varargin) &gt; 3
+0117     meanMode = varargin{4};
+0118 <span class="keyword">end</span>
+0119 
+0120 <span class="comment">% How are we displaying the SEM statistics?</span>
+0121 semMode = 0;
+0122 <span class="keyword">if</span> length(varargin) &gt; 4
+0123     semMode = varargin{5};
+0124 <span class="keyword">end</span>
+0125 
+0126 <span class="comment">% Are we plotting the log of the histogram(s)?</span>
+0127 logMode = [];
+0128 <span class="keyword">if</span> length(varargin) &gt; 5
+0129     logMode = varargin{6};
+0130 <span class="keyword">end</span>
+0131 
+0132 <span class="comment">% Are we downsampling the histogram(s)?</span>
+0133 downsample = [];
+0134 <span class="keyword">if</span> length(varargin) &gt; 6
+0135     downsample = varargin{7};
+0136 <span class="keyword">end</span>
+0137 
+0138 <span class="comment">% Convert the histogram(s) to the absolute value.</span>
+0139 realData = data;
+0140 <span class="keyword">if</span> meanMode &gt; 2
+0141     data = <a href="absHistogram.html" class="code" title="function histogram = absHistogram(histogram)">absHistogram</a>(data);
+0142 <span class="keyword">end</span>
+0143 
+0144 <span class="comment">% Downsample the histogram(s).</span>
+0145 <span class="keyword">if</span> ~isempty(downsample)
+0146     data = <a href="downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>(data, downsample);
+0147 <span class="keyword">end</span>
+0148 
+0149 <span class="comment">% Convert the histogram(s) to log scale.</span>
+0150 yStr = [yAxisPrefix <span class="string">'Probability (\SigmaP(x) = 1)'</span>];
+0151 <span class="keyword">if</span> ~isempty(logMode)
+0152     <span class="keyword">if</span> logMode ~= 2
+0153         yStr = [yAxisPrefix <span class="string">'Log Probability (log_{10}\SigmaP(x) = 0)'</span>];
+0154     <span class="keyword">end</span>
+0155     data = <a href="logHistogram.html" class="code" title="function histogram = logHistogram(histogram, varargin)">logHistogram</a>(data, logMode);
+0156 <span class="keyword">end</span>
+0157 
+0158 <span class="comment">% Compute the histogram bounds.</span>
+0159 maxProbability = nan(length(data),1);
+0160 <span class="keyword">for</span> i = 1:length(data)
+0161     <span class="keyword">if</span> ~empty(i)
+0162         maxProbability(i) = max(data(i).PDF);
+0163     <span class="keyword">end</span>
+0164 <span class="keyword">end</span>
+0165 
+0166 <span class="comment">% How many means are we showing?</span>
+0167 numMeans = 1;
+0168 <span class="keyword">if</span> meanMode == 1
+0169     numMeans = 2;
+0170 <span class="keyword">end</span>
+0171 
+0172 <span class="comment">% How are we displaying the SEM?</span>
+0173 <span class="keyword">switch</span> semMode
+0174     
+0175     <span class="comment">% Do we have enough samples to display the set statistics?</span>
+0176     <span class="keyword">case</span> 0
+0177         dataField = <span class="string">'allData'</span>;
+0178         <span class="keyword">if</span> max(arrayfun(@(x) x.sets.samples, data)) &gt; 1
+0179             dataField = <span class="string">'sets'</span>;
+0180         <span class="keyword">end</span>
+0181         
+0182     <span class="comment">% Display the set statistics.</span>
+0183     <span class="keyword">case</span> {1, 3}
+0184         dataField = <span class="string">'sets'</span>;
+0185         
+0186     <span class="comment">% Display the aggregate data statistics.</span>
+0187     <span class="keyword">case</span> {2, 4}
+0188         dataField = <span class="string">'allData'</span>;
+0189 <span class="keyword">end</span>
+0190 
+0191 <span class="comment">% Determine the summary statistics.</span>
+0192 samples(:,1) = nan(length(data), 1);
+0193 realMeans = nan(length(data), numMeans);
+0194 means = nan(length(data), numMeans);
+0195 realSEMs = nan(length(data), numMeans);
+0196 SEMs = nan(length(data), numMeans);
+0197 <span class="keyword">for</span> i = 1:length(data)
+0198     
+0199     <span class="comment">% Is the histogram empty?</span>
+0200     <span class="keyword">if</span> empty(i)
+0201         <span class="keyword">continue</span>;
+0202     <span class="keyword">end</span>
+0203     
+0204     <span class="comment">% Set the samples to the number of sets.</span>
+0205     samples(i) = data(i).(dataField).samples;
+0206     
+0207     <span class="comment">% Determine the summary statistics for the legend.</span>
+0208     <span class="keyword">if</span> meanMode &gt; 1 &amp;&amp; realData(i).isSigned
+0209         realMeans(i) = realData(i).(dataField).mean.abs;
+0210         realSEMs(i) = realData(i).(dataField).stdDev.abs;
+0211     <span class="keyword">elseif</span> meanMode == 1 &amp;&amp; realData(i).isSigned
+0212         realMeans(i,1) = realData(i).(dataField).mean.pos;
+0213         realMeans(i,2) = realData(i).(dataField).mean.neg;
+0214         realSEMs(i,1) = realData(i).(dataField).stdDev.pos;
+0215         realSEMs(i,2) = realData(i).(dataField).stdDev.neg;
+0216     <span class="keyword">else</span>
+0217         realMeans(i) = realData(i).(dataField).mean.all;
+0218         realSEMs(i) = realData(i).(dataField).stdDev.all;
+0219     <span class="keyword">end</span>
+0220     
+0221     <span class="comment">% Determine the summary statistics for the plot.</span>
+0222     <span class="keyword">if</span> meanMode &gt; 1 &amp;&amp; data(i).isSigned
+0223         means(i) = data(i).(dataField).mean.abs;
+0224         SEMs(i) = data(i).(dataField).stdDev.abs;
+0225     <span class="keyword">elseif</span> meanMode == 1 &amp;&amp; data(i).isSigned
+0226         means(i,1) = data(i).(dataField).mean.pos;
+0227         means(i,2) = data(i).(dataField).mean.neg;
+0228         SEMs(i,1) = data(i).(dataField).stdDev.pos;
+0229         SEMs(i,2) = data(i).(dataField).stdDev.neg;
+0230     <span class="keyword">else</span>
+0231         means(i) = data(i).(dataField).mean.all;
+0232         SEMs(i) = data(i).(dataField).stdDev.all;
+0233     <span class="keyword">end</span>
+0234     
+0235     <span class="comment">% Compute the SEM.</span>
+0236     <span class="keyword">if</span> semMode &lt; 3
+0237         realSEMs(i,:) = realSEMs(i,:) ./ sqrt(data(i).(dataField).samples);
+0238         SEMs(i,:) = SEMs(i,:) ./ sqrt(data(i).(dataField).samples);
+0239     <span class="keyword">end</span>
+0240 <span class="keyword">end</span>
+0241 
+0242 <span class="comment">% Compute the summary statistics lines.</span>
+0243 maxAllProbability = max(maxProbability);
+0244 minAllLines = maxAllProbability;
+0245 maxAllLines = maxAllProbability;
+0246 <span class="keyword">if</span> ~isempty(statColors)
+0247     
+0248     <span class="comment">% Compute the range.</span>
+0249     minAllProbability = min(maxProbability);
+0250     maxRange = maxAllProbability - minAllProbability;
+0251     
+0252     <span class="comment">% Compute the offset.</span>
+0253     offset = 0.05;
+0254     minAllLines = maxAllProbability + offset * maxAllProbability;
+0255     
+0256     <span class="comment">% Compute the scale.</span>
+0257     scale = 0.1 * maxAllProbability;
+0258     maxAllLines = scale + minAllLines;
+0259     
+0260     <span class="comment">% Initialize the summary statistics style.</span>
+0261     meanLineStyle = <span class="string">'-'</span>;
+0262     semLineStyle = <span class="string">':'</span>;
+0263     <span class="keyword">if</span> meanMode == 1
+0264         negMeanLineStyle = <span class="string">'--'</span>;
+0265         negSEMLineStyle = <span class="string">'-.'</span>;
+0266     <span class="keyword">end</span>
+0267     
+0268     <span class="comment">% Compute the summary statistics lines.</span>
+0269     meanLineX = nan(length(data), 2);
+0270     lowerLineX = nan(length(data), 2);
+0271     upperLineX = nan(length(data), 2);
+0272     lineY = nan(length(data), 2);
+0273     <span class="keyword">if</span> meanMode == 1
+0274         negMeanLineX = nan(length(data), 2);
+0275         negLowerLineX = nan(length(data), 2);
+0276         negUpperLineX = nan(length(data), 2);
+0277     <span class="keyword">end</span>
+0278     <span class="keyword">for</span> i = 1:length(data)
+0279 
+0280         <span class="comment">% Is the histogram empty?</span>
+0281         <span class="keyword">if</span> empty(i)
+0282             <span class="keyword">continue</span>;
+0283         <span class="keyword">end</span>
+0284         
+0285         <span class="comment">% Compute the line height.</span>
+0286         range = maxProbability(i) - minAllProbability;
+0287         height = scale * (range / maxRange) + minAllLines;
+0288         
+0289         <span class="comment">% Compute the summary statistics lines.</span>
+0290         meanLineX(i,1:2) = means(i,1);
+0291         lowerLineX(i,:) = meanLineX(i,:) - SEMs(i,1);
+0292         upperLineX(i,:) = meanLineX(i,:) + SEMs(i,1);
+0293         lineY(i,1:2) = [0, height];
+0294         
+0295         <span class="comment">% Compute the summary statistics lines.</span>
+0296         <span class="keyword">if</span> meanMode == 1 &amp;&amp; data(i).isSigned
+0297             negMeanLineX(i,1:2) = means(i,2);
+0298             negLowerLineX(i,:) = negMeanLineX(i,:) - SEMs(i,2);
+0299             negUpperLineX(i,:) = negMeanLineX(i,:) + SEMs(i,2);
+0300         <span class="keyword">end</span>
+0301     <span class="keyword">end</span>
+0302 <span class="keyword">end</span>
+0303 
+0304 <span class="comment">% Plot the data.</span>
+0305 <span class="comment">% Note: this is done twice to display the legend and layers correctly.</span>
+0306 hold on;
+0307 transparency = .5;
+0308 edgeColorScale = .5;
+0309 lineWidth = 2;
+0310 barWidth = 0.9;
+0311 barWidthScale = 2/3;
+0312 plotHandle = [];
+0313 minBin = nan;
+0314 maxBin = nan;
+0315 <span class="keyword">for</span> i = 1:length(data)
+0316     
+0317     <span class="comment">% Is the histogram empty?</span>
+0318     <span class="keyword">if</span> empty(i)
+0319         <span class="keyword">continue</span>;
+0320     <span class="keyword">end</span>
+0321     
+0322     <span class="comment">% Plot the histogram.</span>
+0323     bins = data(i).bins;
+0324     pdfs = data(i).PDF;
+0325     <span class="keyword">switch</span> histMode
+0326         
+0327         <span class="comment">% Plot the histogram as a polygon.</span>
+0328         <span class="keyword">case</span> 1
+0329             
+0330             <span class="comment">% Construct the density.</span>
+0331             <span class="keyword">if</span> isempty(logMode)
+0332                 halfResolution = data(i).resolution / 2;
+0333                 <span class="keyword">if</span> data(i).isZeroBin &amp;&amp; ~data(i).isSigned
+0334                     startBin = bins(1);
+0335                 <span class="keyword">else</span>
+0336                     startBin = bins(1) - halfResolution;
+0337                 <span class="keyword">end</span>
+0338                 bins = [startBin, startBin, bins];
+0339                 endBin = bins(end) + halfResolution;
+0340                 bins = [bins, endBin, endBin];
+0341                 pdfs = [0, pdfs(1), pdfs, pdfs(end), 0];
+0342                 
+0343             <span class="comment">% Construct the log-scale density.</span>
+0344             <span class="keyword">else</span>
+0345                 bins = [bins(1), bins, bins(end)];
+0346                 pdfs = [0, pdfs, 0];
+0347             <span class="keyword">end</span>
+0348             
+0349             <span class="comment">% Plot the histogram.</span>
+0350             histHandle = fill(bins, pdfs, histColors(i,:), <span class="keyword">...</span>
+0351                 <span class="string">'EdgeColor'</span>,  histColors(i,:) * edgeColorScale, <span class="keyword">...</span>
+0352                 <span class="string">'LineWidth'</span>,  lineWidth, <span class="string">'FaceAlpha'</span>, transparency);
+0353             
+0354         <span class="comment">% Plot the histogram as a line.</span>
+0355         <span class="keyword">case</span> 2
+0356             
+0357             <span class="comment">% Construct the density.</span>
+0358             <span class="keyword">if</span> isempty(logMode)
+0359                 halfResolution = data(i).resolution / 2;
+0360                 <span class="keyword">if</span> data(i).isZeroBin &amp;&amp; ~data(i).isSigned
+0361                     startBin = bins(1);
+0362                 <span class="keyword">else</span>
+0363                     startBin = bins(1) - halfResolution;
+0364                 <span class="keyword">end</span>
+0365                 bins = [startBin, startBin, bins];
+0366                 endBin = bins(end) + halfResolution;
+0367                 bins = [bins, endBin, endBin];
+0368                 pdfs = [0, pdfs(1), pdfs, pdfs(end), 0];
+0369                 
+0370             <span class="comment">% Construct the log-scale density.</span>
+0371             <span class="keyword">else</span>
+0372                 bins = [bins(1), bins, bins(end)];
+0373                 pdfs = [0, pdfs, 0];
+0374             <span class="keyword">end</span>
+0375             
+0376             <span class="comment">% Plot the histogram.</span>
+0377             histHandle = plot([bins(1), bins, bins(end)], <span class="keyword">...</span>
+0378                 [0, pdfs, 0], <span class="string">'Color'</span>, histColors(i,:), <span class="keyword">...</span>
+0379                 <span class="string">'LineWidth'</span>, lineWidth);
+0380             
+0381         <span class="comment">% Plot the histogram as a series of bars.</span>
+0382         <span class="keyword">otherwise</span>
+0383             histHandle = bar(bins, pdfs, barWidth, <span class="keyword">...</span>
+0384                 <span class="string">'FaceColor'</span>, histColors(i,:));
+0385             barWidth = barWidth * barWidthScale;
+0386     <span class="keyword">end</span>
+0387     plotHandle = get(histHandle, <span class="string">'Parent'</span>);
+0388     
+0389     <span class="comment">% Compute the histogram bounds.</span>
+0390     minBin = min(minBin, min(bins));
+0391     maxBin = max(maxBin, max(bins));
+0392     
+0393     <span class="comment">% Plot the summary statisitics.</span>
+0394     <span class="keyword">if</span> ~isempty(statColors) &amp;&amp; statMode &gt; 0
+0395         line(meanLineX(i,end), lineY(i,end), <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="keyword">...</span>
+0396             <span class="string">'MarkerFaceColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0397             <span class="string">'MarkerEdgeColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0398             <span class="string">'Color'</span>, statColors(i,:), <span class="keyword">...</span>
+0399             <span class="string">'Linestyle'</span>, meanLineStyle);
+0400         line(lowerLineX(i,end), lineY(i,end), <span class="string">'Marker'</span>, <span class="string">'&gt;'</span>, <span class="keyword">...</span>
+0401             <span class="string">'MarkerFaceColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0402             <span class="string">'MarkerEdgeColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0403             <span class="string">'Color'</span>, statColors(i,:), <span class="keyword">...</span>
+0404             <span class="string">'Linestyle'</span>, semLineStyle);
+0405         <span class="keyword">if</span> meanMode == 1 &amp;&amp; data(i).isSigned
+0406             line(negMeanLineX(i,end), lineY(i,end), <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="keyword">...</span>
+0407                 <span class="string">'MarkerFaceColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0408                 <span class="string">'MarkerEdgeColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0409                 <span class="string">'Color'</span>, statColors(i,:), <span class="keyword">...</span>
+0410                 <span class="string">'Linestyle'</span>, negMeanLineStyle);
+0411             line(negLowerLineX(i,end), lineY(i,end), <span class="string">'Marker'</span>, <span class="string">'&gt;'</span>, <span class="keyword">...</span>
+0412                 <span class="string">'MarkerFaceColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0413                 <span class="string">'MarkerEdgeColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0414                 <span class="string">'Color'</span>, statColors(i,:), <span class="keyword">...</span>
+0415                 <span class="string">'Linestyle'</span>, negSEMLineStyle);
+0416         <span class="keyword">end</span>
+0417     <span class="keyword">end</span>
+0418 <span class="keyword">end</span>
+0419 
+0420 <span class="comment">% Re-plot the summary statistics.</span>
+0421 <span class="comment">% Note: this is done twice to display the legend and layers correctly.</span>
+0422 <span class="keyword">if</span> ~isempty(statColors)
+0423     <span class="keyword">for</span> i = 1:length(data)
+0424         
+0425         <span class="comment">% Is the histogram empty?</span>
+0426         <span class="keyword">if</span> empty(i)
+0427             <span class="keyword">continue</span>;
+0428         <span class="keyword">end</span>
+0429         
+0430         <span class="comment">% Re-plot the statistics markers.</span>
+0431         line(meanLineX(i,end), lineY(i,end), <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="keyword">...</span>
+0432             <span class="string">'MarkerFaceColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0433             <span class="string">'MarkerEdgeColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0434             <span class="string">'Color'</span>, statColors(i,:), <span class="keyword">...</span>
+0435             <span class="string">'Linestyle'</span>, meanLineStyle);
+0436         line(lowerLineX(i,end), lineY(i,end), <span class="string">'Marker'</span>, <span class="string">'&gt;'</span>, <span class="keyword">...</span>
+0437             <span class="string">'MarkerFaceColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0438             <span class="string">'MarkerEdgeColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0439             <span class="string">'Color'</span>, statColors(i,:), <span class="keyword">...</span>
+0440             <span class="string">'Linestyle'</span>, semLineStyle);
+0441         line(upperLineX(i,end), lineY(i,end), <span class="string">'Marker'</span>, <span class="string">'&lt;'</span>, <span class="keyword">...</span>
+0442             <span class="string">'MarkerFaceColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0443             <span class="string">'MarkerEdgeColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0444             <span class="string">'Color'</span>, statColors(i,:), <span class="keyword">...</span>
+0445             <span class="string">'Linestyle'</span>, semLineStyle);
+0446 
+0447         <span class="comment">% Re-plot the statistics lines.</span>
+0448         line(upperLineX(i,:), lineY(i,:), <span class="string">'LineStyle'</span>, semLineStyle, <span class="keyword">...</span>
+0449             <span class="string">'Color'</span>, statColors(i,:));
+0450         line(meanLineX(i,:), lineY(i,:), <span class="string">'LineStyle'</span>, meanLineStyle, <span class="keyword">...</span>
+0451             <span class="string">'Color'</span>, statColors(i,:));
+0452         line(lowerLineX(i,:), lineY(i,:), <span class="string">'LineStyle'</span>, semLineStyle, <span class="keyword">...</span>
+0453             <span class="string">'Color'</span>, statColors(i,:));
+0454 
+0455         <span class="comment">% Re-plot the negative value statistics.</span>
+0456         <span class="keyword">if</span> meanMode == 1 &amp;&amp; data(i).isSigned
+0457             
+0458             <span class="comment">% Re-plot the statistics markers.</span>
+0459             line(negMeanLineX(i,end), lineY(i,end), <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="keyword">...</span>
+0460                 <span class="string">'MarkerFaceColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0461                 <span class="string">'MarkerEdgeColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0462                 <span class="string">'Color'</span>, statColors(i,:), <span class="keyword">...</span>
+0463                 <span class="string">'Linestyle'</span>, negMeanLineStyle);
+0464             line(negLowerLineX(i,end), lineY(i,end), <span class="string">'Marker'</span>, <span class="string">'&gt;'</span>, <span class="keyword">...</span>
+0465                 <span class="string">'MarkerFaceColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0466                 <span class="string">'MarkerEdgeColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0467                 <span class="string">'Color'</span>, statColors(i,:), <span class="keyword">...</span>
+0468                 <span class="string">'Linestyle'</span>, negSEMLineStyle);
+0469             line(negUpperLineX(i,end), lineY(i,end), <span class="string">'Marker'</span>, <span class="string">'&lt;'</span>, <span class="keyword">...</span>
+0470                 <span class="string">'MarkerFaceColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0471                 <span class="string">'MarkerEdgeColor'</span>, statColors(i,:), <span class="keyword">...</span>
+0472                 <span class="string">'Color'</span>, statColors(i,:), <span class="keyword">...</span>
+0473                 <span class="string">'Linestyle'</span>, negSEMLineStyle);
+0474             
+0475             <span class="comment">% Re-plot the statistics lines.</span>
+0476             line(negLowerLineX(i,:), lineY(i,:), <span class="string">'LineStyle'</span>, <span class="keyword">...</span>
+0477                 negSEMLineStyle, <span class="string">'Color'</span>, statColors(i,:));
+0478             line(negUpperLineX(i,:), lineY(i,:), <span class="string">'LineStyle'</span>, <span class="keyword">...</span>
+0479                 negSEMLineStyle, <span class="string">'Color'</span>, statColors(i,:));
+0480             line(negMeanLineX(i,:), lineY(i,:), <span class="string">'LineStyle'</span>, <span class="keyword">...</span>
+0481                 negMeanLineStyle, <span class="string">'Color'</span>, statColors(i,:));
+0482         <span class="keyword">end</span>
+0483     <span class="keyword">end</span>
+0484 <span class="keyword">end</span>
+0485 
+0486 <span class="comment">% Fix the data names.</span>
+0487 <span class="keyword">if</span> ~isempty(dataNames) &amp;&amp; ~iscell(dataNames)
+0488     dataNames = {dataNames};
+0489 <span class="keyword">end</span>
+0490 
+0491 <span class="comment">% Label the figure.</span>
+0492 title(titleName);
+0493 xlabel(xAxisName);
+0494 ylabel(yStr);
+0495 set(gca, <span class="string">'YTick'</span>, []);
+0496 set(gca, <span class="string">'YTickLabel'</span>, []);
+0497 set(gca, <span class="string">'Box'</span>, <span class="string">'on'</span>);
+0498 set(zoom(gcf), <span class="string">'Motion'</span>, <span class="string">'horizontal'</span>, <span class="string">'Enable'</span>, <span class="string">'on'</span>);
+0499 
+0500 <span class="comment">% Minimize the y axis.</span>
+0501 <span class="keyword">if</span> isempty(dataNames)
+0502     ylim([0, maxAllLines]);
+0503     
+0504 <span class="comment">% Display the legend.</span>
+0505 <span class="keyword">else</span>
+0506     
+0507     <span class="comment">% Determine the SEM string.</span>
+0508     semStr = <span class="string">'SEM'</span>;
+0509     <span class="keyword">if</span> semMode &gt; 2
+0510         semStr = <span class="string">'S.D.'</span>;
+0511     <span class="keyword">end</span>
+0512     
+0513     <span class="comment">% Construct the legend.</span>
+0514     numData = sum(~empty);
+0515     <span class="keyword">if</span> isempty(statColors) || statMode &lt; 1
+0516         legends = cell(numData, 1);
+0517     <span class="keyword">elseif</span> meanMode == 1
+0518         legends = cell(5 * numData, 1);
+0519     <span class="keyword">else</span>
+0520         legends = cell(3 * numData, 1);
+0521     <span class="keyword">end</span>
+0522     <span class="keyword">for</span> i = 1:length(data)
+0523         
+0524         <span class="comment">% Is the histogram empty?</span>
+0525         <span class="keyword">if</span> empty(i)
+0526             <span class="keyword">continue</span>;
+0527         <span class="keyword">end</span>
+0528         
+0529         <span class="comment">% Construct the summary statistics legend.</span>
+0530         legendI = sum(~empty(1:i));
+0531         <span class="keyword">if</span> ~isempty(statColors) &amp;&amp; statMode &gt; 0
+0532             
+0533             <span class="comment">% Show the postive/negative mean and standard deviation.</span>
+0534             <span class="keyword">if</span> meanMode == 1
+0535                 legendI = 5 * i - 2;
+0536                 legends{5 * i - 3} = [<span class="string">'Mean(+) '</span> dataNames{i} <span class="string">' = '</span> <span class="keyword">...</span>
+0537                     num2str(realMeans(i,1))];
+0538                 legends{5 * i - 2} = [semStr <span class="string">'(+) '</span> dataNames{i} <span class="string">' = '</span> <span class="keyword">...</span>
+0539                     num2str(realSEMs(i,1))];
+0540                 legends{5 * i - 1} = [<span class="string">'Mean(-)'</span> dataNames{i} <span class="string">' = '</span> <span class="keyword">...</span>
+0541                     num2str(realMeans(i,2))];
+0542                 legends{5 * i} = [semStr <span class="string">'(-)'</span> dataNames{i} <span class="string">' = '</span> <span class="keyword">...</span>
+0543                     num2str(realSEMs(i,2))];
+0544                 
+0545             <span class="comment">% Show the mean and standard deviation.</span>
+0546             <span class="keyword">else</span>
+0547                 legendI = 3 * i - 2;
+0548                 legends{3 * i - 1} = [<span class="string">'Mean'</span> dataNames{i} <span class="string">' = '</span> <span class="keyword">...</span>
+0549                     num2str(realMeans(i,1))];
+0550                 legends{3 * i} = [semStr dataNames{i} <span class="string">' = '</span> <span class="keyword">...</span>
+0551                     num2str(realSEMs(i,1))];
+0552             <span class="keyword">end</span>
+0553         <span class="keyword">end</span>
+0554         
+0555         <span class="comment">% Construct the histogram legend.</span>
+0556         legends{legendI} = dataNames{i};
+0557         <span class="keyword">switch</span> statMode
+0558             
+0559             <span class="comment">% Display the statistics in their own legend.</span>
+0560             <span class="keyword">case</span> 1
+0561                 
+0562                 <span class="comment">% Display the postive and negative statististics.</span>
+0563                 <span class="keyword">if</span> meanMode == 1
+0564                     legends{legendI} = [legends{legendI} <span class="keyword">...</span>
+0565                         <span class="string">' (N = '</span> num2str(samples(i)) <span class="keyword">...</span>
+0566                         <span class="string">', Mean(+) = '</span> num2str(realMeans(i,1)) <span class="keyword">...</span>
+0567                         <span class="string">' '</span> semStr <span class="string">'(+) = '</span> num2str(realSEMs(i,1)), <span class="keyword">...</span>
+0568                         <span class="string">', Mean(-) = '</span> num2str(realMeans(i,2)) <span class="keyword">...</span>
+0569                         <span class="string">' '</span> semStr <span class="string">'(-) = '</span> num2str(realSEMs(i,2)) <span class="string">')'</span>];
+0570                     
+0571                 <span class="comment">% Display the statististics.</span>
+0572                 <span class="keyword">else</span>
+0573                     legends{legendI} = [legends{legendI} <span class="keyword">...</span>
+0574                         <span class="string">' (N = '</span> num2str(samples(i)) <span class="keyword">...</span>
+0575                         <span class="string">', Mean = '</span> num2str(realMeans(i,1)) <span class="keyword">...</span>
+0576                         <span class="string">' '</span> semStr <span class="string">' = '</span> num2str(realSEMs(i,1)) <span class="string">')'</span>];
+0577                 <span class="keyword">end</span>
+0578                 
+0579             <span class="comment">% Display the N in its own legend.</span>
+0580             <span class="keyword">case</span> 2
+0581                 legends{legendI} = [legends{legendI} <span class="keyword">...</span>
+0582                     <span class="string">' (N = '</span> num2str(samples(i)) <span class="string">')'</span>];
+0583                 
+0584             <span class="comment">% Display the mean and SEM in their own legend.</span>
+0585             <span class="keyword">case</span> 3
+0586                 <span class="comment">% Display the postive and negative statististics.</span>
+0587                 <span class="keyword">if</span> meanMode == 1
+0588                     legends{legendI} = [legends{legendI} <span class="keyword">...</span>
+0589                         <span class="string">' (Mean(+) = '</span> num2str(realMeans(i,1)) <span class="keyword">...</span>
+0590                         <span class="string">' '</span> semStr <span class="string">'(+) = '</span> num2str(realSEMs(i,1)), <span class="keyword">...</span>
+0591                         <span class="string">', Mean(-) = '</span> num2str(realMeans(i,2)) <span class="keyword">...</span>
+0592                         <span class="string">' '</span> semStr <span class="string">'(-) = '</span> num2str(realSEMs(i,2)) <span class="string">')'</span>];
+0593                     
+0594                 <span class="comment">% Display the statististics.</span>
+0595                 <span class="keyword">else</span>
+0596                     legends{legendI} = [legends{legendI} <span class="keyword">...</span>
+0597                         <span class="string">' (Mean = '</span> num2str(realMeans(i,1)) <span class="keyword">...</span>
+0598                         <span class="string">' '</span> semStr <span class="string">' = '</span> num2str(realSEMs(i,1)) <span class="string">')'</span>];
+0599                 <span class="keyword">end</span>
+0600         <span class="keyword">end</span>
+0601     <span class="keyword">end</span>
+0602     
+0603     <span class="comment">% Display the legend.</span>
+0604     legendHandle = legend(legends, <span class="string">'Location'</span>, <span class="string">'NorthEast'</span>);
+0605     set(legendHandle, <span class="string">'LineWidth'</span>, 1.5);
+0606     
+0607     <span class="comment">% Resize the plots to fit the legend.</span>
+0608     plotPosition = get(plotHandle, <span class="string">'Position'</span>);
+0609     legendPosition = get(legendHandle, <span class="string">'Position'</span>);
+0610     histScale = 0.95 * (legendPosition(2) - <span class="keyword">...</span>
+0611         plotPosition(2)) / plotPosition(4);
+0612     ylim([0, (2 * maxAllLines - minAllLines) / histScale]);
+0613 <span class="keyword">end</span>
+0614 
+0615 <span class="comment">% Minimize the x axis.</span>
+0616 <span class="keyword">if</span> minBin ~= maxBin
+0617     
+0618     <span class="comment">% Compute the x-axis bounds.</span>
+0619     <span class="keyword">if</span> any([data.isZeroBin])
+0620         maxResolution = max([data.resolution]);
+0621         minX = minBin - maxResolution / 2;
+0622         maxX = maxBin + maxResolution / 2;
+0623     <span class="keyword">else</span>
+0624         minX = minBin;
+0625         maxX = maxBin;
+0626     <span class="keyword">end</span>
+0627     
+0628     <span class="comment">% Minimize the x axis.</span>
+0629     <span class="keyword">if</span> ~isempty(statColors)
+0630         maxX = max([maxX, upperLineX(:,1)']);
+0631     <span class="keyword">end</span>
+0632 <span class="comment">%     limPad = (maxX - minX) * 0.01;</span>
+0633 <span class="comment">%     xlim([minX - limPad, maxX + limPad]);</span>
+0634     xlim([minX, maxX]);
+0635     
+0636     <span class="comment">% Set the first and last tick.</span>
+0637     xTicks = get(gca, <span class="string">'XTick'</span>);
+0638     tickThreshold = 0;
+0639     <span class="keyword">if</span> length(xTicks) &gt; 1
+0640         tickThreshold = (xTicks(2) - xTicks(1)) * (2 / 3);
+0641     <span class="keyword">end</span>
+0642     <span class="keyword">if</span> xTicks(1) - minX &lt; tickThreshold
+0643         xTicks(1) = minX;
+0644     <span class="keyword">else</span>
+0645         xTicks = cat(2, minX, xTicks);
+0646     <span class="keyword">end</span>
+0647     <span class="keyword">if</span> maxX - xTicks(end) &lt; tickThreshold
+0648         xTicks(end) = maxX;
+0649     <span class="keyword">else</span>
+0650         xTicks = cat(2, xTicks, maxX);
+0651     <span class="keyword">end</span>
+0652     set(gca, <span class="string">'XTick'</span>, xTicks);
+0653 <span class="keyword">end</span>
+0654 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

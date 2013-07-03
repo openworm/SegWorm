@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of flipWormCellHead</title>
+  <meta name="keywords" content="flipWormCellHead">
+  <meta name="description" content="FLIPWORMHEAD Flip the head-to-tail orientation of the worm (organized in a">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Orientation -->
+<h1>flipWormCellHead
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>FLIPWORMHEAD Flip the head-to-tail orientation of the worm (organized in a</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm = flipWormCellHead(worm) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FLIPWORMHEAD Flip the head-to-tail orientation of the worm (organized in a
+cell array).
+
+Note: since the vulva is specified relative to the head, its location
+flips to preserve its orientation.
+
+   WORM = FLIPWORMCELLHEAD(WORM)
+
+   Input:
+       worm - the worm (organized in a cell array) to flip
+
+   Output:
+       worm - the flipped worm (organized in a cell array)
+
+   See also <a href="flipWormCellVulva.html" class="code" title="function worm = flipWormCellVulva(worm)">FLIPWORMCELLVULVA</a>, <a href="flipWormCellData.html" class="code" title="function worm = flipWormCellData(worm)">FLIPWORMCELLDATA</a>, CELL2WORM, WORM2CELL,
+   WORM2STRUCT, SEGWORM</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm = flipWormCellHead(worm)</a>
+0002 <span class="comment">%FLIPWORMHEAD Flip the head-to-tail orientation of the worm (organized in a</span>
+0003 <span class="comment">%cell array).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%Note: since the vulva is specified relative to the head, its location</span>
+0006 <span class="comment">%flips to preserve its orientation.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   WORM = FLIPWORMCELLHEAD(WORM)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Input:</span>
+0011 <span class="comment">%       worm - the worm (organized in a cell array) to flip</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Output:</span>
+0014 <span class="comment">%       worm - the flipped worm (organized in a cell array)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   See also FLIPWORMCELLVULVA, FLIPWORMCELLDATA, CELL2WORM, WORM2CELL,</span>
+0017 <span class="comment">%   WORM2STRUCT, SEGWORM</span>
+0018 
+0019 <span class="comment">% Does the worm cell array have enough elements?</span>
+0020 <span class="keyword">if</span> size(worm, 1) ~= 8
+0021     error(<span class="string">'flipWormCellHead:BadWorm'</span>, <span class="keyword">...</span>
+0022         <span class="string">'The worm cell array must have 6 elements'</span>);
+0023 <span class="keyword">end</span>
+0024 <span class="keyword">if</span> size(worm{8}, 1) ~= 2
+0025     error(<span class="string">'flipWormCellHead:BadOrientation'</span>, <span class="keyword">...</span>
+0026         <span class="string">'The worm orientation cell array (worm{8}) must have 2 elements'</span>);
+0027 <span class="keyword">end</span>
+0028 <span class="keyword">if</span> size(worm{8}{1}, 1) ~= 2
+0029     error(<span class="string">'flipWormCellHead:BadOrientationHead'</span>, <span class="keyword">...</span>
+0030         [<span class="string">'The worm orientation head cell array '</span> <span class="keyword">...</span>
+0031          <span class="string">'(worm{8}{1}) must have 2 elements'</span>]);
+0032 <span class="keyword">end</span>
+0033 <span class="keyword">if</span> size(worm{8}{1}{2}, 1) ~= 2
+0034     error(<span class="string">'flipWormCellHead:BadOrientationHeadConfidence'</span>, <span class="keyword">...</span>
+0035         [<span class="string">'The worm orientation head confidence cell array '</span> <span class="keyword">...</span>
+0036          <span class="string">'(worm{8}{1}{2}) must have 2 elements'</span>]);
+0037 <span class="keyword">end</span>
+0038 <span class="keyword">if</span> size(worm{8}{2}, 1) ~= 2
+0039     error(<span class="string">'flipWormCellHead:BadOrientationVulva'</span>, <span class="keyword">...</span>
+0040         [<span class="string">'The worm orientation vulva cell array '</span> <span class="keyword">...</span>
+0041          <span class="string">'(worm{8}{2}) must have 2 elements'</span>]);
+0042 <span class="keyword">end</span>
+0043 
+0044 <span class="comment">% Flip worm.orientation.head.isFlipped.</span>
+0045 worm{8}{1}{1} = ~worm{8}{1}{1};
+0046 
+0047 <span class="comment">% Flip worm.orientation.head.confidence.head and</span>
+0048 <span class="comment">% worm.orientation.head.confidence.tail.</span>
+0049 tmp = worm{8}{1}{2}{1};
+0050 worm{8}{1}{2}{1} = worm{8}{1}{2}{2};
+0051 worm{8}{1}{2}{2} = tmp;
+0052 
+0053 <span class="comment">% Flip worm.orientation.vulva.isClockwiseFromHead.</span>
+0054 worm{8}{2}{1} = ~worm{8}{2}{1};
+0055 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

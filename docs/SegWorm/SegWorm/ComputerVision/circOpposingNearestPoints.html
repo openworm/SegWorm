@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of circOpposingNearestPoints</title>
+  <meta name="keywords" content="circOpposingNearestPoints">
+  <meta name="description" content="CIRCOPPOSINGNEARESTPOINTS Find the nearest equivalent point indices on the">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>circOpposingNearestPoints
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CIRCOPPOSINGNEARESTPOINTS Find the nearest equivalent point indices on the</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CIRCOPPOSINGNEARESTPOINTS Find the nearest equivalent point indices on the
+   opposing side (within a search window) of a circular vector.
+
+   POINTSI = CIRCOPPOSINGNEARESTPOINTS(POINTSI, X, STARTI, ENDI,
+                                       SEARCHLENGTH)
+
+   POINTSI = CIRCOPPOSINGNERAESTPOINTS(POINTSI, X, STARTI, ENDI,
+                                       SEARCHLENGTH, CHAINCODELENGTHS)
+
+   Inputs:
+       pointsI          - the point indices to find on the opposing side
+       x                - the circularly connected vector on which the
+                          points lie
+       startI           - the index in the vector where the split, between
+                          opposing sides, starts
+       endI             - the index in the vector where the split, between
+                          opposing sides, ends
+       searchLength     - the search length, on either side of a directly
+                          opposing point, to search for the nearest point
+       chainCodeLengths - the chain-code length at each point;
+                          if empty, the array indices are used instead
+
+   Output:
+       pointsI - the equivalent point indices on the opposing side
+
+ See also <a href="circOpposingPoints.html" class="code" title="function pointsI = circOpposingPoints(pointsI, startI, endI, vLength,varargin)">CIRCOPPOSINGPOINTS</a>, <a href="circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">CIRCNEARESTPOINTS</a>, <a href="circComputeChainCodeLengths.html" class="code" title="function lengths = circComputeChainCodeLengths(points)">CIRCCOMPUTECHAINCODELENGTHS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>	CHAINCODELENGTH2INDEX Translate a length into an index. The index</li><li><a href="circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>	CIRCNEARESTPOINTS For each point, find the nearest corresponding point</li><li><a href="circOpposingPoints.html" class="code" title="function pointsI = circOpposingPoints(pointsI, startI, endI, vLength,varargin)">circOpposingPoints</a>	CIRCOPPOSINGPOINTS Find the equivalent point indices on the opposing side</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Segmentation/linearSkeleton.html" class="code" title="function [skeleton cWidths] = linearSkeleton(headI, tailI, minP, minI,maxP, maxI, contour, wormSegSize, varargin)">linearSkeleton</a>	LINEARSKELETON Skeletonize a linear (non-looped) worm. The worm is</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI, </a><span class="keyword">...</span>
+0002     searchLength, varargin)
+0003 <span class="comment">%CIRCOPPOSINGNEARESTPOINTS Find the nearest equivalent point indices on the</span>
+0004 <span class="comment">%   opposing side (within a search window) of a circular vector.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   POINTSI = CIRCOPPOSINGNEARESTPOINTS(POINTSI, X, STARTI, ENDI,</span>
+0007 <span class="comment">%                                       SEARCHLENGTH)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   POINTSI = CIRCOPPOSINGNERAESTPOINTS(POINTSI, X, STARTI, ENDI,</span>
+0010 <span class="comment">%                                       SEARCHLENGTH, CHAINCODELENGTHS)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   Inputs:</span>
+0013 <span class="comment">%       pointsI          - the point indices to find on the opposing side</span>
+0014 <span class="comment">%       x                - the circularly connected vector on which the</span>
+0015 <span class="comment">%                          points lie</span>
+0016 <span class="comment">%       startI           - the index in the vector where the split, between</span>
+0017 <span class="comment">%                          opposing sides, starts</span>
+0018 <span class="comment">%       endI             - the index in the vector where the split, between</span>
+0019 <span class="comment">%                          opposing sides, ends</span>
+0020 <span class="comment">%       searchLength     - the search length, on either side of a directly</span>
+0021 <span class="comment">%                          opposing point, to search for the nearest point</span>
+0022 <span class="comment">%       chainCodeLengths - the chain-code length at each point;</span>
+0023 <span class="comment">%                          if empty, the array indices are used instead</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   Output:</span>
+0026 <span class="comment">%       pointsI - the equivalent point indices on the opposing side</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">% See also CIRCOPPOSINGPOINTS, CIRCNEARESTPOINTS, CIRCCOMPUTECHAINCODELENGTHS</span>
+0029 
+0030 <span class="comment">% Re-order the start and end to make life simple.</span>
+0031 <span class="keyword">if</span> startI &gt; endI
+0032     tmp = startI;
+0033     startI = endI;
+0034     endI = tmp;
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="comment">% The points are degenerate.</span>
+0038 <span class="keyword">if</span> endI - startI &lt; 2 || startI + size(x,1) - endI &lt; 2
+0039     pointsI = [];
+0040     <span class="keyword">return</span>;
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="comment">% Are there chain-code lengths?</span>
+0044 <span class="keyword">if</span> length(varargin) == 1
+0045     chainCodeLengths = varargin{1};
+0046     
+0047 <span class="comment">% Use the array indices for length.</span>
+0048 <span class="keyword">else</span>
+0049     chainCodeLengths = 1:size(x,1);
+0050 <span class="keyword">end</span>
+0051 
+0052 <span class="comment">% Compute the opposing points.</span>
+0053 oPointsI = <a href="circOpposingPoints.html" class="code" title="function pointsI = circOpposingPoints(pointsI, startI, endI, vLength,varargin)">circOpposingPoints</a>(pointsI, startI, endI, size(x,1), <span class="keyword">...</span>
+0054     chainCodeLengths);
+0055 
+0056 <span class="comment">% Separate the points onto sides.</span>
+0057 <span class="comment">% Note: ignore start and end points, they stay the same.</span>
+0058 <span class="comment">% Side1 always goes from start to end in positive, index increments.</span>
+0059 <span class="comment">% Side2 always goes from start to end in negative, index increments.</span>
+0060 side12 = oPointsI ~= startI &amp; oPointsI ~= endI;
+0061 oPointsI(~side12) = [];
+0062 side1 = oPointsI &gt; startI &amp; oPointsI &lt; endI;
+0063 side2 = oPointsI &lt; startI | oPointsI &gt; endI;
+0064 
+0065 <span class="comment">% Compute the start indices.</span>
+0066 <span class="comment">% Note: we checked for degeneracy; therefore, only one index can wrap.</span>
+0067 is2Wrap = false;
+0068 start1 = startI + 1;
+0069 start2 = startI - 1;
+0070 <span class="keyword">if</span> start2 &lt; 1
+0071     start2 = start2 + size(x,1);
+0072     is2Wrap = true;
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="comment">% Compute the end indices.</span>
+0076 end1 = endI - 1;
+0077 end2 = endI + 1;
+0078 <span class="keyword">if</span> end2 &gt; size(x,1)
+0079     end2 = end2 - size(x,1);
+0080     is2Wrap = true;
+0081 <span class="keyword">end</span>
+0082 
+0083 <span class="comment">% Compute the minimum search points on side 2 (for the search intervals</span>
+0084 <span class="comment">% opposite side 1).</span>
+0085 minOPointsI(side1) = chainCodeLengths(oPointsI(side1)) - searchLength;
+0086 wrap = false(size(side1));
+0087 wrap(side1) = minOPointsI(side1) &lt; chainCodeLengths(1);
+0088 minOPointsI(wrap) = minOPointsI(wrap) + chainCodeLengths(end);
+0089 wrap = false(size(side1));
+0090 wrap(side1) = minOPointsI(side1) &lt; chainCodeLengths(start1) | <span class="keyword">...</span>
+0091     minOPointsI(side1) &gt; chainCodeLengths(end1);
+0092 minOPointsI(wrap) = start1;
+0093 notWrap = side1 &amp; ~wrap;
+0094 minOPointsI(notWrap) = <a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(minOPointsI(notWrap), <span class="keyword">...</span>
+0095     chainCodeLengths);
+0096 
+0097 <span class="comment">% Compute the maximum search points on side 2 (for the search intervals</span>
+0098 <span class="comment">% opposite side 1).</span>
+0099 maxOPointsI(side1) = chainCodeLengths(oPointsI(side1)) + searchLength;
+0100 wrap = false(size(side1));
+0101 wrap(side1) = maxOPointsI(side1) &gt; chainCodeLengths(end);
+0102 maxOPointsI(wrap) = maxOPointsI(wrap) - chainCodeLengths(end);
+0103 wrap = false(size(side1));
+0104 wrap(side1) = maxOPointsI(side1) &lt; chainCodeLengths(start1) | <span class="keyword">...</span>
+0105     maxOPointsI(side1) &gt; chainCodeLengths(end1);
+0106 maxOPointsI(wrap) = end1;
+0107 notWrap = side1 &amp; ~wrap;
+0108 maxOPointsI(notWrap) = <a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(maxOPointsI(notWrap), <span class="keyword">...</span>
+0109     chainCodeLengths);
+0110 
+0111 <span class="comment">% Compute the minimum search points on side 1 (for the search intervals</span>
+0112 <span class="comment">% opposite side 2).</span>
+0113 minOPointsI(side2) = chainCodeLengths(oPointsI(side2)) - searchLength;
+0114 wrap = false(size(side2));
+0115 wrap(side2) = minOPointsI(side2) &lt; chainCodeLengths(1);
+0116 minOPointsI(wrap) = minOPointsI(wrap) + chainCodeLengths(end);
+0117 wrap = false(size(side2));
+0118 <span class="keyword">if</span> is2Wrap
+0119     wrap(side2) = minOPointsI(side2) &gt; chainCodeLengths(start2) | <span class="keyword">...</span>
+0120         minOPointsI(side2) &lt; chainCodeLengths(end2);
+0121 <span class="keyword">else</span>
+0122     wrap(side2) = minOPointsI(side2) &gt; chainCodeLengths(start2) &amp; <span class="keyword">...</span>
+0123         minOPointsI(side2) &lt; chainCodeLengths(end2);
+0124 <span class="keyword">end</span>
+0125 minOPointsI(wrap) = end2;
+0126 notWrap = side2 &amp; ~wrap;
+0127 minOPointsI(notWrap) = <a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(minOPointsI(notWrap), <span class="keyword">...</span>
+0128     chainCodeLengths);
+0129 
+0130 <span class="comment">% Compute the maximum search points on side 1 (for the search intervals</span>
+0131 <span class="comment">% opposite side 2).</span>
+0132 maxOPointsI(side2) = chainCodeLengths(oPointsI(side2)) + searchLength;
+0133 wrap = false(size(side2));
+0134 wrap(side2) = maxOPointsI(side2) &gt; chainCodeLengths(end);
+0135 maxOPointsI(wrap) = maxOPointsI(wrap) - chainCodeLengths(end);
+0136 wrap = false(size(side2));
+0137 <span class="keyword">if</span> is2Wrap
+0138     wrap(side2) = maxOPointsI(side2) &gt; chainCodeLengths(start2) | <span class="keyword">...</span>
+0139         maxOPointsI(side2) &lt; chainCodeLengths(end2);
+0140 <span class="keyword">else</span>
+0141     wrap(side2) = maxOPointsI(side2) &gt; chainCodeLengths(start2) &amp; <span class="keyword">...</span>
+0142         maxOPointsI(side2) &lt; chainCodeLengths(end2);
+0143 <span class="keyword">end</span>
+0144 maxOPointsI(wrap) = start2;
+0145 notWrap = side2 &amp; ~wrap;
+0146 maxOPointsI(notWrap) = <a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(maxOPointsI(notWrap), <span class="keyword">...</span>
+0147     chainCodeLengths);
+0148 
+0149 <span class="comment">% Search for the nearest points.</span>
+0150 pointsI(side12) = <a href="circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>(x(pointsI(side12),:), minOPointsI, <span class="keyword">...</span>
+0151     maxOPointsI, x);
+0152 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

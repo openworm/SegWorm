@@ -1,0 +1,456 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormStats2Matrix2</title>
+  <meta name="keywords" content="wormStats2Matrix2">
+  <meta name="description" content="WORMSTATS2MATRIX Construct and save a features x worms matrix.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>wormStats2Matrix2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMSTATS2MATRIX Construct and save a features x worms matrix.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function wormStats2Matrix(filename, wormFiles, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMSTATS2MATRIX Construct and save a features x worms matrix.
+
+   WORMSTATS2MATRIX(FILENAME, WORMFILES)
+
+   WORMSTATS2MATRIX(FILENAME, WORMFILES, FILT)
+
+   WORMSTATS2MATRIX(FILENAME, WORMFILES, FILT, ISVERBOSE)
+
+   Inputs:
+       filename - the features x worms matrix filename containing:
+
+                  stats    = the features x worms matrix
+                  gene     = the worm gene
+                  allele   = the worm allele
+                  strain   = the worm strain
+                  genotype = the worm genotype
+                  sex      = the worm sex
+                  food     = the worm food
+                  name     = the feature names
+                  type     = the feature type per row:
+
+                             m = morphology
+                             s = posture (shape)
+                             l = locomotion
+                             p = path
+
+                  isMain   = for each row, is it a main feature?
+                  isAbs    = for each row, is it an absolute features?
+                  isPos    = for each row, is it a positive features?
+                  isNeg    = for each row, is it a negative features?
+                  isMotion = for each row, is it a motion feature subsets?
+                  isEvent  = for each row, is it an event feature subsets?
+
+       wormFiles - the worm statistics files
+       filt - the filtering criteria; a structure with any of the fields:
+
+              minFPS     = the minimum video frame rate (frames/seconds)
+              minTime    = the minimum video time (seconds)
+              maxTime    = the maximum video time (seconds)
+              minSegTime = the minimum time for segmented video (seconds)
+              minRatio   = the minimum ratio for segmented video frames
+              minDate    = the minimum date to use (DATENUM)
+              maxDate    = the maximum date to use (DATENUM)
+              years      = the years to use
+              months     = the months to use (1-12)
+              weeks      = the weeks to use (1-52)
+              days       = the days (of the week) to use (1-7)
+              hours      = the hours to use (1-24)
+              trackers   = the trackers to use (1-8)
+
+       isVerbose    - verbose mode displays the progress;
+                      the default is yes (true)
+
+ See also <a href="worm2stats.html" class="code" title="function worm2stats(filename, wormFiles, varargin)">WORM2STATS</a>, <a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">FILTERWORMINFO</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>	GETSTRUCTFIELD Get a field in a structure.</li><li><a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>	WORMDATAINFO Get information for computing the worm data.</li><li><a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>	WORMDISPLAYINFO Get information for displaying the worm data.</li><li><a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>	FILTERWORMINFO Filter worm information to meet specific criteria.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function wormStats2Matrix(filename, wormFiles, varargin)</a>
+0002 <span class="comment">%WORMSTATS2MATRIX Construct and save a features x worms matrix.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   WORMSTATS2MATRIX(FILENAME, WORMFILES)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   WORMSTATS2MATRIX(FILENAME, WORMFILES, FILT)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   WORMSTATS2MATRIX(FILENAME, WORMFILES, FILT, ISVERBOSE)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Inputs:</span>
+0011 <span class="comment">%       filename - the features x worms matrix filename containing:</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%                  stats    = the features x worms matrix</span>
+0014 <span class="comment">%                  gene     = the worm gene</span>
+0015 <span class="comment">%                  allele   = the worm allele</span>
+0016 <span class="comment">%                  strain   = the worm strain</span>
+0017 <span class="comment">%                  genotype = the worm genotype</span>
+0018 <span class="comment">%                  sex      = the worm sex</span>
+0019 <span class="comment">%                  food     = the worm food</span>
+0020 <span class="comment">%                  name     = the feature names</span>
+0021 <span class="comment">%                  type     = the feature type per row:</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%                             m = morphology</span>
+0024 <span class="comment">%                             s = posture (shape)</span>
+0025 <span class="comment">%                             l = locomotion</span>
+0026 <span class="comment">%                             p = path</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%                  isMain   = for each row, is it a main feature?</span>
+0029 <span class="comment">%                  isAbs    = for each row, is it an absolute features?</span>
+0030 <span class="comment">%                  isPos    = for each row, is it a positive features?</span>
+0031 <span class="comment">%                  isNeg    = for each row, is it a negative features?</span>
+0032 <span class="comment">%                  isMotion = for each row, is it a motion feature subsets?</span>
+0033 <span class="comment">%                  isEvent  = for each row, is it an event feature subsets?</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%       wormFiles - the worm statistics files</span>
+0036 <span class="comment">%       filt - the filtering criteria; a structure with any of the fields:</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%              minFPS     = the minimum video frame rate (frames/seconds)</span>
+0039 <span class="comment">%              minTime    = the minimum video time (seconds)</span>
+0040 <span class="comment">%              maxTime    = the maximum video time (seconds)</span>
+0041 <span class="comment">%              minSegTime = the minimum time for segmented video (seconds)</span>
+0042 <span class="comment">%              minRatio   = the minimum ratio for segmented video frames</span>
+0043 <span class="comment">%              minDate    = the minimum date to use (DATENUM)</span>
+0044 <span class="comment">%              maxDate    = the maximum date to use (DATENUM)</span>
+0045 <span class="comment">%              years      = the years to use</span>
+0046 <span class="comment">%              months     = the months to use (1-12)</span>
+0047 <span class="comment">%              weeks      = the weeks to use (1-52)</span>
+0048 <span class="comment">%              days       = the days (of the week) to use (1-7)</span>
+0049 <span class="comment">%              hours      = the hours to use (1-24)</span>
+0050 <span class="comment">%              trackers   = the trackers to use (1-8)</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">%       isVerbose    - verbose mode displays the progress;</span>
+0053 <span class="comment">%                      the default is yes (true)</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">% See also WORM2STATS, FILTERWORMINFO</span>
+0056 
+0057 <span class="comment">% Determine the worm file filter.</span>
+0058 filt = [];
+0059 <span class="keyword">if</span> ~isempty(varargin)
+0060     filt = varargin{1};
+0061 <span class="keyword">end</span>
+0062 
+0063 <span class="comment">% Are we displaying the progress?</span>
+0064 isVerbose = true;
+0065 <span class="keyword">if</span> length(varargin) &gt; 1
+0066     isVerbose = varargin{2};
+0067 <span class="keyword">end</span>
+0068 
+0069 <span class="comment">% Fix the worm files.</span>
+0070 <span class="keyword">if</span> ~iscell(wormFiles)
+0071     wormFiles =  {wormFiles};
+0072 <span class="keyword">end</span>
+0073 
+0074 <span class="comment">% Initialize the feature information.</span>
+0075 dataInfo = <a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>();
+0076 histInfo = <a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>();
+0077 
+0078 <span class="comment">% Initialize the locomotion modes.</span>
+0079 motionNames = { <span class="keyword">...</span>
+0080     <span class="string">'Forward'</span>, <span class="keyword">...</span>
+0081     <span class="string">'Paused'</span>, <span class="keyword">...</span>
+0082     <span class="string">'Backward'</span>};
+0083 
+0084 <span class="comment">% Initialize the statistics fields.</span>
+0085 allStr = <span class="string">'.statistics.data.mean.all'</span>;
+0086 absStr = <span class="string">'.statistics.data.mean.abs'</span>;
+0087 posStr = <span class="string">'.statistics.data.mean.pos'</span>;
+0088 negStr = <span class="string">'.statistics.data.mean.neg'</span>;
+0089 
+0090 <span class="comment">% What features do we have?</span>
+0091 fieldName = {};
+0092 name = {};
+0093 type = [];
+0094 isMain = [];
+0095 isAbs = [];
+0096 isPos = [];
+0097 isNeg = [];
+0098 isSign = [];
+0099 isMotion = [];
+0100 isEvent = [];
+0101 totalFeatures = 0;
+0102 <span class="keyword">for</span> i = 1:length(dataInfo)
+0103     
+0104     <span class="comment">% Count the features</span>
+0105     field = dataInfo(i).field;
+0106     feature = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field);
+0107     <span class="keyword">switch</span> dataInfo(i).type
+0108         
+0109         <span class="comment">% Count the simple features.</span>
+0110         <span class="keyword">case</span> <span class="string">'s'</span>
+0111             
+0112             <span class="comment">% Store the main feature.</span>
+0113             featureName = feature.name;
+0114             isMain(totalFeatures + 1) = true;
+0115             fieldName{end + 1} = [field allStr];
+0116             name{end + 1} = featureName;
+0117             isSign(end + 1) = false;
+0118             isAbs(end + 1) = false;
+0119             isPos(end + 1) = false;
+0120             isNeg(end + 1) = false;
+0121             
+0122             <span class="comment">% Sign the feature.</span>
+0123             isSigned = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, [field <span class="string">'.isSigned'</span>]);
+0124             <span class="keyword">if</span> isSigned
+0125                 numFeatures = 4;
+0126                 fieldName{end + 1} = [field absStr];
+0127                 fieldName{end + 1} = [field posStr];
+0128                 fieldName{end + 1} = [field negStr];
+0129                 name{end + 1} = [<span class="string">'Absolute '</span> featureName];
+0130                 name{end + 1} = [<span class="string">'Positive '</span> featureName];
+0131                 name{end + 1} = [<span class="string">'Negative '</span> featureName];
+0132                 isSign((end + 1):(end + 3)) = true;
+0133                 isAbs((end + 1):(end + 3)) = [true  false false];
+0134                 isPos((end + 1):(end + 3)) = [false true false];
+0135                 isNeg((end + 1):(end + 3)) = [false false true];
+0136             <span class="keyword">else</span>
+0137                 numFeatures = 1;
+0138             <span class="keyword">end</span>
+0139             isMotion((end + 1):(end + numFeatures)) = false;
+0140             isEvent((end + 1):(end + numFeatures)) = false;
+0141             
+0142             <span class="comment">% Count the total features</span>
+0143             totalFeatures = totalFeatures + numFeatures;
+0144             isMain((end + 1):totalFeatures) = false;
+0145             
+0146             <span class="comment">% Categorize the features.</span>
+0147             type(end + 1:end + numFeatures) = dataInfo(i).category;
+0148             
+0149         <span class="comment">% Count the motion features.</span>
+0150         <span class="keyword">case</span> <span class="string">'m'</span>
+0151 
+0152             <span class="comment">% Store the main feature.</span>
+0153             <span class="keyword">for</span> j = 1:length(feature)
+0154                 indexStr = [<span class="string">'('</span> num2str(j) <span class="string">')'</span>];
+0155                 featureName = feature(j).name;
+0156                 isMain(totalFeatures + 1) = true;
+0157                 numFeatures = length(motionNames) + 1;
+0158                 fieldName{end + 1} = [field indexStr allStr];
+0159                 name{end + 1} = featureName;
+0160                 isSign(end + 1) = false;
+0161                 isAbs(end + 1) = false;
+0162                 isPos(end + 1) = false;
+0163                 isNeg(end + 1) = false;
+0164                 
+0165                 <span class="comment">% Sign the feature.</span>
+0166                 isSigned = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, [field <span class="string">'.isSigned'</span>]);
+0167                 <span class="keyword">if</span> isSigned
+0168                     fieldName{end + 1} = [field indexStr absStr];
+0169                     fieldName{end + 1} = [field indexStr posStr];
+0170                     fieldName{end + 1} = [field indexStr negStr];
+0171                     name{end + 1} = [<span class="string">'Absolute '</span> featureName];
+0172                     name{end + 1} = [<span class="string">'Positive '</span> featureName];
+0173                     name{end + 1} = [<span class="string">'Negative '</span> featureName];
+0174                     isSign((end + 1):(end + 3)) = true;
+0175                     isAbs((end + 1):(end + 3)) = [true  false false];
+0176                     isPos((end + 1):(end + 3)) = [false true false];
+0177                     isNeg((end + 1):(end + 3)) = [false false true];
+0178                 <span class="keyword">end</span>
+0179                 <span class="keyword">if</span> isSigned
+0180                     numFeatures = numFeatures * 4;
+0181                 <span class="keyword">end</span>
+0182                 
+0183                 <span class="comment">% Store the feature motion.</span>
+0184                 <span class="keyword">for</span> k = 1:length(motionNames)
+0185                     fieldName{end + 1} = <span class="keyword">...</span>
+0186                         [field indexStr <span class="string">'.'</span> lower(motionNames{k}) allStr];
+0187                     name{end + 1} = [motionNames{k} <span class="string">' '</span> featureName];
+0188                     isSign(end + 1) = false;
+0189                     isAbs(end + 1) = false;
+0190                     isPos(end + 1) = false;
+0191                     isNeg(end + 1) = false;
+0192                     
+0193                     <span class="comment">% Sign the feature motion.</span>
+0194                     <span class="keyword">if</span> isSigned
+0195                         fieldName{end + 1} = <span class="keyword">...</span>
+0196                             [field indexStr <span class="string">'.'</span> lower(motionNames{k}) absStr];
+0197                         fieldName{end + 1} = <span class="keyword">...</span>
+0198                             [field indexStr <span class="string">'.'</span> lower(motionNames{k}) posStr];
+0199                         fieldName{end + 1} = <span class="keyword">...</span>
+0200                             [field indexStr <span class="string">'.'</span> lower(motionNames{k}) negStr];
+0201                         name{end + 1} = <span class="keyword">...</span>
+0202                             [<span class="string">'Absolute '</span> motionNames{k} <span class="string">' '</span> featureName];
+0203                         name{end + 1} = <span class="keyword">...</span>
+0204                             [<span class="string">'Positive '</span> motionNames{k} <span class="string">' '</span> featureName];
+0205                         name{end + 1} = <span class="keyword">...</span>
+0206                             [<span class="string">'Negative '</span> motionNames{k} <span class="string">' '</span> featureName];
+0207                         isSign((end + 1):(end + 3)) = true;
+0208                         isAbs((end + 1):(end + 3)) = [true  false false];
+0209                         isPos((end + 1):(end + 3)) = [false true false];
+0210                         isNeg((end + 1):(end + 3)) = [false false true];
+0211                     <span class="keyword">end</span>
+0212                 <span class="keyword">end</span>
+0213                 isMotion((end + 1):(end + numFeatures)) = true;
+0214                 isEvent((end + 1):(end + numFeatures)) = false;
+0215     
+0216                 <span class="comment">% Count the total features</span>
+0217                 totalFeatures = totalFeatures + numFeatures;
+0218                 isMain((end + 1):totalFeatures) = false;
+0219                 
+0220                 <span class="comment">% Categorize the features.</span>
+0221                 type(end + 1:end + numFeatures) = dataInfo(i).category;
+0222             <span class="keyword">end</span>
+0223             
+0224         <span class="comment">% Count the event features.</span>
+0225         <span class="keyword">case</span> <span class="string">'e'</span>
+0226             
+0227             <span class="comment">% Store the main feature.</span>
+0228             featureName = feature.name;
+0229             
+0230             <span class="comment">% Count the event summary features.</span>
+0231             subFields = dataInfo(i).subFields.summary;
+0232             numFeatures = length(subFields);
+0233             <span class="keyword">for</span> j = 1:length(subFields)
+0234                 subField = [field <span class="string">'.'</span> subFields{j}];
+0235                 subData = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, subField);
+0236                 fieldName{end + 1} = [subField <span class="string">'.data'</span>];
+0237                 name{end + 1} = subData.name;
+0238             <span class="keyword">end</span>
+0239             isMain((end + 1):(end + numFeatures)) = true;
+0240             isSign((end + 1):(end + numFeatures)) = false;
+0241             isAbs((end + 1):(end + numFeatures)) = false;
+0242             isPos((end + 1):(end + numFeatures)) = false;
+0243             isNeg((end + 1):(end + numFeatures)) = false;
+0244             
+0245             <span class="comment">% Count the event data features.</span>
+0246             subFields = dataInfo(i).subFields.data;
+0247             <span class="keyword">for</span> j = 1:length(subFields)
+0248                 isSign(end + 1) = false;
+0249                 isAbs(end + 1) = false;
+0250                 isPos(end + 1) = false;
+0251                 isNeg(end + 1) = false;
+0252                 subField = [field <span class="string">'.'</span> subFields{j}];
+0253                 subData = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, subField);
+0254                 
+0255                 <span class="comment">% Sign the event data features.</span>
+0256                 <span class="keyword">if</span> subData.isSigned
+0257                     numFeatures = numFeatures + 4;
+0258                     fieldName{end + 1} = [subField allStr];
+0259                     fieldName{end + 1} = [subField absStr];
+0260                     fieldName{end + 1} = [subField posStr];
+0261                     fieldName{end + 1} = [subField negStr];
+0262                     name{end + 1} = subData.name;
+0263                     name{end + 1} = [<span class="string">'Absolute '</span> subData.name];
+0264                     name{end + 1} = [<span class="string">'Positive '</span> subData.name];
+0265                     name{end + 1} = [<span class="string">'Negative '</span> subData.name];
+0266                     isSign((end + 1):(end + 3)) = true;
+0267                     isAbs((end + 1):(end + 3)) = [true  false false];
+0268                     isPos((end + 1):(end + 3)) = [false true false];
+0269                     isNeg((end + 1):(end + 3)) = [false false true];
+0270                 <span class="keyword">else</span>
+0271                     numFeatures = numFeatures + 1;
+0272                     fieldName{end + 1} = [subField allStr];
+0273                     name{end + 1} = subData.name;
+0274                 <span class="keyword">end</span>
+0275             <span class="keyword">end</span>
+0276             isMotion((end + 1):(end + numFeatures)) = false;
+0277             isEvent((end + 1):(end + numFeatures)) = true;
+0278     
+0279             <span class="comment">% Count the total features</span>
+0280             totalFeatures = totalFeatures + numFeatures;
+0281             isMain((end + 1):totalFeatures) = false;
+0282             
+0283             <span class="comment">% Categorize the features.</span>
+0284             type(end + 1:end + numFeatures) = dataInfo(i).category;
+0285     <span class="keyword">end</span>
+0286 <span class="keyword">end</span>
+0287 
+0288 <span class="comment">% Load the worms.</span>
+0289 stats = nan(totalFeatures, length(wormFiles));
+0290 gene = cell(1, length(wormFiles));
+0291 allele = cell(1, length(wormFiles));
+0292 strain = cell(1, length(wormFiles));
+0293 genotype = cell(1, length(wormFiles));
+0294 sex = cell(1, length(wormFiles));
+0295 food = cell(1, length(wormFiles));
+0296 <span class="keyword">for</span> i = 1:length(wormFiles)
+0297     
+0298     <span class="comment">% Display our progress.</span>
+0299     <span class="keyword">if</span> isVerbose
+0300         disp([<span class="string">'Computing &quot;'</span> wormFiles{i} <span class="string">'&quot; ...'</span>])
+0301     <span class="keyword">end</span>
+0302     
+0303     <span class="comment">% Load the file.</span>
+0304     wormInfo = [];
+0305     worm = [];
+0306     load(wormFiles{i}, <span class="string">'wormInfo'</span>, <span class="string">'worm'</span>);
+0307     <span class="keyword">if</span> isempty(wormInfo) || isempty(worm)
+0308         <span class="keyword">continue</span>;
+0309     <span class="keyword">end</span>
+0310     
+0311     <span class="comment">% Filter the worm file.</span>
+0312     <span class="keyword">if</span> isempty(filt)
+0313         isUsed = true(length(wormInfo),1);
+0314     <span class="keyword">else</span>
+0315         [isUsed, ~] = <a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>(wormInfo, filt);
+0316         <span class="keyword">if</span> ~sum(isUsed)
+0317             <span class="keyword">continue</span>;
+0318         <span class="keyword">end</span>
+0319     <span class="keyword">end</span>
+0320     
+0321     <span class="comment">% Store the worm information.</span>
+0322     gene{i} = wormInfo(1).experiment.worm.gene;
+0323     allele{i} = wormInfo(1).experiment.worm.allele;
+0324     strain{i} = wormInfo(1).experiment.worm.strain;
+0325     genotype{i} = wormInfo(1).experiment.worm.genotype;
+0326     sex{i} = wormInfo(1).experiment.worm.sex;
+0327     food{i} = wormInfo(1).experiment.environment.food;
+0328     
+0329     <span class="comment">% Store the worm statistics.</span>
+0330     <span class="keyword">for</span> j = 1:length(fieldName)
+0331         data = [];
+0332         eval([<span class="string">'data = worm.'</span> fieldName{j} <span class="string">';'</span>]);
+0333         <span class="keyword">if</span> ~isnan(data)
+0334             stats(j,i) = nanmean(data(isUsed));
+0335         <span class="keyword">end</span>
+0336     <span class="keyword">end</span>
+0337 <span class="keyword">end</span>
+0338 
+0339 <span class="comment">% Delete the file if it already exists.</span>
+0340 <span class="keyword">if</span> exist(filename, <span class="string">'file'</span>)
+0341     delete(filename);
+0342 <span class="keyword">end</span>
+0343 
+0344 <span class="comment">% Save the file.</span>
+0345 name = name';
+0346 type = type';
+0347 isMain = isMain';
+0348 isAbs = isAbs';
+0349 isPos = isPos';
+0350 isNeg = isNeg';
+0351 isSign = isSign';
+0352 isMotion = isMotion';
+0353 isEvent = isEvent';
+0354 save(filename, <span class="string">'stats'</span>, <span class="string">'gene'</span>, <span class="string">'allele'</span>, <span class="string">'strain'</span>, <span class="string">'genotype'</span>, <span class="string">'sex'</span>, <span class="keyword">...</span>
+0355     <span class="string">'food'</span>, <span class="string">'name'</span>, <span class="string">'type'</span>, <span class="string">'isMain'</span>, <span class="string">'isAbs'</span>, <span class="string">'isPos'</span>, <span class="string">'isNeg'</span>, <span class="keyword">...</span>
+0356     <span class="string">'isSign'</span>, <span class="string">'isMotion'</span>, <span class="string">'isEvent'</span>);
+0357 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

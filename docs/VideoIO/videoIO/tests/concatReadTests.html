@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of concatReadTests</title>
+  <meta name="keywords" content="concatReadTests">
+  <meta name="description" content="concatReadTests">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>concatReadTests
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>concatReadTests</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function concatReadTests(plugin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">concatReadTests
+concatReadTests(plugin)
+  Unit test for the 'concat' videoReader plugin.  We use a complex 
+  nested clip configuration.
+
+SEE ALSO:
+  videoReader
+  videoReader_concat
+
+  <a href="testAll.html" class="code" title="">testAll</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>	INFO=GET(VR)</li><li><a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>	FRAME=GETFRAME(VR)</li><li><a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>	WORKED=NEXT(VR)</li><li><a href="../../videoIO/@videoReader/seek.html" class="code" title="function worked = seek(vr,fnum)">seek</a>	WORKED=SEEK(VR,FNUM)</li><li><a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="../../videoIO/@videoWriter/get.html" class="code" title="function info = get(vw,varargin)">get</a>	INFO=GET(VW)</li><li><a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>	pluginName = defaultVideoIOPlugin(ctor)</li><li><a href="assertSimilarImages.html" class="code" title="function assertSimilarImages(a,b)  %#ok<INUSD>">assertSimilarImages</a>	assertSimilarImages(a,b)</li><li><a href="doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>	IMAGES=DOFULLREAD(...)</li><li><a href="extractFrames.html" class="code" title="">extractFrames</a>	Script to create the frames/ subdirectory.  The data in that directory is</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a>	vrassert(testCondition)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="standardTestBattery.html" class="code" title="function standardTestBattery(plugin)">standardTestBattery</a>	standardTestBattery(plugin)</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function checkNextNFrames(vrConcat, clipName, plugin, nFrames)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function concatReadTests(plugin)</a>
+0002 <span class="comment">%concatReadTests</span>
+0003 <span class="comment">%concatReadTests(plugin)</span>
+0004 <span class="comment">%  Unit test for the 'concat' videoReader plugin.  We use a complex</span>
+0005 <span class="comment">%  nested clip configuration.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%SEE ALSO:</span>
+0008 <span class="comment">%  videoReader</span>
+0009 <span class="comment">%  videoReader_concat</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%  testAll</span>
+0012 
+0013 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>
+0014 
+0015 <span class="keyword">if</span> nargin &lt; 1,
+0016   defaultPluginArgs = {};
+0017   plugin = <a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>(<span class="string">'videoReader'</span>);
+0018 <span class="keyword">else</span>
+0019   defaultPluginArgs = {<span class="string">'defaultPlugin'</span>,plugin};
+0020 <span class="keyword">end</span>
+0021 
+0022 <span class="comment">% make sure the data are ready</span>
+0023 <a href="extractFrames.html" class="code" title="">extractFrames</a>;
+0024 
+0025 <span class="comment">% Construct the &quot;complex example&quot; from the docs (adapted here slightly).</span>
+0026 inter146   = <span class="string">'intersection147.25fps.xvid.avi'</span>;
+0027 inter300   = <span class="string">'intersection300.orig.revel.avi'</span>;
+0028 numbers100 = <span class="string">'numbers.uncompressed.avi'</span>;
+0029 frames100  = <span class="string">'frames/numbers.*.mat'</span>;
+0030 
+0031 vrConcat = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>({<span class="keyword">...</span>
+0032     inter146,<span class="keyword">...</span><span class="comment">                                % ~146 frames</span>
+0033     {inter300,<span class="string">'maxFrames'</span>,200},<span class="keyword">...</span><span class="comment">              %  200 frames</span>
+0034     <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>({<span class="keyword">...</span><span class="comment">                            %  275 frames aggregate</span>
+0035         inter146, <span class="keyword">...</span><span class="comment">                           %    100 frames</span>
+0036         {numbers100, <span class="string">'maxFrames'</span>, 50},<span class="keyword">...</span><span class="comment">       %     50 frames</span>
+0037         {inter300, <span class="string">'maxFrames'</span>,125},<span class="keyword">...</span><span class="comment">         %    125 frames</span>
+0038       },<span class="string">'concat'</span>,<span class="string">'maxFrames'</span>,100),<span class="keyword">...</span>
+0039     {frames100, <span class="string">'load'</span>, <span class="string">'varname'</span>,<span class="string">'frame'</span>},<span class="keyword">...</span><span class="comment">  %  100 frames</span>
+0040   }, <span class="string">'concat'</span>, defaultPluginArgs{:});
+0041 
+0042 vrClip = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(inter146, plugin);
+0043 n146 = <a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(vrClip, <span class="string">'numFrames'</span>);
+0044 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vrClip); clear vrClip;
+0045 
+0046 <span class="comment">% Use hard-coding to test reading the whole thing using NEXT</span>
+0047 <a href="#_sub1" class="code" title="subfunction checkNextNFrames(vrConcat, clipName, plugin, nFrames)">checkNextNFrames</a>(vrConcat, inter146,   plugin, n146);
+0048 <a href="#_sub1" class="code" title="subfunction checkNextNFrames(vrConcat, clipName, plugin, nFrames)">checkNextNFrames</a>(vrConcat, inter300,   plugin,  200);
+0049 <a href="#_sub1" class="code" title="subfunction checkNextNFrames(vrConcat, clipName, plugin, nFrames)">checkNextNFrames</a>(vrConcat, inter146,   plugin,  100);
+0050 <a href="#_sub1" class="code" title="subfunction checkNextNFrames(vrConcat, clipName, plugin, nFrames)">checkNextNFrames</a>(vrConcat, numbers100, plugin,   50);
+0051 <a href="#_sub1" class="code" title="subfunction checkNextNFrames(vrConcat, clipName, plugin, nFrames)">checkNextNFrames</a>(vrConcat, inter300,   plugin,  125);
+0052 <a href="#_sub1" class="code" title="subfunction checkNextNFrames(vrConcat, clipName, plugin, nFrames)">checkNextNFrames</a>(vrConcat, frames100,  <span class="string">'load'</span>,  100);
+0053 
+0054 <span class="comment">% Random seek tests, again using hard-coding to avoid just duplicating</span>
+0055 <span class="comment">% the 'concat' plugin logic here.</span>
+0056 iInter146   = <a href="doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>(inter146,   plugin);
+0057 iInter300   = <a href="doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>(inter300,   plugin);
+0058 iNumbers100 = <a href="doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>(numbers100, plugin);
+0059 iFrames100  = <a href="doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>(frames100,  <span class="string">'load'</span>);
+0060 totalFrames = (n146+200+50+100+125+100);
+0061 <span class="keyword">for</span> i=1:1000  
+0062   <span class="comment">% We randomly sample a bunch of frame positions and lookup the results</span>
+0063   <span class="comment">% from directly reading the videos.</span>
+0064   f = min(floor(rand(1)*totalFrames), totalFrames-1);
+0065   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/seek.html" class="code" title="function worked = seek(vr,fnum)">seek</a>(vrConcat, f);
+0066   testFrame = <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vrConcat);
+0067   testFrame = uint8(sum(double(testFrame), 3) / size(testFrame,3));
+0068   <span class="keyword">if</span> f&lt;n146
+0069     shouldBePrecise = 0;  
+0070     cmpName  = inter146;
+0071     cmpClip  = iInter146;
+0072     cmpFrame = f;
+0073   <span class="keyword">elseif</span> f&lt;n146+200
+0074     shouldBePrecise = 0;  
+0075     cmpName  = inter300;
+0076     cmpClip  = iInter300;
+0077     cmpFrame = f-n146;
+0078   <span class="keyword">elseif</span> f&lt;n146+200+100
+0079     shouldBePrecise = 0;  
+0080     cmpName  = inter146;
+0081     cmpClip  = iInter146;
+0082     cmpFrame = f-n146-200;
+0083   <span class="keyword">elseif</span> f&lt;n146+200+100+50
+0084     shouldBePrecise = 1; <span class="comment">% uncompressed has no excuse for being imprecise</span>
+0085     cmpName  = numbers100;
+0086     cmpClip  = iNumbers100;
+0087     cmpFrame = f-n146-200-100;
+0088   <span class="keyword">elseif</span> f&lt;n146+200+100+50+125
+0089     shouldBePrecise = 0;  
+0090     cmpName  = inter300;
+0091     cmpClip  = iInter300;
+0092     cmpFrame = f-n146-200-100-50;
+0093   <span class="keyword">elseif</span> f&lt;n146+200+100+50+125+100
+0094     shouldBePrecise = 1; <span class="comment">% by-frame always should be precise</span>
+0095     cmpName  = frames100;
+0096     cmpClip  = iFrames100;
+0097     cmpFrame = f-n146-200-100-50-125;
+0098   <span class="keyword">else</span>
+0099     error(<span class="string">'bad random frame number: bug in the test code'</span>);
+0100   <span class="keyword">end</span>
+0101   
+0102   <span class="keyword">try</span>
+0103     <a href="assertSimilarImages.html" class="code" title="function assertSimilarImages(a,b)  %#ok<INUSD>">assertSimilarImages</a>(testFrame, cmpClip(:,:,cmpFrame+1));
+0104   <span class="keyword">catch</span> <span class="comment">%#ok&lt;CTCH&gt;: backward compatability</span>
+0105     msgId = <span class="string">'videoio:tests:concatReadTest:imprecise'</span>;
+0106     msg = sprintf([<span class="string">'Frame %d from the concatenated source looks '</span> <span class="keyword">...</span>
+0107                    <span class="string">'different from frame %d from &quot;%s&quot; (randomly '</span><span class="keyword">...</span>
+0108                    <span class="string">'selected frame #%d).  This is either because the '</span><span class="keyword">...</span>
+0109                    <span class="string">'decoder jumped to the wrong frame (imprecise '</span><span class="keyword">...</span>
+0110                    <span class="string">'seeking) and/or it used a low-quality decode to '</span><span class="keyword">...</span>
+0111                    <span class="string">'make the random seek faster.'</span>], <span class="keyword">...</span>
+0112                    f, cmpFrame, cmpName, i);
+0113     
+0114     <span class="comment">% Change showErrors if you want to compare the two frames</span>
+0115     showErrors = 0;
+0116     <span class="keyword">if</span> showErrors
+0117       clf;
+0118       subplot(121); imshow(testFrame); 
+0119       title(sprintf(<span class="string">'concat frame %d'</span>, f));
+0120       subplot(122); imshow(cmpClip(:,:,cmpFrame+1)); 
+0121       title(sprintf(<span class="string">'expected frame (%d from %s)'</span>, cmpFrame, cmpName));     
+0122       drawnow
+0123     <span class="keyword">end</span>
+0124 
+0125     <span class="comment">% For the mpeg4 videos, we'll just issue warnings for mismatched frames.</span>
+0126     <span class="keyword">if</span> shouldBePrecise
+0127       error(msgId, <span class="string">'%s'</span>, msg);
+0128     <span class="keyword">else</span>
+0129       warning(msgId, <span class="string">'%s'</span>, msg);
+0130     <span class="keyword">end</span>
+0131   <span class="keyword">end</span>
+0132 <span class="keyword">end</span>
+0133 
+0134 <span class="comment">% clean up</span>
+0135 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vrConcat);
+0136 
+0137 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>
+0138 
+0139 <span class="comment">%-----------------------------------------</span>
+0140 <a name="_sub1" href="#_subfunctions" class="code">function checkNextNFrames(vrConcat, clipName, plugin, nFrames)</a>
+0141 <span class="comment">%checkNextNFrames(vrConcat, clipName, plugin, nFrames)</span>
+0142 <span class="comment">%  Check the next NFRAMES frames from VRCONCAT and make sure they look</span>
+0143 <span class="comment">%  like the first NFRAMES from the CLIPNAME when loaded with the</span>
+0144 <span class="comment">%  requested PLUGIN.  If NFRAMES is omitted, we use all frames from</span>
+0145 <span class="comment">%  CLIPNAME.</span>
+0146 
+0147 vrClip = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(clipName, plugin);
+0148 <span class="keyword">if</span> nargin&lt;4
+0149   nFrames = <a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(vrClip,<span class="string">'numFrames'</span>);
+0150 <span class="keyword">end</span>
+0151 
+0152 <span class="comment">%ienter('&gt;&gt;&gt; checkNextNFrames(...,''%s'',''%s'',%d)', clipName,plugin,nFrames);</span>
+0153 
+0154 <span class="keyword">for</span> i=1:nFrames
+0155   <span class="keyword">try</span>
+0156     <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vrConcat);
+0157     <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vrClip);
+0158 
+0159     <a href="assertSimilarImages.html" class="code" title="function assertSimilarImages(a,b)  %#ok<INUSD>">assertSimilarImages</a>(<a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vrConcat), <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vrClip));
+0160   <span class="keyword">catch</span> <span class="comment">%#ok&lt;CTCH&gt;: backward compatability</span>
+0161     err = lasterror; <span class="comment">%#ok&lt;LERR&gt;: backward compatability</span>
+0162     error([<span class="string">'Error checking frame %d of %s against the\ncorresponding '</span> <span class="keyword">...</span>
+0163            <span class="string">'concatenated source.\n\n%s'</span>], i-1, clipName, err.message);
+0164   <span class="keyword">end</span>
+0165 <span class="keyword">end</span>
+0166 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vrClip);
+0167 
+0168 <span class="comment">%iexit;</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

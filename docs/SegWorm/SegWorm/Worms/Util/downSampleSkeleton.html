@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of downSampleSkeleton</title>
+  <meta name="keywords" content="downSampleSkeleton">
+  <meta name="description" content="DOWNSAMPLESKELETON Downsample the skeleton to fewer points using the chain">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Util -->
+<h1>downSampleSkeleton
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>DOWNSAMPLESKELETON Downsample the skeleton to fewer points using the chain</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [pixels indices] = downSampleSkeleton(worm, samples) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">DOWNSAMPLESKELETON Downsample the skeleton to fewer points using the chain
+   code length.
+
+   [PIXELS INDICES] = DOWNSAMPLESKELETON(WORM, SAMPLES)
+
+   Inputs:
+       worm    - the worm to downsample
+       samples - the number of samples to take
+
+   Output:
+       pixels  - the interpolated pixels for the samples based on their
+                 chain-code-length spacing
+       indices - the indices for the samples based on their
+                 chain-code-length spacing
+
+ See also DOWNSAMPLEPOINTS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/downSamplePoints.html" class="code" title="function [dsPoints dsIndices dsLengths] =downSamplePoints(points, samples, varargin)">downSamplePoints</a>	DOWNSAMPLEPOINTS Downsample the points to fewer points using the chain</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [pixels indices] = downSampleSkeleton(worm, samples)</a>
+0002 <span class="comment">%DOWNSAMPLESKELETON Downsample the skeleton to fewer points using the chain</span>
+0003 <span class="comment">%   code length.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   [PIXELS INDICES] = DOWNSAMPLESKELETON(WORM, SAMPLES)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Inputs:</span>
+0008 <span class="comment">%       worm    - the worm to downsample</span>
+0009 <span class="comment">%       samples - the number of samples to take</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Output:</span>
+0012 <span class="comment">%       pixels  - the interpolated pixels for the samples based on their</span>
+0013 <span class="comment">%                 chain-code-length spacing</span>
+0014 <span class="comment">%       indices - the indices for the samples based on their</span>
+0015 <span class="comment">%                 chain-code-length spacing</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% See also DOWNSAMPLEPOINTS</span>
+0018 
+0019 <span class="comment">% Downsample the skeleton to the requested number of samples.</span>
+0020 [pixels, indices, ~] = <a href="../../../SegWorm/ComputerVision/downSamplePoints.html" class="code" title="function [dsPoints dsIndices dsLengths] =downSamplePoints(points, samples, varargin)">downSamplePoints</a>(worm.skeleton.pixels, samples, <span class="keyword">...</span>
+0021     worm.skeleton.chainCodeLengths);
+0022 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

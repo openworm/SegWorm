@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of filterHistogram</title>
+  <meta name="keywords" content="filterHistogram">
+  <meta name="description" content="FILTERHISTOGRAM Filter a histogram to remove data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>filterHistogram
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>FILTERHISTOGRAM Filter a histogram to remove data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function histogram = filterHistogram(histogram, isUsed) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FILTERHISTOGRAM Filter a histogram to remove data.
+
+   HISTOGRAM = FILTERHISTOGRAM(HISTOGRAM)
+
+   HISTOGRAM = FILTERHISTOGRAM(HISTOGRAM, ISUSED)
+
+   Input:
+       histogram - the histogram(s) to filter
+       isUsed    - which data entries should we use?
+
+   Output:
+       histogram - the filtered histogram(s)
+
+ See also <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">HISTOGRAM</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>	HISTOGRAM Compute the data's histogram.</li><li><a href="nanHistogram.html" class="code" title="function data = nanHistogram(varargin)">nanHistogram</a>	HISTOGRAM Get a histogram full of NaNs.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Printing/worm2detailsPDF2.html" class="code" title="function [filename pages] = worm2detailsPDF(filename, worm, wormName,varargin)">worm2detailsPDF2</a>	WORM2DETAILSPDF Save worm details to a PDF.</li><li><a href="../../SegWorm/Worms/Printing/worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>	WORM2DETAILSTIF Save worm details to a TIF.</li><li><a href="../../SegWorm/Worms/Printing/worm2summaryPDF2.html" class="code" title="function [filename pages] = worm2summaryPDF(filename, worm, wormName,varargin)">worm2summaryPDF2</a>	WORM2SUMMARYPDF Save a worm summary to a PDF.</li><li><a href="../../SegWorm/Worms/Printing/worm2summaryTIF.html" class="code" title="function [filename pages] = worm2summaryTIF(filename, worm, wormName,varargin)">worm2summaryTIF</a>	WORM2SUMMARYTIF Save a worm summary to a TIF.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function histogram = filterHistogram(histogram, isUsed)</a>
+0002 <span class="comment">%FILTERHISTOGRAM Filter a histogram to remove data.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   HISTOGRAM = FILTERHISTOGRAM(HISTOGRAM)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   HISTOGRAM = FILTERHISTOGRAM(HISTOGRAM, ISUSED)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Input:</span>
+0009 <span class="comment">%       histogram - the histogram(s) to filter</span>
+0010 <span class="comment">%       isUsed    - which data entries should we use?</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   Output:</span>
+0013 <span class="comment">%       histogram - the filtered histogram(s)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% See also HISTOGRAM</span>
+0016 
+0017 <span class="comment">% Filter the histogram(s).</span>
+0018 <span class="keyword">for</span> i = 1:length(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>)
+0019     
+0020     <span class="comment">% Is there any data?</span>
+0021     data = <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i);
+0022     bins = data.bins;
+0023     <span class="keyword">if</span> isempty(data) || isempty(bins) || isnan(bins(1))
+0024         <span class="keyword">continue</span>;
+0025     <span class="keyword">end</span>
+0026     <span class="keyword">if</span> all(~isUsed)
+0027         <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i) = <a href="nanHistogram.html" class="code" title="function data = nanHistogram(varargin)">nanHistogram</a>();
+0028     <span class="keyword">end</span>
+0029     
+0030     <span class="comment">% Filter the data sets.</span>
+0031     data.data.counts = data.data.counts(isUsed,:);
+0032     data.data.samples = data.data.samples(isUsed);
+0033     data.data.mean.all = data.data.mean.all(isUsed);
+0034     data.data.stdDev.all = data.data.stdDev.all(isUsed);
+0035     <span class="keyword">if</span> data.isSigned
+0036         data.data.mean.abs = data.data.mean.abs(isUsed);
+0037         data.data.mean.pos = data.data.mean.pos(isUsed);
+0038         data.data.mean.neg = data.data.mean.neg(isUsed);
+0039         data.data.stdDev.abs = data.data.stdDev.abs(isUsed);
+0040         data.data.stdDev.pos = data.data.stdDev.pos(isUsed);
+0041         data.data.stdDev.neg = data.data.stdDev.neg(isUsed);
+0042     <span class="keyword">end</span>
+0043     
+0044     <span class="comment">% Filter the set data.</span>
+0045     data.sets.samples = sum(~isnan(data.data.mean.all));
+0046     data.sets.mean.all = nanmean(data.data.mean.all);
+0047     data.sets.stdDev.all = nanstd(data.data.mean.all);
+0048     <span class="keyword">if</span> data.isSigned
+0049         data.sets.mean.abs = nanmean(data.data.mean.abs);
+0050         data.sets.stdDev.abs = nanstd(data.data.mean.abs);
+0051         data.sets.mean.pos = nanmean(data.data.mean.pos);
+0052         data.sets.stdDev.pos = nanstd(data.data.mean.pos);
+0053         data.sets.mean.neg = nanmean(data.data.mean.neg);
+0054         data.sets.stdDev.neg = nanstd(data.data.mean.neg);
+0055     <span class="keyword">end</span>
+0056     
+0057     <span class="comment">% Filter the total data.</span>
+0058     data.allData.counts = nansum(data.data.counts, 1);
+0059     data.allData.samples = nansum(data.data.samples);
+0060     data.allData.mean.all = <span class="keyword">...</span>
+0061         nansum(data.data.mean.all .* data.data.samples) <span class="keyword">...</span>
+0062         ./ data.allData.samples;
+0063     data.allData.stdDev.all = NaN;
+0064     <span class="keyword">if</span> data.isSigned
+0065         data.allData.mean.abs = NaN;
+0066         data.allData.mean.pos = NaN;
+0067         data.allData.mean.neg = NaN;
+0068         data.allData.stdDev.abs = NaN;
+0069         data.allData.stdDev.pos = NaN;
+0070         data.allData.stdDev.neg = NaN;
+0071     <span class="keyword">end</span>
+0072     
+0073     <span class="comment">% Compute the PDFs.</span>
+0074     PDFs = zeros(1, length(bins));
+0075     numSets = 0;
+0076     <span class="keyword">for</span> j = 1:length(data.data.samples)
+0077         <span class="keyword">if</span> data.data.samples(j) &gt; 0
+0078             PDFs = PDFs + data.data.counts(j,:) ./ data.data.samples(j);
+0079             numSets = numSets + 1;
+0080         <span class="keyword">end</span>
+0081     <span class="keyword">end</span>
+0082     data.PDF = PDFs;
+0083     <span class="keyword">if</span> numSets &gt; 0
+0084         data.PDF = data.PDF ./ numSets;
+0085     <span class="keyword">end</span>
+0086     
+0087     <span class="comment">% Find the start of the new bins.</span>
+0088     startI = 1;
+0089     <span class="keyword">while</span> startI &lt;= length(PDFs) &amp;&amp; PDFs(startI) == 0
+0090         startI = startI + 1;
+0091     <span class="keyword">end</span>
+0092     <span class="keyword">if</span> startI &gt; length(PDFs)
+0093         <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i) = <a href="nanHistogram.html" class="code" title="function data = nanHistogram(varargin)">nanHistogram</a>();
+0094         <span class="keyword">continue</span>;
+0095     <span class="keyword">end</span>
+0096     
+0097     <span class="comment">% Find the end of the new bins.</span>
+0098     endI = length(PDFs);
+0099     <span class="keyword">while</span> endI &gt;= 0 &amp;&amp; PDFs(endI) == 0
+0100         endI = endI - 1;
+0101     <span class="keyword">end</span>
+0102     
+0103     <span class="comment">% Remove unused bins.</span>
+0104     data.data.counts = data.data.counts(:,startI:endI);
+0105     data.allData.counts = data.allData.counts(startI:endI);
+0106     data.bins = data.bins(startI:endI);
+0107     data.PDF = data.PDF(startI:endI);
+0108     
+0109     <span class="comment">% Update the histogram.</span>
+0110     <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i) = data;
+0111 <span class="keyword">end</span>
+0112 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

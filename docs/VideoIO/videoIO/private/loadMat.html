@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loadMat</title>
+  <meta name="keywords" content="loadMat">
+  <meta name="description" content="out = loadMat(varname, fname, asframe)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html private -->
+<h1>loadMat
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>out = loadMat(varname, fname, asframe)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function out = loadMat(varname, fname, asframe) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">out = loadMat(varname, fname, asframe)
+  Tries to load the variable VARNAME from the file FNAME as a frame (if
+  ASFRAME is true) or as a whole video (if ASFRAME is false).  If
+  VARNAME is empty, this function uses the GETVARIABLESCORE heuristics
+  to choose a single variable to load.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="getVariableScore.html" class="code" title="function score = getVariableScore(x, asframe)">getVariableScore</a>	score = getVariableScore(x, asframe)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/videoReader_load.html" class="code" title="function [out,out2] = videoReader_load(cmd, handle, varargin)">videoReader_load</a>	videoReader_load</li><li><a href="../../videoIO/videoReader_matrix.html" class="code" title="function [out,out2] = videoReader_matrix(cmd, handle, varargin)">videoReader_matrix</a>	[...] = videoReader_matrix(cmd, handle, varargin)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function out = loadMat(varname, fname, asframe)</a>
+0002 <span class="comment">%out = loadMat(varname, fname, asframe)</span>
+0003 <span class="comment">%  Tries to load the variable VARNAME from the file FNAME as a frame (if</span>
+0004 <span class="comment">%  ASFRAME is true) or as a whole video (if ASFRAME is false).  If</span>
+0005 <span class="comment">%  VARNAME is empty, this function uses the GETVARIABLESCORE heuristics</span>
+0006 <span class="comment">%  to choose a single variable to load.</span>
+0007 <span class="comment">%</span>
+0008 
+0009 <span class="keyword">if</span> ~exist(fname, <span class="string">'file'</span>)
+0010   <span class="comment">% Treat a missing file as a dropped frame.  If this is a problem</span>
+0011   <span class="comment">% for people, we could make an optional constructor argument that</span>
+0012   <span class="comment">% decides whether to silently drop frames (as we do here) or whether</span>
+0013   <span class="comment">% to trigger an error message.</span>
+0014   out = []; 
+0015 <span class="keyword">else</span>
+0016   <span class="keyword">if</span> isempty(varname)
+0017     tmp = load(fname);
+0018     <span class="comment">% choose the biggest 2D or 3D matrix</span>
+0019     fnames = fieldnames(tmp);
+0020     scores = zeros(numel(fnames),1);
+0021     vals = struct2cell(tmp);
+0022     <span class="keyword">for</span> j=1:length(scores)
+0023       scores(j) = <a href="getVariableScore.html" class="code" title="function score = getVariableScore(x, asframe)">getVariableScore</a>(vals{j}, asframe);
+0024     <span class="keyword">end</span>
+0025     [dummy,fieldIdx] = max(scores);
+0026     out = getfield(tmp, fnames{fieldIdx}); <span class="comment">%#ok&lt;GFLD&gt; -- better backward compatibility</span>
+0027   <span class="keyword">else</span>
+0028     out = getfield(load(fname, varname), varname); <span class="comment">%#ok&lt;GFLD&gt; -- better backward compatibility</span>
+0029   <span class="keyword">end</span>
+0030 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

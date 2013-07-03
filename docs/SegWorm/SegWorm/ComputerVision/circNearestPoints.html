@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of circNearestPoints</title>
+  <meta name="keywords" content="circNearestPoints">
+  <meta name="description" content="CIRCNEARESTPOINTS For each point, find the nearest corresponding point">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>circNearestPoints
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CIRCNEARESTPOINTS For each point, find the nearest corresponding point</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function nearI = circNearestPoints(points, minI, maxI, x) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CIRCNEARESTPOINTS For each point, find the nearest corresponding point
+   within an interval of circularly-connected search points.
+
+   NEARI = CIRCNEARESTPOINTS(POINTS, MINI, MAXI, X)
+
+   Inputs:
+       points - the point coordinates from which the distance is measured
+       minI   - the minimum indices of the intervals
+       maxI   - the maximum indices of the intervals
+       x      - the circularly-connected, point coordinates on which the
+                search intervals lie
+
+   Output:
+       nearI - the indices of the nearest points</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>	CIRCOPPOSINGNEARESTPOINTS Find the nearest equivalent point indices on the</li><li><a href="../../SegWorm/Worms/Segmentation/linearSkeleton.html" class="code" title="function [skeleton cWidths] = linearSkeleton(headI, tailI, minP, minI,maxP, maxI, contour, wormSegSize, varargin)">linearSkeleton</a>	LINEARSKELETON Skeletonize a linear (non-looped) worm. The worm is</li><li><a href="../../SegWorm/Worms/Segmentation/worm2poly.html" class="code" title="function [polygon lcBounds rcBounds sBounds] = worm2poly(startSI, endSI,skeleton, headCI, tailCI, contour, isSplit, varargin)">worm2poly</a>	WORM2POLY Compute the polygon outline for a worm segment.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function nearI = circNearestPoints(points, minI, maxI, x)</a>
+0002 <span class="comment">%CIRCNEARESTPOINTS For each point, find the nearest corresponding point</span>
+0003 <span class="comment">%   within an interval of circularly-connected search points.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   NEARI = CIRCNEARESTPOINTS(POINTS, MINI, MAXI, X)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Inputs:</span>
+0008 <span class="comment">%       points - the point coordinates from which the distance is measured</span>
+0009 <span class="comment">%       minI   - the minimum indices of the intervals</span>
+0010 <span class="comment">%       maxI   - the maximum indices of the intervals</span>
+0011 <span class="comment">%       x      - the circularly-connected, point coordinates on which the</span>
+0012 <span class="comment">%                search intervals lie</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   Output:</span>
+0015 <span class="comment">%       nearI - the indices of the nearest points</span>
+0016 
+0017 <span class="comment">% Are the points 2 dimensional?</span>
+0018 <span class="keyword">if</span> ndims(points) ~=2 || (size(points, 1) ~= 2 &amp;&amp; size(points, 2) ~= 2)
+0019     error(<span class="string">'circNearestPoints:PointsNot2D'</span>, <span class="keyword">...</span>
+0020         <span class="string">'The matrix of points must be 2 dimensional'</span>);
+0021 <span class="keyword">end</span>
+0022 
+0023 <span class="comment">% Are the search points 2 dimensional?</span>
+0024 <span class="keyword">if</span> length(size(x)) ~=2 || (size(x, 2) ~= 2 &amp;&amp; size(x, 2) ~= 2)
+0025     error(<span class="string">'circNearestPoints:XNot2D'</span>, <span class="keyword">...</span>
+0026         <span class="string">'The circularly-connected search points must be 2 dimensional'</span>);
+0027 <span class="keyword">end</span>
+0028 
+0029 <span class="comment">% Orient the points as a N-by-2 matrix.</span>
+0030 isTransposed = false;
+0031 <span class="keyword">if</span> size(points, 2) ~= 2
+0032     points = points';
+0033     isTransposed = true;
+0034 <span class="keyword">end</span>
+0035 
+0036 <span class="comment">% Orient the search points as a N-by-2 matrix.</span>
+0037 <span class="keyword">if</span> size(x, 2) ~= 2
+0038     x = x';
+0039 <span class="keyword">end</span>
+0040 
+0041 <span class="comment">% Pre-allocate memory.</span>
+0042 nearI(1:size(points, 1)) = NaN;
+0043 
+0044 <span class="comment">% Search for the nearest points.</span>
+0045 <span class="keyword">for</span> i = 1:size(points, 1)
+0046     
+0047     <span class="comment">% The interval is continuous.</span>
+0048     <span class="keyword">if</span> minI(i) &lt;= maxI(i)
+0049         [~, nearI(i)] = min((points(i,1) - x(minI(i):maxI(i),1)).^ 2 + <span class="keyword">...</span>
+0050             (points(i,2) - x(minI(i):maxI(i),2)) .^ 2);
+0051         nearI(i) = nearI(i) + minI(i) - 1;
+0052         
+0053     <span class="comment">% The interval wraps.</span>
+0054     <span class="keyword">else</span>
+0055         [mag1, nearI1] = min((points(i,1) - x(minI(i):<span class="keyword">end</span>,1)) .^ 2 + <span class="keyword">...</span>
+0056             (points(i,2) - x(minI(i):<span class="keyword">end</span>,2)) .^ 2);
+0057         [mag2, nearI2] = min((points(i,1) - x(1:maxI(i),1)) .^ 2 + <span class="keyword">...</span>
+0058             (points(i,2) - x(1:maxI(i),2)) .^ 2);
+0059         
+0060         <span class="comment">% Which point is nearest?</span>
+0061         <span class="keyword">if</span> mag1 &lt;= mag2
+0062             nearI(i) = nearI1 + minI(i) - 1;
+0063         <span class="keyword">else</span>
+0064             nearI(i) = nearI2;
+0065         <span class="keyword">end</span>
+0066     <span class="keyword">end</span>
+0067 <span class="keyword">end</span>
+0068 
+0069 <span class="comment">% Transpose the point indices.</span>
+0070 <span class="keyword">if</span> isTransposed
+0071     nearI = nearI';
+0072 <span class="keyword">end</span>
+0073 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

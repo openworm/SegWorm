@@ -1,0 +1,791 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotWormPathData</title>
+  <meta name="keywords" content="plotWormPathData">
+  <meta name="description" content="PLOTWORMPATHDATA Plot the worm path data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>plotWormPathData
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>PLOTWORMPATHDATA Plot the worm path data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function plotAxes = plotWormPathData(titleLabel, skeleton,coils, omegas, bodyI, data, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOTWORMPATHDATA Plot the worm path data.
+
+   PLOTAXES = PLOTWORMPATHDATA(SKELETON, COILS, OMEGAS, BODYI, DATA)
+
+   PLOTAXES = PLOTWORMPATHDATA(SKELETON, COILS, OMEGAS, BODYI, DATA,
+                               DLIM, ALPHA, XLIMS, YLIMS,
+                               CENTERMODE, ROTATEMODE, SHAPEMODE, SORTMODE
+                               PLOTAXES)
+
+   Inputs:
+       skeleton   - the worm(s) skeleton (worm.posture.skeleton)
+       coils      - the worm(s) coils (worm.posture.coils)
+       omegas     - the worm(s) omegas (worm.locomotion.turns.omegas)
+       bodyI      - the body indices to use for the plot
+       data       - the data to plot
+       dLims      - the data limits to use for coloring;
+                    if empty, the colors are scaled to the full data set;
+                    the default is scaled (empty)
+       alpha      - the alpha transparency to use;
+                    the default is opaque (1)
+       xLims      - the x-axis limits;
+                    if empty, the limits are scaled to the data set;
+                    the default is scaled (empty)
+       yLims      - the y-axis limits;
+                    if empty, the limits are scaled to the data set;
+                    the default is scaled (empty)
+       centerMode - how are we centering the path(s)?
+                    the default is not to center the paths (0)
+
+                    0 = don't center the path(s)
+                    1 = center the path(s) by boundary 
+                    2 = center the path(s) by centroid
+
+       rotateMode - are we rotating the path(s) to a standard orientation?
+                    the negative sign (-) rotates by image orientation
+                    the default is not to rotate the paths (0)
+
+                    0 = don't rotate the path(s)
+                    1 = rotate the path by axial orientation
+                    2 = rotate the path and center the path(s) by boundary 
+                    3 = rotate the path and center the path(s) by centroid
+
+       shapeMode  - are we plotting the path(s) on a shape?
+                    the default mode is no shape (0)
+
+                    0     = don't plot the path(s) on a shape
+                    1     = plot the path(s) on a circle
+                    2     = plot the path(s) on a square
+                    [r,c] = plot the path(s) on a rectangle
+                            r = rows; c = columns
+
+       sortMode   - how are we sorting the path(s) on the shape?
+                    use the negative sign (-) to sort in descending order
+                    the default mode is not to sort the paths (0)
+
+                    0 = don't sort the path(s)
+                    1 = sort the paths by maximum axis
+                    2 = sort the paths by minimum axis
+                    3 = sort the paths by area (x-axis size * y-axis size)
+                    4 = sort the paths by x-axis size
+                    5 = sort the paths by y-axis size
+
+       isBigFonts - are we using big fonts for the labels?
+                    the default is no (false)
+       plotAxes   - the plot axes; if empty, create new axes
+
+   Outputs:
+       plotAxes - the plot axes</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/color2TeX.html" class="code" title="function str = color2TeX(color)">color2TeX</a>	COLOR2TEX Convert a color to a TeX string.</li><li><a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>	STR2COLORS Convert a string of colors to RGB values.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="worm2pathTIF.html" class="code" title="function [filename pages] = worm2pathTIF(filename, worm, wormName, varargin)">worm2pathTIF</a>	WORM2PATHTIF Save worm information to a TIF.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function i = findForeFrame(i, isNaNFrame)</a></li><li><a href="#_sub2" class="code">function i = findBackFrame(i, isNaNFrame)</a></li><li><a href="#_sub3" class="code">function [coilFrames omegaFrames] = touch2frames(coils, omegas, isNaNFrame)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function plotAxes = plotWormPathData(titleLabel, skeleton, </a><span class="keyword">...</span>
+0002     coils, omegas, bodyI, data, varargin)
+0003 <span class="comment">%PLOTWORMPATHDATA Plot the worm path data.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   PLOTAXES = PLOTWORMPATHDATA(SKELETON, COILS, OMEGAS, BODYI, DATA)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   PLOTAXES = PLOTWORMPATHDATA(SKELETON, COILS, OMEGAS, BODYI, DATA,</span>
+0008 <span class="comment">%                               DLIM, ALPHA, XLIMS, YLIMS,</span>
+0009 <span class="comment">%                               CENTERMODE, ROTATEMODE, SHAPEMODE, SORTMODE</span>
+0010 <span class="comment">%                               PLOTAXES)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   Inputs:</span>
+0013 <span class="comment">%       skeleton   - the worm(s) skeleton (worm.posture.skeleton)</span>
+0014 <span class="comment">%       coils      - the worm(s) coils (worm.posture.coils)</span>
+0015 <span class="comment">%       omegas     - the worm(s) omegas (worm.locomotion.turns.omegas)</span>
+0016 <span class="comment">%       bodyI      - the body indices to use for the plot</span>
+0017 <span class="comment">%       data       - the data to plot</span>
+0018 <span class="comment">%       dLims      - the data limits to use for coloring;</span>
+0019 <span class="comment">%                    if empty, the colors are scaled to the full data set;</span>
+0020 <span class="comment">%                    the default is scaled (empty)</span>
+0021 <span class="comment">%       alpha      - the alpha transparency to use;</span>
+0022 <span class="comment">%                    the default is opaque (1)</span>
+0023 <span class="comment">%       xLims      - the x-axis limits;</span>
+0024 <span class="comment">%                    if empty, the limits are scaled to the data set;</span>
+0025 <span class="comment">%                    the default is scaled (empty)</span>
+0026 <span class="comment">%       yLims      - the y-axis limits;</span>
+0027 <span class="comment">%                    if empty, the limits are scaled to the data set;</span>
+0028 <span class="comment">%                    the default is scaled (empty)</span>
+0029 <span class="comment">%       centerMode - how are we centering the path(s)?</span>
+0030 <span class="comment">%                    the default is not to center the paths (0)</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%                    0 = don't center the path(s)</span>
+0033 <span class="comment">%                    1 = center the path(s) by boundary</span>
+0034 <span class="comment">%                    2 = center the path(s) by centroid</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%       rotateMode - are we rotating the path(s) to a standard orientation?</span>
+0037 <span class="comment">%                    the negative sign (-) rotates by image orientation</span>
+0038 <span class="comment">%                    the default is not to rotate the paths (0)</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%                    0 = don't rotate the path(s)</span>
+0041 <span class="comment">%                    1 = rotate the path by axial orientation</span>
+0042 <span class="comment">%                    2 = rotate the path and center the path(s) by boundary</span>
+0043 <span class="comment">%                    3 = rotate the path and center the path(s) by centroid</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%       shapeMode  - are we plotting the path(s) on a shape?</span>
+0046 <span class="comment">%                    the default mode is no shape (0)</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%                    0     = don't plot the path(s) on a shape</span>
+0049 <span class="comment">%                    1     = plot the path(s) on a circle</span>
+0050 <span class="comment">%                    2     = plot the path(s) on a square</span>
+0051 <span class="comment">%                    [r,c] = plot the path(s) on a rectangle</span>
+0052 <span class="comment">%                            r = rows; c = columns</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%       sortMode   - how are we sorting the path(s) on the shape?</span>
+0055 <span class="comment">%                    use the negative sign (-) to sort in descending order</span>
+0056 <span class="comment">%                    the default mode is not to sort the paths (0)</span>
+0057 <span class="comment">%</span>
+0058 <span class="comment">%                    0 = don't sort the path(s)</span>
+0059 <span class="comment">%                    1 = sort the paths by maximum axis</span>
+0060 <span class="comment">%                    2 = sort the paths by minimum axis</span>
+0061 <span class="comment">%                    3 = sort the paths by area (x-axis size * y-axis size)</span>
+0062 <span class="comment">%                    4 = sort the paths by x-axis size</span>
+0063 <span class="comment">%                    5 = sort the paths by y-axis size</span>
+0064 <span class="comment">%</span>
+0065 <span class="comment">%       isBigFonts - are we using big fonts for the labels?</span>
+0066 <span class="comment">%                    the default is no (false)</span>
+0067 <span class="comment">%       plotAxes   - the plot axes; if empty, create new axes</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">%   Outputs:</span>
+0070 <span class="comment">%       plotAxes - the plot axes</span>
+0071 
+0072 <span class="comment">% Get the data limits to use for coloring.</span>
+0073 dLims = [];
+0074 <span class="keyword">if</span> ~isempty(varargin)
+0075     dLims = varargin{1};
+0076 <span class="keyword">end</span>
+0077 <span class="keyword">if</span> isempty(dLims)
+0078     dLims = [min(data), max(data)];
+0079 <span class="keyword">end</span>
+0080 
+0081 <span class="comment">% Get the alpha transparency to use.</span>
+0082 alpha = 0.99;
+0083 <span class="keyword">if</span> length(varargin) &gt; 1
+0084     alpha = varargin{2};
+0085 <span class="keyword">end</span>
+0086 
+0087 <span class="comment">% Get the x-axis limits.</span>
+0088 xLims = [];
+0089 <span class="keyword">if</span> length(varargin) &gt; 2
+0090     xLims = varargin{3};
+0091 <span class="keyword">end</span>
+0092 
+0093 <span class="comment">% Get the y-axis limits.</span>
+0094 yLims = [];
+0095 <span class="keyword">if</span> length(varargin) &gt; 3
+0096     yLims = varargin{4};
+0097 <span class="keyword">end</span>
+0098 
+0099 <span class="comment">% Are we centering the path(s)?</span>
+0100 centerMode = 0;
+0101 <span class="keyword">if</span> length(varargin) &gt; 4
+0102     centerMode = varargin{5};
+0103 <span class="keyword">end</span>
+0104 
+0105 <span class="comment">% Are we rotating the path(s) to a standard orientation?</span>
+0106 rotateMode = 0;
+0107 <span class="keyword">if</span> length(varargin) &gt; 5
+0108     rotateMode = varargin{6};
+0109 <span class="keyword">end</span>
+0110 
+0111 <span class="comment">% Are we plotting the path(s) on a shape?</span>
+0112 shapeMode = 0;
+0113 <span class="keyword">if</span> length(varargin) &gt; 6
+0114     shapeMode = varargin{7};
+0115 <span class="keyword">end</span>
+0116 
+0117 <span class="comment">% How are we sorting the path(s) on the shape?</span>
+0118 sortMode = 0;
+0119 <span class="keyword">if</span> length(varargin) &gt; 7
+0120     sortMode = varargin{8};
+0121 <span class="keyword">end</span>
+0122 
+0123 <span class="comment">% Are we using big fonts?</span>
+0124 isBigFonts = false;
+0125 <span class="keyword">if</span> length(varargin) &gt; 8
+0126     isBigFonts = varargin{9};
+0127 <span class="keyword">end</span>
+0128 
+0129 <span class="comment">% Get the plot axes.</span>
+0130 plotAxes = [];
+0131 <span class="keyword">if</span> length(varargin) &gt; 9
+0132     plotAxes = varargin{10};
+0133 <span class="keyword">end</span>
+0134 
+0135 <span class="comment">% Fix the data.</span>
+0136 <span class="keyword">if</span> ~iscell(skeleton)
+0137     skeleton = {skeleton};
+0138 <span class="keyword">end</span>
+0139 <span class="keyword">if</span> ~iscell(coils)
+0140     coils = {coils};
+0141 <span class="keyword">end</span>
+0142 <span class="keyword">if</span> ~iscell(omegas)
+0143     omegas = {omegas};
+0144 <span class="keyword">end</span>
+0145 <span class="keyword">if</span> ~iscell(data)
+0146     data = {data};
+0147 <span class="keyword">end</span>
+0148 
+0149 <span class="comment">% Initialize special ascii symbols.</span>
+0150 sepStr = <span class="string">'   ¤   '</span>;
+0151 
+0152 <span class="comment">% Initialize the label information.</span>
+0153 <span class="keyword">if</span> isBigFonts
+0154     titleFont = <span class="string">'\fontsize{24}'</span>;
+0155     axisFont = <span class="string">'\fontsize{20}'</span>;
+0156     tickFontSize = 16;
+0157 <span class="keyword">else</span>
+0158     titleFont = <span class="string">'\fontsize{16}'</span>;
+0159     axisFont = <span class="string">'\fontsize{14}'</span>;
+0160     tickFontSize = 12;
+0161 <span class="keyword">end</span>
+0162 
+0163 <span class="comment">% Initialize the worm plot information.</span>
+0164 firstWormColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0.5);
+0165 lastWormColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>)';
+0166 
+0167 <span class="comment">% Initialize the path plot information.</span>
+0168 pathScale = 1 / 1000;
+0169 pathWidth = 2;
+0170 wormWidth = 2;
+0171 
+0172 <span class="comment">% Initialize the event plot information.</span>
+0173 coilMarker = <span class="string">'\bf+'</span>;
+0174 coilColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+0175 omegaMarker = <span class="string">'\bfx'</span>;
+0176 omegaColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+0177 eventFontSize = 48;
+0178 
+0179 <span class="comment">% Organize the skeleton, body, and events.</span>
+0180 isNaNFrame = cell(length(skeleton), 1);
+0181 firstX = cell(length(skeleton), 1);
+0182 firstY = cell(length(skeleton), 1);
+0183 lastX = cell(length(skeleton), 1);
+0184 lastY = cell(length(skeleton), 1);
+0185 bodyX = cell(length(skeleton), 1);
+0186 bodyY = cell(length(skeleton), 1);
+0187 coilsX = cell(length(skeleton), 1);
+0188 coilsY = cell(length(skeleton), 1);
+0189 omegasX = cell(length(skeleton), 1);
+0190 omegasY = cell(length(skeleton), 1);
+0191 <span class="keyword">for</span> i = 1:length(skeleton)
+0192     
+0193     <span class="comment">% Determine the skeleton.</span>
+0194     x = skeleton{i}.x;
+0195     y = skeleton{i}.y;
+0196     isNaNFrame{i} = isnan(x(1,:));
+0197     bodyX{i} = mean(x(bodyI,:), 1) * pathScale;
+0198     bodyY{i} = mean(y(bodyI,:), 1) * pathScale;
+0199     
+0200     <span class="comment">% Compute the path centroid.</span>
+0201     <span class="keyword">if</span> centerMode &gt; 0 || rotateMode ~= 0
+0202         meanX = nanmean(bodyX{i});
+0203         meanY = nanmean(bodyY{i});
+0204     <span class="keyword">end</span>
+0205     
+0206     <span class="comment">% Center the path to its boundary.</span>
+0207     xOff = 0;
+0208     yOff = 0;
+0209     <span class="keyword">if</span> centerMode == 1
+0210         xOff = -(max(bodyX{i}) + min(bodyX{i})) ./ 2;
+0211         yOff = -(max(bodyY{i}) + min(bodyY{i})) ./ 2;
+0212         bodyX{i} = bodyX{i} + xOff;
+0213         bodyY{i} = bodyY{i} + yOff;
+0214         
+0215     <span class="comment">% Center the path to its centroid.</span>
+0216     <span class="keyword">elseif</span> centerMode == 2
+0217         xOff = -meanX;
+0218         yOff = -meanY;
+0219         bodyX{i} = bodyX{i} + xOff;
+0220         bodyY{i} = bodyY{i} + yOff;
+0221     <span class="keyword">end</span>
+0222     
+0223     <span class="comment">% Find the first and last worm.</span>
+0224     firstI = <a href="#_sub1" class="code" title="subfunction i = findForeFrame(i, isNaNFrame)">findForeFrame</a>(1, isNaNFrame{i});
+0225     firstX{i} = x(:,firstI) * pathScale + xOff;
+0226     firstY{i} = y(:,firstI) * pathScale + yOff;
+0227     lastI = <a href="#_sub2" class="code" title="subfunction i = findBackFrame(i, isNaNFrame)">findBackFrame</a>(length(isNaNFrame{i}), isNaNFrame{i});
+0228     lastX{i} = x(:,lastI) * pathScale + xOff;
+0229     lastY{i} = y(:,lastI) * pathScale + yOff;
+0230     
+0231     <span class="comment">% Rotate the path.</span>
+0232     <span class="keyword">if</span> rotateMode ~= 0
+0233         
+0234         <span class="comment">% Compute the axial orientation.</span>
+0235         <span class="keyword">if</span> rotateMode &gt; 0
+0236             
+0237             <span class="comment">% Find the path bounds.</span>
+0238             [minX, minXI] = min(bodyX{i});
+0239             [minY, minYI] = min(bodyY{i});
+0240             [maxX, maxXI] = max(bodyX{i});
+0241             [maxY, maxYI] = max(bodyY{i});
+0242             
+0243             <span class="comment">% Find the axial sizes.</span>
+0244             sizeX = maxX - minX;
+0245             sizeY = maxY - minY;
+0246             
+0247             <span class="comment">% Align to the largest axis.</span>
+0248             <span class="keyword">if</span> sizeX &gt; sizeY
+0249                 sizeY = bodyY{i}(maxXI) - bodyY{i}(minXI);
+0250             <span class="keyword">else</span>
+0251                 sizeX = bodyX{i}(maxYI) - bodyX{i}(minYI);
+0252             <span class="keyword">end</span>
+0253             theta = atan2(sizeY, sizeX);
+0254             
+0255         <span class="comment">% Compute the image orientation.</span>
+0256         <span class="comment">% Note: see http://en.wikipedia.org/wiki/Image_moment#Examples_2</span>
+0257         <span class="keyword">else</span>
+0258             M00 = length(bodyX{i});
+0259             M11 = nansum(bodyX{i} .* bodyY{i});
+0260             M20 = nansum(bodyX{i}.^2);
+0261             M02 = nansum(bodyY{i}.^2);
+0262             up11 = M11 / M00 - meanX * meanY;
+0263             up20 = M20 / M00 - meanX.^2;
+0264             up02 = M02 / M00 - meanY.^2;
+0265             theta = atan(2 * up11 / (up20 - up02)) / 2;
+0266         <span class="keyword">end</span>
+0267         
+0268         <span class="comment">% Compute the rotation.</span>
+0269         theta = theta - pi / 2;
+0270         rot = [cos(theta) sin(-theta); sin(theta) cos(theta)];
+0271         
+0272         <span class="comment">% Rotate the path.</span>
+0273         bodyXY = ([bodyX{i}; bodyY{i}]' * rot)';
+0274         bodyX{i} = bodyXY(1,:);
+0275         bodyY{i} = bodyXY(2,:);
+0276         
+0277         <span class="comment">% Rotate the first and last worms.</span>
+0278         firstXY = [firstX{i}, firstY{i}] * rot;
+0279         firstX{i} = firstXY(:,1);
+0280         firstY{i} = firstXY(:,2);
+0281         lastXY = [lastX{i}, lastY{i}] * rot;
+0282         lastX{i} = lastXY(:,1);
+0283         lastY{i} = lastXY(:,2);
+0284 
+0285         <span class="comment">% Re-center the path.</span>
+0286         <span class="keyword">if</span> abs(rotateMode) &gt; 1
+0287             
+0288             <span class="comment">% Center the path to its boundary.</span>
+0289             <span class="keyword">if</span> abs(rotateMode) == 2
+0290                 minX = min(bodyX{i});
+0291                 minY = min(bodyY{i});
+0292                 maxX = max(bodyX{i});
+0293                 maxY = max(bodyY{i});
+0294                 xOff = -(minX + maxX) / 2;
+0295                 yOff = -(minY + maxY) / 2;
+0296                 
+0297             <span class="comment">% Center the path to its centroid.</span>
+0298             <span class="keyword">else</span> <span class="comment">% abs(rotateMode) == 3</span>
+0299                 xOff = -nanmean(bodyX{i});
+0300                 yOff = -nanmean(bodyY{i});
+0301             <span class="keyword">end</span>
+0302             
+0303             <span class="comment">% Translate the path.</span>
+0304             bodyX{i} = bodyX{i} + xOff;
+0305             bodyY{i} = bodyY{i} + yOff;
+0306             
+0307             <span class="comment">% Translate the first and last worms.</span>
+0308             firstX{i} = firstX{i} + xOff;
+0309             firstY{i} = firstY{i} + yOff;
+0310             lastX{i} = lastX{i} + xOff;
+0311             lastY{i} = lastY{i} + yOff;
+0312         <span class="keyword">end</span>
+0313     <span class="keyword">end</span>
+0314     
+0315     <span class="comment">% Find the coils and omega turns.</span>
+0316     [coil omega] = <a href="#_sub3" class="code" title="subfunction [coilFrames omegaFrames] = touch2frames(coils, omegas, isNaNFrame)">touch2frames</a>(coils{i}, omegas{i}, isNaNFrame{i});
+0317     coilsX{i} = (bodyX{i}(coil(:,1)) + bodyX{i}(coil(:,2))) / 2;
+0318     coilsY{i} = (bodyY{i}(coil(:,1)) + bodyY{i}(coil(:,2))) / 2;
+0319     omegasX{i} = (bodyX{i}(omega(:,1)) + bodyX{i}(omega(:,2))) / 2;
+0320     omegasY{i} = (bodyY{i}(omega(:,1)) + bodyY{i}(omega(:,2))) / 2;
+0321 <span class="keyword">end</span>
+0322 
+0323 <span class="comment">% Translate the paths to a shape.</span>
+0324 <span class="keyword">if</span> shapeMode &gt; 0
+0325     
+0326     <span class="comment">% Find the path bounds.</span>
+0327     minX = min([cellfun(@min, bodyX), <span class="keyword">...</span>
+0328         cellfun(@min, firstX), cellfun(@min, lastX)], [], 2);
+0329     minY = min([cellfun(@min, bodyY), <span class="keyword">...</span>
+0330         cellfun(@min, firstY), cellfun(@min, lastY)], [], 2);
+0331     maxX = max([cellfun(@max, bodyX), <span class="keyword">...</span>
+0332         cellfun(@max, firstX), cellfun(@max, lastX)], [], 2);
+0333     maxY = max([cellfun(@max, bodyY), <span class="keyword">...</span>
+0334         cellfun(@max, firstY), cellfun(@max, lastY)], [], 2);
+0335     sizeX = maxX - minX;
+0336     sizeY = maxY - minY;
+0337     
+0338     <span class="comment">% Center the paths.</span>
+0339     <span class="keyword">for</span> i = 1:length(bodyX)
+0340         
+0341         <span class="comment">% Compute the center.</span>
+0342         xOff = -(minX(i) + maxX(i)) / 2;
+0343         yOff = -(minY(i) + maxY(i)) / 2;
+0344         
+0345         <span class="comment">% Translate the path.</span>
+0346         bodyX{i} = bodyX{i} + xOff;
+0347         bodyY{i} = bodyY{i} + yOff;
+0348         
+0349         <span class="comment">% Translate the first and last worms.</span>
+0350         firstX{i} = firstX{i} + xOff;
+0351         firstY{i} = firstY{i} + yOff;
+0352         lastX{i} = lastX{i} + xOff;
+0353         lastY{i} = lastY{i} + yOff;
+0354     <span class="keyword">end</span>
+0355     
+0356     <span class="comment">% Sort the paths.</span>
+0357     <span class="keyword">if</span> sortMode ~= 0
+0358         
+0359         <span class="comment">% Determine the sorting order.</span>
+0360         mode = <span class="string">'ascend'</span>;
+0361         <span class="keyword">if</span> sortMode &lt; 0
+0362             mode = <span class="string">'descend'</span>;
+0363             sortMode = -sortMode;
+0364         <span class="keyword">end</span>
+0365         
+0366         <span class="comment">% Sort the paths by maximum axis.</span>
+0367         sortI = 1:length(bodyX);
+0368         <span class="keyword">if</span> sortMode == 1
+0369             [~, sortI] = sort(max(sizeX, sizeY), 1, mode);
+0370             
+0371         <span class="comment">% Sort the paths by minimum axis.</span>
+0372         <span class="keyword">elseif</span> sortMode == 2
+0373             [~, sortI] = sort(min(sizeX, sizeY), 1, mode);
+0374             
+0375         <span class="comment">% Sort the paths by area.</span>
+0376         <span class="keyword">elseif</span> sortMode == 3
+0377             [~, sortI] = sort(sizeX .* sizeY, 1, mode);
+0378             
+0379         <span class="comment">% Sort the paths by x-axis size.</span>
+0380         <span class="keyword">elseif</span> sortMode == 4
+0381             [~, sortI] = sort(sizeX, 1, mode);
+0382             
+0383         <span class="comment">% Sort the paths by y-axis size.</span>
+0384         <span class="keyword">elseif</span> sortMode == 5
+0385             [~, sortI] = sort(sizeY, 1, mode);
+0386         <span class="keyword">end</span>
+0387         
+0388         <span class="comment">% Sort the data.</span>
+0389         sizeX = sizeX(sortI);
+0390         sizeY = sizeY(sortI);
+0391         firstX = firstX(sortI);
+0392         firstY = firstY(sortI);
+0393         lastX = lastX(sortI);
+0394         lastY = lastY(sortI);
+0395         bodyX = bodyX(sortI);
+0396         bodyY = bodyY(sortI);
+0397         coilsX = coilsX(sortI);
+0398         coilsY = coilsY(sortI);
+0399         omegasX = omegasX(sortI);
+0400         omegasY = omegasY(sortI);
+0401         data = data(sortI);
+0402     <span class="keyword">end</span>
+0403 
+0404     <span class="comment">% Translate the paths to a circle.</span>
+0405     <span class="keyword">if</span> length(shapeMode) == 1 &amp;&amp; shapeMode == 1
+0406         circumference = sum(sizeX);
+0407         radius = (circumference / pi) / 2;
+0408         theta = 0;
+0409         <span class="keyword">for</span> i = 1:length(firstX)
+0410             
+0411             <span class="comment">% Translate the path upward.</span>
+0412             yOff = radius + sizeY(i) / 2;
+0413             firstY{i} = firstY{i} + yOff;
+0414             lastY{i} = lastY{i} + yOff;
+0415             bodyY{i} = bodyY{i} + yOff;
+0416             coilsY{i} = coilsY{i} + yOff;
+0417             omegasY{i} = omegasY{i} + yOff;
+0418             
+0419             <span class="comment">% Compute the rotation.</span>
+0420             rot = [cos(theta) sin(-theta); sin(theta) cos(theta)];
+0421             
+0422             <span class="comment">% Rotate the path.</span>
+0423             bodyXY = ([bodyX{i}; bodyY{i}]' * rot)';
+0424             bodyX{i} = bodyXY(1,:);
+0425             bodyY{i} = bodyXY(2,:);
+0426             
+0427             <span class="comment">% Rotate the first and last worms.</span>
+0428             firstXY = [firstX{i}, firstY{i}] * rot;
+0429             firstX{i} = firstXY(:,1);
+0430             firstY{i} = firstXY(:,2);
+0431             lastXY = [lastX{i}, lastY{i}] * rot;
+0432             lastX{i} = lastXY(:,1);
+0433             lastY{i} = lastXY(:,2);
+0434             
+0435             <span class="comment">% Rotate the coils and omegas.</span>
+0436             <span class="comment">%coilsXY = ([coilsX{i}; coilsY{i}]' * rot)';</span>
+0437             <span class="comment">%coilsX{i} = coilsXY(1,:);</span>
+0438             <span class="comment">%coilsY{i} = coilsXY(2,:);</span>
+0439             <span class="comment">%omegasXY = ([omegasX{i}; omegasY{i}]' * rot)';</span>
+0440             <span class="comment">%omegasX{i} = omegasXY(1,:);</span>
+0441             <span class="comment">%omegasY{i} = omegasXY(2,:);</span>
+0442             
+0443             <span class="comment">% Remove the coils and omegas.</span>
+0444             coilsX{i} = [];
+0445             coilsY{i} = [];
+0446             omegasX{i} = [];
+0447             omegasY{i} = [];
+0448             
+0449             <span class="comment">% Advance.</span>
+0450             <span class="keyword">if</span> i &lt; length(firstX)
+0451                 pathOff = (sizeX(i) + sizeX(i + 1)) / 2;
+0452                 theta = theta + 2 * pi * (pathOff / circumference);
+0453             <span class="keyword">end</span>
+0454         <span class="keyword">end</span>
+0455         
+0456     <span class="comment">% Translate the paths to a square.</span>
+0457     <span class="keyword">else</span>
+0458         
+0459         <span class="comment">% Determine the rows and columns.</span>
+0460         <span class="keyword">if</span> length(shapeMode) &gt; 1
+0461             rows = shapeMode(1);
+0462             cols = shapeMode(2);
+0463             
+0464         <span class="comment">% Compute the rows and columns.</span>
+0465         <span class="keyword">else</span>
+0466             rows = round(sqrt(length(sizeX)));
+0467             cols = ceil(length(sizeX) / rows);
+0468         <span class="keyword">end</span>
+0469         
+0470         <span class="comment">% Compute the sizes.</span>
+0471         padSizeX = zeros(rows * cols, 1);
+0472         padSizeY = zeros(rows * cols, 1);
+0473         padSizeX(1:length(sizeX)) = sizeX;
+0474         padSizeY(1:length(sizeY)) = sizeY;
+0475         sizeX = reshape(padSizeX, cols, rows)';
+0476         sizeY = reshape(padSizeY, cols, rows)';
+0477         
+0478         <span class="comment">% Plot the paths.</span>
+0479         padScale = 0.05;
+0480         xMax = max(sizeX);
+0481         xOffs = xMax ./ 2;
+0482         xCumOff =  cumsum([0, xMax(1:(end - 1))] + xMax .* padScale);
+0483         xOffs = xOffs + xCumOff;
+0484         yMax = flipud(max(sizeY, [], 2));
+0485         yOffs = yMax ./ 2;
+0486         yCumOff =  cumsum([0; yMax(1:(end - 1))] + yMax .* padScale);
+0487         yOffs = flipud(yOffs + yCumOff);
+0488         <span class="keyword">for</span> i = 1:length(bodyX)
+0489             
+0490             <span class="comment">% Compute the row and column.</span>
+0491             row = floor((i - 1) / cols) + 1;
+0492             col = floor(i - (row - 1) * cols);
+0493             
+0494             <span class="comment">% Compute the offsets.</span>
+0495             xOff = xOffs(col);
+0496             yOff = yOffs(row);
+0497             
+0498             <span class="comment">% Translate the path.</span>
+0499             bodyX{i} = bodyX{i} + xOff;
+0500             bodyY{i} = bodyY{i} + yOff;
+0501             
+0502             <span class="comment">% Translate the first and last worms.</span>
+0503             firstX{i} = firstX{i} + xOff;
+0504             firstY{i} = firstY{i} + yOff;
+0505             lastX{i} = lastX{i} + xOff;
+0506             lastY{i} = lastY{i} + yOff;
+0507             
+0508             <span class="comment">% Translate the coils and omegas.</span>
+0509             <span class="comment">%coilsX{i} = coilsX{i} + xOff;</span>
+0510             <span class="comment">%coilsY{i} = coilsY{i} + yOff;</span>
+0511             <span class="comment">%omegasX{i} = omegasX{i} + xOff;</span>
+0512             <span class="comment">%omegasY{i} = omegasY{i} + yOff;</span>
+0513             
+0514             <span class="comment">% Remove the coils and omegas.</span>
+0515             coilsX{i} = [];
+0516             coilsY{i} = [];
+0517             omegasX{i} = [];
+0518             omegasY{i} = [];
+0519         <span class="keyword">end</span>
+0520     <span class="keyword">end</span>
+0521 <span class="keyword">end</span>
+0522 
+0523 <span class="comment">% Compute the patch points.</span>
+0524 z = cell(length(bodyX), 1);
+0525 <span class="keyword">for</span> i = 1:length(bodyX)
+0526     bodyX{i} = [bodyX{i}, nan];
+0527     bodyY{i} = [bodyY{i}, nan];
+0528     z{i} = [data{i}, nan];
+0529 <span class="keyword">end</span>
+0530 
+0531 <span class="comment">% Plot the paths.</span>
+0532 <span class="keyword">if</span> isempty(plotAxes)
+0533     plotAxes = axes;
+0534 <span class="keyword">end</span>
+0535 colormap(plotAxes, jet);
+0536 set(plotAxes, <span class="string">'CLim'</span>, dLims);
+0537 hold(plotAxes, <span class="string">'on'</span>);
+0538 <span class="keyword">for</span> i = 1:length(bodyX)
+0539     
+0540     <span class="comment">% Plot the first and last worm.</span>
+0541     plot(plotAxes, firstX{i}, firstY{i}, <span class="string">'o'</span>, <span class="keyword">...</span>
+0542         <span class="string">'Color'</span>, firstWormColor, <span class="keyword">...</span>
+0543         <span class="string">'MarkerFaceColor'</span>, firstWormColor, <span class="keyword">...</span>
+0544         <span class="string">'MarkerEdgeColor'</span>, firstWormColor, <span class="keyword">...</span>
+0545         <span class="string">'LineWidth'</span>, wormWidth);
+0546     plot(plotAxes, lastX{i}, lastY{i}, <span class="string">'o'</span>, <span class="keyword">...</span>
+0547         <span class="string">'Color'</span>, lastWormColor, <span class="keyword">...</span>
+0548         <span class="string">'MarkerFaceColor'</span>, lastWormColor, <span class="keyword">...</span>
+0549         <span class="string">'MarkerEdgeColor'</span>, lastWormColor, <span class="keyword">...</span>
+0550         <span class="string">'LineWidth'</span>, wormWidth);
+0551     
+0552     <span class="comment">% Plot the coils and omegas.</span>
+0553     text(coilsX{i}, coilsY{i}, coilMarker, <span class="keyword">...</span>
+0554         <span class="string">'FontSize'</span>, eventFontSize, <span class="keyword">...</span>
+0555         <span class="string">'Color'</span>, coilColor, <span class="keyword">...</span>
+0556         <span class="string">'HorizontalAlignment'</span>, <span class="string">'Center'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'Middle'</span>, <span class="keyword">...</span>
+0557         <span class="string">'Parent'</span>, plotAxes);
+0558     text(omegasX{i}, omegasY{i}, omegaMarker, <span class="keyword">...</span>
+0559         <span class="string">'FontSize'</span>, eventFontSize, <span class="keyword">...</span>
+0560         <span class="string">'Color'</span>, omegaColor, <span class="keyword">...</span>
+0561         <span class="string">'HorizontalAlignment'</span>, <span class="string">'Center'</span>, <span class="string">'VerticalAlignment'</span>, <span class="string">'Middle'</span>, <span class="keyword">...</span>
+0562         <span class="string">'Parent'</span>, plotAxes);
+0563     
+0564     <span class="comment">% Plot the path.</span>
+0565     patch(bodyX{i}, bodyY{i}, z{i}, <span class="string">'CDataMapping'</span>,<span class="string">'scaled'</span>, <span class="keyword">...</span>
+0566         <span class="string">'EdgeColor'</span>, <span class="string">'flat'</span>, <span class="string">'LineWidth'</span>, pathWidth, <span class="string">'EdgeAlpha'</span>, alpha);
+0567 <span class="keyword">end</span>
+0568 
+0569 <span class="comment">% Label the coils and omegas.</span>
+0570 coilStr = <span class="string">''</span>;
+0571 omegaStr = <span class="string">''</span>;
+0572 <span class="keyword">if</span> shapeMode == 0
+0573     blackStr = <span class="string">'\color{black}'</span>;
+0574     coilColorStr = <a href="../../../SegWorm/Util/color2TeX.html" class="code" title="function str = color2TeX(color)">color2TeX</a>(coilColor);
+0575     omegaColorStr = <a href="../../../SegWorm/Util/color2TeX.html" class="code" title="function str = color2TeX(color)">color2TeX</a>(omegaColor);
+0576     coilStr = [sepStr <span class="string">'\bfCoils('</span> coilColorStr coilMarker blackStr <span class="keyword">...</span>
+0577         <span class="string">') = '</span> num2str(sum(cellfun(<span class="string">'length'</span>, coilsX)))];
+0578     omegaStr = [sepStr <span class="string">'\bfOmegas('</span> omegaColorStr omegaMarker blackStr <span class="keyword">...</span>
+0579         <span class="string">') = '</span> num2str(sum(cellfun(<span class="string">'length'</span>, omegasX)))];
+0580 <span class="keyword">end</span>
+0581 
+0582 <span class="comment">% Label the image.</span>
+0583 set(plotAxes, <span class="string">'FontSize'</span>, tickFontSize);
+0584 title(plotAxes, [titleFont titleLabel]);
+0585 xlabel(plotAxes, [axisFont <span class="string">'X Location (mm)'</span> omegaStr]);
+0586 ylabel(plotAxes, [axisFont <span class="string">'Y Location (mm)'</span> coilStr]);
+0587 
+0588 <span class="comment">% Clean up the image.</span>
+0589 axis image;
+0590 <span class="keyword">if</span> ~isempty(xLims)
+0591     xlim(xLims);
+0592 <span class="keyword">end</span>
+0593 <span class="keyword">if</span> ~isempty(yLims)
+0594     ylim(yLims);
+0595 <span class="keyword">end</span>
+0596 <span class="keyword">end</span>
+0597 
+0598 
+0599 
+0600 <span class="comment">%% Find the first usable frame forwards.</span>
+0601 <a name="_sub1" href="#_subfunctions" class="code">function i = findForeFrame(i, isNaNFrame)</a>
+0602 <span class="keyword">while</span> isNaNFrame(i) &amp;&amp; i &lt; length(isNaNFrame)
+0603     i = i + 1;
+0604 <span class="keyword">end</span>
+0605 <span class="keyword">end</span>
+0606 
+0607 
+0608 
+0609 <span class="comment">%% Find the first usable frame backwards.</span>
+0610 <a name="_sub2" href="#_subfunctions" class="code">function i = findBackFrame(i, isNaNFrame)</a>
+0611 <span class="keyword">while</span> isNaNFrame(i) &amp;&amp; i &gt; 1
+0612     i = i - 1;
+0613 <span class="keyword">end</span>
+0614 <span class="keyword">end</span>
+0615 
+0616 
+0617 
+0618 <span class="comment">%% Find the coils and omega turns.</span>
+0619 <a name="_sub3" href="#_subfunctions" class="code">function [coilFrames omegaFrames] = touch2frames(coils, omegas, isNaNFrame)</a>
+0620 
+0621 <span class="comment">% Get the frames.</span>
+0622 coils = coils.frames;
+0623 omegas = omegas.frames;
+0624 
+0625 <span class="comment">% Remove coils that are omega turns.</span>
+0626 <span class="keyword">if</span> ~isempty(coils)
+0627     keepI = true(length(coils), 1);
+0628     <span class="keyword">for</span> i = 1:length(coils)
+0629         <span class="keyword">for</span> j = 1:length(omegas)
+0630             
+0631             <span class="comment">% Do the coil and omega intersect?</span>
+0632             c1 = coils(i).start;
+0633             c2 = coils(i).end;
+0634             o1 = omegas(j).start;
+0635             o2 = omegas(j).end;
+0636             <span class="keyword">if</span> (c1 &gt;= o1 &amp;&amp; c1 &lt;= o2) || (c2 &gt;= o1 &amp;&amp; c2 &lt;= o2) || <span class="keyword">...</span>
+0637                     (c1 &lt;= o1 &amp;&amp; c2 &gt;= o2)
+0638                 keepI(i) = false;
+0639             <span class="keyword">end</span>
+0640         <span class="keyword">end</span>
+0641     <span class="keyword">end</span>
+0642     coils = coils(keepI);
+0643 <span class="keyword">end</span>
+0644 
+0645 <span class="comment">% Find the first and last usable frame for each coil.</span>
+0646 coilFrames = nan(length(coils), 2);
+0647 <span class="keyword">for</span> i = 1:length(coils)
+0648     
+0649     <span class="comment">% Find the first and last usable frame.</span>
+0650     coilFrames(i,1) = <a href="#_sub2" class="code" title="subfunction i = findBackFrame(i, isNaNFrame)">findBackFrame</a>(coils(i).start + 1, isNaNFrame);
+0651     coilFrames(i,2) = <a href="#_sub1" class="code" title="subfunction i = findForeFrame(i, isNaNFrame)">findForeFrame</a>(coils(i).end + 1, isNaNFrame);
+0652     
+0653     <span class="comment">% Are either of the frames missing?</span>
+0654     <span class="keyword">if</span> isNaNFrame(coilFrames(i,1))
+0655         coilFrames(i,1) = coilFrames(i,2);
+0656     <span class="keyword">elseif</span> isNaNFrame(coilFrames(i,2))
+0657         coilFrames(i,2) = coilFrames(i,1);
+0658     <span class="keyword">end</span>
+0659 <span class="keyword">end</span>
+0660 
+0661 <span class="comment">% Find the first and last usable frame for each omega.</span>
+0662 omegaFrames = nan(length(omegas), 2);
+0663 <span class="keyword">for</span> i = 1:length(omegas)
+0664     
+0665     <span class="comment">% Find the first and last usable frame.</span>
+0666     omegaFrames(i,1) = <a href="#_sub2" class="code" title="subfunction i = findBackFrame(i, isNaNFrame)">findBackFrame</a>(omegas(i).start + 1, isNaNFrame);
+0667     omegaFrames(i,2) = <a href="#_sub1" class="code" title="subfunction i = findForeFrame(i, isNaNFrame)">findForeFrame</a>(omegas(i).end + 1, isNaNFrame);
+0668     
+0669     <span class="comment">% Are either of the frames missing?</span>
+0670     <span class="keyword">if</span> isNaNFrame(omegaFrames(i,1))
+0671         omegaFrames(i,1) = omegaFrames(i,2);
+0672     <span class="keyword">elseif</span> isNaNFrame(omegaFrames(i,2))
+0673         omegaFrames(i,2) = omegaFrames(i,1);
+0674     <span class="keyword">end</span>
+0675 <span class="keyword">end</span>
+0676 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

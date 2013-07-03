@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoWriter_ffmpegPopen2</title>
+  <meta name="keywords" content="videoWriter_ffmpegPopen2">
+  <meta name="description" content="videoWriter_ffmpegPopen2">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>videoWriter_ffmpegPopen2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>videoWriter_ffmpegPopen2</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">videoWriter_ffmpegPopen2
+  This is a videoWriter pluging that uses libraries from the ffmpeg
+  project (libavcodec, libavformat, etc.) to encode video files on
+  GNU/Linux platforms.  
+
+  Users should not call this function directly.  Instead they should use
+  the videoWriter constructor and specify the 'ffmpegPopen2' plugin.
+
+  Like videoReader_ffmpegPopen2 (the 'ffmpegPopen2' plugin for
+  videoReader), this videoWriter plugin creates a separate server
+  process to communicate with the ffmpeg libraries.  In contrast,
+  videoWriter_ffmpegDirect (the 'ffmpegDirect' plugin for videoWriter)
+  loads the ffmpeg libraries directly in the MEX function.  For more
+  information, type &quot;help videoReader_ffmpegPopen2&quot;.
+
+  Before using this plugin, the ffmpeg libraries must be installed (see
+  INSTALL.ffmpeg.txt) and the plugin MEX functions must be built using
+  BUILDVIDEOIO (type &quot;help buildVideoIO&quot; for details).
+
+  vr = videoWriter(filename, 'ffmpegPopen2', ...)
+  vr = videoWriter(filename, ..., 'plugin','ffmpegPopen2',...)
+    Opens FILENAME for writing using the ffmpeg libraries.  
+
+    The set of allowable container formats (AVI, MPG, MP4, etc.) depend
+    on how the ffmpeg libraries were compiled.  To see which container
+    formats can be used, run 
+      ffmpeg -formats
+    at a shell prompt, look for the &quot;File formats&quot; section, and look for
+    lines with the &quot;E&quot; (encoder) flag set.
+
+  vr = videoWriter(..., 'width',W, ...)
+  vr = videoWriter(..., 'height',H, ...)
+    Video files store frames that all must be of the same size.  W and H
+    are the width and height of the encoded video, respectively.  The
+    ADDFRAME method will automatically resize any images to be this 
+    size. 
+
+    Most codecs require these values to be divisible by 2, 4, 8, or 16.
+    If these parameters are not explicitly set, the first frame to be
+    added via ADDFRAME will be used to set the width and height.
+
+  vr = videoWriter(..., 'codec',CODECNAME, ...)
+    When compressing videos, a compression method must be selected.
+    CODECNAME is a string specifying ffmpeg's name for the encoder to
+    use. The CODECNAME often differs from the FOURCC code that
+    Microsoft's DirectShow uses.  Most users will want to explicitly
+    pass this parameter. 
+
+    The exact set of possible codecs is highly system-dependent.  Most
+    users will want to explicitly pass this parameter.  To see a list of
+    available codecs on a specific machine, run:
+      codecs = videoWriter([], 'ffmpegPopen2', 'codecs');
+
+  vr = videoWriter(..., 'fps',FPS, ...)
+  vr = videoWriter(..., 'framesPerSecond',FPS, ...)
+    FPS is the frame rate of the recorded video in frames per second.
+    Note that some codecs only work with some frame rates.  15, 23.976,
+    24/1.001, 24, 25, 29.97, 30/1.001 and 30 should work with most
+    codecs.  30fps is the default.
+
+  vr = videoWriter(..., 'fpsNum',NUM,'fpsDenom',DENOM ...)
+  vr = videoWriter(..., 'framesPerSecond_num',NUM,...
+                        'framesPerSecond_denom',DENOM ...)
+    Frame rates may also be specified as rational numbers where
+    FPS=NUM/DENOM.  
+
+  vr = videoWriter(..., 'bitRateTolerance',TOL, ...)
+    For codecs that support this parameter, the actual bit rate is
+    allowed to vary by +/- TOL bits per second.  This parameter is
+    ignored for codecs that do not support a tolerance.
+
+  vr = videoWriter(..., 'bitRate',BPS, ...)
+    BPS is the target bits/sec of the encoded video.  
+
+    Note: This parameter is supported by most of the common lossy ffmpeg
+    encoders.  To see which codecs uses the 'bitRate' parameter, run the
+    testBitRate function in the 'tests/' subdirectory of videoIODir. 
+
+  vr = videoWriter(..., 'gopSize',GOP, ...)
+    GOP is the maximum period between keyframes.  GOP stands for &quot;group
+    of pictures&quot; in MPEG lingo. 
+
+    Note: This parameter is supported by most of the common lossy ffmpeg
+    encoders.  To see which codecs uses the 'gopSize' parameter, run the
+    testGopSize function in the 'tests/' subdirectory of videoIODir. 
+
+  vr = videoWriter(..., 'maxBFrames',B, ...)
+    For MPEG-based codecs, B gives the maximum number of bidirectional
+    frames in a group of pictures (GOP).
+
+ SEE ALSO:
+   <a href="buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>             : how to build the plugin
+   videoWriter              : overview, usage examples, other plugins
+   <a href="videoWriter_ffmpegDirect.html" class="code" title="">videoWriter_ffmpegDirect</a> : a lower-overhead version of this plugin
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%videoWriter_ffmpegPopen2</span>
+0002 <span class="comment">%  This is a videoWriter pluging that uses libraries from the ffmpeg</span>
+0003 <span class="comment">%  project (libavcodec, libavformat, etc.) to encode video files on</span>
+0004 <span class="comment">%  GNU/Linux platforms.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%  Users should not call this function directly.  Instead they should use</span>
+0007 <span class="comment">%  the videoWriter constructor and specify the 'ffmpegPopen2' plugin.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%  Like videoReader_ffmpegPopen2 (the 'ffmpegPopen2' plugin for</span>
+0010 <span class="comment">%  videoReader), this videoWriter plugin creates a separate server</span>
+0011 <span class="comment">%  process to communicate with the ffmpeg libraries.  In contrast,</span>
+0012 <span class="comment">%  videoWriter_ffmpegDirect (the 'ffmpegDirect' plugin for videoWriter)</span>
+0013 <span class="comment">%  loads the ffmpeg libraries directly in the MEX function.  For more</span>
+0014 <span class="comment">%  information, type &quot;help videoReader_ffmpegPopen2&quot;.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%  Before using this plugin, the ffmpeg libraries must be installed (see</span>
+0017 <span class="comment">%  INSTALL.ffmpeg.txt) and the plugin MEX functions must be built using</span>
+0018 <span class="comment">%  BUILDVIDEOIO (type &quot;help buildVideoIO&quot; for details).</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%  vr = videoWriter(filename, 'ffmpegPopen2', ...)</span>
+0021 <span class="comment">%  vr = videoWriter(filename, ..., 'plugin','ffmpegPopen2',...)</span>
+0022 <span class="comment">%    Opens FILENAME for writing using the ffmpeg libraries.</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%    The set of allowable container formats (AVI, MPG, MP4, etc.) depend</span>
+0025 <span class="comment">%    on how the ffmpeg libraries were compiled.  To see which container</span>
+0026 <span class="comment">%    formats can be used, run</span>
+0027 <span class="comment">%      ffmpeg -formats</span>
+0028 <span class="comment">%    at a shell prompt, look for the &quot;File formats&quot; section, and look for</span>
+0029 <span class="comment">%    lines with the &quot;E&quot; (encoder) flag set.</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%  vr = videoWriter(..., 'width',W, ...)</span>
+0032 <span class="comment">%  vr = videoWriter(..., 'height',H, ...)</span>
+0033 <span class="comment">%    Video files store frames that all must be of the same size.  W and H</span>
+0034 <span class="comment">%    are the width and height of the encoded video, respectively.  The</span>
+0035 <span class="comment">%    ADDFRAME method will automatically resize any images to be this</span>
+0036 <span class="comment">%    size.</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%    Most codecs require these values to be divisible by 2, 4, 8, or 16.</span>
+0039 <span class="comment">%    If these parameters are not explicitly set, the first frame to be</span>
+0040 <span class="comment">%    added via ADDFRAME will be used to set the width and height.</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">%  vr = videoWriter(..., 'codec',CODECNAME, ...)</span>
+0043 <span class="comment">%    When compressing videos, a compression method must be selected.</span>
+0044 <span class="comment">%    CODECNAME is a string specifying ffmpeg's name for the encoder to</span>
+0045 <span class="comment">%    use. The CODECNAME often differs from the FOURCC code that</span>
+0046 <span class="comment">%    Microsoft's DirectShow uses.  Most users will want to explicitly</span>
+0047 <span class="comment">%    pass this parameter.</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%    The exact set of possible codecs is highly system-dependent.  Most</span>
+0050 <span class="comment">%    users will want to explicitly pass this parameter.  To see a list of</span>
+0051 <span class="comment">%    available codecs on a specific machine, run:</span>
+0052 <span class="comment">%      codecs = videoWriter([], 'ffmpegPopen2', 'codecs');</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%  vr = videoWriter(..., 'fps',FPS, ...)</span>
+0055 <span class="comment">%  vr = videoWriter(..., 'framesPerSecond',FPS, ...)</span>
+0056 <span class="comment">%    FPS is the frame rate of the recorded video in frames per second.</span>
+0057 <span class="comment">%    Note that some codecs only work with some frame rates.  15, 23.976,</span>
+0058 <span class="comment">%    24/1.001, 24, 25, 29.97, 30/1.001 and 30 should work with most</span>
+0059 <span class="comment">%    codecs.  30fps is the default.</span>
+0060 <span class="comment">%</span>
+0061 <span class="comment">%  vr = videoWriter(..., 'fpsNum',NUM,'fpsDenom',DENOM ...)</span>
+0062 <span class="comment">%  vr = videoWriter(..., 'framesPerSecond_num',NUM,...</span>
+0063 <span class="comment">%                        'framesPerSecond_denom',DENOM ...)</span>
+0064 <span class="comment">%    Frame rates may also be specified as rational numbers where</span>
+0065 <span class="comment">%    FPS=NUM/DENOM.</span>
+0066 <span class="comment">%</span>
+0067 <span class="comment">%  vr = videoWriter(..., 'bitRateTolerance',TOL, ...)</span>
+0068 <span class="comment">%    For codecs that support this parameter, the actual bit rate is</span>
+0069 <span class="comment">%    allowed to vary by +/- TOL bits per second.  This parameter is</span>
+0070 <span class="comment">%    ignored for codecs that do not support a tolerance.</span>
+0071 <span class="comment">%</span>
+0072 <span class="comment">%  vr = videoWriter(..., 'bitRate',BPS, ...)</span>
+0073 <span class="comment">%    BPS is the target bits/sec of the encoded video.</span>
+0074 <span class="comment">%</span>
+0075 <span class="comment">%    Note: This parameter is supported by most of the common lossy ffmpeg</span>
+0076 <span class="comment">%    encoders.  To see which codecs uses the 'bitRate' parameter, run the</span>
+0077 <span class="comment">%    testBitRate function in the 'tests/' subdirectory of videoIODir.</span>
+0078 <span class="comment">%</span>
+0079 <span class="comment">%  vr = videoWriter(..., 'gopSize',GOP, ...)</span>
+0080 <span class="comment">%    GOP is the maximum period between keyframes.  GOP stands for &quot;group</span>
+0081 <span class="comment">%    of pictures&quot; in MPEG lingo.</span>
+0082 <span class="comment">%</span>
+0083 <span class="comment">%    Note: This parameter is supported by most of the common lossy ffmpeg</span>
+0084 <span class="comment">%    encoders.  To see which codecs uses the 'gopSize' parameter, run the</span>
+0085 <span class="comment">%    testGopSize function in the 'tests/' subdirectory of videoIODir.</span>
+0086 <span class="comment">%</span>
+0087 <span class="comment">%  vr = videoWriter(..., 'maxBFrames',B, ...)</span>
+0088 <span class="comment">%    For MPEG-based codecs, B gives the maximum number of bidirectional</span>
+0089 <span class="comment">%    frames in a group of pictures (GOP).</span>
+0090 <span class="comment">%</span>
+0091 <span class="comment">% SEE ALSO:</span>
+0092 <span class="comment">%   buildVideoIO             : how to build the plugin</span>
+0093 <span class="comment">%   videoWriter              : overview, usage examples, other plugins</span>
+0094 <span class="comment">%   videoWriter_ffmpegDirect : a lower-overhead version of this plugin</span>
+0095 <span class="comment">%</span>
+0096 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0097 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0098 <span class="comment">%when using this library on GNU/Linux).</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

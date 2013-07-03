@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of bwClockTrace</title>
+  <meta name="keywords" content="bwClockTrace">
+  <meta name="description" content="BWCLOCKTRACE Trace a contour (counter) clockwise.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>bwClockTrace
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>BWCLOCKTRACE Trace a contour (counter) clockwise.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [contour] = bwClockTrace(img, seed, isClockwise) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">BWCLOCKTRACE Trace a contour (counter) clockwise.
+
+   [CONTOUR] = BWCLOCKTRACE(IMG, SEED, ISCLOCKWISE, &lt;STARTDIR&gt;)
+
+   Inputs:
+       img           - the binary image containing the connected component
+                       whose contour we are tracing
+       seed          - an [x y] seed pixel that lies on the contour
+       isClockwise   - true to trace clockwise and false to trace counter
+                       clockwise
+
+   Output:
+       contour - the directionally-traced continuous contour</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [contour] = bwClockTrace(img, seed, isClockwise)</a>
+0002 <span class="comment">%BWCLOCKTRACE Trace a contour (counter) clockwise.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [CONTOUR] = BWCLOCKTRACE(IMG, SEED, ISCLOCKWISE, &lt;STARTDIR&gt;)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       img           - the binary image containing the connected component</span>
+0008 <span class="comment">%                       whose contour we are tracing</span>
+0009 <span class="comment">%       seed          - an [x y] seed pixel that lies on the contour</span>
+0010 <span class="comment">%       isClockwise   - true to trace clockwise and false to trace counter</span>
+0011 <span class="comment">%                       clockwise</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Output:</span>
+0014 <span class="comment">%       contour - the directionally-traced continuous contour</span>
+0015 
+0016 <span class="comment">% Setup a clock to check the 8-pixel neighborhood.</span>
+0017 pixelClock = <span class="keyword">...</span>
+0018 { -1  0 <span class="string">'N'</span>;
+0019   -1  1 <span class="string">'NE'</span>;
+0020    0  1 <span class="string">'E'</span>;
+0021    1  1 <span class="string">'SE'</span>;
+0022    1  0 <span class="string">'S'</span>;
+0023    1 -1 <span class="string">'SW'</span>;
+0024    0 -1 <span class="string">'W'</span>;
+0025   -1 -1 <span class="string">'NW'</span>};
+0026 <span class="comment">%  y  x direction</span>
+0027 
+0028 <span class="comment">% Does the seed lie on a boundary?</span>
+0029 x = seed(1);
+0030 y = seed(2);
+0031 [maxY, maxX] = size(img);
+0032 
+0033 <span class="comment">% Cannot go west.</span>
+0034 <span class="keyword">if</span> x == 1
+0035     
+0036     <span class="comment">% Go north.</span>
+0037     <span class="keyword">if</span> isClockwise &amp;&amp; y &gt; 1
+0038         j = 1;
+0039             
+0040     <span class="comment">% Go south.</span>
+0041     <span class="keyword">elseif</span> ~isClockwise &amp;&amp; y &lt; maxY
+0042         j = 5;
+0043         
+0044     <span class="comment">% Go east.</span>
+0045     <span class="keyword">else</span>
+0046         j = 3;
+0047     <span class="keyword">end</span>
+0048     
+0049 <span class="comment">% Cannot go east.</span>
+0050 <span class="keyword">elseif</span> x == maxX
+0051     
+0052     <span class="comment">% Go south.</span>
+0053     <span class="keyword">if</span> isClockwise &amp;&amp; y &lt; maxY
+0054         j = 5;
+0055             
+0056     <span class="comment">% Go north.</span>
+0057     <span class="keyword">elseif</span> ~isClockwise &amp;&amp; y &gt; 1
+0058         j = 1;
+0059         
+0060     <span class="comment">% Go west.</span>
+0061     <span class="keyword">else</span>
+0062         j = 7;
+0063     <span class="keyword">end</span>
+0064     
+0065 <span class="comment">% Cannot go north.</span>
+0066 <span class="keyword">elseif</span> y == 1
+0067     
+0068     <span class="comment">% Go east.</span>
+0069     <span class="keyword">if</span> isClockwise &amp;&amp; x &lt; maxX
+0070         j = 3;
+0071             
+0072     <span class="comment">% Go west.</span>
+0073     <span class="keyword">elseif</span> ~isClockwise &amp;&amp; x &gt; 1
+0074         j = 7;
+0075         
+0076     <span class="comment">% Go south.</span>
+0077     <span class="keyword">else</span>
+0078         j = 5;
+0079     <span class="keyword">end</span>
+0080     
+0081 <span class="comment">% Cannot go south.</span>
+0082 <span class="keyword">elseif</span> y == maxY
+0083     
+0084     <span class="comment">% Go west.</span>
+0085     <span class="keyword">if</span> isClockwise &amp;&amp; x &gt; 1
+0086         j = 7;
+0087             
+0088     <span class="comment">% Go east.</span>
+0089     <span class="keyword">elseif</span> ~isClockwise &amp;&amp; x &lt; maxX
+0090         j = 3;
+0091         
+0092     <span class="comment">% Go north.</span>
+0093     <span class="keyword">else</span>
+0094         j = 1;
+0095     <span class="keyword">end</span>
+0096     
+0097 <span class="comment">% Find the next (counter) clockwise, contour point.</span>
+0098 <span class="keyword">else</span>
+0099     <span class="comment">% Find a background pixel.</span>
+0100     i = 1;
+0101     clockLength = size(pixelClock, 1);
+0102     <span class="keyword">while</span> i &lt;= clockLength &amp;&amp; img(y + pixelClock{i,1}, x + pixelClock{i,2}) == 1
+0103         i = i + 1;
+0104     <span class="keyword">end</span>
+0105     
+0106     <span class="comment">% Does the seed lie on the contour?</span>
+0107     <span class="keyword">if</span> i &gt; clockLength
+0108         error(<span class="string">'bwClockTrace:NotContourPoint'</span>, <span class="string">'The seed does not lie on the contour'</span>);
+0109     <span class="keyword">end</span>
+0110     
+0111     <span class="comment">% Find the next clockwise, contour point.</span>
+0112     <span class="keyword">if</span> isClockwise
+0113         j = i + 1;
+0114         <span class="keyword">if</span> j &gt; clockLength
+0115             j = 1;
+0116         <span class="keyword">end</span>
+0117         <span class="keyword">while</span> j ~= i &amp;&amp; img(y + pixelClock{j,1}, x + pixelClock{j,2}) == 0
+0118             j = j + 1;
+0119             <span class="keyword">if</span> j &gt; clockLength
+0120                 j = 1;
+0121             <span class="keyword">end</span>
+0122         <span class="keyword">end</span>
+0123         
+0124     <span class="comment">% Find the next counter-clockwise, contour point.</span>
+0125     <span class="keyword">else</span>
+0126         j = i - 1;
+0127         <span class="keyword">if</span> j &lt; 1
+0128             j = clockLength;
+0129         <span class="keyword">end</span>
+0130         <span class="keyword">while</span> j ~= i &amp;&amp; img(y + pixelClock{j,1}, x + pixelClock{j,2}) == 0
+0131             j = j - 1;
+0132             <span class="keyword">if</span> j &lt; 1
+0133                 j = clockLength;
+0134             <span class="keyword">end</span>
+0135         <span class="keyword">end</span>
+0136     <span class="keyword">end</span>
+0137 <span class="keyword">end</span>
+0138 
+0139 <span class="comment">% Trace the contour.</span>
+0140 <span class="keyword">if</span> isClockwise
+0141     contour = bwtraceboundary(img, ind2sub(size(img), [y x]), <span class="keyword">...</span>
+0142         pixelClock{j,3}, 8, inf, <span class="string">'clockwise'</span>);
+0143 <span class="keyword">else</span>
+0144     contour = bwtraceboundary(img, ind2sub(size(img), [y x]), <span class="keyword">...</span>
+0145         pixelClock{j,3}, 8, inf, <span class="string">'counterclockwise'</span>);
+0146 <span class="keyword">end</span>
+0147 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

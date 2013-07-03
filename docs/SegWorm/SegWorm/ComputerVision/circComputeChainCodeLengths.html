@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of circComputeChainCodeLengths</title>
+  <meta name="keywords" content="circComputeChainCodeLengths">
+  <meta name="description" content="CIRCCOMPUTECHAINCODELENGTHS Compute the chain-code length, at each point,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>circComputeChainCodeLengths
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CIRCCOMPUTECHAINCODELENGTHS Compute the chain-code length, at each point,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function lengths = circComputeChainCodeLengths(points) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CIRCCOMPUTECHAINCODELENGTHS Compute the chain-code length, at each point,
+   for a circularly-connected, continuous line of points.
+
+   LENGTHS = CIRCCOMPUTECHAINCODELENGTHS(POINTS)
+
+   Input:
+       points - the circularly-connected, continuous line of points on
+                which to measure the chain-code length
+
+   Output:
+       lengths - the chain-code length at each point
+
+ See also <a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">CHAINCODELENGTH2INDEX</a>, <a href="computeChainCodeLengths.html" class="code" title="function lengths = computeChainCodeLengths(points)">COMPUTECHAINCODELENGTHS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function lengths = circComputeChainCodeLengths(points)</a>
+0002 <span class="comment">%CIRCCOMPUTECHAINCODELENGTHS Compute the chain-code length, at each point,</span>
+0003 <span class="comment">%   for a circularly-connected, continuous line of points.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   LENGTHS = CIRCCOMPUTECHAINCODELENGTHS(POINTS)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Input:</span>
+0008 <span class="comment">%       points - the circularly-connected, continuous line of points on</span>
+0009 <span class="comment">%                which to measure the chain-code length</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Output:</span>
+0012 <span class="comment">%       lengths - the chain-code length at each point</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% See also CHAINCODELENGTH2INDEX, COMPUTECHAINCODELENGTHS</span>
+0015 
+0016 <span class="comment">% Are the points 2 dimensional?</span>
+0017 <span class="keyword">if</span> ndims(points) ~=2 || (size(points, 1) ~= 2 &amp;&amp; size(points, 2) ~= 2)
+0018     error(<span class="string">'circComputeChainCodeLengths:PointsNot2D'</span>, <span class="keyword">...</span>
+0019         <span class="string">'The matrix of points must be 2 dimensional'</span>);
+0020 <span class="keyword">end</span>
+0021 
+0022 <span class="comment">% Orient the points as a N-by-2 matrix.</span>
+0023 isTransposed = false;
+0024 <span class="keyword">if</span> size(points, 2) ~= 2
+0025     points = points';
+0026     isTransposed = true;
+0027 <span class="keyword">end</span>
+0028 
+0029 <span class="comment">% Pre-allocate memory.</span>
+0030 lengths = double(zeros(size(points, 1), 1));
+0031 
+0032 <span class="comment">% Pre-compute values.</span>
+0033 sqrt2 = sqrt(2);
+0034 
+0035 <span class="comment">% Measure the difference between subsequent points.</span>
+0036 dPoints = abs(points(1,:) - points(<span class="keyword">end</span>,:));
+0037 
+0038 <span class="comment">% No change or we walked in a straight line.</span>
+0039 <span class="keyword">if</span> any(dPoints == 0)
+0040     lengths(1) = abs(dPoints(1)) + abs(dPoints(2));
+0041     
+0042 <span class="comment">% We walked one point diagonally.</span>
+0043 <span class="keyword">elseif</span> all(dPoints == 1)
+0044     lengths(1) = sqrt2;
+0045     
+0046 <span class="comment">% We walked fractionally or more than one point.</span>
+0047 <span class="keyword">else</span>
+0048     lengths(1) = sqrt(sum(dPoints .^ 2));
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">% Measure the chain code length.</span>
+0052 <span class="keyword">for</span> i = 2:length(lengths)
+0053     
+0054     <span class="comment">% Measure the difference between subsequent points.</span>
+0055     dPoints = abs(points(i,:) - points(i - 1,:));
+0056     
+0057     <span class="comment">% No change or we walked in a straight line.</span>
+0058     <span class="keyword">if</span> any(dPoints == 0)
+0059         lengths(i) = lengths(i - 1) + abs(dPoints(1)) + abs(dPoints(2));
+0060         
+0061     <span class="comment">% We walked one point diagonally.</span>
+0062     <span class="keyword">elseif</span> all(dPoints == 1)
+0063         lengths(i) = lengths(i - 1) + sqrt2;
+0064         
+0065     <span class="comment">% We walked fractionally or more than one point.</span>
+0066     <span class="keyword">else</span>
+0067         lengths(i) = lengths(i - 1) + sqrt(sum(dPoints .^ 2));
+0068     <span class="keyword">end</span>
+0069 <span class="keyword">end</span>
+0070 
+0071 <span class="comment">% Transpose the lengths.</span>
+0072 <span class="keyword">if</span> isTransposed
+0073     lengths = lengths';
+0074 <span class="keyword">end</span>
+0075 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

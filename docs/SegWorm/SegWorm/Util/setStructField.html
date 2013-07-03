@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of setStructField</title>
+  <meta name="keywords" content="setStructField">
+  <meta name="description" content="SETSTRUCTFIELD Set a field in a structure.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>setStructField
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>SETSTRUCTFIELD Set a field in a structure.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function data = setStructField(data, field, value) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SETSTRUCTFIELD Set a field in a structure.
+
+   DATA = SETSTRUCTFIELD(DATA, FIELD, VALUE)
+
+   Inputs:
+       data  - the structure
+       field - the field to set (a period delimited string)
+       value - the value for the field
+
+   Output:
+       data - a structure with the field set to the value</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>	WORMDISPLAYINFO Get information for displaying the worm data.</li><li><a href="../../SegWorm/Worms/Printing/worm2CSV.html" class="code" title="function filenames = worm2CSV(filename, wormInfo, worm, wormName, varargin)">worm2CSV</a>	WORM2CSV Convert worm features to a CSV file.</li><li><a href="../../SegWorm/Worms/Statistics/worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li><li><a href="../../SegWorm/Worms/Statistics/worm2histogram2.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram2</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function data = setStructField(data, field, value)</a>
+0002 <span class="comment">%SETSTRUCTFIELD Set a field in a structure.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   DATA = SETSTRUCTFIELD(DATA, FIELD, VALUE)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       data  - the structure</span>
+0008 <span class="comment">%       field - the field to set (a period delimited string)</span>
+0009 <span class="comment">%       value - the value for the field</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Output:</span>
+0012 <span class="comment">%       data - a structure with the field set to the value</span>
+0013 
+0014 eval([<span class="string">'data.'</span> field <span class="string">'=value;'</span>]);
+0015 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

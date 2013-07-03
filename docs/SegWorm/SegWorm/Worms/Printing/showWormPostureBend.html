@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of showWormPostureBend</title>
+  <meta name="keywords" content="showWormPostureBend">
+  <meta name="description" content="SHOWWORMBENDPOSTURE Show the worm's bending posture.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>showWormPostureBend
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>SHOWWORMBENDPOSTURE Show the worm's bending posture.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function showWormBendPosture(worm) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SHOWWORMBENDPOSTURE Show the worm's bending posture.
+
+   SHOWWORMBENDPOSTURE(WORM)
+
+   Inputs:
+       worm - the worm to show
+
+   See WORMORGANIZATION</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>	PLOTHISTOGRAM Plot a histogram(s) of data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function showWormBendPosture(worm)</a>
+0002 <span class="comment">%SHOWWORMBENDPOSTURE Show the worm's bending posture.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   SHOWWORMBENDPOSTURE(WORM)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       worm - the worm to show</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   See WORMORGANIZATION</span>
+0010 
+0011 <span class="comment">% Create a figure.</span>
+0012 h = figure;
+0013 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1]);
+0014 hold on;
+0015 
+0016 <span class="comment">% Show the worm's bend posture mean and standard deviation.</span>
+0017 bendFields = { <span class="keyword">...</span>
+0018     <span class="string">'mean'</span>, <span class="keyword">...</span>
+0019     <span class="string">'stdDev'</span>};
+0020 bendNames = { <span class="keyword">...</span>
+0021     <span class="string">'MEAN'</span>, <span class="keyword">...</span>
+0022     <span class="string">'STANDARD DEVIATION'</span>};
+0023 bendResolutions = { <span class="keyword">...</span>
+0024     1, <span class="keyword">...</span>
+0025     .25};
+0026 <span class="keyword">for</span> i = 1:length(bendFields) <span class="comment">% mean/standard deviation</span>
+0027         
+0028     <span class="comment">% Determine the plot location.</span>
+0029     subplot(1, length(bendFields), i);
+0030     hold on;
+0031     
+0032     <span class="comment">% Compute the data.</span>
+0033     data = { <span class="keyword">...</span>
+0034         worm.posture.bends.head.(bendFields{i}), <span class="keyword">...</span>
+0035         worm.posture.bends.neck.(bendFields{i}), <span class="keyword">...</span>
+0036         worm.posture.bends.midbody.(bendFields{i}), <span class="keyword">...</span>
+0037         worm.posture.bends.hips.(bendFields{i}), <span class="keyword">...</span>
+0038         worm.posture.bends.tail.(bendFields{i})};
+0039     samples = sum(~isnan(data{1}));
+0040     resolutions = { <span class="keyword">...</span>
+0041         bendResolutions{i}, <span class="keyword">...</span>
+0042         bendResolutions{i}, <span class="keyword">...</span>
+0043         bendResolutions{i}, <span class="keyword">...</span>
+0044         bendResolutions{i}, <span class="keyword">...</span>
+0045         bendResolutions{i}};
+0046     
+0047     <span class="comment">% Construct the labels.</span>
+0048     titleName = [<span class="string">'WORM POSTURE BEND '</span> bendNames{i} <span class="keyword">...</span>
+0049         <span class="string">' (N = '</span> num2str(samples) <span class="string">')'</span>];
+0050     xAxisName = <span class="string">'Supplementary Angle (degrees)'</span>;
+0051     means = cellfun(@nanmean, data);
+0052     stdDevs = cellfun(@nanstd, data);
+0053     dataNames = { <span class="keyword">...</span>
+0054         [<span class="string">'Head Bends (Mean = '</span> num2str(means(1)) <span class="keyword">...</span>
+0055         <span class="string">', Std = '</span> num2str(stdDevs(1)) <span class="string">')'</span>], <span class="keyword">...</span>
+0056         [<span class="string">'Neck Bends (Mean = '</span> num2str(means(2)) <span class="keyword">...</span>
+0057         <span class="string">', Std = '</span> num2str(stdDevs(2)) <span class="string">')'</span>], <span class="keyword">...</span>
+0058         [<span class="string">'Midbody Bends (Mean = '</span> num2str(means(3)) <span class="keyword">...</span>
+0059         <span class="string">', Std = '</span> num2str(stdDevs(3)) <span class="string">')'</span>], <span class="keyword">...</span>
+0060         [<span class="string">'Hip Bends (Mean = '</span> num2str(means(4)) <span class="keyword">...</span>
+0061         <span class="string">', Std = '</span> num2str(stdDevs(4)) <span class="string">')'</span>], <span class="keyword">...</span>
+0062         [<span class="string">'Tail Bends (Mean = '</span> num2str(means(5)) <span class="keyword">...</span>
+0063         <span class="string">', Std = '</span> num2str(stdDevs(5)) <span class="string">')'</span>]};
+0064     
+0065     <span class="comment">% Construct the data colors.</span>
+0066     histColors = { <span class="keyword">...</span>
+0067         [.75 0 0], <span class="keyword">...</span>
+0068         [1 .5 .75], <span class="keyword">...</span>
+0069         [0 .75 0], <span class="keyword">...</span>
+0070         [.5 .75 1], <span class="keyword">...</span>
+0071         [0 0 .75]};
+0072     statColors = { <span class="keyword">...</span>
+0073         [1 0 0], <span class="keyword">...</span>
+0074         [1 .8 .9], <span class="keyword">...</span>
+0075         [.5 .5 .5], <span class="keyword">...</span>
+0076         [.8 .9 1], <span class="keyword">...</span>
+0077         [0 0 1]};
+0078     
+0079     <span class="comment">% Plot the data.</span>
+0080     <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(data, resolutions, titleName, xAxisName, dataNames, <span class="keyword">...</span>
+0081         histColors, [], 2);
+0082 <span class="keyword">end</span>
+0083 
+0084 <span class="comment">% Determine the locomotion mode.</span>
+0085 motionMode = worm.locomotion.motion.mode;
+0086 
+0087 <span class="comment">% Create a figure.</span>
+0088 h = figure;
+0089 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1]);
+0090 hold on;
+0091 
+0092 <span class="comment">% Show the worm's forward/pause/backward bend posture mean/standard deviation.</span>
+0093 motionModes = { <span class="keyword">...</span>
+0094     1, <span class="keyword">...</span>
+0095     0, <span class="keyword">...</span>
+0096     -1};
+0097 motionNames = { <span class="keyword">...</span>
+0098     <span class="string">'FORWARD'</span>, <span class="keyword">...</span>
+0099     <span class="string">'PAUSED'</span>, <span class="keyword">...</span>
+0100     <span class="string">'BACKWARD'</span>};
+0101 <span class="keyword">for</span> i = 1:length(bendFields) <span class="comment">% mean/standard deviation</span>
+0102     <span class="keyword">for</span> j = 1:length(motionModes) <span class="comment">% forward/paused/backward</span>
+0103         
+0104         <span class="comment">% Determine the plot location.</span>
+0105         subplot(length(bendFields), length(motionModes), <span class="keyword">...</span>
+0106             (i - 1) * length(motionModes) + j);
+0107         hold on;
+0108         
+0109         <span class="comment">% Compute the data.</span>
+0110         data = { <span class="keyword">...</span>
+0111             worm.posture.bends.head.(bendFields{i})( <span class="keyword">...</span>
+0112             motionMode == motionModes{j}), <span class="keyword">...</span>
+0113             worm.posture.bends.neck.(bendFields{i})( <span class="keyword">...</span>
+0114             motionMode == motionModes{j}), <span class="keyword">...</span>
+0115             worm.posture.bends.midbody.(bendFields{i})( <span class="keyword">...</span>
+0116             motionMode == motionModes{j}), <span class="keyword">...</span>
+0117             worm.posture.bends.hips.(bendFields{i})( <span class="keyword">...</span>
+0118             motionMode == motionModes{j}), <span class="keyword">...</span>
+0119             worm.posture.bends.tail.(bendFields{i})( <span class="keyword">...</span>
+0120             motionMode == motionModes{j})};
+0121         samples = sum(~isnan(data{1}));
+0122         resolutions = { <span class="keyword">...</span>
+0123             bendResolutions{i}, <span class="keyword">...</span>
+0124             bendResolutions{i}, <span class="keyword">...</span>
+0125             bendResolutions{i}, <span class="keyword">...</span>
+0126             bendResolutions{i}, <span class="keyword">...</span>
+0127             bendResolutions{i}};
+0128         
+0129         <span class="comment">% Construct the labels.</span>
+0130         titleName = [<span class="string">'WORM '</span> motionNames{j} <span class="string">' POSTURE BEND '</span> <span class="keyword">...</span>
+0131             bendNames{i} <span class="string">' (N = '</span> num2str(samples) <span class="string">')'</span>];
+0132         xAxisName = <span class="string">'Supplementary Angle (degrees)'</span>;
+0133         means = cellfun(@nanmean, data);
+0134         stdDevs = cellfun(@nanstd, data);
+0135         dataNames = { <span class="keyword">...</span>
+0136             [<span class="string">'Head Bends (Mean = '</span> num2str(means(1)) <span class="keyword">...</span>
+0137             <span class="string">', Std = '</span> num2str(stdDevs(1)) <span class="string">')'</span>], <span class="keyword">...</span>
+0138             [<span class="string">'Neck Bends (Mean = '</span> num2str(means(2)) <span class="keyword">...</span>
+0139             <span class="string">', Std = '</span> num2str(stdDevs(2)) <span class="string">')'</span>], <span class="keyword">...</span>
+0140             [<span class="string">'Midbody Bends (Mean = '</span> num2str(means(3)) <span class="keyword">...</span>
+0141             <span class="string">', Std = '</span> num2str(stdDevs(3)) <span class="string">')'</span>], <span class="keyword">...</span>
+0142             [<span class="string">'Hip Bends (Mean = '</span> num2str(means(4)) <span class="keyword">...</span>
+0143             <span class="string">', Std = '</span> num2str(stdDevs(4)) <span class="string">')'</span>], <span class="keyword">...</span>
+0144             [<span class="string">'Tail Bends (Mean = '</span> num2str(means(5)) <span class="keyword">...</span>
+0145             <span class="string">', Std = '</span> num2str(stdDevs(5)) <span class="string">')'</span>]};
+0146         
+0147         <span class="comment">% Construct the data colors.</span>
+0148         histColors = { <span class="keyword">...</span>
+0149             [.75 0 0], <span class="keyword">...</span>
+0150             [1 .5 .75], <span class="keyword">...</span>
+0151             [0 .75 0], <span class="keyword">...</span>
+0152             [.5 .75 1], <span class="keyword">...</span>
+0153             [0 0 .75]};
+0154         statColors = { <span class="keyword">...</span>
+0155             [1 0 0], <span class="keyword">...</span>
+0156             [1 .8 .9], <span class="keyword">...</span>
+0157             [.5 .5 .5], <span class="keyword">...</span>
+0158             [.8 .9 1], <span class="keyword">...</span>
+0159             [0 0 1]};
+0160         
+0161         <span class="comment">% Do we have any data?</span>
+0162         <span class="keyword">if</span> isempty(data{1})
+0163             title(titleName);
+0164             text(0.5, 0.5, <span class="string">'\bf\color{red}NO DATA'</span>, <span class="keyword">...</span>
+0165                 <span class="string">'HorizontalAlignment'</span>, <span class="string">'center'</span>, <span class="keyword">...</span>
+0166                 <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>);
+0167             <span class="keyword">continue</span>;
+0168         <span class="keyword">end</span>
+0169         
+0170         <span class="comment">% Plot the data.</span>
+0171         <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(data, resolutions, titleName, xAxisName, <span class="keyword">...</span>
+0172             dataNames, histColors, [], 2);
+0173     <span class="keyword">end</span>
+0174 <span class="keyword">end</span>
+0175 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

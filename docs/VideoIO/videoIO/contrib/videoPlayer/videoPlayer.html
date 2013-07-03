@@ -1,0 +1,688 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoPlayer</title>
+  <meta name="keywords" content="videoPlayer">
+  <meta name="description" content="function vp = videoPlayer(varargin)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../../menu.html videoIO --><!-- # contrib --><!-- menu.html videoPlayer -->
+<h1>videoPlayer
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function vp = videoPlayer(varargin)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function vp = videoPlayer(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">function vp = videoPlayer(varargin)
+ 
+ A GUI for @videoReader .
+
+ vp = videoPlayer() creates the GUI and returns a videoPlayer object
+ 
+ vp = videoPlayer(varargin) is equivalent to
+ vp = videoPlayer(); vp.open(varargin{:});
+
+ This object has the following member functions:
+
+ - vp.open(vararing) 
+ opens a video by calling videoReader(vararing{:})
+
+ - vp.close() 
+ closes the video
+
+ - vp.quit() 
+ destroys the GUI. Note vp is no longer usable after it quits
+
+ - frameNum = vp.currentFrame() 
+ returns the current frame number
+
+ - vp.seek(fn) 
+ seeks to frame number fn
+
+ - vp.actualSize()
+ resizes teh GUI to the native video res
+
+ - vp.setFilters(filters)
+ sets up filters to be appled to frames filters should be a function
+ handle (or cell array of them) of the form:
+ imageOut = f(imageIn)
+ filters aare applied in order filter{n}(filter{n-1}(...filter{1}(img)..)
+
+ - label = vp.addRectRegion(pos)
+ Adds an imrect selector to the video, if no position is specified it
+ lets the user click and drag region. This function returns a label for
+ the region
+ 
+ - vp.deleteRegion(label)
+ Removes the labeled region
+
+ - vp.deleteAllRegions()
+ deletes all the regions
+
+ - labels = vp.regionLabels
+ returns an array of region labels currently active
+
+ - vp.getRegionInfo(labels=[],getImagePatch=1)
+ returns a cell array with each element ii being infromation about region
+ labels(ii) (if it exists). If you pass in an empty array for labels it
+ will return all region information. Pass in 0 for getImagePatch if you
+ don't want to return the current frame within each region.
+
+
+ Simple Example:
+ This opens a vieo specified by videoPath, and sets up a filter to blur it
+
+ vp = videoPlayer();
+ vp.open(videoPath)
+ 
+ blur = @(img) imfilter(img,fspecial('gaussian',5,5));
+ vp.setFilters(blur);</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>	INFO=GET(VR)</li><li><a href="../../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>	FRAME=GETFRAME(VR)</li><li><a href="../../../videoIO/@videoReader/seek.html" class="code" title="function worked = seek(vr,fnum)">seek</a>	WORKED=SEEK(VR,FNUM)</li><li><a href="../../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="../../../videoIO/@videoWriter/get.html" class="code" title="function info = get(vw,varargin)">get</a>	INFO=GET(VW)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function h = createGUI()</a></li><li><a href="#_sub2" class="code">function layoutGUI()</a></li><li><a href="#_sub3" class="code">function updateGUIState</a></li><li><a href="#_sub4" class="code">function fn =  currentFrame()</a></li><li><a href="#_sub5" class="code">function tf = videoIsOpen()</a></li><li><a href="#_sub6" class="code">function goToFrame(fn)</a></li><li><a href="#_sub7" class="code">function setFilters(filts)</a></li><li><a href="#_sub8" class="code">function out = applyFilters(in)</a></li><li><a href="#_sub9" class="code">function openVideo(varargin)</a></li><li><a href="#_sub10" class="code">function closeVideo(varargin)</a></li><li><a href="#_sub11" class="code">function actualSize()</a></li><li><a href="#_sub12" class="code">function label = addRectRegion(posSize)</a></li><li><a href="#_sub13" class="code">function labels = getRegionLabels()</a></li><li><a href="#_sub14" class="code">function deleteRegion(label)</a></li><li><a href="#_sub15" class="code">function deleteRegionAtIndex(indx)</a></li><li><a href="#_sub16" class="code">function deleteAllRegions()</a></li><li><a href="#_sub17" class="code">function updateRegionLabelPosition(label)</a></li><li><a href="#_sub18" class="code">function regionInfo = getRegionInfo(varargin)</a></li><li><a href="#_sub19" class="code">function playPause_Callback(source,eventdata)</a></li><li><a href="#_sub20" class="code">function timeLine_Callback(source,eventdata)</a></li><li><a href="#_sub21" class="code">function close_Callback(source,eventdata)</a></li><li><a href="#_sub22" class="code">function resize_Callback(source,eventdata)</a></li><li><a href="#_sub23" class="code">function menuClose_Callback(source,eventdata)</a></li><li><a href="#_sub24" class="code">function menuOpen_Callback(source,eventdata)</a></li><li><a href="#_sub25" class="code">function menuActualSize_Callback(source,eventdata)</a></li><li><a href="#_sub26" class="code">function menuQuit_Callback(source,eventdata)</a></li><li><a href="#_sub27" class="code">function menuNextFrame_Callback(source,eventdata)</a></li><li><a href="#_sub28" class="code">function menuViewFrame_Callback(source,eventdata)</a></li><li><a href="#_sub29" class="code">function menuPreviousFrame_Callback(source,eventdata)</a></li><li><a href="#_sub30" class="code">function menuAddRectRegion_Callback(source,eventdata)</a></li><li><a href="#_sub31" class="code">function menuDeleteAllRegions_Callback(source,eventdata)</a></li><li><a href="#_sub32" class="code">function deleteRegion_Callback(source,eventdata,label)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%function vp = videoPlayer(varargin)</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% A GUI for @videoReader .</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% vp = videoPlayer() creates the GUI and returns a videoPlayer object</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% vp = videoPlayer(varargin) is equivalent to</span>
+0008 <span class="comment">% vp = videoPlayer(); vp.open(varargin{:});</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% This object has the following member functions:</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% - vp.open(vararing)</span>
+0013 <span class="comment">% opens a video by calling videoReader(vararing{:})</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% - vp.close()</span>
+0016 <span class="comment">% closes the video</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% - vp.quit()</span>
+0019 <span class="comment">% destroys the GUI. Note vp is no longer usable after it quits</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% - frameNum = vp.currentFrame()</span>
+0022 <span class="comment">% returns the current frame number</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% - vp.seek(fn)</span>
+0025 <span class="comment">% seeks to frame number fn</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% - vp.actualSize()</span>
+0028 <span class="comment">% resizes teh GUI to the native video res</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% - vp.setFilters(filters)</span>
+0031 <span class="comment">% sets up filters to be appled to frames filters should be a function</span>
+0032 <span class="comment">% handle (or cell array of them) of the form:</span>
+0033 <span class="comment">% imageOut = f(imageIn)</span>
+0034 <span class="comment">% filters aare applied in order filter{n}(filter{n-1}(...filter{1}(img)..)</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">% - label = vp.addRectRegion(pos)</span>
+0037 <span class="comment">% Adds an imrect selector to the video, if no position is specified it</span>
+0038 <span class="comment">% lets the user click and drag region. This function returns a label for</span>
+0039 <span class="comment">% the region</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">% - vp.deleteRegion(label)</span>
+0042 <span class="comment">% Removes the labeled region</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">% - vp.deleteAllRegions()</span>
+0045 <span class="comment">% deletes all the regions</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">% - labels = vp.regionLabels</span>
+0048 <span class="comment">% returns an array of region labels currently active</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">% - vp.getRegionInfo(labels=[],getImagePatch=1)</span>
+0051 <span class="comment">% returns a cell array with each element ii being infromation about region</span>
+0052 <span class="comment">% labels(ii) (if it exists). If you pass in an empty array for labels it</span>
+0053 <span class="comment">% will return all region information. Pass in 0 for getImagePatch if you</span>
+0054 <span class="comment">% don't want to return the current frame within each region.</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">%</span>
+0057 <span class="comment">% Simple Example:</span>
+0058 <span class="comment">% This opens a vieo specified by videoPath, and sets up a filter to blur it</span>
+0059 <span class="comment">%</span>
+0060 <span class="comment">% vp = videoPlayer();</span>
+0061 <span class="comment">% vp.open(videoPath)</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">% blur = @(img) imfilter(img,fspecial('gaussian',5,5));</span>
+0064 <span class="comment">% vp.setFilters(blur);</span>
+0065 
+0066 <span class="comment">% Michael Siracusa</span>
+0067 <span class="comment">% Version b1  3/31/08</span>
+0068 
+0069 <a name="_sub0" href="#_subfunctions" class="code">function vp = videoPlayer(varargin)</a>
+0070   
+0071   
+0072   <span class="comment">% Setup Local Variables</span>
+0073   vr = [];
+0074   vrInfo = [];
+0075   
+0076   regions.numRegions = 0;
+0077   regions.handles = [];
+0078   regions.labels = [];
+0079   regions.labelHandles = [];
+0080   
+0081   frameNumber = 0;
+0082   totalFrames = 0;
+0083   
+0084   currentImage = [];
+0085   
+0086   width = 300;
+0087   height = 65;
+0088    
+0089   isPlaying   = 0;
+0090   
+0091   filters = {};
+0092   
+0093   <span class="comment">% Create the GUI</span>
+0094   handles = <a href="#_sub1" class="code" title="subfunction h = createGUI()">createGUI</a>();
+0095 
+0096   <span class="comment">% Setup callbacks</span>
+0097   set(handles.figure,<span class="string">'DeleteFcn'</span>,{@<a href="#_sub21" class="code" title="subfunction close_Callback(source,eventdata) ">close_Callback</a>});
+0098   set(handles.figure,<span class="string">'ResizeFcn'</span>,{@<a href="#_sub22" class="code" title="subfunction resize_Callback(source,eventdata) ">resize_Callback</a>});
+0099   set(handles.bttnPlayPause,<span class="string">'Callback'</span>,{@<a href="#_sub19" class="code" title="subfunction playPause_Callback(source,eventdata) ">playPause_Callback</a>});
+0100   set(handles.sldrTime,<span class="string">'Callback'</span>,{@<a href="#_sub20" class="code" title="subfunction timeLine_Callback(source,eventdata) ">timeLine_Callback</a>});
+0101 
+0102   <a href="#_sub3" class="code" title="subfunction updateGUIState">updateGUIState</a>();
+0103   
+0104   <span class="keyword">if</span> nargin &gt; 0
+0105     <a href="#_sub9" class="code" title="subfunction openVideo(varargin)">openVideo</a>(varargin{:});
+0106   <span class="keyword">end</span>
+0107   
+0108   <a href="#_sub2" class="code" title="subfunction layoutGUI()">layoutGUI</a>();
+0109   set(handles.figure,<span class="string">'Visible'</span>,<span class="string">'on'</span>);
+0110   
+0111   <span class="comment">% Make &quot;object&quot;, supply member functions</span>
+0112   vp.open = @(varargin) <a href="#_sub9" class="code" title="subfunction openVideo(varargin)">openVideo</a>(varargin{:});
+0113   vp.close = @() <a href="#_sub10" class="code" title="subfunction closeVideo(varargin)">closeVideo</a>();
+0114   vp.quit = @() <a href="../../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(handles.figure);
+0115   vp.currentFrame = @<a href="#_sub4" class="code" title="subfunction fn =  currentFrame()">currentFrame</a>;
+0116   vp.seek = @(fn) <a href="#_sub6" class="code" title="subfunction goToFrame(fn)">goToFrame</a>(fn);
+0117   vp.setFilters = @(f) <a href="#_sub7" class="code" title="subfunction setFilters(filts)">setFilters</a>(f);
+0118   vp.actualSize = @() <a href="#_sub11" class="code" title="subfunction actualSize()">actualSize</a>();
+0119   
+0120   vp.addRectRegion = @(varargin) <a href="#_sub12" class="code" title="subfunction label = addRectRegion(posSize)">addRectRegion</a>(varargin{:});
+0121   vp.regionLabels = @() <a href="#_sub13" class="code" title="subfunction labels = getRegionLabels()">getRegionLabels</a>(); 
+0122   vp.deleteAllRegions = @<a href="#_sub16" class="code" title="subfunction deleteAllRegions()">deleteAllRegions</a>;
+0123   vp.deleteRegion = @(label) <a href="#_sub14" class="code" title="subfunction deleteRegion(label)">deleteRegion</a>(label);
+0124   vp.getRegionInfo = @(varargin) <a href="#_sub18" class="code" title="subfunction regionInfo = getRegionInfo(varargin)">getRegionInfo</a>(varargin{:});
+0125   
+0126   <a name="_sub1" href="#_subfunctions" class="code">function h = createGUI()</a>
+0127     <span class="comment">% Make figure</span>
+0128     h.figure = figure(<span class="string">'Visible'</span>,<span class="string">'off'</span>,<span class="string">'Menubar'</span>,<span class="string">'None'</span>,<span class="string">'Tag'</span>,<span class="string">'VideoPlayer'</span>);
+0129 
+0130     <span class="comment">% Make the video/image axis</span>
+0131     h.axesImage = axes(<span class="string">'Units'</span>,<span class="string">'pixels'</span>);
+0132     axis(h.axesImage,<span class="string">'off'</span>);
+0133     
+0134     <span class="comment">% Place the Pause/Play button</span>
+0135     h.bttnPlayPause = uicontrol(<span class="string">'Style'</span>,<span class="string">'pushbutton'</span>,<span class="string">'String'</span>,<span class="string">'Play'</span>);
+0136 
+0137     <span class="comment">% Add time line slider</span>
+0138     h.sldrTime = uicontrol(<span class="string">'Style'</span>,<span class="string">'Slider'</span>);
+0139     
+0140     <span class="comment">% Set the image handle to empty, indicated nothing has been plotted yet</span>
+0141     h.image = [];
+0142     
+0143     <span class="comment">% Add a File-&gt;Open and Close</span>
+0144     h.menuFile = uimenu(<span class="string">'Label'</span>,<span class="string">'File'</span>);
+0145     uimenu(h.menuFile,<span class="string">'Label'</span>,<span class="string">'Open ...'</span>,<span class="string">'Callback'</span>,{@<a href="#_sub24" class="code" title="subfunction menuOpen_Callback(source,eventdata) ">menuOpen_Callback</a>},<span class="string">'Accelerator'</span>,<span class="string">'o'</span>);
+0146     uimenu(h.menuFile,<span class="string">'Label'</span>,<span class="string">'Close'</span>,<span class="string">'Callback'</span>,{@<a href="#_sub23" class="code" title="subfunction menuClose_Callback(source,eventdata) ">menuClose_Callback</a>},<span class="string">'Accelerator'</span>,<span class="string">'w'</span>);
+0147     uimenu(h.menuFile,<span class="string">'Label'</span>,<span class="string">'Quit'</span>,<span class="string">'Callback'</span>,{@<a href="#_sub26" class="code" title="subfunction menuQuit_Callback(source,eventdata) ">menuQuit_Callback</a>},<span class="string">'Accelerator'</span>,<span class="string">'q'</span>,<span class="string">'Separator'</span>,<span class="string">'on'</span>);
+0148    
+0149     <span class="comment">% Add a view menu</span>
+0150     h.menuView = uimenu(<span class="string">'Label'</span>,<span class="string">'View'</span>);
+0151     uimenu(h.menuView,<span class="string">'Label'</span>,<span class="string">'Actual Size'</span>,<span class="string">'Callback'</span>,{@<a href="#_sub25" class="code" title="subfunction menuActualSize_Callback(source,eventdata) ">menuActualSize_Callback</a>},<span class="string">'Accelerator'</span>,<span class="string">'='</span>);
+0152     uimenu(h.menuView,<span class="string">'Label'</span>,<span class="string">'Next Frame'</span>,<span class="string">'Callback'</span>,{@<a href="#_sub27" class="code" title="subfunction menuNextFrame_Callback(source,eventdata) ">menuNextFrame_Callback</a>},<span class="string">'Accelerator'</span>,<span class="string">'n'</span>,<span class="string">'Separator'</span>,<span class="string">'on'</span>);
+0153     uimenu(h.menuView,<span class="string">'Label'</span>,<span class="string">'Previous Frame'</span>,<span class="string">'Callback'</span>,{@<a href="#_sub29" class="code" title="subfunction menuPreviousFrame_Callback(source,eventdata) ">menuPreviousFrame_Callback</a>},<span class="string">'Accelerator'</span>,<span class="string">'p'</span>);   
+0154     uimenu(h.menuView,<span class="string">'Label'</span>,<span class="string">'Frame Number...'</span>,<span class="string">'Callback'</span>,{@<a href="#_sub28" class="code" title="subfunction menuViewFrame_Callback(source,eventdata) ">menuViewFrame_Callback</a>},<span class="string">'Accelerator'</span>,<span class="string">'f'</span>,<span class="string">'Separator'</span>,<span class="string">'on'</span>);
+0155     
+0156     <span class="comment">% add a tool menu</span>
+0157     h.menuTools = uimenu(<span class="string">'Label'</span>,<span class="string">'Tools'</span>);
+0158     uimenu(h.menuTools,<span class="string">'Label'</span>,<span class="string">'Add Rect Region'</span>,<span class="string">'Callback'</span>,{@<a href="#_sub30" class="code" title="subfunction menuAddRectRegion_Callback(source,eventdata) ">menuAddRectRegion_Callback</a>},<span class="string">'Accelerator'</span>,<span class="string">'r'</span>);
+0159     uimenu(h.menuTools,<span class="string">'Label'</span>,<span class="string">'Delete All Regions'</span>,<span class="string">'Callback'</span>,{@<a href="#_sub31" class="code" title="subfunction menuDeleteAllRegions_Callback(source,eventdata) ">menuDeleteAllRegions_Callback</a>},<span class="string">'Separator'</span>,<span class="string">'on'</span>);
+0160     
+0161   <span class="keyword">end</span>
+0162 
+0163   <a name="_sub2" href="#_subfunctions" class="code">function layoutGUI()</a>
+0164     <span class="comment">% Layout Figure</span>
+0165     p = <a href="../../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(handles.figure,<span class="string">'Position'</span>);
+0166     set(handles.figure,<span class="string">'Position'</span>,[p(1) p(2), width height]);
+0167 
+0168     set(handles.axesImage,<span class="string">'Position'</span>,[5 40 width-10 height-60]);
+0169     axis(handles.axesImage,<span class="string">'off'</span>);
+0170 
+0171     set(handles.bttnPlayPause,<span class="string">'Position'</span>,[5 5 60 30]);
+0172    
+0173     set(handles.sldrTime,<span class="string">'Position'</span>,[70 5 width-70 30],<span class="keyword">...</span>
+0174                          <span class="string">'SliderStep'</span>,[1/max(1,totalFrames) min(1,10/totalFrames)]);
+0175   
+0176   <span class="keyword">end</span>
+0177 
+0178 
+0179   <a name="_sub3" href="#_subfunctions" class="code">function updateGUIState</a>
+0180     <span class="keyword">if</span> ~<a href="#_sub5" class="code" title="subfunction tf = videoIsOpen()">videoIsOpen</a>()
+0181       set(handles.bttnPlayPause,<span class="string">'Enable'</span>,<span class="string">'off'</span>);
+0182       set(handles.sldrTime,<span class="string">'Enable'</span>,<span class="string">'off'</span>);
+0183       axes(handles.axesImage); cla;
+0184       title(<span class="string">''</span>);
+0185       set(handles.menuView,<span class="string">'Enable'</span>,<span class="string">'off'</span>);
+0186       set(handles.menuTools,<span class="string">'Enable'</span>,<span class="string">'off'</span>);
+0187     <span class="keyword">else</span>
+0188       set(handles.bttnPlayPause,<span class="string">'Enable'</span>,<span class="string">'on'</span>);
+0189       set(handles.sldrTime,<span class="string">'Enable'</span>,<span class="string">'on'</span>);
+0190       set(handles.axesImage,<span class="string">'Visible'</span>,<span class="string">'on'</span>);
+0191       set(handles.menuView,<span class="string">'Enable'</span>,<span class="string">'on'</span>);
+0192        set(handles.menuTools,<span class="string">'Enable'</span>,<span class="string">'on'</span>);
+0193     <span class="keyword">end</span>
+0194   <span class="keyword">end</span>
+0195 
+0196   
+0197   <a name="_sub4" href="#_subfunctions" class="code">function fn =  currentFrame()</a>
+0198     fn = frameNumber;
+0199   <span class="keyword">end</span>
+0200 
+0201   <a name="_sub5" href="#_subfunctions" class="code">function tf = videoIsOpen()</a>
+0202     tf = ~isempty(vr);
+0203   <span class="keyword">end</span>
+0204 
+0205   <a name="_sub6" href="#_subfunctions" class="code">function goToFrame(fn)</a>
+0206     
+0207     <span class="keyword">if</span> <a href="#_sub5" class="code" title="subfunction tf = videoIsOpen()">videoIsOpen</a>()
+0208       frameNumber = min(totalFrames-1,max(0,frameNumber));
+0209       
+0210       <span class="comment">% Seek to specified frame</span>
+0211       frameNumber = fn;
+0212       <a href="../../../videoIO/@videoReader/seek.html" class="code" title="function worked = seek(vr,fnum)">seek</a>(vr,frameNumber);
+0213 
+0214       <span class="comment">% Update display</span>
+0215       img = <a href="../../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr);
+0216 
+0217       <span class="comment">% if there are filters apply them</span>
+0218       img = <a href="#_sub8" class="code" title="subfunction out = applyFilters(in)">applyFilters</a>(img);
+0219 
+0220       currentImage = img;
+0221       
+0222       <span class="keyword">if</span> ishandle(handles.image)
+0223         set(handles.image,<span class="string">'CData'</span>,img);
+0224       <span class="keyword">else</span>
+0225         axes(handles.axesImage);
+0226         handles.image = imshow(img);
+0227       <span class="keyword">end</span>
+0228       
+0229       title([<span class="string">'Frame '</span> num2str(frameNumber) <span class="string">' of '</span> num2str(totalFrames-1)]);
+0230       drawnow;
+0231 
+0232       <span class="comment">% Update timeline</span>
+0233       set(handles.sldrTime,<span class="string">'Value'</span>,frameNumber/(totalFrames-1));
+0234     
+0235     <span class="keyword">else</span>
+0236       axes(handles.axesImage); imshow([ 0 0 0]);
+0237     <span class="keyword">end</span>
+0238   <span class="keyword">end</span>
+0239 
+0240   <a name="_sub7" href="#_subfunctions" class="code">function setFilters(filts)</a>
+0241     <span class="keyword">if</span> ~iscell(filts)
+0242       filters = {filts};
+0243     <span class="keyword">else</span>
+0244       filters = filts;
+0245     <span class="keyword">end</span>
+0246     <a href="#_sub6" class="code" title="subfunction goToFrame(fn)">goToFrame</a>(<a href="#_sub4" class="code" title="subfunction fn =  currentFrame()">currentFrame</a>());
+0247     
+0248     
+0249     <span class="keyword">if</span> size(currentImage,3) == 1,
+0250       set(handles.image,<span class="string">'CDataMapping'</span>,<span class="string">'scaled'</span>);
+0251     <span class="keyword">else</span>
+0252       set(handles.image,<span class="string">'CDataMapping'</span>,<span class="string">'direct'</span>);
+0253     <span class="keyword">end</span>
+0254       
+0255   <span class="keyword">end</span>
+0256 
+0257   <a name="_sub8" href="#_subfunctions" class="code">function out = applyFilters(in)</a>
+0258     out = in;
+0259     <span class="keyword">for</span> k=1:length(filters)
+0260       out = filters{k}(out);
+0261     <span class="keyword">end</span>
+0262   <span class="keyword">end</span>
+0263 
+0264   <a name="_sub9" href="#_subfunctions" class="code">function openVideo(varargin)</a>
+0265     
+0266     <span class="keyword">if</span> nargin &lt; 1 || ~ischar(varargin{1})
+0267       error(<span class="string">'You must supply a url to open'</span>);
+0268     <span class="keyword">end</span>
+0269     
+0270     <span class="keyword">if</span> <a href="#_sub5" class="code" title="subfunction tf = videoIsOpen()">videoIsOpen</a>()
+0271       <a href="#_sub10" class="code" title="subfunction closeVideo(varargin)">closeVideo</a>();
+0272     <span class="keyword">end</span>
+0273     
+0274     <span class="keyword">if</span> nargin == 1
+0275     
+0276       <span class="comment">% My little hack to handle .toc files</span>
+0277       fname = varargin{1};
+0278       [a,b,ext] = fileparts(fname);
+0279       
+0280        <span class="keyword">switch</span> lower(ext)
+0281          <span class="keyword">case</span> <span class="string">'.toc'</span>
+0282            vr = <a href="../../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(fname,<span class="string">'libmpeg3Direct'</span>);
+0283          <span class="keyword">otherwise</span>
+0284            vr = <a href="../../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(fname);
+0285        <span class="keyword">end</span>
+0286        
+0287     <span class="keyword">else</span>
+0288       
+0289       vr = <a href="../../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(varargin{:});
+0290     
+0291     <span class="keyword">end</span>
+0292     
+0293     vrInfo = <a href="../../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(vr);
+0294   
+0295     frameNumber = vrInfo.approxFrameNum;
+0296     totalFrames = vrInfo.numFrames;
+0297     
+0298     <a href="#_sub6" class="code" title="subfunction goToFrame(fn)">goToFrame</a>(0);
+0299     
+0300     <a href="#_sub3" class="code" title="subfunction updateGUIState">updateGUIState</a>();
+0301     <a href="#_sub11" class="code" title="subfunction actualSize()">actualSize</a>();
+0302   <span class="keyword">end</span>
+0303 
+0304   <a name="_sub10" href="#_subfunctions" class="code">function closeVideo(varargin)</a>
+0305     <span class="keyword">if</span> <a href="#_sub5" class="code" title="subfunction tf = videoIsOpen()">videoIsOpen</a>()
+0306       <a href="../../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr);
+0307     <span class="keyword">end</span>
+0308     
+0309     <a href="#_sub16" class="code" title="subfunction deleteAllRegions()">deleteAllRegions</a>();
+0310     vr = [];   
+0311     handles.image =[];
+0312     
+0313     width = 300;
+0314     height = 65;
+0315     <a href="#_sub2" class="code" title="subfunction layoutGUI()">layoutGUI</a>();
+0316     <a href="#_sub3" class="code" title="subfunction updateGUIState">updateGUIState</a>();
+0317     
+0318   <span class="keyword">end</span>
+0319 
+0320   <a name="_sub11" href="#_subfunctions" class="code">function actualSize()</a>
+0321     <span class="keyword">if</span> <a href="#_sub5" class="code" title="subfunction tf = videoIsOpen()">videoIsOpen</a>()
+0322       width = vrInfo.width + 10;
+0323       height = vrInfo.height + 60;
+0324     <span class="keyword">end</span>
+0325     
+0326     <a href="#_sub2" class="code" title="subfunction layoutGUI()">layoutGUI</a>();
+0327     
+0328   <span class="keyword">end</span>
+0329 
+0330   <a name="_sub12" href="#_subfunctions" class="code">function label = addRectRegion(posSize)</a>
+0331     <span class="keyword">if</span> nargin == 0
+0332       posSize = [];
+0333     <span class="keyword">end</span>
+0334     
+0335     <span class="comment">% Create the region</span>
+0336     regions.handles(end+1) = imrect(handles.axesImage,posSize);
+0337    
+0338     indx = length(regions.handles);
+0339    
+0340     <span class="comment">% Give it a label</span>
+0341     
+0342     <span class="keyword">if</span> indx == 1
+0343       regions.labels(1) = 1; 
+0344     <span class="keyword">else</span>
+0345       regions.labels(indx) = max(regions.labels)+1;
+0346     <span class="keyword">end</span>
+0347     
+0348     label = regions.labels(indx);
+0349     
+0350     <span class="comment">% Get its api</span>
+0351     api = iptgetapi(regions.handles(indx));
+0352     
+0353     
+0354     <span class="comment">% Get the position</span>
+0355     posSize = api.getPosition();
+0356     
+0357     <span class="comment">% Put a regionLabel in the center of it</span>
+0358     cx = posSize(1) + posSize(3)/2;
+0359     cy = posSize(2) + posSize(4)/2;
+0360     
+0361     regions.labelHandles(indx) = text(cx,cy,num2str(label),<span class="keyword">...</span>
+0362                                     <span class="string">'FontSize'</span>,14,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+0363     
+0364     <span class="comment">% Add a context menu for deleting</span>
+0365     cm = uicontextmenu;
+0366     uimenu(cm,<span class="string">'Label'</span>,[<span class="string">'Delete Region '</span> num2str(label)],<span class="string">'Callback'</span>,{@<a href="#_sub32" class="code" title="subfunction deleteRegion_Callback(source,eventdata,label) ">deleteRegion_Callback</a>,label});
+0367     set(regions.labelHandles(indx),<span class="string">'UIContextMenu'</span>,cm);
+0368    
+0369     <span class="comment">% Keep region within image limits</span>
+0370     fcn = makeConstrainToRectFcn(<span class="string">'imrect'</span>,<a href="../../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(handles.axesImage,<span class="string">'XLim'</span>),<a href="../../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(handles.axesImage,<span class="string">'YLim'</span>));
+0371     api.setDragConstraintFcn(fcn);
+0372    
+0373     <span class="comment">% Move the label with the rect</span>
+0374     api.addNewPositionCallback(@(p) <a href="#_sub17" class="code" title="subfunction updateRegionLabelPosition(label)">updateRegionLabelPosition</a>(label));
+0375     
+0376     regions.numRegions = regions.numRegions + 1;
+0377     
+0378   <span class="keyword">end</span>
+0379 
+0380   <a name="_sub13" href="#_subfunctions" class="code">function labels = getRegionLabels()</a>
+0381     labels = regions.labels;
+0382   <span class="keyword">end</span>
+0383 
+0384   <a name="_sub14" href="#_subfunctions" class="code">function deleteRegion(label)</a>
+0385   
+0386     indx = find(regions.labels == label,1,<span class="string">'first'</span>);
+0387     <a href="#_sub15" class="code" title="subfunction deleteRegionAtIndex(indx)">deleteRegionAtIndex</a>(indx);
+0388   <span class="keyword">end</span>
+0389 
+0390   <a name="_sub15" href="#_subfunctions" class="code">function deleteRegionAtIndex(indx)</a>
+0391     api = iptgetapi(regions.handles(indx));
+0392     
+0393     api.delete();
+0394     delete(<a href="../../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(regions.labelHandles(indx),<span class="string">'UIContextMenu'</span>));
+0395     delete(regions.labelHandles(indx));
+0396     
+0397     regions.handles(indx) = [];
+0398     regions.labels(indx) = [];
+0399     regions.labelHandles(indx) = [];
+0400     
+0401     regions.numRegions = regions.numRegions - 1;
+0402       
+0403   <span class="keyword">end</span>
+0404 
+0405   <a name="_sub16" href="#_subfunctions" class="code">function deleteAllRegions()</a>
+0406     
+0407     nr = regions.numRegions;
+0408     <span class="keyword">for</span> k=1:nr
+0409       <a href="#_sub15" class="code" title="subfunction deleteRegionAtIndex(indx)">deleteRegionAtIndex</a>(1);
+0410     <span class="keyword">end</span>
+0411   <span class="keyword">end</span>
+0412 
+0413 
+0414   <a name="_sub17" href="#_subfunctions" class="code">function updateRegionLabelPosition(label)</a>
+0415 
+0416     indx = find(regions.labels == label,1,<span class="string">'first'</span>);
+0417     
+0418     api = iptgetapi(regions.handles(indx));
+0419     
+0420     posSize = api.getPosition();
+0421     
+0422     <span class="comment">% Put a regionLabel in the center of it</span>
+0423     cx = posSize(1) + posSize(3)/2;
+0424     cy = posSize(2) + posSize(4)/2;
+0425     
+0426     
+0427     set(regions.labelHandles(indx),<span class="string">'Position'</span>,[cx cy 0]);
+0428   <span class="keyword">end</span>
+0429 
+0430   <a name="_sub18" href="#_subfunctions" class="code">function regionInfo = getRegionInfo(varargin)</a>
+0431     
+0432     labels = [];
+0433     getImagePatch = 1;
+0434     
+0435     <span class="keyword">if</span> nargin &gt;= 1, labels = varargin{1}; <span class="keyword">end</span>
+0436     <span class="keyword">if</span> nargin == 2, getImagePatch = varargin{2}; <span class="keyword">end</span>
+0437     
+0438     <span class="keyword">if</span> isempty(labels), labels = regions.labels; <span class="keyword">end</span>
+0439     
+0440     indx = 1; 
+0441     regionInfo = cell(length(labels),1);
+0442     <span class="keyword">for</span> l=labels
+0443       clear r;
+0444       
+0445       k = find(regions.labels == l,1,<span class="string">'first'</span>);
+0446       
+0447       <span class="keyword">if</span> isempty(k), <span class="keyword">continue</span>; <span class="keyword">end</span>
+0448       
+0449       r.type = <span class="string">'rect'</span>;
+0450       r.label = l;
+0451       
+0452       api = iptgetapi(regions.handles(k));
+0453       posSize = api.getPosition();
+0454       
+0455       r.x = posSize(1);
+0456       r.y = posSize(2);
+0457       r.width = posSize(3);
+0458       r.height = posSize(4);
+0459       r.center = [r.x + r.width/2; r.y + r.height/2];
+0460       r.indexX  = round(r.x):round(r.x+r.width);
+0461       r.indexY  = round(r.y):round(r.y+r.height);
+0462       
+0463       <span class="keyword">if</span> getImagePatch
+0464         r.image = currentImage(r.indexY,r.indexX,:);
+0465       <span class="keyword">end</span>
+0466       
+0467       regionInfo{indx} = r; 
+0468       
+0469       indx = indx + 1;
+0470     <span class="keyword">end</span>
+0471     
+0472   <span class="keyword">end</span>
+0473 
+0474 <span class="comment">%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0475 <span class="comment">% Callbacks</span>
+0476 
+0477 
+0478   <a name="_sub19" href="#_subfunctions" class="code">function playPause_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0479     
+0480     isPlaying = ~isPlaying;
+0481     
+0482 
+0483     <span class="keyword">if</span> isPlaying
+0484       set(handles.bttnPlayPause,<span class="string">'String'</span>,<span class="string">'Pause'</span>);
+0485     <span class="keyword">else</span>
+0486       set(handles.bttnPlayPause,<span class="string">'String'</span>,<span class="string">'Play'</span>);
+0487     <span class="keyword">end</span>
+0488     
+0489     <span class="keyword">while</span> isPlaying &amp;&amp; frameNumber &lt; (totalFrames-1)
+0490       <a href="#_sub6" class="code" title="subfunction goToFrame(fn)">goToFrame</a>(frameNumber + 1);
+0491       pause(1/vrInfo.fps);
+0492     <span class="keyword">end</span>
+0493     
+0494     <span class="keyword">if</span> frameNumber &gt;= (totalFrames-1)
+0495       isPlaying = 0;
+0496       set(handles.bttnPlayPause,<span class="string">'String'</span>,<span class="string">'Play'</span>);
+0497     <span class="keyword">end</span>
+0498     
+0499   <span class="keyword">end</span>
+0500 
+0501   <a name="_sub20" href="#_subfunctions" class="code">function timeLine_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0502     v = <a href="../../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(handles.sldrTime,<span class="string">'Value'</span>);
+0503     
+0504     <a href="#_sub6" class="code" title="subfunction goToFrame(fn)">goToFrame</a>(round(v*(totalFrames-1)));
+0505     
+0506   <span class="keyword">end</span>
+0507 
+0508   <a name="_sub21" href="#_subfunctions" class="code">function close_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0509     <a href="#_sub10" class="code" title="subfunction closeVideo(varargin)">closeVideo</a>();
+0510   <span class="keyword">end</span>
+0511 
+0512   <a name="_sub22" href="#_subfunctions" class="code">function resize_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0513     p = <a href="../../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(handles.figure,<span class="string">'Position'</span>);
+0514     
+0515     width = max([p(3)  100]);
+0516     height = max([p(4) 65]);
+0517     
+0518     <a href="#_sub2" class="code" title="subfunction layoutGUI()">layoutGUI</a>();
+0519     
+0520   <span class="keyword">end</span>
+0521 
+0522   <a name="_sub23" href="#_subfunctions" class="code">function menuClose_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0523     <a href="#_sub10" class="code" title="subfunction closeVideo(varargin)">closeVideo</a>();
+0524   <span class="keyword">end</span>
+0525 
+0526   <a name="_sub24" href="#_subfunctions" class="code">function menuOpen_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0527      [fname,pname] = uigetfile(<span class="string">'*.*'</span>,<span class="string">'Select the a Video File'</span>);
+0528      
+0529      <span class="keyword">if</span> ~isequal(fname,0)
+0530        <a href="#_sub9" class="code" title="subfunction openVideo(varargin)">openVideo</a>([pname fname]);
+0531      <span class="keyword">end</span>
+0532   <span class="keyword">end</span>
+0533 
+0534   <a name="_sub25" href="#_subfunctions" class="code">function menuActualSize_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0535     <a href="#_sub11" class="code" title="subfunction actualSize()">actualSize</a>();
+0536   <span class="keyword">end</span>
+0537 
+0538   <a name="_sub26" href="#_subfunctions" class="code">function menuQuit_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0539     <a href="../../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(handles.figure);
+0540   <span class="keyword">end</span>
+0541 
+0542   <a name="_sub27" href="#_subfunctions" class="code">function menuNextFrame_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0543     <a href="#_sub6" class="code" title="subfunction goToFrame(fn)">goToFrame</a>(frameNumber-1);
+0544   <span class="keyword">end</span>
+0545 
+0546   <a name="_sub28" href="#_subfunctions" class="code">function menuViewFrame_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0547     prompt = [<span class="string">'Go to Frame [0 '</span> num2str(totalFrames) <span class="string">']'</span>];
+0548     ttl = <span class="string">'View Frame'</span>;
+0549     
+0550     answer = inputdlg(prompt,ttl,1);
+0551     
+0552     <span class="keyword">if</span> length(answer) == 1
+0553       <a href="#_sub6" class="code" title="subfunction goToFrame(fn)">goToFrame</a>(str2double(answer{1}));
+0554     <span class="keyword">end</span>
+0555     
+0556   <span class="keyword">end</span>
+0557 
+0558   <a name="_sub29" href="#_subfunctions" class="code">function menuPreviousFrame_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0559     <a href="#_sub6" class="code" title="subfunction goToFrame(fn)">goToFrame</a>(frameNumber+1);
+0560   <span class="keyword">end</span>
+0561 
+0562   <a name="_sub30" href="#_subfunctions" class="code">function menuAddRectRegion_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0563     <a href="#_sub12" class="code" title="subfunction label = addRectRegion(posSize)">addRectRegion</a>();
+0564   <span class="keyword">end</span>
+0565 
+0566   <a name="_sub31" href="#_subfunctions" class="code">function menuDeleteAllRegions_Callback(source,eventdata) </a><span class="comment">%#ok&lt;INUSD&gt;</span>
+0567     <a href="#_sub16" class="code" title="subfunction deleteAllRegions()">deleteAllRegions</a>();
+0568   <span class="keyword">end</span>
+0569 
+0570 
+0571   <a name="_sub32" href="#_subfunctions" class="code">function deleteRegion_Callback(source,eventdata,label) </a><span class="comment">%#ok&lt;INUSL,INUSD&gt;</span>
+0572     <a href="#_sub14" class="code" title="subfunction deleteRegion(label)">deleteRegion</a>(label);
+0573   <span class="keyword">end</span>
+0574 
+0575 
+0576 
+0577 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

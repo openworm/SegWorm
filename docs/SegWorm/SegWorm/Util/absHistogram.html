@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of absHistogram</title>
+  <meta name="keywords" content="absHistogram">
+  <meta name="description" content="ABSHISTOGRAM Convert a histogram to its absolute value.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>absHistogram
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ABSHISTOGRAM Convert a histogram to its absolute value.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function histogram = absHistogram(histogram) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">ABSHISTOGRAM Convert a histogram to its absolute value.
+
+   HISTOGRAM = ABSHISTOGRAM(HISTOGRAM)
+
+   Input:
+       histogram - the histogram(s) to convert
+
+   Output:
+       histogram - the absolute value of the histogram(s)
+
+ See also <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">HISTOGRAM</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>	HISTOGRAM Compute the data's histogram.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>	PLOTHISTOGRAM Plot a histogram(s) of data.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function data = fold(data, pivot, isOffCenter, varargin)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function histogram = absHistogram(histogram)</a>
+0002 <span class="comment">%ABSHISTOGRAM Convert a histogram to its absolute value.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   HISTOGRAM = ABSHISTOGRAM(HISTOGRAM)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Input:</span>
+0007 <span class="comment">%       histogram - the histogram(s) to convert</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Output:</span>
+0010 <span class="comment">%       histogram - the absolute value of the histogram(s)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% See also HISTOGRAM</span>
+0013 
+0014 <span class="comment">% Convert the histogram(s).</span>
+0015 <span class="keyword">for</span> i = 1:length(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>)
+0016     
+0017     <span class="comment">% Is there any data?</span>
+0018     data = <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i);
+0019     <span class="keyword">if</span> isempty(data) || isempty(data.bins)
+0020         <span class="keyword">continue</span>;
+0021     <span class="keyword">end</span>
+0022     
+0023     <span class="comment">% Is the histogram already positive?</span>
+0024     quarterResolution = double(data.resolution) / 4.0;
+0025     <span class="keyword">if</span> data.bins(1) &lt; 0
+0026         
+0027         <span class="comment">% Take the absolute value of the histogram.</span>
+0028         <span class="keyword">if</span> data.isSigned
+0029             
+0030             <span class="comment">% Take the absolute value of the set data.</span>
+0031             data.sets.mean.all = data.sets.mean.abs;
+0032             data.sets.stdDev.all = data.sets.stdDev.abs;
+0033             data.sets.mean = <span class="keyword">...</span>
+0034                 rmfield(data.sets.mean, {<span class="string">'abs'</span>, <span class="string">'pos'</span>, <span class="string">'neg'</span>});
+0035             data.sets.stdDev = <span class="keyword">...</span>
+0036                 rmfield(data.sets.stdDev, {<span class="string">'abs'</span>, <span class="string">'pos'</span>, <span class="string">'neg'</span>});
+0037             
+0038             <span class="comment">% Take the absolute value of the data sets.</span>
+0039             data.data.mean.all = data.data.mean.abs;
+0040             data.data.stdDev.all = data.data.stdDev.abs;
+0041             data.data.mean = <span class="keyword">...</span>
+0042                 rmfield(data.data.mean, {<span class="string">'abs'</span>, <span class="string">'pos'</span>, <span class="string">'neg'</span>});
+0043             data.data.stdDev = <span class="keyword">...</span>
+0044                 rmfield(data.data.stdDev, {<span class="string">'abs'</span>, <span class="string">'pos'</span>, <span class="string">'neg'</span>});
+0045             
+0046             <span class="comment">% Take the absolute value of the total data.</span>
+0047             data.allData.mean.all = data.allData.mean.abs;
+0048             data.allData.stdDev.all = data.allData.stdDev.abs;
+0049             data.allData.mean = <span class="keyword">...</span>
+0050                 rmfield(data.allData.mean, {<span class="string">'abs'</span>, <span class="string">'pos'</span>, <span class="string">'neg'</span>});
+0051             data.allData.stdDev = <span class="keyword">...</span>
+0052                 rmfield(data.allData.stdDev, {<span class="string">'abs'</span>, <span class="string">'pos'</span>, <span class="string">'neg'</span>});
+0053             
+0054             <span class="comment">% Unsign the histogram.</span>
+0055             data.isSigned = false;
+0056             <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i) = data;
+0057         <span class="keyword">end</span>
+0058         
+0059         <span class="comment">% Find the histogram center.</span>
+0060         <span class="comment">% Note: to deal with IEEE floating point uncertainty and dual</span>
+0061         <span class="comment">% possibilities for where 0 is located, we &gt;= the quarter</span>
+0062         <span class="comment">% resolution in place of &gt;= 0.</span>
+0063         isOffCenter = ~(data.isZeroBin);
+0064         pivot = find(data.bins &gt;= quarterResolution, 1);
+0065             
+0066         <span class="comment">% Fold the bins.</span>
+0067         <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i).bins = <a href="#_sub1" class="code" title="subfunction data = fold(data, pivot, isOffCenter, varargin)">fold</a>(abs(data.bins), pivot, isOffCenter, []);
+0068         
+0069         <span class="comment">% Fold the PDF.</span>
+0070         <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i).PDF = <a href="#_sub1" class="code" title="subfunction data = fold(data, pivot, isOffCenter, varargin)">fold</a>(data.PDF, pivot, isOffCenter);
+0071         
+0072         <span class="comment">% Fold the data counts.</span>
+0073         <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i).data.counts = <a href="#_sub1" class="code" title="subfunction data = fold(data, pivot, isOffCenter, varargin)">fold</a>(data.data.counts, pivot, <span class="keyword">...</span>
+0074             isOffCenter);
+0075         
+0076         <span class="comment">% Fold all data counts.</span>
+0077         <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i).allData.counts = <a href="#_sub1" class="code" title="subfunction data = fold(data, pivot, isOffCenter, varargin)">fold</a>(data.allData.counts, pivot, <span class="keyword">...</span>
+0078             isOffCenter);
+0079     <span class="keyword">end</span>
+0080 <span class="keyword">end</span>
+0081 <span class="keyword">end</span>
+0082 
+0083 <span class="comment">% Fold data at a pivot.</span>
+0084 <a name="_sub1" href="#_subfunctions" class="code">function data = fold(data, pivot, isOffCenter, varargin)</a>
+0085 
+0086 <span class="comment">% Determine the folding operation.</span>
+0087 op = @plus;
+0088 <span class="keyword">if</span> ~isempty(varargin)
+0089     op = varargin{1};
+0090 <span class="keyword">end</span>
+0091 
+0092 <span class="comment">% The pivot is just above the data center.</span>
+0093 <span class="keyword">if</span> isOffCenter
+0094     
+0095     <span class="comment">% Determine the data on either side of the pivot.</span>
+0096     data1 = fliplr(data(:,1:(pivot - 1)));
+0097     data2 = data(:,pivot:end);
+0098     
+0099     <span class="comment">% Fold the data.</span>
+0100     data = zeros(size(data, 1), max(size(data1, 2), size(data2, 2)));
+0101     data(:,1:size(data1, 2)) = data1;
+0102     <span class="keyword">if</span> isempty(op)
+0103         data(:,1:size(data2, 2)) = data2;
+0104     <span class="keyword">else</span>
+0105         data(:,1:size(data2, 2)) =  op(data(:,1:size(data2, 2)), data2);
+0106     <span class="keyword">end</span>
+0107     
+0108 <span class="comment">% The pivot is at the data center.</span>
+0109 <span class="keyword">else</span>
+0110     
+0111     <span class="comment">% Determine the data on either side of the pivot.</span>
+0112     dataP = data(:,pivot);
+0113     data1 = fliplr(data(:,1:(pivot - 1)));
+0114     data2 = data(:,(pivot + 1):end);
+0115     
+0116     <span class="comment">% Fold the data.</span>
+0117     data = zeros(size(data, 1), max(size(data1, 2), size(data2, 2)) + 1);
+0118     data(:,1) = dataP;
+0119     data(:,2:(size(data1,2) + 1)) = data1;
+0120     <span class="keyword">if</span> isempty(op)
+0121         data(:,2:(size(data2, 2) + 1)) = data2;
+0122     <span class="keyword">else</span>
+0123         data(:,2:(size(data2, 2) + 1)) = <span class="keyword">...</span>
+0124             op(data(:,2:(size(data2, 2) + 1)), data2);
+0125     <span class="keyword">end</span>
+0126 <span class="keyword">end</span>
+0127 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

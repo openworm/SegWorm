@@ -1,0 +1,364 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loopedSkeleton</title>
+  <meta name="keywords" content="loopedSkeleton">
+  <meta name="description" content="LOOPEDSKELETON Summary of this function goes here">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Segmentation -->
+<h1>loopedSkeleton
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>LOOPEDSKELETON Summary of this function goes here</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm = loopedSkeleton(oContour, iContour, wormSegSize) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">LOOPEDSKELETON Summary of this function goes here
+
+   Inputs:
+       oContour -
+       iContour -
+       wormSegSize -
+
+   Output:
+       worm - the worm information organized in a structure
+              This structure contains 6 sub-structures,
+              4 sub-sub-structures, and 2 sub-sub-sub-structures:
+
+              * Contour *
+              contour = {pixels, touchI, inI, outI, angles, headI, tailI,
+                         isHeadTailFlipped, isVulvaClockwiseFromHead}
+
+              * Skeleton *
+              skeleton = {pixels, touchI, inI, outI, inOutI, angles, length, widths}
+
+              * Head *
+              head = {bounds, pixels, cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              head.bounds{contour.left (indices for [start end]),
+                          contour.right (indices for [start end]),
+                          skeleton indices for [start end]}
+
+              * Tail *
+              tail = {bounds, pixels, cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              tail.bounds{contour.left (indices for [start end]),
+                          contour.right (indices for [start end]),
+                          skeleton indices for [start end]}
+
+              * Left Side (Counter Clockwise from the Head) *
+              left = {bounds, pixels, cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              left.bounds{contour (indices for [start end]),
+                          skeleton (indices for [start end])}
+
+              * Right Side (Clockwise from the Head) *
+              right = {bounds, pixels, cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              right.bounds{contour (indices for [start end]),
+                           skeleton (indices for [start end])}
+
+   See also WORM2STRUCT</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>	CIRCCURVATURE Compute the curvature for a clockwise, circularly-connected</li><li><a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>	SKELETONIZE Skeletonize takes the 2 pairs of start and end points on a</li><li><a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>	CIRCCONV Convolve the circularly connected vector a with b.</li><li><a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>	MAXPEAKSCIRCDIST Find the maximum peaks in a circular vector. The peaks</li><li><a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>	MINPEAKSCIRCDIST Find the minimum peaks in a circular vector. The peaks</li><li><a href="cleanContour.html" class="code" title="function [cContour] = cleanContour(contour)">cleanContour</a>	CLEANCONTOUR Clean an 8-connected, circularly-connected contour by</li><li><a href="linearSkeleton.html" class="code" title="function [skeleton cWidths] = linearSkeleton(headI, tailI, minP, minI,maxP, maxI, contour, wormSegSize, varargin)">linearSkeleton</a>	LINEARSKELETON Skeletonize a linear (non-looped) worm. The worm is</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm = loopedSkeleton(oContour, iContour, wormSegSize)</a>
+0002 <span class="comment">%LOOPEDSKELETON Summary of this function goes here</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   Inputs:</span>
+0005 <span class="comment">%       oContour -</span>
+0006 <span class="comment">%       iContour -</span>
+0007 <span class="comment">%       wormSegSize -</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Output:</span>
+0010 <span class="comment">%       worm - the worm information organized in a structure</span>
+0011 <span class="comment">%              This structure contains 6 sub-structures,</span>
+0012 <span class="comment">%              4 sub-sub-structures, and 2 sub-sub-sub-structures:</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%              * Contour *</span>
+0015 <span class="comment">%              contour = {pixels, touchI, inI, outI, angles, headI, tailI,</span>
+0016 <span class="comment">%                         isHeadTailFlipped, isVulvaClockwiseFromHead}</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%              * Skeleton *</span>
+0019 <span class="comment">%              skeleton = {pixels, touchI, inI, outI, inOutI, angles, length, widths}</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%              * Head *</span>
+0022 <span class="comment">%              head = {bounds, pixels, cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0023 <span class="comment">%              head.bounds{contour.left (indices for [start end]),</span>
+0024 <span class="comment">%                          contour.right (indices for [start end]),</span>
+0025 <span class="comment">%                          skeleton indices for [start end]}</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%              * Tail *</span>
+0028 <span class="comment">%              tail = {bounds, pixels, cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0029 <span class="comment">%              tail.bounds{contour.left (indices for [start end]),</span>
+0030 <span class="comment">%                          contour.right (indices for [start end]),</span>
+0031 <span class="comment">%                          skeleton indices for [start end]}</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%              * Left Side (Counter Clockwise from the Head) *</span>
+0034 <span class="comment">%              left = {bounds, pixels, cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0035 <span class="comment">%              left.bounds{contour (indices for [start end]),</span>
+0036 <span class="comment">%                          skeleton (indices for [start end])}</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%              * Right Side (Clockwise from the Head) *</span>
+0039 <span class="comment">%              right = {bounds, pixels, cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0040 <span class="comment">%              right.bounds{contour (indices for [start end]),</span>
+0041 <span class="comment">%                           skeleton (indices for [start end])}</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">%   See also WORM2STRUCT</span>
+0044 
+0045 tContourI = [];
+0046 oContourI = [];
+0047 iContourI = [];
+0048 cAngles = [];
+0049 mcAngles =[];
+0050 skeleton = [];
+0051 tSkeletonI = [];
+0052 oSkeletonI = [];
+0053 iSkeletonI = [];
+0054 oiSkeletonI = [];
+0055 sLength = [];
+0056 cWidths = [];
+0057 
+0058 angleEdgeSize = round(wormSegSize);
+0059 oAngles = <a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>(oContour, angleEdgeSize);
+0060 iAngles = <a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>(iContour, angleEdgeSize);
+0061 angleEdgeSize2 = round(2 * wormSegSize);
+0062 oAngles2 = <a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>(oContour, angleEdgeSize2);
+0063 iAngles2 = <a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>(iContour, angleEdgeSize2);
+0064 
+0065 blurLength = round(angleEdgeSize / 2);
+0066 blurWin(1:blurLength) = 1 / blurLength;
+0067 moAngles = <a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>(oAngles, blurWin);
+0068 miAngles = <a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>(iAngles, blurWin);
+0069 blurLength2 = round(angleEdgeSize2 / 2);
+0070 blurWin2(1:blurLength2) = 1 / blurLength2;
+0071 moAngles2 = <a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>(oAngles2, blurWin2);
+0072 miAngles2 = <a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>(iAngles2, blurWin2);
+0073 
+0074 [moMinP moMinI] = <a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>(moAngles, angleEdgeSize);
+0075 [moMaxP moMaxI] = <a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>(moAngles, angleEdgeSize);
+0076 [miMinP miMinI] = <a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>(miAngles, angleEdgeSize);
+0077 [miMaxP miMaxI] = <a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>(miAngles, angleEdgeSize);
+0078 [moMinP2 moMinI2] = <a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>(moAngles2, angleEdgeSize2);
+0079 [moMaxP2 moMaxI2] = <a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>(moAngles2, angleEdgeSize2);
+0080 [miMinP2 miMinI2] = <a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>(miAngles2, angleEdgeSize2);
+0081 [miMaxP2 miMaxI2] = <a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>(miAngles2, angleEdgeSize2);
+0082 
+0083 thr = 20;
+0084 moMin = moMinP &lt; -thr;
+0085 moMinP = moMinP(moMin);
+0086 moMinI = moMinI(moMin);
+0087 moMax = moMaxP &gt; thr;
+0088 moMaxP = moMaxP(moMax);
+0089 moMaxI = moMaxI(moMax);
+0090 miMin = miMinP &lt; -thr;
+0091 miMinP = miMinP(miMin);
+0092 miMinI = miMinI(miMin);
+0093 miMax = miMaxP &gt; thr;
+0094 miMaxP = miMaxP(miMax);
+0095 miMaxI = miMaxI(miMax);
+0096 moMin2 = moMinP2 &lt; -thr;
+0097 moMinP2 = moMinP2(moMin2);
+0098 moMinI2 = moMinI2(moMin2);
+0099 moMax2 = moMaxP2 &gt; thr;
+0100 moMaxP2 = moMaxP2(moMax2);
+0101 moMaxI2 = moMaxI2(moMax2);
+0102 miMin2 = miMinP2 &lt; -thr;
+0103 miMinP2 = miMinP2(miMin2);
+0104 miMinI2 = miMinI2(miMin2);
+0105 miMax2 = miMaxP2 &gt; thr;
+0106 miMaxP2 = miMaxP2(miMax2);
+0107 miMaxI2 = miMaxI2(miMax2);
+0108 
+0109 minY = min(oContour(:,1));
+0110 maxY = max(oContour(:,1));
+0111 minX = min(oContour(:,2));
+0112 maxX = max(oContour(:,2));
+0113 wImg = zeros(maxY - minY + 3, maxX - minX + 3);
+0114 wImg(sub2ind(size(wImg), oContour(:,1) - minY + 2, <span class="keyword">...</span>
+0115     oContour(:,2) - minX + 2)) = 1;
+0116 wImg(sub2ind(size(wImg), iContour(:,1) - minY + 2, <span class="keyword">...</span>
+0117     iContour(:,2) - minX + 2)) = 1;
+0118 wImg2 = zeros(maxY - minY + 3, maxX - minX + 3);
+0119 wImg2(sub2ind(size(wImg), oContour(:,1) - minY + 2, <span class="keyword">...</span>
+0120     oContour(:,2) - minX + 2)) = 1;
+0121 wImg2(sub2ind(size(wImg), iContour(:,1) - minY + 2, <span class="keyword">...</span>
+0122     iContour(:,2) - minX + 2)) = 1;
+0123 
+0124 figure, subplot(2,2,2), plot(oAngles, <span class="string">'k'</span>);
+0125 hold on, plot(moAngles, <span class="string">'b'</span>);
+0126 hold on, plot(moMinI, moMinP, <span class="string">'m*'</span>);
+0127 hold on, plot(moMaxI, moMaxP, <span class="string">'g*'</span>);
+0128 hold on, plot(iAngles, <span class="string">'r'</span>);
+0129 hold on, plot(miAngles, <span class="string">'m'</span>);
+0130 hold on, plot(miMinI, miMinP, <span class="string">'m*'</span>);
+0131 hold on, plot(miMaxI, miMaxP, <span class="string">'g*'</span>);
+0132 
+0133 hold on, subplot(2,2,4), plot(oAngles2, <span class="string">'k'</span>);
+0134 hold on, plot(moAngles2, <span class="string">'b'</span>);
+0135 hold on, plot(moMinI2, moMinP2, <span class="string">'m*'</span>);
+0136 hold on, plot(moMaxI2, moMaxP2, <span class="string">'g*'</span>);
+0137 hold on, plot(iAngles2, <span class="string">'r'</span>);
+0138 hold on, plot(miAngles2, <span class="string">'m'</span>);
+0139 hold on, plot(miMinI2, miMinP2, <span class="string">'m*'</span>);
+0140 hold on, plot(miMaxI2, miMaxP2, <span class="string">'g*'</span>);
+0141 
+0142 hold on, subplot(2,2,1), imshow(wImg, <span class="string">'Colormap'</span>, colormap(jet));
+0143 hold on, text(oContour(moMaxI,2) - minX + 2, <span class="keyword">...</span>
+0144     oContour(moMaxI,1) - minY + 2, <span class="string">'*'</span>, <span class="string">'Color'</span>, <span class="string">'g'</span>);
+0145 hold on, text(oContour(moMaxI,2) - minX + 2, <span class="keyword">...</span>
+0146     oContour(moMaxI,1) - minY + 2, num2str(moMaxI), <span class="string">'Color'</span>, <span class="string">'g'</span>);
+0147 hold on, text(oContour(moMinI,2) - minX + 2, <span class="keyword">...</span>
+0148     oContour(moMinI,1) - minY + 2, <span class="string">'*'</span>, <span class="string">'Color'</span>, <span class="string">'m'</span>);
+0149 hold on, text(oContour(moMinI,2) - minX + 2, <span class="keyword">...</span>
+0150     oContour(moMinI,1) - minY + 2, num2str(moMinI), <span class="string">'Color'</span>, <span class="string">'m'</span>);
+0151 hold on, text(iContour(miMaxI,2) - minX + 2, <span class="keyword">...</span>
+0152     iContour(miMaxI,1) - minY + 2, <span class="string">'*'</span>, <span class="string">'Color'</span>, <span class="string">'g'</span>);
+0153 hold on, text(iContour(miMaxI,2) - minX + 2, <span class="keyword">...</span>
+0154     iContour(miMaxI,1) - minY + 2, num2str(miMaxI), <span class="string">'Color'</span>, <span class="string">'g'</span>);
+0155 hold on, text(iContour(miMinI,2) - minX + 2, <span class="keyword">...</span>
+0156     iContour(miMinI,1) - minY + 2, <span class="string">'*'</span>, <span class="string">'Color'</span>, <span class="string">'m'</span>);
+0157 hold on, text(iContour(miMinI,2) - minX + 2, <span class="keyword">...</span>
+0158     iContour(miMinI,1) - minY + 2, num2str(miMinI), <span class="string">'Color'</span>, <span class="string">'m'</span>);
+0159 
+0160 hold on, subplot(2,2,3), imshow(wImg, <span class="string">'Colormap'</span>, colormap(jet));
+0161 hold on, text(oContour(moMaxI2,2) - minX + 2, <span class="keyword">...</span>
+0162     oContour(moMaxI2,1) - minY + 2, <span class="string">'*'</span>, <span class="string">'Color'</span>, <span class="string">'g'</span>);
+0163 hold on, text(oContour(moMaxI2,2) - minX + 2, <span class="keyword">...</span>
+0164     oContour(moMaxI2,1) - minY + 2, num2str(moMaxI2), <span class="string">'Color'</span>, <span class="string">'g'</span>);
+0165 hold on, text(oContour(moMinI2,2) - minX + 2, <span class="keyword">...</span>
+0166     oContour(moMinI2,1) - minY + 2, <span class="string">'*'</span>, <span class="string">'Color'</span>, <span class="string">'m'</span>);
+0167 hold on, text(oContour(moMinI2,2) - minX + 2, <span class="keyword">...</span>
+0168     oContour(moMinI2,1) - minY + 2, num2str(moMinI2), <span class="string">'Color'</span>, <span class="string">'m'</span>);
+0169 hold on, text(iContour(miMaxI2,2) - minX + 2, <span class="keyword">...</span>
+0170     iContour(miMaxI2,1) - minY + 2, <span class="string">'*'</span>, <span class="string">'Color'</span>, <span class="string">'g'</span>);
+0171 hold on, text(iContour(miMaxI2,2) - minX + 2, <span class="keyword">...</span>
+0172     iContour(miMaxI2,1) - minY + 2, num2str(miMaxI2), <span class="string">'Color'</span>, <span class="string">'g'</span>);
+0173 hold on, text(iContour(miMinI2,2) - minX + 2, <span class="keyword">...</span>
+0174     iContour(miMinI2,1) - minY + 2, <span class="string">'*'</span>, <span class="string">'Color'</span>, <span class="string">'m'</span>);
+0175 hold on, text(iContour(miMinI2,2) - minX + 2, <span class="keyword">...</span>
+0176     iContour(miMinI2,1) - minY + 2, num2str(miMinI2), <span class="string">'Color'</span>, <span class="string">'m'</span>);
+0177 
+0178 
+0179 
+0180 
+0181 <span class="comment">% The head and tail are obscured in the loop.</span>
+0182 ocSize = size(oContour, 1);
+0183 icSize = size(iContour, 1);
+0184 <span class="keyword">if</span> headI == 0 &amp;&amp; tailI ==0
+0185     
+0186     <span class="comment">% Find the location of maximum curvature on the outer contour.</span>
+0187     <span class="comment">% This is the most likely place where the worm touches itself outside.</span>
+0188     [oMinAllP oMinAllI] = min(oMinP);
+0189     [oMaxAllP oMaxAllI] = max(oMaxP);
+0190     
+0191     <span class="comment">% Find the starting points for cutting across the contour.</span>
+0192     <span class="keyword">if</span> abs(oMinAllP) &gt;=  oMaxAllP
+0193         s1 = oMinI(oMinAllI);
+0194     <span class="keyword">else</span>
+0195         s1 = oMaxI(oMaxAllI);
+0196     <span class="keyword">end</span>
+0197     s2 = circNearestPoint(oContour(s1,:), 1, icSize, iContour);
+0198     
+0199     <span class="comment">% Find the location of maximum curvature on the inner contour.</span>
+0200     <span class="comment">% This is the most likely place where the worm touches itself inside.</span>
+0201     [iMinAllP iMinAllI] = min(iMinP);
+0202     [iMaxAllP iMaxAllI] = max(iMaxP);
+0203     
+0204     <span class="comment">% Find the ending points for cutting across the contour.</span>
+0205     <span class="keyword">if</span> abs(iMinAllP) &gt;=  iMaxAllP
+0206         e2 = iMinI(iMinAllI);
+0207     <span class="keyword">else</span>
+0208         e2 = iMaxI(iMaxAllI);
+0209     <span class="keyword">end</span>
+0210     e1 = circNearestPoint(iContour(e2,:), 1, ocSize, oContour);
+0211     
+0212     <span class="comment">% In which direction should we cut?</span>
+0213     <span class="comment">% Note: worms can't coil very tightly, so the smallest side is where</span>
+0214     <span class="comment">% the head and tail touch.</span>
+0215     <span class="keyword">if</span> s1 &lt; e1
+0216         side1 = e1 - s1;
+0217         side2 = ocSize - e1 + 1 + s1;
+0218     <span class="keyword">else</span>
+0219         side1 = ocSize - s1 + 1 + e1;
+0220         side2 = s1 - e1;
+0221     <span class="keyword">end</span>        
+0222     
+0223     <span class="comment">% Initialize the directions to walk along the contour segments.</span>
+0224     <span class="keyword">if</span> side1 &lt;= side2
+0225         i1 = 1;
+0226         i2 = -1;
+0227         
+0228     <span class="comment">% Swap the starting and ending points for cutting across the contour.</span>
+0229     <span class="keyword">else</span>
+0230         tmp = s1;
+0231         s1 = e1;
+0232         e1 = tmp;
+0233         tmp = s2;
+0234         s2 = e2;
+0235         e2 = tmp;
+0236         
+0237         <span class="comment">% Initialize the directions to walk along the contour segments.</span>
+0238         i1 = -1;
+0239         i2 = 1;
+0240     <span class="keyword">end</span>
+0241     
+0242     <span class="comment">% Cut across the contour to delineate the head and tail.</span>
+0243     cContour = round(<a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>(s1, e1, i1, s2, e2, i2, oContour, iContour, 1));
+0244     
+0245     <span class="comment">% Reconstruct the contour.</span>
+0246     contour = [cContour; iContour(e2:<span class="keyword">end</span>,:); iContour(1:e2,:); <span class="keyword">...</span>
+0247         flipud(cContour); oContour(s1:<span class="keyword">end</span>,:); oContour(1:s1,:)];
+0248     contour = <a href="cleanContour.html" class="code" title="function [cContour] = cleanContour(contour)">cleanContour</a>(contour);
+0249     
+0250     <span class="comment">% Compute the contour's local curvature.</span>
+0251     <span class="comment">% On a small scale, noise causes contour imperfections that shift an angle</span>
+0252     <span class="comment">% from its correct location. Therefore, blurring angles by averaging them</span>
+0253     <span class="comment">% with their neighbors can localize them better.</span>
+0254     wormSegs = 50;
+0255     angles = <a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>(contour, round(size(contour, 1) / (wormSegs / 2)));
+0256     blurLength = 2 * round(size(contour, 1) / (wormSegs * 2)) + 1;
+0257     blurWin(1:blurLength) = 1 / blurLength;
+0258     mAngles = <a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>(angles, blurWin);
+0259     
+0260     <span class="comment">% Compute the contour's local curvature maxima.</span>
+0261     angleEdgeSize = round(length(mAngles) / (wormSegs / 2));
+0262     [maxP maxI] = <a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>(mAngles, angleEdgeSize);
+0263     [minP minI] = <a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>(mAngles, angleEdgeSize);
+0264     
+0265     <span class="comment">% Determine the head and tail.</span>
+0266     [~, o] = sort(maxP, 1, <span class="string">'descend'</span>);
+0267     headI = maxI(o(1));
+0268     tailI = maxI(o(2));
+0269     
+0270     <span class="comment">% Skeletonize the loop.</span>
+0271     skeleton = <a href="linearSkeleton.html" class="code" title="function [skeleton cWidths] = linearSkeleton(headI, tailI, minP, minI,maxP, maxI, contour, wormSegSize, varargin)">linearSkeleton</a>(headI, tailI, minP, minI, contour, 2 * angleEdgeSize);
+0272     
+0273     <span class="comment">% Record the touching points.</span>
+0274     touchCPoints = [s1 e1 1; s2 e2 0];
+0275     touchSPoints = [1 size(skeleton, 1)];
+0276 <span class="keyword">end</span>
+0277 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

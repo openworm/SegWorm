@@ -1,0 +1,1520 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of worm2pathTIF</title>
+  <meta name="keywords" content="worm2pathTIF">
+  <meta name="description" content="WORM2PATHTIF Save worm information to a TIF.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>worm2pathTIF
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORM2PATHTIF Save worm information to a TIF.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [filename pages] = worm2pathTIF(filename, worm, wormName, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORM2PATHTIF Save worm information to a TIF.
+
+   [FILENAME PAGES] = WORM2PATHTIF(FILENAME, WORM, WORMNAME)
+
+   [FILENAME PAGES] = WORM2PATHTIF(FILENAME, WORM, WORMNAME,
+                                   WORMINFOFILTER, WORMFEATFILTER,
+                                   WORMFEATDIR,
+                                   CONTROL, CONTROLNAME,
+                                   CONTROLINFOFILTER, CONTROLFEATFILTER,
+                                   CONTROLFEATDIR,
+                                   ISSHOW, PAGE, SAVEQUALITY, ISCLOSE,
+                                   ISVERBOSE)
+
+   Inputs:
+       filename          - the TIF filename;
+                           if empty, the file is named
+                           &quot;&lt;wormName&gt; [vs &lt;controlName&gt;].tif&quot;
+       worm              - the worm histograms or filename
+       wormName          - the name for the worm;
+                           or, a function handle of the form:
+
+                   LABEL = WORM2LABEL(WORMINFO)
+
+                           wormInfo = the worm information
+                           label    = the worm label
+
+                           if empty, we use WORM2STRAINLABEL
+
+       wormInfoFilter    - the worm information filtering criteria;
+                           a structure with any of the fields:
+
+              minFPS     = the minimum video frame rate (frames/seconds)
+              minTime    = the minimum video time (seconds)
+              maxTime    = the maximum video time (seconds)
+              minSegTime = the minimum time for segmented video (seconds)
+              minRatio   = the minimum ratio for segmented video frames
+              minDate    = the minimum date to use (DATENUM)
+              maxDate    = the maximum date to use (DATENUM)
+              years      = the years to use
+              months     = the months to use (1-12)
+              weeks      = the weeks to use (1-52)
+              days       = the days (of the week) to use (1-7)
+              hours      = the hours to use (1-24)
+              trackers   = the trackers to use (1-8)
+
+       wormFeatFilter    - the worm feature filtering criteria;
+                           a structure with the fields:
+
+               featuresI = the feature indices (see WORMDATAINFO)
+               minThr    = the minimum feature value (optional)
+               maxThr    = the maximum feature value (optional)
+               indices   = the sub indices for the features (optional)
+               subFields = the subFields for the features (optional)
+
+       wormFeatDir       - the directory to search for worm files;
+                           if empty, search in the current directory
+                           the default is the current directory (empty)
+       control           - the control histograms or filename;
+                           if empty; no control is shown
+       controlName       - the name for the control;
+                           or, a function handle of the form:
+
+                   LABEL = WORM2LABEL(WORMINFO)
+
+                           wormInfo = the worm information
+                           label    = the worm label
+
+                           if empty, we use WORM2STRAINLABEL
+
+       controlInfoFilter - the control indices to use;
+                           or, the control filtering criteria
+       controlFeatFilter - the control feature filtering criteria
+       controlFeatDir    - the directory to search for control files;
+                           if empty, search in the current directory
+                           the default is the current directory (empty)
+       isShow            - are we showing the figures onscreen?
+                           Note: hiding the figures is faster.
+       page              - the page number;
+                           if empty, the page number is not shown
+       saveQuality       - the quality (magnification) for saving the figures;
+                           if empty, the figures are not saved
+                           the default is none (empty)
+       isClose           - shoud we close the figures after saving them?
+                           when saving the figure, the default is yes (true)
+                           otherwise, the default is no (false)
+       isVerbose         - verbose mode displays the progress;
+                           the default is yes (true)
+   Output:
+       filename - the TIF file containing the saved figures;
+                  if empty, the figures were not saved
+       pages    - the number of pages in the figure file
+
+ See also FILTERWORMINFO, FILTERWORMHIST, WORM2HISTOGRAM, WORM2STATSINFO</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>	SAVETIF Save a figure to a TIF file.</li><li><a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>	STR2COLORS Convert a string of colors to RGB values.</li><li><a href="plotWormPath.html" class="code" title="function plotAxes = plotWormPath(titleLabel, skeleton, coils, omegas,varargin)">plotWormPath</a>	PLOTWORMPATH Plot the worm path(s).</li><li><a href="plotWormPathData.html" class="code" title="function plotAxes = plotWormPathData(titleLabel, skeleton,coils, omegas, bodyI, data, varargin)">plotWormPathData</a>	PLOTWORMPATHDATA Plot the worm path data.</li><li><a href="../../../SegWorm/Worms/Statistics/filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">filterWormHist</a>	FILTERWORMHIST Filter worm features to meet specific criteria.</li><li><a href="../../../SegWorm/Worms/Statistics/filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>	FILTERWORMINFO Filter worm information to meet specific criteria.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>	WORM2STRAINLABEL Label the worm strain.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="worm2TIF.html" class="code" title="function [filename pages] = worm2TIF(filename, worm, wormName, varargin)">worm2TIF</a>	WORM2TIF Save worm information to a TIF.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [xLims, yLims] = centerSkeletons(wormSkeleton, controlSkeleton)</a></li><li><a href="#_sub2" class="code">function [wormInfo, skeleton, coils, omegas, speed foraging] =</a></li><li><a href="#_sub3" class="code">function page = drawPaths(filename, page,</a></li><li><a href="#_sub4" class="code">function page = drawPath(filename, page, wormName, wormInfo, skeleton,</a></li><li><a href="#_sub5" class="code">function page = drawPathsData(filename, page, dataName, unitName,</a></li><li><a href="#_sub6" class="code">function page = drawPathData(filename, page, dataName, unitName,</a></li><li><a href="#_sub7" class="code">function drawPathsLegend(h, isEvents)</a></li><li><a href="#_sub8" class="code">function drawPathLegend(h)</a></li><li><a href="#_sub9" class="code">function drawPathsDataLegend(h, dataName, unitName, dLim, isEvents)</a></li><li><a href="#_sub10" class="code">function drawPathDataLegend(h, dataName, unitName, dLim)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [filename pages] = worm2pathTIF(filename, worm, wormName, varargin)</a>
+0002 <span class="comment">%WORM2PATHTIF Save worm information to a TIF.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [FILENAME PAGES] = WORM2PATHTIF(FILENAME, WORM, WORMNAME)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [FILENAME PAGES] = WORM2PATHTIF(FILENAME, WORM, WORMNAME,</span>
+0007 <span class="comment">%                                   WORMINFOFILTER, WORMFEATFILTER,</span>
+0008 <span class="comment">%                                   WORMFEATDIR,</span>
+0009 <span class="comment">%                                   CONTROL, CONTROLNAME,</span>
+0010 <span class="comment">%                                   CONTROLINFOFILTER, CONTROLFEATFILTER,</span>
+0011 <span class="comment">%                                   CONTROLFEATDIR,</span>
+0012 <span class="comment">%                                   ISSHOW, PAGE, SAVEQUALITY, ISCLOSE,</span>
+0013 <span class="comment">%                                   ISVERBOSE)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Inputs:</span>
+0016 <span class="comment">%       filename          - the TIF filename;</span>
+0017 <span class="comment">%                           if empty, the file is named</span>
+0018 <span class="comment">%                           &quot;&lt;wormName&gt; [vs &lt;controlName&gt;].tif&quot;</span>
+0019 <span class="comment">%       worm              - the worm histograms or filename</span>
+0020 <span class="comment">%       wormName          - the name for the worm;</span>
+0021 <span class="comment">%                           or, a function handle of the form:</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%                   LABEL = WORM2LABEL(WORMINFO)</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%                           wormInfo = the worm information</span>
+0026 <span class="comment">%                           label    = the worm label</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%                           if empty, we use WORM2STRAINLABEL</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%       wormInfoFilter    - the worm information filtering criteria;</span>
+0031 <span class="comment">%                           a structure with any of the fields:</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%              minFPS     = the minimum video frame rate (frames/seconds)</span>
+0034 <span class="comment">%              minTime    = the minimum video time (seconds)</span>
+0035 <span class="comment">%              maxTime    = the maximum video time (seconds)</span>
+0036 <span class="comment">%              minSegTime = the minimum time for segmented video (seconds)</span>
+0037 <span class="comment">%              minRatio   = the minimum ratio for segmented video frames</span>
+0038 <span class="comment">%              minDate    = the minimum date to use (DATENUM)</span>
+0039 <span class="comment">%              maxDate    = the maximum date to use (DATENUM)</span>
+0040 <span class="comment">%              years      = the years to use</span>
+0041 <span class="comment">%              months     = the months to use (1-12)</span>
+0042 <span class="comment">%              weeks      = the weeks to use (1-52)</span>
+0043 <span class="comment">%              days       = the days (of the week) to use (1-7)</span>
+0044 <span class="comment">%              hours      = the hours to use (1-24)</span>
+0045 <span class="comment">%              trackers   = the trackers to use (1-8)</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">%       wormFeatFilter    - the worm feature filtering criteria;</span>
+0048 <span class="comment">%                           a structure with the fields:</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">%               featuresI = the feature indices (see WORMDATAINFO)</span>
+0051 <span class="comment">%               minThr    = the minimum feature value (optional)</span>
+0052 <span class="comment">%               maxThr    = the maximum feature value (optional)</span>
+0053 <span class="comment">%               indices   = the sub indices for the features (optional)</span>
+0054 <span class="comment">%               subFields = the subFields for the features (optional)</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">%       wormFeatDir       - the directory to search for worm files;</span>
+0057 <span class="comment">%                           if empty, search in the current directory</span>
+0058 <span class="comment">%                           the default is the current directory (empty)</span>
+0059 <span class="comment">%       control           - the control histograms or filename;</span>
+0060 <span class="comment">%                           if empty; no control is shown</span>
+0061 <span class="comment">%       controlName       - the name for the control;</span>
+0062 <span class="comment">%                           or, a function handle of the form:</span>
+0063 <span class="comment">%</span>
+0064 <span class="comment">%                   LABEL = WORM2LABEL(WORMINFO)</span>
+0065 <span class="comment">%</span>
+0066 <span class="comment">%                           wormInfo = the worm information</span>
+0067 <span class="comment">%                           label    = the worm label</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">%                           if empty, we use WORM2STRAINLABEL</span>
+0070 <span class="comment">%</span>
+0071 <span class="comment">%       controlInfoFilter - the control indices to use;</span>
+0072 <span class="comment">%                           or, the control filtering criteria</span>
+0073 <span class="comment">%       controlFeatFilter - the control feature filtering criteria</span>
+0074 <span class="comment">%       controlFeatDir    - the directory to search for control files;</span>
+0075 <span class="comment">%                           if empty, search in the current directory</span>
+0076 <span class="comment">%                           the default is the current directory (empty)</span>
+0077 <span class="comment">%       isShow            - are we showing the figures onscreen?</span>
+0078 <span class="comment">%                           Note: hiding the figures is faster.</span>
+0079 <span class="comment">%       page              - the page number;</span>
+0080 <span class="comment">%                           if empty, the page number is not shown</span>
+0081 <span class="comment">%       saveQuality       - the quality (magnification) for saving the figures;</span>
+0082 <span class="comment">%                           if empty, the figures are not saved</span>
+0083 <span class="comment">%                           the default is none (empty)</span>
+0084 <span class="comment">%       isClose           - shoud we close the figures after saving them?</span>
+0085 <span class="comment">%                           when saving the figure, the default is yes (true)</span>
+0086 <span class="comment">%                           otherwise, the default is no (false)</span>
+0087 <span class="comment">%       isVerbose         - verbose mode displays the progress;</span>
+0088 <span class="comment">%                           the default is yes (true)</span>
+0089 <span class="comment">%   Output:</span>
+0090 <span class="comment">%       filename - the TIF file containing the saved figures;</span>
+0091 <span class="comment">%                  if empty, the figures were not saved</span>
+0092 <span class="comment">%       pages    - the number of pages in the figure file</span>
+0093 <span class="comment">%</span>
+0094 <span class="comment">% See also FILTERWORMINFO, FILTERWORMHIST, WORM2HISTOGRAM, WORM2STATSINFO</span>
+0095 
+0096 <span class="comment">% Initialize drawing information.</span>
+0097 maxPaths = 24;
+0098 speedI = 21:29; <span class="comment">% the skeleton indices for speed</span>
+0099 foragingI = 1:2; <span class="comment">% the skeleton indices for foraging</span>
+0100 speedLim = [-500, 500]; <span class="comment">% the speed scale</span>
+0101 foragingLim = [0, 90]; <span class="comment">% the foraging amplitude magnitude scale</span>
+0102 speedAlpha = 0.9; <span class="comment">% the speed transparency</span>
+0103 foragingAlpha = 0.9; <span class="comment">% the foraging transparency</span>
+0104 
+0105 <span class="comment">% Load the worm.</span>
+0106 wormInfo = [];
+0107 <span class="keyword">if</span> ischar(worm)
+0108     load(worm, <span class="string">'worm'</span>, <span class="string">'wormInfo'</span>);
+0109 <span class="keyword">end</span>
+0110 
+0111 <span class="comment">% Determine the worm name.</span>
+0112 <span class="keyword">if</span> isempty(wormName) &amp;&amp; ~isempty(wormInfo)
+0113     wormName = <a href="../../../SegWorm/Worms/Statistics/worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>(wormInfo);
+0114 <span class="keyword">elseif</span> isa(wormName, <span class="string">'function_handle'</span>)
+0115     <span class="keyword">if</span> ~isempty(wormInfo)
+0116         wormName = wormName(wormInfo);
+0117     <span class="keyword">else</span>
+0118         wormName = <span class="string">''</span>;
+0119     <span class="keyword">end</span>
+0120 <span class="keyword">end</span>
+0121 
+0122 <span class="comment">% Filter the worm information.</span>
+0123 isWormUsed = [];
+0124 <span class="keyword">if</span> ~isempty(varargin)
+0125     wormInfoFilter = varargin{1};
+0126     isWormUsed = <a href="../../../SegWorm/Worms/Statistics/filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>(wormInfo, wormInfoFilter);
+0127 <span class="keyword">end</span>
+0128 
+0129 <span class="comment">% Filter the worm features.</span>
+0130 <span class="keyword">if</span> length(varargin) &gt; 1
+0131     
+0132     <span class="comment">% Filter the worm features.</span>
+0133     wormFeatFilter = varargin{2};
+0134     isUsed = <a href="../../../SegWorm/Worms/Statistics/filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">filterWormHist</a>(worm, wormFeatFilter);
+0135     
+0136     <span class="comment">% Combine the filters.</span>
+0137     <span class="keyword">if</span> isempty(isWormUsed)
+0138         isWormUsed = isUsed;
+0139     <span class="keyword">else</span>
+0140         isWormUsed = isWormUsed &amp; isUsed;
+0141     <span class="keyword">end</span>
+0142 <span class="keyword">end</span>
+0143 wormInfo = wormInfo(isWormUsed);
+0144 
+0145 <span class="comment">% Sort the worms.</span>
+0146 dates = arrayfun(@(x) datenum(x.experiment.environment.timestamp), wormInfo);
+0147 [~, dateI] = sort(dates);
+0148 wormInfo = wormInfo(dateI);
+0149 
+0150 <span class="comment">% Where should we search for the feature files?</span>
+0151 wormFeatDir = [];
+0152 <span class="keyword">if</span> length(varargin) &gt; 2
+0153     wormFeatDir = varargin{3};
+0154 <span class="keyword">end</span>
+0155 
+0156 <span class="comment">% Do we have a control?</span>
+0157 control = [];
+0158 controlName = [];
+0159 controlInfo = [];
+0160 <span class="keyword">if</span> length(varargin) &gt; 3
+0161     
+0162     <span class="comment">% Load the control.</span>
+0163     control = varargin{4};
+0164     controlInfo = [];
+0165     <span class="keyword">if</span> ~isempty(control) &amp;&amp; ischar(control)
+0166         controlData = load(control, <span class="string">'worm'</span>, <span class="string">'wormInfo'</span>);
+0167         control = controlData.worm;
+0168         controlInfo = controlData.wormInfo;
+0169         clear controlData;
+0170     <span class="keyword">end</span>
+0171     
+0172     <span class="comment">% Do we have a control?</span>
+0173     <span class="keyword">if</span> ~isempty(control)
+0174         
+0175         <span class="comment">% Determine the control name.</span>
+0176         <span class="keyword">if</span> length(varargin) &gt; 4
+0177             controlName = varargin{5};
+0178         <span class="keyword">end</span>
+0179         <span class="keyword">if</span> isempty(controlName) &amp;&amp; ~isempty(controlInfo)
+0180             controlName = <a href="../../../SegWorm/Worms/Statistics/worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>(controlInfo);
+0181         <span class="keyword">elseif</span> isa(controlName, <span class="string">'function_handle'</span>)
+0182             <span class="keyword">if</span> ~isempty(controlInfo)
+0183                 controlName = controlName(controlInfo);
+0184             <span class="keyword">else</span>
+0185                 controlName = <span class="string">''</span>;
+0186             <span class="keyword">end</span>
+0187         <span class="keyword">end</span>
+0188         
+0189         <span class="comment">% Filter the control information.</span>
+0190         isControlUsed = [];
+0191         <span class="keyword">if</span> length(varargin) &gt; 5
+0192             controlInfoFilter = varargin{6};
+0193             isControlUsed = <a href="../../../SegWorm/Worms/Statistics/filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>(controlInfo, controlInfoFilter);
+0194         <span class="keyword">end</span>
+0195         
+0196         <span class="comment">% Filter the control features.</span>
+0197         <span class="keyword">if</span> length(varargin) &gt; 6
+0198             
+0199             <span class="comment">% Filter the worm features.</span>
+0200             controlFeatFilter = varargin{7};
+0201             isUsed = <a href="../../../SegWorm/Worms/Statistics/filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">filterWormHist</a>(control, controlFeatFilter);
+0202             
+0203             <span class="comment">% Combine the filters.</span>
+0204             <span class="keyword">if</span> isempty(isControlUsed)
+0205                 isControlUsed = isUsed;
+0206             <span class="keyword">else</span>
+0207                 isControlUsed = isControlUsed &amp; isUsed;
+0208             <span class="keyword">end</span>
+0209         <span class="keyword">end</span>
+0210         controlInfo = controlInfo(isControlUsed);
+0211         
+0212         <span class="comment">% Sort the controls.</span>
+0213         dates = arrayfun(@(x) datenum(x.experiment.environment.timestamp), <span class="keyword">...</span>
+0214             controlInfo);
+0215         [~, dateI] = sort(dates);
+0216         controlInfo = controlInfo(dateI);
+0217     <span class="keyword">end</span>
+0218     
+0219     <span class="comment">% Where should we search for the feature files?</span>
+0220     controlFeatDir = [];
+0221     <span class="keyword">if</span> length(varargin) &gt; 7
+0222         controlFeatDir = varargin{8};
+0223     <span class="keyword">end</span>
+0224 <span class="keyword">end</span>
+0225 
+0226 <span class="comment">% Are we showing the figures onscreen?</span>
+0227 <span class="comment">% Note: hiding the figures is faster.</span>
+0228 isShow = true;
+0229 <span class="keyword">if</span> length(varargin) &gt; 8
+0230     isShow = varargin{9};
+0231 <span class="keyword">end</span>
+0232 
+0233 <span class="comment">% Determine the page number.</span>
+0234 pages = 0;
+0235 page = 0;
+0236 <span class="keyword">if</span> length(varargin) &gt; 9
+0237     page = varargin{10};
+0238     pages = page;
+0239 <span class="keyword">end</span>
+0240 
+0241 <span class="comment">% Determine the quality (magnification) for saving the figures.</span>
+0242 saveQuality = []; <span class="comment">% don't save the figures</span>
+0243 <span class="keyword">if</span> length(varargin) &gt; 10
+0244     saveQuality = varargin{11};
+0245 <span class="keyword">end</span>
+0246 
+0247 <span class="comment">% Are we closing the figures after saving them?</span>
+0248 <span class="keyword">if</span> saveQuality &gt; 0
+0249     isClose = true;
+0250 <span class="keyword">else</span>
+0251     isClose = false;
+0252 <span class="keyword">end</span>
+0253 <span class="keyword">if</span> length(varargin) &gt; 11
+0254     isClose = varargin{12};
+0255 <span class="keyword">end</span>
+0256 <span class="keyword">if</span> ~isShow
+0257     isClose = true;
+0258 <span class="keyword">end</span>
+0259 
+0260 <span class="comment">% Are we displaying the progress?</span>
+0261 isVerbose = true;
+0262 <span class="keyword">if</span> length(varargin) &gt; 12
+0263     isVerbose = varargin{13};
+0264 <span class="keyword">end</span>
+0265 
+0266 <span class="comment">% Construct the file name.</span>
+0267 <span class="keyword">if</span> saveQuality &gt; 0
+0268     
+0269     <span class="comment">% Remove the TIF extension.</span>
+0270     tifExt = <span class="string">'.tif'</span>;
+0271     tifName = filename;
+0272     <span class="keyword">if</span> length(tifName) &gt;= length(tifExt) &amp;&amp; <span class="keyword">...</span>
+0273             strcmp(filename((end - length(tifExt) + 1):end), tifExt)
+0274         tifName = filename(1:(end - length(tifExt)));
+0275     <span class="keyword">end</span>
+0276     
+0277     <span class="comment">% Create the filename.</span>
+0278     <span class="keyword">if</span> isempty(tifName)
+0279         <span class="keyword">if</span> isempty(controlName)
+0280             tifName = [wormName <span class="string">' path'</span>];
+0281         <span class="keyword">else</span>
+0282             tifName = [wormName <span class="string">' vs '</span> controlName <span class="string">' path'</span>];
+0283         <span class="keyword">end</span>
+0284     <span class="keyword">end</span>
+0285     
+0286     <span class="comment">% Add the TIF extension.</span>
+0287     filename = [tifName <span class="string">'.tif'</span>];
+0288 
+0289 <span class="comment">% We are not saving a file.</span>
+0290 <span class="keyword">else</span>
+0291     filename = [];
+0292 <span class="keyword">end</span>
+0293 
+0294 <span class="comment">% Initialize the files and drawing information.</span>
+0295 <span class="keyword">if</span> length(wormInfo) &gt; maxPaths
+0296     wormInfo = wormInfo(round(linspace(1, length(wormInfo), maxPaths)));
+0297 <span class="keyword">end</span>
+0298 <span class="keyword">if</span> length(controlInfo) &gt; maxPaths
+0299     controlInfo = <span class="keyword">...</span>
+0300         controlInfo(round(linspace(1, length(controlInfo), maxPaths)));
+0301 <span class="keyword">end</span>
+0302 
+0303 <span class="comment">% Load the worm path information.</span>
+0304 <span class="keyword">if</span> isVerbose
+0305     disp(<span class="string">'Loading experiments ...'</span>);
+0306 <span class="keyword">end</span>
+0307 [wormInfo, wormSkeleton, wormCoils, wormOmegas, <span class="keyword">...</span>
+0308     wormSpeed, wormForaging] = loadWorms(wormFeatDir, wormInfo, isVerbose);
+0309 <span class="keyword">if</span> isVerbose
+0310     disp(<span class="string">'Loading controls ...'</span>);
+0311 <span class="keyword">end</span>
+0312 [controlInfo, controlSkeleton, controlCoils, controlOmegas, <span class="keyword">...</span>
+0313     controlSpeed, controlForaging] = <span class="keyword">...</span>
+0314     loadWorms(controlFeatDir, controlInfo, isVerbose);
+0315 
+0316 <span class="comment">% Translate the skeletons to a common origin.</span>
+0317 <span class="comment">% [xLims, yLims] = centerSkeletons(wormSkeleton, controlSkeleton);</span>
+0318 <span class="comment">% xLims = xLims ./ 1000;</span>
+0319 <span class="comment">% yLims = yLims ./ 1000;</span>
+0320 xLims = [];
+0321 yLims = [];
+0322 
+0323 <span class="comment">% Draw the paths.</span>
+0324 pageRows = 2;
+0325 pageCols = 3;
+0326 page = <a href="#_sub3" class="code" title="subfunction page = drawPaths(filename, page, ">drawPaths</a>(filename, page, <span class="keyword">...</span>
+0327     wormName, wormInfo, <span class="keyword">...</span>
+0328     wormSkeleton, wormCoils, wormOmegas, <span class="keyword">...</span>
+0329     controlName, controlInfo, <span class="keyword">...</span>
+0330     controlSkeleton, controlCoils, controlOmegas, <span class="keyword">...</span>
+0331     xLims, yLims, isShow, saveQuality, isClose, isVerbose);
+0332 page = <a href="#_sub4" class="code" title="subfunction page = drawPath(filename, page, wormName, wormInfo, skeleton, ">drawPath</a>(filename, page, wormName, wormInfo, <span class="keyword">...</span>
+0333     wormSkeleton, wormCoils, wormOmegas, xLims, yLims, <span class="keyword">...</span>
+0334     pageRows, pageCols, isShow, saveQuality, isClose, isVerbose);
+0335 page = <a href="#_sub4" class="code" title="subfunction page = drawPath(filename, page, wormName, wormInfo, skeleton, ">drawPath</a>(filename, page, controlName, controlInfo, <span class="keyword">...</span>
+0336     controlSkeleton, controlCoils, controlOmegas, xLims, yLims, <span class="keyword">...</span>
+0337     pageRows, pageCols, isShow, saveQuality, isClose, isVerbose);
+0338 
+0339 <span class="comment">% Draw the speed.</span>
+0340 dataName = <span class="string">'Midbody Speed'</span>;
+0341 unitName = <span class="string">'Microns/Seconds'</span>;
+0342 page = <a href="#_sub5" class="code" title="subfunction page = drawPathsData(filename, page, dataName, unitName, ">drawPathsData</a>(filename, page, dataName, unitName, <span class="keyword">...</span>
+0343     wormName, wormInfo, <span class="keyword">...</span>
+0344     wormSkeleton, wormCoils, wormOmegas, <span class="keyword">...</span>
+0345     controlName, controlInfo, <span class="keyword">...</span>
+0346     controlSkeleton, controlCoils, controlOmegas, <span class="keyword">...</span>
+0347     wormSpeed, controlSpeed, speedI, speedLim, speedAlpha, <span class="keyword">...</span>
+0348     xLims, yLims, isShow, saveQuality, isClose, isVerbose);
+0349 page = <a href="#_sub6" class="code" title="subfunction page = drawPathData(filename, page, dataName, unitName, ">drawPathData</a>(filename, page, dataName, unitName, wormName, <span class="keyword">...</span>
+0350     wormInfo, wormSkeleton, wormCoils, wormOmegas, <span class="keyword">...</span>
+0351     speedI, wormSpeed, speedLim, speedAlpha, xLims, yLims, <span class="keyword">...</span>
+0352     pageRows, pageCols, isShow, saveQuality, isClose, isVerbose);
+0353 page = <a href="#_sub6" class="code" title="subfunction page = drawPathData(filename, page, dataName, unitName, ">drawPathData</a>(filename, page, dataName, unitName, controlName, <span class="keyword">...</span>
+0354     controlInfo, controlSkeleton, controlCoils, controlOmegas, <span class="keyword">...</span>
+0355     speedI, controlSpeed, speedLim, speedAlpha, xLims, yLims, <span class="keyword">...</span>
+0356     pageRows, pageCols, isShow, saveQuality, isClose, isVerbose);
+0357 
+0358 <span class="comment">% Draw the foraging.</span>
+0359 dataName = <span class="string">'Foraging Amplitude'</span>;
+0360 unitName = <span class="string">'Degrees'</span>;
+0361 page = <a href="#_sub5" class="code" title="subfunction page = drawPathsData(filename, page, dataName, unitName, ">drawPathsData</a>(filename, page, dataName, unitName, <span class="keyword">...</span>
+0362     wormName, wormInfo, <span class="keyword">...</span>
+0363     wormSkeleton, wormCoils, wormOmegas, <span class="keyword">...</span>
+0364     controlName, controlInfo, <span class="keyword">...</span>
+0365     controlSkeleton, controlCoils, controlOmegas, <span class="keyword">...</span>
+0366     wormForaging, controlForaging, foragingI, foragingLim, foragingAlpha, <span class="keyword">...</span>
+0367     xLims, yLims, isShow, saveQuality, isClose, isVerbose);
+0368 page = <a href="#_sub6" class="code" title="subfunction page = drawPathData(filename, page, dataName, unitName, ">drawPathData</a>(filename, page, dataName, unitName, wormName, <span class="keyword">...</span>
+0369     wormInfo, wormSkeleton, wormCoils, wormOmegas, <span class="keyword">...</span>
+0370     foragingI, wormForaging, foragingLim, foragingAlpha, xLims, yLims, <span class="keyword">...</span>
+0371     pageRows, pageCols, isShow, saveQuality, isClose, isVerbose);
+0372 page = <a href="#_sub6" class="code" title="subfunction page = drawPathData(filename, page, dataName, unitName, ">drawPathData</a>(filename, page, dataName, unitName, controlName, <span class="keyword">...</span>
+0373     controlInfo, controlSkeleton, controlCoils, controlOmegas, <span class="keyword">...</span>
+0374     foragingI, controlForaging, foragingLim, foragingAlpha, xLims, yLims, <span class="keyword">...</span>
+0375     pageRows, pageCols, isShow, saveQuality, isClose, isVerbose);
+0376 
+0377 <span class="comment">% Compute the pages.</span>
+0378 pages = page - pages;
+0379 <span class="keyword">end</span>
+0380 
+0381 
+0382 
+0383 <span class="comment">%% Translate the skeletons to a common origin.</span>
+0384 <a name="_sub1" href="#_subfunctions" class="code">function [xLims, yLims] = centerSkeletons(wormSkeleton, controlSkeleton)</a>
+0385 
+0386 <span class="comment">% Translate the worm skeletons.</span>
+0387 xMax = nan;
+0388 yMax = nan;
+0389 <span class="keyword">for</span> i = 1:length(wormSkeleton)
+0390     wormSkeleton{i}.x = wormSkeleton{i}.x - min(wormSkeleton{i}.x(:));
+0391     wormSkeleton{i}.y = wormSkeleton{i}.y - min(wormSkeleton{i}.y(:));
+0392     xMax = max(xMax, max(wormSkeleton{i}.x(:)));
+0393     yMax = max(yMax, max(wormSkeleton{i}.y(:)));
+0394 <span class="keyword">end</span>
+0395 
+0396 <span class="comment">% Translate the control skeletons.</span>
+0397 <span class="keyword">for</span> i = 1:length(controlSkeleton)
+0398     controlSkeleton{i}.x = <span class="keyword">...</span>
+0399         controlSkeleton{i}.x - min(controlSkeleton{i}.x(:));
+0400     controlSkeleton{i}.y = <span class="keyword">...</span>
+0401         controlSkeleton{i}.y - min(controlSkeleton{i}.y(:));
+0402     xMax = max(xMax, max(controlSkeleton{i}.x(:)));
+0403     yMax = max(yMax, max(controlSkeleton{i}.y(:)));
+0404 <span class="keyword">end</span>
+0405 
+0406 <span class="comment">% Determine the axial limits.</span>
+0407 xLims = [0, xMax];
+0408 yLims = [0, yMax];
+0409 <span class="keyword">end</span>
+0410 
+0411 
+0412 
+0413 <span class="comment">%% Load the worm path information.</span>
+0414 <a name="_sub2" href="#_subfunctions" class="code">function [wormInfo, skeleton, coils, omegas, speed foraging] = </a><span class="keyword">...</span>
+0415     loadWorms(featDir, wormInfo, isVerbose)
+0416 
+0417 <span class="comment">% Initialize the video extension.</span>
+0418 videoExt = <span class="string">'.avi'</span>;
+0419 
+0420 <span class="comment">% Load the worm path information.</span>
+0421 skeleton = cell(length(wormInfo), 1);
+0422 coils = cell(length(wormInfo), 1);
+0423 omegas = cell(length(wormInfo), 1);
+0424 speed = cell(length(wormInfo), 1);
+0425 foraging = cell(length(wormInfo), 1);
+0426 keepI = true(length(wormInfo), 1);
+0427 <span class="keyword">for</span> i = 1:length(wormInfo)
+0428     
+0429     <span class="comment">% Get the file name.</span>
+0430     file = wormInfo(i).files.video;
+0431     sepI = strfind(file, <span class="string">'\'</span>);
+0432     
+0433     <span class="comment">% Remove the directory</span>
+0434     <span class="keyword">if</span> ~isempty(sepI)
+0435         file = file((sepI(end) + 1):end);
+0436     <span class="keyword">end</span>
+0437     
+0438     <span class="comment">% Fix the extension.</span>
+0439     <span class="keyword">if</span> strcmp(file((end - length(videoExt) + 1):end), videoExt)
+0440         file = file(1:(end - length(videoExt)));
+0441     <span class="keyword">end</span>
+0442     file = [file <span class="string">'_features.mat'</span>];
+0443     
+0444     <span class="comment">% Display the progress.</span>
+0445     <span class="keyword">if</span> isVerbose
+0446         disp([<span class="string">'Loading '</span> num2str(i) <span class="string">'/'</span> <span class="keyword">...</span>
+0447             num2str(length(wormInfo)) <span class="string">' &quot;'</span> file <span class="string">'&quot; ...'</span>]);
+0448     <span class="keyword">end</span>
+0449 
+0450     <span class="comment">% Find the file.</span>
+0451     <span class="keyword">if</span> ~exist([featDir filesep file], <span class="string">'file'</span>)
+0452         files = rdir([featDir filesep <span class="string">'**'</span> filesep file]);
+0453         <span class="keyword">if</span> length(files) ~= 1
+0454             file = strrep(file, <span class="string">'\'</span>, <span class="string">'\\'</span>);
+0455             warning(<span class="string">'worm2pathTIF:NoFile'</span>, [<span class="string">'&quot;'</span> featDir <span class="keyword">...</span>
+0456                 <span class="string">'&quot; does not contain a subdirectory with the file &quot;'</span> <span class="keyword">...</span>
+0457                 file <span class="string">'&quot;. The worm will not be used.'</span>]);
+0458             keepI(i) = false;
+0459             <span class="keyword">continue</span>;
+0460         <span class="keyword">end</span>
+0461         file = files.name;
+0462     <span class="keyword">end</span>
+0463     
+0464     <span class="comment">% Load the file.</span>
+0465     worm = [];
+0466     load(file, <span class="string">'worm'</span>);
+0467     
+0468     <span class="comment">% Get the worm features.</span>
+0469     <span class="keyword">if</span> isempty(worm)
+0470         warning(<span class="string">'worm2pathTIF:NoWorm'</span>, <span class="keyword">...</span>
+0471             [<span class="string">'&quot;'</span> file <span class="string">'&quot; does not contain a &quot;worm&quot; and will not be used.'</span>]);
+0472         keepI(i) = false;
+0473         <span class="keyword">continue</span>;
+0474     <span class="keyword">end</span>
+0475     
+0476     <span class="comment">% Add the worm information.</span>
+0477     skeleton{i} = worm.posture.skeleton;
+0478     coils{i} = worm.posture.coils;
+0479     omegas{i} = worm.locomotion.turns.omegas;
+0480     speed{i} = worm.locomotion.velocity.midbody.speed;
+0481     foraging{i} = abs(worm.locomotion.bends.foraging.amplitude);
+0482 <span class="keyword">end</span>
+0483 
+0484 <span class="comment">% Remove the missing worms.</span>
+0485 wormInfo = wormInfo(keepI);
+0486 skeleton = skeleton(keepI);
+0487 coils = coils(keepI);
+0488 omegas = omegas(keepI);
+0489 speed = speed(keepI);
+0490 foraging = foraging(keepI);
+0491 <span class="keyword">end</span>
+0492 
+0493 
+0494 
+0495 <span class="comment">%% Draw the worm multi-paths.</span>
+0496 <a name="_sub3" href="#_subfunctions" class="code">function page = drawPaths(filename, page, </a><span class="keyword">...</span>
+0497     wormName, wormInfo, wormSkeleton, wormCoils, wormOmegas, <span class="keyword">...</span>
+0498     controlName, controlInfo, controlSkeleton, controlCoils, controlOmegas, <span class="keyword">...</span>
+0499     xLims, yLims, isShow, saveQuality, isClose, isVerbose)
+0500 
+0501 <span class="comment">% Do we have multiple worms?</span>
+0502 <span class="keyword">if</span> isempty(wormInfo) || (length(wormInfo) &lt; 2 &amp;&amp; length(controlInfo) &lt; 2)
+0503     <span class="keyword">return</span>;
+0504 <span class="keyword">end</span>
+0505 
+0506 <span class="comment">% Initialize special ascii symbols.</span>
+0507 sepStr = <span class="string">'   ¤   '</span>;
+0508 sepStr2 = <span class="string">'   \rightarrow   '</span>;
+0509 
+0510 <span class="comment">% Initialize the path information.</span>
+0511 centerMode = 1;
+0512 rotateMode = 2;
+0513 sortMode = -1;
+0514 
+0515 <span class="comment">% Determine the shape.</span>
+0516 numWorms = max(length(wormInfo), length(controlInfo));
+0517 rows = ceil(sqrt(numWorms));
+0518 cols = ceil(numWorms / rows);
+0519 shapeMode = [rows, cols];
+0520 
+0521 <span class="comment">% Construct the titles.</span>
+0522 wormTitleStr = [<span class="string">'\it'</span> wormName <span class="string">' \rm'</span> sepStr2 <span class="keyword">...</span>
+0523     <span class="string">'\bf'</span> num2str(length(wormInfo)) <span class="string">' Worms'</span>];
+0524 wormPageStr = [<span class="string">'\it'</span> wormName];
+0525 <span class="keyword">if</span> ~isempty(controlInfo)
+0526     controlTitleStr = [<span class="string">'\it'</span> controlName <span class="string">' \rm'</span> sepStr2 <span class="keyword">...</span>
+0527         <span class="string">'\bf'</span> num2str(length(controlInfo)) <span class="string">' Worms'</span>];
+0528     wormPageStr = [wormPageStr <span class="string">' vs. '</span> controlName];
+0529 <span class="keyword">end</span>
+0530 wormPageStr = [wormPageStr <span class="string">' \rm'</span>];
+0531 
+0532 
+0533 <span class="comment">%% Draw the worm path overlay.</span>
+0534 
+0535 <span class="comment">% Display the progress.</span>
+0536 <span class="keyword">if</span> isVerbose
+0537     <span class="keyword">if</span> isempty(controlName)
+0538         disp([<span class="string">'Printing path overlay for &quot;'</span> wormName <span class="string">'&quot; page 1/2 ...'</span>]);
+0539     <span class="keyword">else</span>
+0540         disp([<span class="string">'Printing path overlay for &quot;'</span> wormName <span class="string">'&quot; vs. &quot;'</span> <span class="keyword">...</span>
+0541             controlName <span class="string">'&quot; page 1/2 ...'</span>]);
+0542     <span class="keyword">end</span>
+0543 <span class="keyword">end</span>
+0544 
+0545 <span class="comment">% Open a new figure.</span>
+0546 page = page + 1;
+0547 h = figure;
+0548 visStr = <span class="string">'off'</span>;
+0549 <span class="keyword">if</span> isShow
+0550     visStr = <span class="string">'on'</span>;
+0551 <span class="keyword">end</span>
+0552 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1], <span class="keyword">...</span>
+0553     <span class="string">'PaperType'</span>, <span class="string">'A2'</span>, <span class="string">'Visible'</span>, visStr);
+0554 
+0555 <span class="comment">% Show the legend.</span>
+0556 <a href="#_sub7" class="code" title="subfunction drawPathsLegend(h, isEvents)">drawPathsLegend</a>(h, true);
+0557 
+0558 <span class="comment">% Draw the worm path overlay.</span>
+0559 <span class="keyword">if</span> isempty(controlInfo)
+0560     <a href="plotWormPath.html" class="code" title="function plotAxes = plotWormPath(titleLabel, skeleton, coils, omegas,varargin)">plotWormPath</a>(wormTitleStr, wormSkeleton, <span class="keyword">...</span>
+0561         wormCoils, wormOmegas, xLims, yLims, <span class="keyword">...</span>
+0562         centerMode, rotateMode, 0, 0, true, subplot(1, 1, 1, <span class="string">'Parent'</span>, h));
+0563     
+0564 <span class="comment">% Draw the worm vs. control path overlay.</span>
+0565 <span class="keyword">else</span>
+0566     
+0567     <span class="comment">% Draw the worm and control.</span>
+0568     wormAxes = <a href="plotWormPath.html" class="code" title="function plotAxes = plotWormPath(titleLabel, skeleton, coils, omegas,varargin)">plotWormPath</a>(wormTitleStr, wormSkeleton, <span class="keyword">...</span>
+0569         wormCoils, wormOmegas, xLims, yLims, <span class="keyword">...</span>
+0570         centerMode, rotateMode, 0, 0, true, subplot(1, 2, 1, <span class="string">'Parent'</span>, h));
+0571     controlAxes = <a href="plotWormPath.html" class="code" title="function plotAxes = plotWormPath(titleLabel, skeleton, coils, omegas,varargin)">plotWormPath</a>(controlTitleStr, controlSkeleton, <span class="keyword">...</span>
+0572         controlCoils, controlOmegas, xLims, yLims, <span class="keyword">...</span>
+0573         centerMode, rotateMode, 0, 0, true, subplot(1, 2, 2, <span class="string">'Parent'</span>, h));
+0574     
+0575     <span class="comment">% Use a common scale.</span>
+0576     wormXLim = get(wormAxes, <span class="string">'XLim'</span>);
+0577     wormYLim = get(wormAxes, <span class="string">'YLim'</span>);
+0578     controlXLim = get(controlAxes, <span class="string">'XLim'</span>);
+0579     controlYLim = get(controlAxes, <span class="string">'YLim'</span>);
+0580     limX = [min(wormXLim(1), controlXLim(1)), <span class="keyword">...</span>
+0581         max(wormXLim(2), controlXLim(2))];
+0582     limY = [min(wormYLim(1), controlYLim(1)), <span class="keyword">...</span>
+0583         max(wormYLim(2), controlYLim(2))];
+0584     set(wormAxes, <span class="string">'XLim'</span>, limX);
+0585     set(wormAxes, <span class="string">'YLim'</span>, limY);
+0586     set(controlAxes, <span class="string">'XLim'</span>, limX);
+0587     set(controlAxes, <span class="string">'YLim'</span>, limY);
+0588 <span class="keyword">end</span>
+0589     
+0590 <span class="comment">% Save the figure.</span>
+0591 <span class="keyword">if</span> saveQuality &gt; 0
+0592     pageTitle = [wormPageStr sepStr <span class="string">'\bfPath Overlay'</span>];
+0593     <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, pageTitle, <span class="keyword">...</span>
+0594         page, isClose);
+0595     
+0596 <span class="comment">% Close the figure.</span>
+0597 <span class="keyword">elseif</span> ~isShow || isClose
+0598     close(h);
+0599 <span class="keyword">end</span>
+0600 
+0601 
+0602 
+0603 <span class="comment">%% Draw multiple paths spaced out on a single figure.</span>
+0604 
+0605 <span class="comment">% Display the progress.</span>
+0606 <span class="keyword">if</span> isVerbose
+0607     <span class="keyword">if</span> isempty(controlName)
+0608         disp([<span class="string">'Printing path overview for &quot;'</span> wormName <span class="string">'&quot; page 2/2 ...'</span>]);
+0609     <span class="keyword">else</span>
+0610         disp([<span class="string">'Printing path overview for &quot;'</span> wormName <span class="string">'&quot; vs. &quot;'</span> <span class="keyword">...</span>
+0611             controlName <span class="string">'&quot; page 2/2 ...'</span>]);
+0612     <span class="keyword">end</span>
+0613 <span class="keyword">end</span>
+0614 
+0615 <span class="comment">% Open a new figure.</span>
+0616 page = page + 1;
+0617 h = figure;
+0618 visStr = <span class="string">'off'</span>;
+0619 <span class="keyword">if</span> isShow
+0620     visStr = <span class="string">'on'</span>;
+0621 <span class="keyword">end</span>
+0622 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1], <span class="keyword">...</span>
+0623     <span class="string">'PaperType'</span>, <span class="string">'A2'</span>, <span class="string">'Visible'</span>, visStr);
+0624 
+0625 <span class="comment">% Show the legend.</span>
+0626 <a href="#_sub7" class="code" title="subfunction drawPathsLegend(h, isEvents)">drawPathsLegend</a>(h, false);
+0627 
+0628 <span class="comment">% Draw the worm path overlay.</span>
+0629 <span class="keyword">if</span> isempty(controlInfo)
+0630     <a href="plotWormPath.html" class="code" title="function plotAxes = plotWormPath(titleLabel, skeleton, coils, omegas,varargin)">plotWormPath</a>(wormTitleStr, wormSkeleton, <span class="keyword">...</span>
+0631         wormCoils, wormOmegas, xLims, yLims, <span class="keyword">...</span>
+0632         centerMode, rotateMode, shapeMode, sortMode, true, <span class="keyword">...</span>
+0633         subplot(1, 1, 1, <span class="string">'Parent'</span>, h));
+0634     
+0635 <span class="comment">% Draw the worm vs. control path overlay.</span>
+0636 <span class="keyword">else</span>
+0637     
+0638     <span class="comment">% Draw the worm and control.</span>
+0639     wormAxes = <a href="plotWormPath.html" class="code" title="function plotAxes = plotWormPath(titleLabel, skeleton, coils, omegas,varargin)">plotWormPath</a>(wormTitleStr, wormSkeleton, <span class="keyword">...</span>
+0640         wormCoils, wormOmegas, xLims, yLims, <span class="keyword">...</span>
+0641         centerMode, rotateMode, shapeMode, sortMode, true, <span class="keyword">...</span>
+0642         subplot(1, 2, 1, <span class="string">'Parent'</span>, h));
+0643     controlAxes = <a href="plotWormPath.html" class="code" title="function plotAxes = plotWormPath(titleLabel, skeleton, coils, omegas,varargin)">plotWormPath</a>(controlTitleStr, controlSkeleton, <span class="keyword">...</span>
+0644         controlCoils, controlOmegas, xLims, yLims, <span class="keyword">...</span>
+0645         centerMode, rotateMode, shapeMode, sortMode, true, <span class="keyword">...</span>
+0646         subplot(1, 2, 2, <span class="string">'Parent'</span>, h));
+0647     
+0648     <span class="comment">% Use a common scale.</span>
+0649 <span class="comment">%     wormXLim = get(wormAxes, 'XLim');</span>
+0650 <span class="comment">%     wormYLim = get(wormAxes, 'YLim');</span>
+0651 <span class="comment">%     controlXLim = get(controlAxes, 'XLim');</span>
+0652 <span class="comment">%     controlYLim = get(controlAxes, 'YLim');</span>
+0653 <span class="comment">%     limX = [min(wormXLim(1), controlXLim(1)), ...</span>
+0654 <span class="comment">%         max(wormXLim(2), controlXLim(2))];</span>
+0655 <span class="comment">%     limY = [min(wormYLim(1), controlYLim(1)), ...</span>
+0656 <span class="comment">%         max(wormYLim(2), controlYLim(2))];</span>
+0657 <span class="comment">%     set(wormAxes, 'XLim', limX);</span>
+0658 <span class="comment">%     set(wormAxes, 'YLim', limY);</span>
+0659 <span class="comment">%     set(controlAxes, 'XLim', limX);</span>
+0660 <span class="comment">%     set(controlAxes, 'YLim', limY);</span>
+0661 <span class="keyword">end</span>
+0662     
+0663 <span class="comment">% Save the figure.</span>
+0664 <span class="keyword">if</span> saveQuality &gt; 0
+0665     pageTitle = [wormPageStr sepStr <span class="string">'\bfPath Overview'</span>];
+0666     <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, pageTitle, <span class="keyword">...</span>
+0667         page, isClose);
+0668     
+0669 <span class="comment">% Close the figure.</span>
+0670 <span class="keyword">elseif</span> ~isShow || isClose
+0671     close(h);
+0672 <span class="keyword">end</span>
+0673 <span class="keyword">end</span>
+0674 
+0675 
+0676 
+0677 <span class="comment">%% Draw the worms path.</span>
+0678 <a name="_sub4" href="#_subfunctions" class="code">function page = drawPath(filename, page, wormName, wormInfo, skeleton, </a><span class="keyword">...</span>
+0679     coils, omegas, xLims, yLims, rows, cols, <span class="keyword">...</span>
+0680     isShow, saveQuality, isClose, isVerbose)
+0681 
+0682 <span class="comment">% Do we have any worms?</span>
+0683 <span class="keyword">if</span> isempty(wormInfo)
+0684     <span class="keyword">return</span>;
+0685 <span class="keyword">end</span>
+0686 
+0687 <span class="comment">% Initialize special ascii symbols.</span>
+0688 sepStr = <span class="string">'   ¤   '</span>;
+0689 sepStr2 = <span class="string">'   \rightarrow   '</span>;
+0690 
+0691 <span class="comment">% Initialize the path information.</span>
+0692 centerMode = 1;
+0693 rotateMode = 0;
+0694 
+0695 <span class="comment">% Draw the paths.</span>
+0696 pathsPerPage = rows * cols;
+0697 h = [];
+0698 <span class="keyword">for</span> i = 1:length(wormInfo)
+0699     
+0700     <span class="comment">% Find the path page index.</span>
+0701     pathI = mod(i - 1, pathsPerPage) + 1;
+0702     
+0703     <span class="comment">% Are we creating a new figure?</span>
+0704     <span class="keyword">if</span> pathI == 1
+0705         
+0706         <span class="comment">% Save and/or close the previous figure.</span>
+0707         <span class="keyword">if</span> i &gt; 1
+0708             
+0709             <span class="comment">% Save the figure.</span>
+0710             <span class="keyword">if</span> saveQuality &gt; 0
+0711                 pageTitle = [<span class="string">'\it'</span> wormName <span class="string">' \rm'</span> sepStr <span class="string">'\bfPath'</span>];
+0712                 <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, pageTitle, <span class="keyword">...</span>
+0713                     page, isClose);
+0714                 
+0715             <span class="comment">% Close the figure.</span>
+0716             <span class="keyword">elseif</span> ~isShow || isClose
+0717                 close(h);
+0718             <span class="keyword">end</span>
+0719         <span class="keyword">end</span>
+0720         
+0721         <span class="comment">% Open a new figure.</span>
+0722         page = page + 1;
+0723         h = figure;
+0724         visStr = <span class="string">'off'</span>;
+0725         <span class="keyword">if</span> isShow
+0726             visStr = <span class="string">'on'</span>;
+0727         <span class="keyword">end</span>
+0728         set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1], <span class="keyword">...</span>
+0729             <span class="string">'PaperType'</span>, <span class="string">'A2'</span>, <span class="string">'Visible'</span>, visStr);
+0730         hold on;
+0731         
+0732         <span class="comment">% Show the legend.</span>
+0733         <a href="#_sub8" class="code" title="subfunction drawPathLegend(h)">drawPathLegend</a>(h);
+0734         
+0735         <span class="comment">% Display the progress.</span>
+0736         <span class="keyword">if</span> isVerbose
+0737             disp([<span class="string">'Printing path for &quot;'</span> wormName <span class="string">'&quot; page '</span> <span class="keyword">...</span>
+0738                 num2str(ceil(i / pathsPerPage)) <span class="string">'/'</span> <span class="keyword">...</span>
+0739                 num2str(ceil(length(wormInfo) / pathsPerPage)) <span class="string">' ...'</span>]);
+0740         <span class="keyword">end</span>
+0741     <span class="keyword">end</span>
+0742     
+0743     <span class="comment">% Draw the path.</span>
+0744     timestamp = wormInfo(i).experiment.environment.timestamp;
+0745     dateStr = datestr(datenum(timestamp), 31);
+0746     titleName = [<span class="string">'\it'</span> wormName <span class="string">' \rm'</span> sepStr2 <span class="string">'\bf'</span> dateStr];
+0747     <a href="plotWormPath.html" class="code" title="function plotAxes = plotWormPath(titleLabel, skeleton, coils, omegas,varargin)">plotWormPath</a>(titleName, skeleton{i}, coils{i}, omegas{i}, <span class="keyword">...</span>
+0748         xLims, yLims, centerMode, rotateMode, 0, 0, false, <span class="keyword">...</span>
+0749         subplot(rows, cols, pathI, <span class="string">'Parent'</span>, h));
+0750 <span class="keyword">end</span>
+0751 
+0752 <span class="comment">% Save the last figure.</span>
+0753 <span class="keyword">if</span> saveQuality &gt; 0
+0754     pageTitle = [<span class="string">'\it'</span> wormName <span class="string">' \rm'</span> sepStr <span class="string">'\bfPath'</span>];
+0755     <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, pageTitle, <span class="keyword">...</span>
+0756         page, isClose);
+0757     
+0758 <span class="comment">% Close the figure.</span>
+0759 <span class="keyword">elseif</span> ~isShow || isClose
+0760     close(h);
+0761 <span class="keyword">end</span>
+0762 <span class="keyword">end</span>
+0763 
+0764 
+0765 
+0766 <span class="comment">%% Draw the worm multi-paths data.</span>
+0767 <a name="_sub5" href="#_subfunctions" class="code">function page = drawPathsData(filename, page, dataName, unitName, </a><span class="keyword">...</span>
+0768     wormName, wormInfo, wormSkeleton, wormCoils, wormOmegas, <span class="keyword">...</span>
+0769     controlName, controlInfo, controlSkeleton, controlCoils, controlOmegas, <span class="keyword">...</span>
+0770     wormData, controlData, bodyI, dLim, alpha, xLims, yLims, <span class="keyword">...</span>
+0771     isShow, saveQuality, isClose, isVerbose)
+0772 
+0773 <span class="comment">% Do we have multiple worms?</span>
+0774 <span class="keyword">if</span> isempty(wormInfo) || (length(wormInfo) &lt; 2 &amp;&amp; length(controlInfo) &lt; 2)
+0775     <span class="keyword">return</span>;
+0776 <span class="keyword">end</span>
+0777 
+0778 <span class="comment">% Initialize special ascii symbols.</span>
+0779 sepStr = <span class="string">'   ¤   '</span>;
+0780 sepStr2 = <span class="string">'   \rightarrow   '</span>;
+0781 
+0782 <span class="comment">% Initialize the path information.</span>
+0783 centerMode = 1;
+0784 rotateMode = 2;
+0785 sortMode = -1;
+0786 
+0787 <span class="comment">% Determine the shape.</span>
+0788 numWorms = max(length(wormInfo), length(controlInfo));
+0789 rows = ceil(sqrt(numWorms));
+0790 cols = ceil(numWorms / rows);
+0791 shapeMode = [rows, cols];
+0792 
+0793 <span class="comment">% Construct the titles.</span>
+0794 wormTitleStr = [<span class="string">'\it'</span> wormName <span class="string">' \rm'</span> sepStr2 <span class="keyword">...</span>
+0795     <span class="string">'\bf'</span> num2str(length(wormInfo)) <span class="string">' Worms'</span>];
+0796 wormPageStr = [<span class="string">'\it'</span> wormName];
+0797 <span class="keyword">if</span> ~isempty(controlInfo)
+0798     controlTitleStr = [<span class="string">'\it'</span> controlName <span class="string">' \rm'</span> sepStr2 <span class="keyword">...</span>
+0799         <span class="string">'\bf'</span> num2str(length(controlInfo)) <span class="string">' Worms'</span>];
+0800     wormPageStr = [wormPageStr <span class="string">' vs. '</span> controlName];
+0801 <span class="keyword">end</span>
+0802 wormPageStr = [wormPageStr <span class="string">' \rm'</span>];
+0803 
+0804 
+0805 
+0806 <span class="comment">%% Draw the worm path data overlay.</span>
+0807 
+0808 <span class="comment">% Display the progress.</span>
+0809 <span class="keyword">if</span> isVerbose
+0810     <span class="keyword">if</span> isempty(controlName)
+0811         disp([<span class="string">'Printing '</span> dataName <span class="string">' overlay for &quot;'</span> wormName <span class="keyword">...</span>
+0812             <span class="string">'&quot; page 1/2 ...'</span>]);
+0813     <span class="keyword">else</span>
+0814         disp([<span class="string">'Printing '</span> dataName <span class="string">' overlay for &quot;'</span> wormName <span class="string">'&quot; vs. &quot;'</span> <span class="keyword">...</span>
+0815             controlName <span class="string">'&quot; page 1/2 ...'</span>]);
+0816     <span class="keyword">end</span>
+0817 <span class="keyword">end</span>
+0818 
+0819 <span class="comment">% Open a new figure.</span>
+0820 page = page + 1;
+0821 h = figure;
+0822 visStr = <span class="string">'off'</span>;
+0823 <span class="keyword">if</span> isShow
+0824     visStr = <span class="string">'on'</span>;
+0825 <span class="keyword">end</span>
+0826 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1], <span class="keyword">...</span>
+0827     <span class="string">'PaperType'</span>, <span class="string">'A2'</span>, <span class="string">'Visible'</span>, visStr);
+0828 
+0829 <span class="comment">% Show the legend.</span>
+0830 <a href="#_sub9" class="code" title="subfunction drawPathsDataLegend(h, dataName, unitName, dLim, isEvents)">drawPathsDataLegend</a>(h, dataName, unitName, dLim, true);
+0831 
+0832 <span class="comment">% Draw the worm path overlay.</span>
+0833 <span class="keyword">if</span> isempty(controlInfo)
+0834     <a href="plotWormPathData.html" class="code" title="function plotAxes = plotWormPathData(titleLabel, skeleton,coils, omegas, bodyI, data, varargin)">plotWormPathData</a>(wormTitleStr, wormSkeleton, <span class="keyword">...</span>
+0835         wormCoils, wormOmegas, bodyI, wormData, dLim, alpha, <span class="keyword">...</span>
+0836         xLims, yLims, centerMode, rotateMode, 0, 0, true, <span class="keyword">...</span>
+0837         subplot(1, 1, 1, <span class="string">'Parent'</span>, h));
+0838     
+0839 <span class="comment">% Draw the worm vs. control path overlay.</span>
+0840 <span class="keyword">else</span>
+0841     
+0842     <span class="comment">% Draw the worm and control.</span>
+0843     wormAxes = <a href="plotWormPathData.html" class="code" title="function plotAxes = plotWormPathData(titleLabel, skeleton,coils, omegas, bodyI, data, varargin)">plotWormPathData</a>(wormTitleStr, wormSkeleton, <span class="keyword">...</span>
+0844         wormCoils, wormOmegas, bodyI, wormData, dLim, alpha, <span class="keyword">...</span>
+0845         xLims, yLims, centerMode, rotateMode, 0, 0, true, <span class="keyword">...</span>
+0846         subplot(1, 2, 1, <span class="string">'Parent'</span>, h));
+0847     controlAxes = <a href="plotWormPathData.html" class="code" title="function plotAxes = plotWormPathData(titleLabel, skeleton,coils, omegas, bodyI, data, varargin)">plotWormPathData</a>(controlTitleStr, controlSkeleton, <span class="keyword">...</span>
+0848         controlCoils, controlOmegas, bodyI, controlData, dLim, alpha, <span class="keyword">...</span>
+0849         xLims, yLims, centerMode, rotateMode, 0, 0, true, <span class="keyword">...</span>
+0850         subplot(1, 2, 2, <span class="string">'Parent'</span>, h));
+0851     
+0852     <span class="comment">% Use a common scale.</span>
+0853     wormXLim = get(wormAxes, <span class="string">'XLim'</span>);
+0854     wormYLim = get(wormAxes, <span class="string">'YLim'</span>);
+0855     controlXLim = get(controlAxes, <span class="string">'XLim'</span>);
+0856     controlYLim = get(controlAxes, <span class="string">'YLim'</span>);
+0857     limX = [min(wormXLim(1), controlXLim(1)), <span class="keyword">...</span>
+0858         max(wormXLim(2), controlXLim(2))];
+0859     limY = [min(wormYLim(1), controlYLim(1)), <span class="keyword">...</span>
+0860         max(wormYLim(2), controlYLim(2))];
+0861     set(wormAxes, <span class="string">'XLim'</span>, limX);
+0862     set(wormAxes, <span class="string">'YLim'</span>, limY);
+0863     set(controlAxes, <span class="string">'XLim'</span>, limX);
+0864     set(controlAxes, <span class="string">'YLim'</span>, limY);
+0865 <span class="keyword">end</span>
+0866     
+0867 <span class="comment">% Save the figure.</span>
+0868 <span class="keyword">if</span> saveQuality &gt; 0
+0869     pageTitle = [wormPageStr sepStr <span class="string">'\bf'</span> dataName <span class="string">' Overlay'</span>];
+0870     <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, pageTitle, <span class="keyword">...</span>
+0871         page, isClose);
+0872     
+0873 <span class="comment">% Close the figure.</span>
+0874 <span class="keyword">elseif</span> ~isShow || isClose
+0875     close(h);
+0876 <span class="keyword">end</span>
+0877 
+0878 
+0879 
+0880 <span class="comment">%% Draw multiple path data spaced out on a single figure.</span>
+0881 
+0882 <span class="comment">% Display the progress.</span>
+0883 <span class="keyword">if</span> isVerbose
+0884     <span class="keyword">if</span> isempty(controlName)
+0885         disp([<span class="string">'Printing '</span> dataName <span class="string">' overview for &quot;'</span> wormName <span class="keyword">...</span>
+0886             <span class="string">'&quot; page 2/2 ...'</span>]);
+0887     <span class="keyword">else</span>
+0888         disp([<span class="string">'Printing '</span> dataName <span class="string">' overview for &quot;'</span> wormName <span class="string">'&quot; vs. &quot;'</span> <span class="keyword">...</span>
+0889             controlName <span class="string">'&quot; page 2/2 ...'</span>]);
+0890     <span class="keyword">end</span>
+0891 <span class="keyword">end</span>
+0892 
+0893 <span class="comment">% Open a new figure.</span>
+0894 page = page + 1;
+0895 h = figure;
+0896 visStr = <span class="string">'off'</span>;
+0897 <span class="keyword">if</span> isShow
+0898     visStr = <span class="string">'on'</span>;
+0899 <span class="keyword">end</span>
+0900 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1], <span class="keyword">...</span>
+0901     <span class="string">'PaperType'</span>, <span class="string">'A2'</span>, <span class="string">'Visible'</span>, visStr);
+0902 
+0903 <span class="comment">% Show the legend.</span>
+0904 <a href="#_sub9" class="code" title="subfunction drawPathsDataLegend(h, dataName, unitName, dLim, isEvents)">drawPathsDataLegend</a>(h, dataName, unitName, dLim, false);
+0905 
+0906 <span class="comment">% Draw the worm path overlay.</span>
+0907 <span class="keyword">if</span> isempty(controlInfo)
+0908     <a href="plotWormPathData.html" class="code" title="function plotAxes = plotWormPathData(titleLabel, skeleton,coils, omegas, bodyI, data, varargin)">plotWormPathData</a>(wormTitleStr, wormSkeleton, <span class="keyword">...</span>
+0909         wormCoils, wormOmegas, bodyI, wormData, dLim, alpha, <span class="keyword">...</span>
+0910         xLims, yLims, centerMode, rotateMode, shapeMode, sortMode, <span class="keyword">...</span>
+0911         true, subplot(1, 1, 1, <span class="string">'Parent'</span>, h));
+0912     
+0913 <span class="comment">% Draw the worm vs. control path overlay.</span>
+0914 <span class="keyword">else</span>
+0915     
+0916     <span class="comment">% Draw the worm and control.</span>
+0917     wormAxes = <a href="plotWormPathData.html" class="code" title="function plotAxes = plotWormPathData(titleLabel, skeleton,coils, omegas, bodyI, data, varargin)">plotWormPathData</a>(wormTitleStr, wormSkeleton, <span class="keyword">...</span>
+0918         wormCoils, wormOmegas, bodyI, wormData, dLim, alpha, <span class="keyword">...</span>
+0919         xLims, yLims, centerMode, rotateMode, shapeMode, sortMode, <span class="keyword">...</span>
+0920         true, subplot(1, 2, 1, <span class="string">'Parent'</span>, h));
+0921     controlAxes = <a href="plotWormPathData.html" class="code" title="function plotAxes = plotWormPathData(titleLabel, skeleton,coils, omegas, bodyI, data, varargin)">plotWormPathData</a>(controlTitleStr, controlSkeleton, <span class="keyword">...</span>
+0922         controlCoils, controlOmegas, bodyI, controlData, dLim, alpha, <span class="keyword">...</span>
+0923         xLims, yLims, centerMode, rotateMode, shapeMode, sortMode, <span class="keyword">...</span>
+0924         true, subplot(1, 2, 2, <span class="string">'Parent'</span>, h));
+0925     
+0926     <span class="comment">% Use a common scale.</span>
+0927 <span class="comment">%     wormXLim = get(wormAxes, 'XLim');</span>
+0928 <span class="comment">%     wormYLim = get(wormAxes, 'YLim');</span>
+0929 <span class="comment">%     controlXLim = get(controlAxes, 'XLim');</span>
+0930 <span class="comment">%     controlYLim = get(controlAxes, 'YLim');</span>
+0931 <span class="comment">%     limX = [min(wormXLim(1), controlXLim(1)), ...</span>
+0932 <span class="comment">%         max(wormXLim(2), controlXLim(2))];</span>
+0933 <span class="comment">%     limY = [min(wormYLim(1), controlYLim(1)), ...</span>
+0934 <span class="comment">%         max(wormYLim(2), controlYLim(2))];</span>
+0935 <span class="comment">%     set(wormAxes, 'XLim', limX);</span>
+0936 <span class="comment">%     set(wormAxes, 'YLim', limY);</span>
+0937 <span class="comment">%     set(controlAxes, 'XLim', limX);</span>
+0938 <span class="comment">%     set(controlAxes, 'YLim', limY);</span>
+0939 <span class="keyword">end</span>
+0940     
+0941 <span class="comment">% Save the figure.</span>
+0942 <span class="keyword">if</span> saveQuality &gt; 0
+0943     pageTitle = [wormPageStr sepStr <span class="string">'\bf'</span> dataName <span class="string">' Overview'</span>];
+0944     <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, pageTitle, <span class="keyword">...</span>
+0945         page, isClose);
+0946     
+0947 <span class="comment">% Close the figure.</span>
+0948 <span class="keyword">elseif</span> ~isShow || isClose
+0949     close(h);
+0950 <span class="keyword">end</span>
+0951 <span class="keyword">end</span>
+0952 
+0953 
+0954 
+0955 <span class="comment">%% Draw the worms path data.</span>
+0956 <a name="_sub6" href="#_subfunctions" class="code">function page = drawPathData(filename, page, dataName, unitName, </a><span class="keyword">...</span>
+0957     wormName, wormInfo, skeleton, coils, omegas, <span class="keyword">...</span>
+0958     bodyI, data, dLim, alpha, xLims, yLims, rows, cols, <span class="keyword">...</span>
+0959     isShow, saveQuality, isClose, isVerbose)
+0960 
+0961 <span class="comment">% Do we have any worms?</span>
+0962 <span class="keyword">if</span> isempty(wormInfo)
+0963     <span class="keyword">return</span>;
+0964 <span class="keyword">end</span>
+0965 
+0966 <span class="comment">% Initialize special ascii symbols.</span>
+0967 sepStr = <span class="string">'  ¤   '</span>;
+0968 sepStr2 = <span class="string">'   \rightarrow   '</span>;
+0969 
+0970 <span class="comment">% Initialize the path information.</span>
+0971 centerMode = 1;
+0972 rotateMode = 0;
+0973 
+0974 <span class="comment">% Draw the paths.</span>
+0975 pathsPerPage = rows * cols;
+0976 h = [];
+0977 <span class="keyword">for</span> i = 1:length(wormInfo)
+0978     
+0979     <span class="comment">% Find the path page index.</span>
+0980     pathI = mod(i - 1, pathsPerPage) + 1;
+0981     
+0982     <span class="comment">% Are we creating a new figure?</span>
+0983     <span class="keyword">if</span> pathI == 1
+0984         
+0985         <span class="comment">% Save and/or close the previous figure.</span>
+0986         <span class="keyword">if</span> i &gt; 1
+0987             
+0988             <span class="comment">% Save the figure.</span>
+0989             <span class="keyword">if</span> saveQuality &gt; 0
+0990                 pageTitle = [<span class="string">'\it'</span> wormName <span class="string">' \rm'</span> sepStr <span class="string">'\bf'</span> dataName];
+0991                 <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, pageTitle, <span class="keyword">...</span>
+0992                     page, isClose);
+0993                 
+0994             <span class="comment">% Close the figure.</span>
+0995             <span class="keyword">elseif</span> ~isShow || isClose
+0996                 close(h);
+0997             <span class="keyword">end</span>
+0998         <span class="keyword">end</span>
+0999         
+1000         <span class="comment">% Open a new figure.</span>
+1001         page = page + 1;
+1002         h = figure;
+1003         visStr = <span class="string">'off'</span>;
+1004         <span class="keyword">if</span> isShow
+1005             visStr = <span class="string">'on'</span>;
+1006         <span class="keyword">end</span>
+1007         set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1], <span class="keyword">...</span>
+1008             <span class="string">'PaperType'</span>, <span class="string">'A2'</span>, <span class="string">'Visible'</span>, visStr);
+1009         hold on;
+1010         
+1011         <span class="comment">% Show the legend.</span>
+1012         <a href="#_sub10" class="code" title="subfunction drawPathDataLegend(h, dataName, unitName, dLim)">drawPathDataLegend</a>(h, dataName, unitName, dLim);
+1013         
+1014         <span class="comment">% Display the progress.</span>
+1015         <span class="keyword">if</span> isVerbose
+1016             disp([<span class="string">'Printing &quot;'</span> dataName <span class="string">'&quot; for &quot;'</span> wormName <span class="string">'&quot; page '</span> <span class="keyword">...</span>
+1017                 num2str(ceil(i / pathsPerPage)) <span class="string">'/'</span> <span class="keyword">...</span>
+1018                 num2str(ceil(length(wormInfo) / pathsPerPage)) <span class="string">' ...'</span>]);
+1019         <span class="keyword">end</span>
+1020     <span class="keyword">end</span>
+1021     
+1022     <span class="comment">% Draw the path.</span>
+1023     timestamp = wormInfo(i).experiment.environment.timestamp;
+1024     dateStr = datestr(datenum(timestamp), 31);
+1025     titleName = [<span class="string">'\it'</span> wormName <span class="string">' \rm'</span> sepStr2 <span class="string">'\bf'</span> dateStr];
+1026     <a href="plotWormPathData.html" class="code" title="function plotAxes = plotWormPathData(titleLabel, skeleton,coils, omegas, bodyI, data, varargin)">plotWormPathData</a>(titleName, skeleton{i}, coils{i}, omegas{i}, <span class="keyword">...</span>
+1027         bodyI, data{i}, dLim, alpha, xLims, yLims, <span class="keyword">...</span>
+1028         centerMode, rotateMode, 0, 0, false, <span class="keyword">...</span>
+1029         subplot(rows, cols, pathI, <span class="string">'Parent'</span>, h));
+1030 <span class="keyword">end</span>
+1031 
+1032 <span class="comment">% Save the last figure.</span>
+1033 <span class="keyword">if</span> saveQuality &gt; 0
+1034     pageTitle = [<span class="string">'\it'</span> wormName <span class="string">' \rm'</span> sepStr <span class="string">'\bf'</span> dataName];
+1035     <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, pageTitle, <span class="keyword">...</span>
+1036         page, isClose);
+1037     
+1038 <span class="comment">% Close the figure.</span>
+1039 <span class="keyword">elseif</span> ~isShow || isClose
+1040     close(h);
+1041 <span class="keyword">end</span>
+1042 <span class="keyword">end</span>
+1043 
+1044 
+1045 
+1046 <span class="comment">%% Show the multi-path legend.</span>
+1047 <a name="_sub7" href="#_subfunctions" class="code">function drawPathsLegend(h, isEvents)</a>
+1048 
+1049 <span class="comment">% Initialize the drawing information.</span>
+1050 fontSize = 24;
+1051 black = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+1052 white = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'w'</span>);
+1053 headColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'m'</span>);
+1054 midbodyColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'g'</span>);
+1055 tailColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'b'</span>, 1/3);
+1056 firstColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0.5);
+1057 lastColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>)';
+1058 coilColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+1059 omegaColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+1060 
+1061 <span class="comment">% Setup the label information.</span>
+1062 label = {
+1063     <span class="string">' \bfMIDBODY '</span>
+1064     <span class="string">' \bfHEAD '</span>
+1065     <span class="string">' \bfTAIL '</span>
+1066     <span class="string">' \bfSTART '</span>
+1067     <span class="string">' \bfEND '</span>
+1068     <span class="string">' \bfOMEGA = x '</span>
+1069     <span class="string">' \bfCOIL = + '</span>};
+1070 backColor = {
+1071     midbodyColor
+1072     headColor
+1073     tailColor
+1074     firstColor
+1075     lastColor
+1076     omegaColor
+1077     coilColor};
+1078 foreColor = {
+1079     black
+1080     black
+1081     black
+1082     white
+1083     white
+1084     white
+1085     white};
+1086 
+1087 <span class="comment">% Setup the margin.</span>
+1088 xOff = 10^-3;
+1089 xPosOff = 1 - xOff;
+1090 textPosition = [xPosOff, 0, xOff, 1];
+1091 textAxis = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'Position'</span>, textPosition, <span class="keyword">...</span>
+1092     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+1093 
+1094 <span class="comment">% Are we showing events?</span>
+1095 yStart = 0.99;
+1096 yStart2 = 0.155;
+1097 yStart3 = 0.072;
+1098 yOff = 0.033;
+1099 <span class="keyword">if</span> ~isEvents
+1100     label = label(1:(end - 2));
+1101     backColor = backColor(1:(end - 2));
+1102     foreColor = foreColor(1:(end - 2));
+1103     yStart2 = yStart3;
+1104 <span class="keyword">end</span>
+1105 
+1106 <span class="comment">% Draw the labels.</span>
+1107 <span class="keyword">for</span> i = 1:length(label)
+1108     
+1109     <span class="comment">% Draw the label.</span>
+1110     text(xOff, yStart - (i - 1) * yOff, label{i}, <span class="keyword">...</span>
+1111         <span class="string">'FontSize'</span>, fontSize, <span class="keyword">...</span>
+1112         <span class="string">'HorizontalAlignment'</span>, <span class="string">'right'</span>, <span class="keyword">...</span>
+1113         <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+1114         <span class="string">'BackgroundColor'</span>, backColor{i}, <span class="keyword">...</span>
+1115         <span class="string">'Color'</span>, foreColor{i}, <span class="keyword">...</span>
+1116         <span class="string">'EdgeColor'</span>, <span class="string">'k'</span>, <span class="keyword">...</span>
+1117         <span class="string">'Parent'</span>, textAxis);
+1118     
+1119     <span class="comment">% Put in a space.</span>
+1120     <span class="keyword">if</span> i == 3
+1121         yStart = yStart2 + i * yOff;
+1122     <span class="keyword">elseif</span> i == 5
+1123         yStart = yStart3 + i * yOff;
+1124     <span class="keyword">end</span>
+1125 <span class="keyword">end</span>
+1126 <span class="keyword">end</span>
+1127 
+1128 
+1129 
+1130 <span class="comment">%% Show the path legend.</span>
+1131 <a name="_sub8" href="#_subfunctions" class="code">function drawPathLegend(h)</a>
+1132 
+1133 <span class="comment">% Initialize the drawing information.</span>
+1134 fontSize = 32;
+1135 black = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+1136 white = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'w'</span>);
+1137 headColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'m'</span>);
+1138 midbodyColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'g'</span>);
+1139 tailColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'b'</span>, 1/3);
+1140 firstColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0.5);
+1141 lastColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>)';
+1142 coilColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+1143 omegaColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+1144 
+1145 <span class="comment">% Setup the label information.</span>
+1146 label = {
+1147     <span class="string">' \bfMIDBODY '</span>
+1148     <span class="string">' \bfHEAD '</span>
+1149     <span class="string">' \bfTAIL '</span>
+1150     <span class="string">' \bfOMEGA = x '</span>
+1151     <span class="string">' \bfCOIL = + '</span>
+1152     <span class="string">' \bfSTART '</span>
+1153     <span class="string">' \bfEND '</span>};
+1154 backColor = {
+1155     midbodyColor
+1156     headColor
+1157     tailColor
+1158     omegaColor
+1159     coilColor
+1160     firstColor
+1161     lastColor};
+1162 foreColor = {
+1163     black
+1164     black
+1165     black
+1166     white
+1167     white
+1168     white
+1169     white};
+1170 
+1171 <span class="comment">% Setup the margin.</span>
+1172 xOff = 10^-3;
+1173 xPosOff = 1 - xOff;
+1174 textPosition = [xPosOff, 0, xOff, 1];
+1175 textAxis = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'Position'</span>, textPosition, <span class="keyword">...</span>
+1176     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+1177 
+1178 <span class="comment">% Draw the labels.</span>
+1179 yStart = 0.99;
+1180 yStart2 = 0.5;
+1181 yStart3 = 0.36;
+1182 yOff = 0.05;
+1183 <span class="keyword">for</span> i = 1:length(label)
+1184     
+1185     <span class="comment">% Draw the label.</span>
+1186     text(xOff, yStart - (i - 1) * yOff, label{i}, <span class="keyword">...</span>
+1187         <span class="string">'FontSize'</span>, fontSize, <span class="keyword">...</span>
+1188         <span class="string">'HorizontalAlignment'</span>, <span class="string">'right'</span>, <span class="keyword">...</span>
+1189         <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+1190         <span class="string">'BackgroundColor'</span>, backColor{i}, <span class="keyword">...</span>
+1191         <span class="string">'Color'</span>, foreColor{i}, <span class="keyword">...</span>
+1192         <span class="string">'EdgeColor'</span>, <span class="string">'k'</span>, <span class="keyword">...</span>
+1193         <span class="string">'Parent'</span>, textAxis);
+1194     
+1195     <span class="comment">% Put in a space.</span>
+1196     <span class="keyword">if</span> i == 3
+1197         yStart = yStart2 + i * yOff;
+1198     <span class="keyword">elseif</span> i == 5
+1199         yStart = yStart3 + i * yOff;
+1200     <span class="keyword">end</span>
+1201 <span class="keyword">end</span>
+1202 <span class="keyword">end</span>
+1203 
+1204 
+1205 
+1206 <span class="comment">%% Show the multi-path data legend.</span>
+1207 <a name="_sub9" href="#_subfunctions" class="code">function drawPathsDataLegend(h, dataName, unitName, dLim, isEvents)</a>
+1208 
+1209 <span class="comment">% Initialize the drawing information.</span>
+1210 nameFontSize = 20;
+1211 dataFontSize = 14;
+1212 legendFontSize = 24;
+1213 black = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+1214 white = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'w'</span>);
+1215 firstColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0.5);
+1216 lastColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>)';
+1217 coilColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+1218 omegaColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+1219 
+1220 <span class="comment">% Setup the label information.</span>
+1221 label = {
+1222     <span class="string">' \bfSTART '</span>
+1223     <span class="string">' \bfEND '</span>
+1224     <span class="string">' \bfOMEGA = x '</span>
+1225     <span class="string">' \bfCOIL = + '</span>};
+1226 backColor = {
+1227     firstColor
+1228     lastColor
+1229     omegaColor
+1230     coilColor};
+1231 foreColor = {
+1232     white
+1233     white
+1234     white
+1235     white};
+1236 
+1237 <span class="comment">% Setup the margin.</span>
+1238 xOff = 10^-3;
+1239 xPosOff = 1 - xOff;
+1240 textPosition = [xPosOff, 0, xOff, 1];
+1241 textAxis = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'Position'</span>, textPosition, <span class="keyword">...</span>
+1242     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+1243 
+1244 <span class="comment">% Draw the colorbar label.</span>
+1245 yStart = .995;
+1246 nameStr = [<span class="string">' \bf'</span> dataName <span class="string">'\rm  (\it'</span> unitName <span class="string">'\rm) '</span>];
+1247 text(xPosOff, yStart, nameStr, <span class="keyword">...</span>
+1248     <span class="string">'FontSize'</span>, nameFontSize, <span class="keyword">...</span>
+1249     <span class="string">'HorizontalAlignment'</span>, <span class="string">'right'</span>, <span class="keyword">...</span>
+1250     <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+1251     <span class="string">'BackgroundColor'</span>, white, <span class="keyword">...</span>
+1252     <span class="string">'Color'</span>, black, <span class="keyword">...</span>
+1253     <span class="string">'EdgeColor'</span>, <span class="string">'k'</span>, <span class="keyword">...</span>
+1254     <span class="string">'Parent'</span>, textAxis);
+1255     
+1256 <span class="comment">% Draw the colorbar.</span>
+1257 yStart = 0.55;
+1258 barWidth = .02;
+1259 barHeight = 0.4;
+1260 barPosition = [xPosOff - barWidth, yStart, barWidth, barHeight];
+1261 colormap(textAxis, jet);
+1262 set(textAxis, <span class="string">'CLim'</span>, dLim);
+1263 colorbar(<span class="string">'peer'</span>, textAxis, <span class="string">'Position'</span>, barPosition, <span class="keyword">...</span>
+1264     <span class="string">'YAxisLocation'</span>, <span class="string">'left'</span>, <span class="string">'FontSize'</span>, dataFontSize);
+1265 
+1266 <span class="comment">% Are we showing events?</span>
+1267 yStart = 0.155;
+1268 yStart2 = 0.072;
+1269 yOff = 0.033;
+1270 <span class="keyword">if</span> ~isEvents
+1271     label = label(1:(end - 2));
+1272     backColor = backColor(1:(end - 2));
+1273     foreColor = foreColor(1:(end - 2));
+1274     yStart = yStart2;
+1275 <span class="keyword">end</span>
+1276 
+1277 <span class="comment">% Draw the labels.</span>
+1278 <span class="keyword">for</span> i = 1:length(label)
+1279     
+1280     <span class="comment">% Draw the label.</span>
+1281     text(xOff, yStart - (i - 1) * yOff, label{i}, <span class="keyword">...</span>
+1282         <span class="string">'FontSize'</span>, legendFontSize, <span class="keyword">...</span>
+1283         <span class="string">'HorizontalAlignment'</span>, <span class="string">'right'</span>, <span class="keyword">...</span>
+1284         <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+1285         <span class="string">'BackgroundColor'</span>, backColor{i}, <span class="keyword">...</span>
+1286         <span class="string">'Color'</span>, foreColor{i}, <span class="keyword">...</span>
+1287         <span class="string">'EdgeColor'</span>, <span class="string">'k'</span>, <span class="keyword">...</span>
+1288         <span class="string">'Parent'</span>, textAxis);
+1289     
+1290     <span class="comment">% Put in a space.</span>
+1291     <span class="keyword">if</span> i == 2
+1292         yStart = yStart2 + i * yOff;
+1293     <span class="keyword">end</span>
+1294 <span class="keyword">end</span>
+1295 <span class="keyword">end</span>
+1296 
+1297 
+1298 
+1299 <span class="comment">%% Show the path data legend.</span>
+1300 <a name="_sub10" href="#_subfunctions" class="code">function drawPathDataLegend(h, dataName, unitName, dLim)</a>
+1301 
+1302 <span class="comment">% Initialize the drawing information.</span>
+1303 nameFontSize = 20;
+1304 dataFontSize = 16;
+1305 legendFontSize = 32;
+1306 black = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+1307 white = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'w'</span>);
+1308 firstColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0.5);
+1309 lastColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>)';
+1310 coilColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+1311 omegaColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+1312 
+1313 <span class="comment">% Setup the label information.</span>
+1314 label = {
+1315     <span class="string">' \bfOMEGA = x '</span>
+1316     <span class="string">' \bfCOIL = + '</span>
+1317     <span class="string">' \bfSTART '</span>
+1318     <span class="string">' \bfEND '</span>};
+1319 backColor = {
+1320     omegaColor
+1321     coilColor
+1322     firstColor
+1323     lastColor};
+1324 foreColor = {
+1325     white
+1326     white
+1327     white
+1328     white};
+1329 
+1330 <span class="comment">% Setup the margin.</span>
+1331 xOff = 10^-3;
+1332 xPosOff = 1 - xOff;
+1333 textPosition = [xPosOff, 0, xOff, 1];
+1334 textAxis = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'Position'</span>, textPosition, <span class="keyword">...</span>
+1335     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+1336 
+1337 <span class="comment">% Draw the colorbar label.</span>
+1338 yStart = .995;
+1339 nameStr = [<span class="string">' \bf'</span> dataName <span class="string">'\rm  (\it'</span> unitName <span class="string">'\rm) '</span>];
+1340 text(xPosOff, yStart, nameStr, <span class="keyword">...</span>
+1341     <span class="string">'FontSize'</span>, nameFontSize, <span class="keyword">...</span>
+1342     <span class="string">'HorizontalAlignment'</span>, <span class="string">'right'</span>, <span class="keyword">...</span>
+1343     <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+1344     <span class="string">'BackgroundColor'</span>, white, <span class="keyword">...</span>
+1345     <span class="string">'Color'</span>, black, <span class="keyword">...</span>
+1346     <span class="string">'EdgeColor'</span>, <span class="string">'k'</span>, <span class="keyword">...</span>
+1347     <span class="string">'Parent'</span>, textAxis);
+1348     
+1349 <span class="comment">% Draw the colorbar.</span>
+1350 yStart = 0.55;
+1351 barWidth = .05;
+1352 barHeight = 0.4;
+1353 barPosition = [xPosOff - barWidth, yStart, barWidth, barHeight];
+1354 colormap(textAxis, jet);
+1355 set(textAxis, <span class="string">'CLim'</span>, dLim);
+1356 colorbar(<span class="string">'peer'</span>, textAxis, <span class="string">'Position'</span>, barPosition, <span class="keyword">...</span>
+1357     <span class="string">'YAxisLocation'</span>, <span class="string">'left'</span>, <span class="string">'FontSize'</span>, dataFontSize);
+1358 
+1359 <span class="comment">% Draw the labels.</span>
+1360 yStart = 0.5;
+1361 yBreakOff = 0.04;
+1362 yOff = 0.05;
+1363 <span class="keyword">for</span> i = 1:length(label)
+1364     
+1365     <span class="comment">% Draw the label.</span>
+1366     text(xOff, yStart - (i - 1) * yOff, label{i}, <span class="keyword">...</span>
+1367         <span class="string">'FontSize'</span>, legendFontSize, <span class="keyword">...</span>
+1368         <span class="string">'HorizontalAlignment'</span>, <span class="string">'right'</span>, <span class="keyword">...</span>
+1369         <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+1370         <span class="string">'BackgroundColor'</span>, backColor{i}, <span class="keyword">...</span>
+1371         <span class="string">'Color'</span>, foreColor{i}, <span class="keyword">...</span>
+1372         <span class="string">'EdgeColor'</span>, <span class="string">'k'</span>, <span class="keyword">...</span>
+1373         <span class="string">'Parent'</span>, textAxis);
+1374     
+1375     <span class="comment">% Put in a space.</span>
+1376     <span class="keyword">if</span> i == 2
+1377         yStart = yStart - yBreakOff;
+1378     <span class="keyword">end</span>
+1379 <span class="keyword">end</span>
+1380 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

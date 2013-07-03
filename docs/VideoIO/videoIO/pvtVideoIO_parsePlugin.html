@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of pvtVideoIO_parsePlugin</title>
+  <meta name="keywords" content="pvtVideoIO_parsePlugin">
+  <meta name="description" content="[plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>pvtVideoIO_parsePlugin
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>[plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">[plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)
+  PRIVATE function for the VideoIO Library.  Typical users should not use
+  this function.  This function is shared by multiple components in a way
+  that it cannot sit in a private/ directory, hence the verbose name.
+
+  Takes the varargin part of a videoReader/videoWriter constructor call
+  (ARGS) and parses out the plugin.  If no plugin is specified, then we
+  use the DEFAULTPLUGIN.
+
+  If the plugin is specified multiple times, the last choice is used.
+
+  Any arguments in ARGS that specify the plugin are removed from the
+  returned PLUGINARGS.  
+
+Example:
+  [plugin,pluginArgs] = pvtVideoIO_parsePlugin(...
+    {'codec','xvid', 'plugin','ffmpegDirect'}, 'ffmpegPopen2')
+  --&gt; plugin='ffmpegDirect'; pluginArgs={'codec','xvid'};
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../videoIO/private/argExtract.html" class="code" title="function [val,args] = argExtract(args, key, defaultVal)">argExtract</a>	[val,args] = argExtract(args, key, defaultVal)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>	videoWriter class constructor</li><li><a href="videoReader_concat.html" class="code" title="function [out,out2] = videoReader_concat(cmd, handle, varargin)">videoReader_concat</a>	videoReader_concat</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)</a>
+0002 <span class="comment">%[plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)</span>
+0003 <span class="comment">%  PRIVATE function for the VideoIO Library.  Typical users should not use</span>
+0004 <span class="comment">%  this function.  This function is shared by multiple components in a way</span>
+0005 <span class="comment">%  that it cannot sit in a private/ directory, hence the verbose name.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Takes the varargin part of a videoReader/videoWriter constructor call</span>
+0008 <span class="comment">%  (ARGS) and parses out the plugin.  If no plugin is specified, then we</span>
+0009 <span class="comment">%  use the DEFAULTPLUGIN.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%  If the plugin is specified multiple times, the last choice is used.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%  Any arguments in ARGS that specify the plugin are removed from the</span>
+0014 <span class="comment">%  returned PLUGINARGS.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%Example:</span>
+0017 <span class="comment">%  [plugin,pluginArgs] = pvtVideoIO_parsePlugin(...</span>
+0018 <span class="comment">%    {'codec','xvid', 'plugin','ffmpegDirect'}, 'ffmpegPopen2')</span>
+0019 <span class="comment">%  --&gt; plugin='ffmpegDirect'; pluginArgs={'codec','xvid'};</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0022 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0023 <span class="comment">%when using this library on GNU/Linux).</span>
+0024 
+0025 <span class="keyword">if</span> (mod(length(args),2)==0)
+0026   plugin = defaultPlugin; 
+0027 <span class="keyword">else</span>
+0028   plugin = args{1};
+0029   args   = {args{2:end}};
+0030 <span class="keyword">end</span>
+0031 [plugin,pluginArgs] = <a href="../videoIO/private/argExtract.html" class="code" title="function [val,args] = argExtract(args, key, defaultVal)">argExtract</a>(args, <span class="string">'plugin'</span>, plugin);</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

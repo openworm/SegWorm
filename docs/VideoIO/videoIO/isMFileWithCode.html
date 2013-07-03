@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of isMFileWithCode</title>
+  <meta name="keywords" content="isMFileWithCode">
+  <meta name="description" content="mexe = isMFileWithCode(pathname)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>isMFileWithCode
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>mexe = isMFileWithCode(pathname)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mexe = isMFileWithCode(pathname) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">mexe = isMFileWithCode(pathname)
+  This is a convenience function that determines whether the supplied
+  pathname refers to a Matlab M-file that appears to have some
+  executable code in it.  If the pathname does not end in '.m', then
+  false is returned.  If it does end in '.m' and it only contains
+  whitespace and comments, then false is returned.  Otherwise true is
+  returned.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="pvtVideoIO_mexName.html" class="code" title="function n = pvtVideoIO_mexName(ctor, plugin)">pvtVideoIO_mexName</a>	n = pvtVideoIO_mexName(ctor, plugin)</li><li><a href="videoIoSysInfo.html" class="code" title="function out = videoIoSysInfo">videoIoSysInfo</a>	videoIoSysInfo</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mexe = isMFileWithCode(pathname)</a>
+0002 <span class="comment">%mexe = isMFileWithCode(pathname)</span>
+0003 <span class="comment">%  This is a convenience function that determines whether the supplied</span>
+0004 <span class="comment">%  pathname refers to a Matlab M-file that appears to have some</span>
+0005 <span class="comment">%  executable code in it.  If the pathname does not end in '.m', then</span>
+0006 <span class="comment">%  false is returned.  If it does end in '.m' and it only contains</span>
+0007 <span class="comment">%  whitespace and comments, then false is returned.  Otherwise true is</span>
+0008 <span class="comment">%  returned.</span>
+0009 
+0010 <span class="keyword">if</span> isempty(pathname)
+0011   mexe = 0;
+0012 <span class="keyword">else</span>
+0013   [pathstr,name,ext] = fileparts(pathname);
+0014   <span class="keyword">if</span> ~strcmpi(<span class="string">'.m'</span>,ext)
+0015     <span class="comment">% not a .m file</span>
+0016     mexe = 0;
+0017   <span class="keyword">elseif</span> exist(pathname,<span class="string">'file'</span>)
+0018     mexe = 0;
+0019     F = fopen(pathname,<span class="string">'rt'</span>);
+0020     <span class="keyword">while</span> 1
+0021       line = fgetl(F);
+0022       <span class="keyword">if</span> ~ischar(line), <span class="keyword">break</span>; <span class="keyword">end</span>
+0023       
+0024       <span class="comment">% strtrim doesn't exist in old versions, so we reimplement it</span>
+0025       <span class="comment">% here.  Since this is not called often, we use an easy yet</span>
+0026       <span class="comment">% slow-in-old-matlab loop pair.</span>
+0027       <span class="comment">%line = strtrim(line);</span>
+0028       <span class="keyword">while</span> ~isempty(line) &amp;&amp; isspace(line(1))
+0029         line = line(2:end);
+0030       <span class="keyword">end</span>
+0031       <span class="keyword">while</span> ~isempty(line) &amp;&amp; isspace(line(end))
+0032         line = line(1:end-1);
+0033       <span class="keyword">end</span>
+0034       
+0035       <span class="keyword">if</span> ~isempty(line) &amp;&amp; line(1)~=<span class="string">'%'</span>
+0036         <span class="comment">% we found a line that's not just whitespace and/or</span>
+0037         <span class="comment">% comments...assume it's code.</span>
+0038         mexe = 1;
+0039         <span class="keyword">return</span>;
+0040       <span class="keyword">end</span>
+0041     <span class="keyword">end</span>
+0042     fclose(F);
+0043     
+0044   <span class="keyword">else</span>
+0045     <span class="comment">% file doesn't exist</span>
+0046     mexe = 0;
+0047   <span class="keyword">end</span>
+0048 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

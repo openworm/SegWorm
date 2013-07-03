@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoIODir</title>
+  <meta name="keywords" content="videoIODir">
+  <meta name="description" content="d = videoIODir">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>videoIODir
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>d = videoIODir</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function d = videoIODir </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">d = videoIODir
+   Returns the directory where videoIO is installed.  This function is
+   useful for some of the videoIO maintenance scripts as well as
+   providing an easy way to find its regression tests and sample videos.
+
+   Note: videoIO must be in the current Matlab path.
+
+Example:
+  testFile = 'numbers.uncompressed.avi';
+  vr = videoReader(fullfile(videoIODir, 'tests', testFile));
+  info = get(vr)
+  vr = close(vr);
+
+SEE ALSO:
+  <a href="buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>
+  videoReader
+  videoWriter
+
+Copyright (c) 2007 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details
+(especially when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>	buildVideoIO</li><li><a href="buildVideoIoPackages.html" class="code" title="">buildVideoIoPackages</a>	buildVideoIoPackages</li><li><a href="videoIoSysInfo.html" class="code" title="function out = videoIoSysInfo">videoIoSysInfo</a>	videoIoSysInfo</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function d = videoIODir</a>
+0002 <span class="comment">%d = videoIODir</span>
+0003 <span class="comment">%   Returns the directory where videoIO is installed.  This function is</span>
+0004 <span class="comment">%   useful for some of the videoIO maintenance scripts as well as</span>
+0005 <span class="comment">%   providing an easy way to find its regression tests and sample videos.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Note: videoIO must be in the current Matlab path.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%Example:</span>
+0010 <span class="comment">%  testFile = 'numbers.uncompressed.avi';</span>
+0011 <span class="comment">%  vr = videoReader(fullfile(videoIODir, 'tests', testFile));</span>
+0012 <span class="comment">%  info = get(vr)</span>
+0013 <span class="comment">%  vr = close(vr);</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%SEE ALSO:</span>
+0016 <span class="comment">%  buildVideoIO</span>
+0017 <span class="comment">%  videoReader</span>
+0018 <span class="comment">%  videoWriter</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%Copyright (c) 2007 Gerald Dalley</span>
+0021 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details</span>
+0022 <span class="comment">%(especially when using this library on GNU/Linux).</span>
+0023 
+0024 <span class="comment">% Figure out where this .m file is located.  This tells us where the plugin</span>
+0025 <span class="comment">% source code directory is.</span>
+0026 [stack] = dbstack;
+0027 thisfunc = stack(1);
+0028 <span class="keyword">if</span> (isfield(thisfunc,<span class="string">'file'</span>)), <span class="comment">% Matlab 7</span>
+0029     d = fileparts(which(thisfunc.file));
+0030 <span class="keyword">elseif</span> (isfield(thisfunc,<span class="string">'name'</span>)) <span class="comment">% Matlab 6.5</span>
+0031     d = fileparts(thisfunc.name);
+0032 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

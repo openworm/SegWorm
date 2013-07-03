@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of simpleProgressUpdate</title>
+  <meta name="keywords" content="simpleProgressUpdate">
+  <meta name="description" content="SIMPLEPROGRESSUPDATE Display a simple progress update.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html StageMovement -->
+<h1>simpleProgressUpdate
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>SIMPLEPROGRESSUPDATE Display a simple progress update.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function simpleProgressUpdate(state, frames, frame, image, diffImage,variance) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SIMPLEPROGRESSUPDATE Display a simple progress update.
+
+   SIMPLEPROGRESSUPDATE(FRAME, ~, ~, VARIANCE)
+
+   Inputs:
+       state     - persistent state data for function
+       frames    - the total number of frames
+       frame     - the frame number
+       image     - the video image
+       diffImage - the frame-difference image
+       variance  - the frame-difference variance
+
+   See also VIDEO2DIFF</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function simpleProgressUpdate(state, frames, frame, image, diffImage, </a><span class="keyword">...</span>
+0002     variance)
+0003 <span class="comment">%SIMPLEPROGRESSUPDATE Display a simple progress update.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   SIMPLEPROGRESSUPDATE(FRAME, ~, ~, VARIANCE)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Inputs:</span>
+0008 <span class="comment">%       state     - persistent state data for function</span>
+0009 <span class="comment">%       frames    - the total number of frames</span>
+0010 <span class="comment">%       frame     - the frame number</span>
+0011 <span class="comment">%       image     - the video image</span>
+0012 <span class="comment">%       diffImage - the frame-difference image</span>
+0013 <span class="comment">%       variance  - the frame-difference variance</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   See also VIDEO2DIFF</span>
+0016 
+0017 <span class="comment">% Display a simple progress update.</span>
+0018 percent = round((double(frame + 1) / double(frames)) * 100.0);
+0019 disp([num2str(percent) <span class="string">'%: At frame '</span> num2str(frame) <span class="keyword">...</span>
+0020     <span class="string">' the variance is '</span> num2str(variance) <span class="string">'.'</span>]);
+0021 <span class="keyword">end</span>
+0022</pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

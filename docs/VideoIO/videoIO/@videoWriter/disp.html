@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of disp</title>
+  <meta name="keywords" content="disp">
+  <meta name="description" content="DISP(vw) displays a videoWriter object without printing its name.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html @videoWriter -->
+<h1>disp
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>DISP(vw) displays a videoWriter object without printing its name.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function disp(vw) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">DISP(vw) displays a videoWriter object without printing its name.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/disp.html" class="code" title="function disp(vr)">disp</a>	DISP(vr) displays a videoReader object without printing its name.</li><li><a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>	INFO=GET(VR)</li><li><a href="disp.html" class="code" title="function disp(vw)">disp</a>	DISP(vw) displays a videoWriter object without printing its name.</li><li><a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>	INFO=GET(VW)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/disp.html" class="code" title="function disp(vr)">disp</a>	DISP(vr) displays a videoReader object without printing its name.</li><li><a href="../../videoIO/@videoReader/display.html" class="code" title="function display(vr)">display</a>	DISPLAY(VR) display for a videoReader object</li><li><a href="disp.html" class="code" title="function disp(vw)">disp</a>	DISP(vw) displays a videoWriter object without printing its name.</li><li><a href="display.html" class="code" title="function display(vr)">display</a>	DISPLAY(VR) display for a videoReader object</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function disp(vw)</a>
+0002 <span class="comment">%DISP(vw) displays a videoWriter object without printing its name.</span>
+0003 
+0004 ctor = class(vw);
+0005 info = <a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>(vw);
+0006 
+0007 <span class="comment">% actual display</span>
+0008 <a href="disp.html" class="code" title="function disp(vw)">disp</a>([<span class="string">'  '</span> ctor <span class="string">' object'</span>]);
+0009 <span class="keyword">if</span> ~isequal(<a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>(0,<span class="string">'FormatSpacing'</span>),<span class="string">'compact'</span>)
+0010   <a href="disp.html" class="code" title="function disp(vw)">disp</a>(<span class="string">' '</span>);
+0011 <span class="keyword">end</span>
+0012 <a href="disp.html" class="code" title="function disp(vw)">disp</a>(info);</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

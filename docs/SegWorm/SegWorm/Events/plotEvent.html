@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotEvent</title>
+  <meta name="keywords" content="plotEvent">
+  <meta name="description" content="PLOTEVENT Plot a time series of events.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Events -->
+<h1>plotEvent
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>PLOTEVENT Plot a time series of events.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOTEVENT Plot a time series of events.
+
+   PLOTEVENT(EVENTS, FRAMES, FPS, TITLENAME, YAXISNAME, EVENTNAMES,
+             EVENT2BOX, STATES, COLORS)
+
+   PLOTEVENT(EVENTS, FRAMES, FPS, TITLENAME, YAXISNAME, EVENTNAMES,
+             EVENT2BOX, STATES, COLORS, ISBOXEDGE)
+
+   Inputs:
+       events      - the events to plot
+       totalFrames - the total number of frames for the time series
+       fps         - the frames/second
+       titleName   - the title for the figure
+       yAxisName   - the name to label the y axis
+       eventNames  - the name(s) to label the events
+       event2box   - a function handle(s) for converting the events to
+                     boxes; the function must be of the form:
+                    
+                     [BOX STATE] =
+                        EVENT2BOX(STATE, PREVEVENT, EVENT, NEXTEVENT)
+
+       states      - the function state(s) for the event2box function(s);
+                     if there are more states than function handles, the
+                     last function is used for all unassigned states
+       colors      - the box colors, per event2box function
+       isBoxEdge   - do the boxes have a black edge?
+
+   Outputs:
+       timeAxis  - the plot's time axis
+       frameAxis - the plot's frame axis
+
+ See also <a href="findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">FINDEVENT</a>, <a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">EVENT2BOX</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>	EVENT2BOX Convert an event to a box (for plotting with PLOTEVENT).</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Features/wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps, </a><span class="keyword">...</span>
+0002     titleName, yAxisName, eventNames, <a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, colors, varargin)
+0003 <span class="comment">%PLOTEVENT Plot a time series of events.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   PLOTEVENT(EVENTS, FRAMES, FPS, TITLENAME, YAXISNAME, EVENTNAMES,</span>
+0006 <span class="comment">%             EVENT2BOX, STATES, COLORS)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   PLOTEVENT(EVENTS, FRAMES, FPS, TITLENAME, YAXISNAME, EVENTNAMES,</span>
+0009 <span class="comment">%             EVENT2BOX, STATES, COLORS, ISBOXEDGE)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Inputs:</span>
+0012 <span class="comment">%       events      - the events to plot</span>
+0013 <span class="comment">%       totalFrames - the total number of frames for the time series</span>
+0014 <span class="comment">%       fps         - the frames/second</span>
+0015 <span class="comment">%       titleName   - the title for the figure</span>
+0016 <span class="comment">%       yAxisName   - the name to label the y axis</span>
+0017 <span class="comment">%       eventNames  - the name(s) to label the events</span>
+0018 <span class="comment">%       event2box   - a function handle(s) for converting the events to</span>
+0019 <span class="comment">%                     boxes; the function must be of the form:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%                     [BOX STATE] =</span>
+0022 <span class="comment">%                        EVENT2BOX(STATE, PREVEVENT, EVENT, NEXTEVENT)</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%       states      - the function state(s) for the event2box function(s);</span>
+0025 <span class="comment">%                     if there are more states than function handles, the</span>
+0026 <span class="comment">%                     last function is used for all unassigned states</span>
+0027 <span class="comment">%       colors      - the box colors, per event2box function</span>
+0028 <span class="comment">%       isBoxEdge   - do the boxes have a black edge?</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   Outputs:</span>
+0031 <span class="comment">%       timeAxis  - the plot's time axis</span>
+0032 <span class="comment">%       frameAxis - the plot's frame axis</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">% See also FINDEVENT, EVENT2BOX</span>
+0035 
+0036 <span class="comment">% Do the boxes have a black edge?</span>
+0037 isBoxEdge = false;
+0038 <span class="keyword">if</span> ~isempty(varargin)
+0039     isBoxEdge = varargin{1};
+0040 <span class="keyword">end</span>
+0041 
+0042 <span class="comment">% Organize the event names.</span>
+0043 <span class="keyword">if</span> ~iscell(eventNames)
+0044     eventNames = {eventNames};
+0045 <span class="keyword">end</span>
+0046 
+0047 <span class="comment">% Organize the event-to-box functions.</span>
+0048 <span class="keyword">if</span> ~iscell(<a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>)
+0049     <a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a> = {<a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>};
+0050 <span class="keyword">end</span>
+0051 <span class="keyword">if</span> length(<a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>) &lt; length(states)
+0052     <a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>((end + 1):length(states)) = <a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>(end);
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="comment">% Compute the event boxes</span>
+0056 frames = zeros(1, totalFrames);
+0057 boxes = nan(length(events), length(<a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>), 2, 4);
+0058 prevEvent = [];
+0059 nextEvent = [];
+0060 <span class="keyword">for</span> i = 1:length(events)
+0061     
+0062     <span class="comment">% Set the next event.</span>
+0063     <span class="keyword">if</span> i &lt; length(events)
+0064         nextEvent = events(i + 1);
+0065     <span class="keyword">end</span>
+0066     
+0067     <span class="comment">% Compute the event box.</span>
+0068     <span class="keyword">for</span> j = 1:length(<a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>)
+0069          [boxes(i,j,:,:) states(j)] = <a href="event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>{j}(states(j), <span class="keyword">...</span>
+0070              prevEvent, events(i), nextEvent);
+0071          
+0072          <span class="comment">% Compute the event frames.</span>
+0073          startX = min(boxes(i,j,1,:));
+0074          minX = boxes(i,j,1,:) == startX;
+0075          startY = max(boxes(i,j,2,minX));
+0076          endX = max(boxes(i,j,1,:));
+0077          maxX = boxes(i,j,1,:) == endX;
+0078          endY = max(boxes(i,j,2,maxX));
+0079          newX = abs(endX - startX) + 1;
+0080          rangeX = linspace(startX + 1, endX + 1, newX);
+0081          <span class="keyword">if</span> ~(isnan(rangeX(1)) || isnan(rangeX(end)))
+0082              frames(rangeX) = linspace(startY, endY, newX);
+0083          <span class="keyword">end</span>
+0084     <span class="keyword">end</span>
+0085     
+0086     <span class="comment">% Set the previous event.</span>
+0087     prevEvent = events(i);
+0088 <span class="keyword">end</span>
+0089 
+0090 <span class="comment">% Compute the x axis.</span>
+0091 frameX = 0:(totalFrames - 1);
+0092 
+0093 <span class="comment">% Plot both frame and time.</span>
+0094 [ax, h1, h2] = plotyy(NaN, NaN, frameX, frames);
+0095 timeAxis = ax(1);
+0096 frameAxis = ax(2);
+0097 set(timeAxis, <span class="string">'XAxisLocation'</span>, <span class="string">'top'</span>);
+0098 set(h2, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>);
+0099 hold on;
+0100 
+0101 <span class="comment">% Setup the events for the legend.</span>
+0102 <span class="keyword">for</span> i = fliplr(1:length(eventNames))
+0103     h = plot(timeAxis, NaN, <span class="string">'Color'</span>, colors(i,:));
+0104     uistack(h, <span class="string">'bottom'</span>);
+0105 <span class="keyword">end</span>
+0106 
+0107 <span class="comment">% Plot the events.</span>
+0108 patchHandle = nan(size(boxes, 2), 1);
+0109 <span class="keyword">if</span> isBoxEdge
+0110     <span class="keyword">for</span> i = 1:size(boxes, 2)
+0111         patchHandle(i) = patch(squeeze(boxes(:,i,1,:))', <span class="keyword">...</span>
+0112             squeeze(boxes(:,i,2,:))', colors(i,:), <span class="string">'Parent'</span>, frameAxis);
+0113     <span class="keyword">end</span>
+0114 <span class="keyword">else</span>
+0115     <span class="keyword">for</span> i = 1:size(boxes, 2)
+0116         patchHandle(i) = patch(squeeze(boxes(:,i,1,:))', <span class="keyword">...</span>
+0117             squeeze(boxes(:,i,2,:))', colors(i,:), <span class="string">'Parent'</span>, frameAxis, <span class="keyword">...</span>
+0118             <span class="string">'EdgeColor'</span>, colors(i,:));
+0119     <span class="keyword">end</span>
+0120 <span class="keyword">end</span>
+0121 
+0122 <span class="comment">% Compute the x &amp; y axis limits.</span>
+0123 minTimeX = frameX(1) / fps; <span class="comment">%datenum(0, 0, 0, 0, 0, frameX(1) / fps);</span>
+0124 maxTimeX = frameX(end) / fps; <span class="comment">%datenum(0, 0, 0, 0, 0, frameX(end) / fps);</span>
+0125 boxesY = boxes(:,:,2,:);
+0126 boxesY = boxesY(:);
+0127 minY = min(boxesY);
+0128 maxY = max(boxesY);
+0129 
+0130 <span class="comment">% Link the frame and time axes.</span>
+0131 <span class="keyword">if</span> ~isequalwithequalnans(minTimeX, maxTimeX)
+0132     xlim(timeAxis, [minTimeX, maxTimeX]);
+0133 <span class="keyword">end</span>
+0134 xlim(frameAxis, [frameX(1), frameX(end)]);
+0135 <span class="keyword">if</span> ~isequalwithequalnans(minY, maxY)
+0136     ylim(timeAxis, [minY, maxY]);
+0137     ylim(frameAxis, [minY, maxY]);
+0138 <span class="keyword">end</span>
+0139 linkaxes(ax, <span class="string">'y'</span>);
+0140 
+0141 <span class="comment">% Fix the figure zoom.</span>
+0142 set(zoom(get(h1, <span class="string">'Parent'</span>)), <span class="string">'Motion'</span>, <span class="string">'horizontal'</span>, <span class="string">'Enable'</span>, <span class="string">'on'</span>);
+0143 
+0144 <span class="comment">% Fix the figure colors.</span>
+0145 black = [0 0 0];
+0146 <span class="comment">%magenta = [1 0 1];</span>
+0147 set(h1, <span class="string">'Color'</span>, black);
+0148 set(h2, <span class="string">'Color'</span>, black);
+0149 <span class="comment">%set(timeAxis, 'XColor', magenta);</span>
+0150 set(timeAxis, <span class="string">'XColor'</span>, black);
+0151 set(frameAxis, <span class="string">'XColor'</span>, black);
+0152 set(timeAxis, <span class="string">'YColor'</span>, black);
+0153 set(frameAxis, <span class="string">'YColor'</span>, black);
+0154 
+0155 <span class="comment">% Label the figure.</span>
+0156 xlabel(timeAxis, <span class="string">'Event Time (seconds)'</span>, <span class="string">'Color'</span>, black);
+0157 xlabel(frameAxis, <span class="string">'Event Frame (number)'</span>, <span class="string">'Color'</span>, black);
+0158 ylabel(timeAxis, titleName, <span class="string">'Color'</span>, black);
+0159 ylabel(frameAxis, yAxisName, <span class="string">'Color'</span>, black, <span class="string">'Rotation'</span>, 270);
+0160 set(timeAxis, <span class="string">'YTickMode'</span>, <span class="string">'manual'</span>);
+0161 set(timeAxis, <span class="string">'YTickLabel'</span>, []);
+0162 set(timeAxis, <span class="string">'YTick'</span>, []);
+0163 <span class="keyword">if</span> isempty(yAxisName)
+0164     set(frameAxis, <span class="string">'YTickMode'</span>, <span class="string">'manual'</span>);
+0165     set(frameAxis, <span class="string">'YTickLabel'</span>, []);
+0166     set(frameAxis, <span class="string">'YTick'</span>, []);
+0167 <span class="keyword">else</span>
+0168     set(frameAxis, <span class="string">'YTickMode'</span>, <span class="string">'auto'</span>);
+0169 <span class="keyword">end</span>
+0170 <span class="comment">%datetick(frameAxis, 'x', 13, 'keeplimits');</span>
+0171 
+0172 <span class="comment">% Fix the data crosshairs.</span>
+0173 uistack(h2, <span class="string">'top'</span>);
+0174 
+0175 <span class="comment">% Show the legend.</span>
+0176 legend(eventNames);
+0177 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

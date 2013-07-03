@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of flipWormData</title>
+  <meta name="keywords" content="flipWormData">
+  <meta name="description" content="FLIPWORMDATA Flip the orientation of the worm data (re-orient the entire">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Orientation -->
+<h1>flipWormData
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>FLIPWORMDATA Flip the orientation of the worm data (re-orient the entire</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm = flipWormData(worm) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FLIPWORMDATA Flip the orientation of the worm data (re-orient the entire
+   worm data structure and every one of its substructures).
+
+   WORM = FLIPWORMDATA(WORM)
+
+   Input:
+       worm - the worm to flip
+
+   Output:
+       worm - the flipped worm
+
+   See also <a href="flipWormCellData.html" class="code" title="function worm = flipWormCellData(worm)">FLIPWORMCELLDATA</a>, <a href="flipWormHead.html" class="code" title="function worm = flipWormHead(worm)">FLIPWORMHEAD</a>, <a href="flipWormVulva.html" class="code" title="function worm = flipWormVulva(worm)">FLIPWORMVULVA</a>, WORM2STRUCT,
+   SEGWORM</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm = flipWormData(worm)</a>
+0002 <span class="comment">%FLIPWORMDATA Flip the orientation of the worm data (re-orient the entire</span>
+0003 <span class="comment">%   worm data structure and every one of its substructures).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   WORM = FLIPWORMDATA(WORM)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Input:</span>
+0008 <span class="comment">%       worm - the worm to flip</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Output:</span>
+0011 <span class="comment">%       worm - the flipped worm</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   See also FLIPWORMCELLDATA, FLIPWORMHEAD, FLIPWORMVULVA, WORM2STRUCT,</span>
+0014 <span class="comment">%   SEGWORM</span>
+0015 
+0016 <span class="comment">% Flip the contour.</span>
+0017 tmp = worm.contour.headI;
+0018 worm.contour.headI = worm.contour.tailI;
+0019 worm.contour.tailI = tmp;
+0020 
+0021 <span class="comment">% Flip the skeleton.</span>
+0022 worm.skeleton.pixels = flipud(worm.skeleton.pixels);
+0023 worm.skeleton.touchI = <span class="keyword">...</span>
+0024     fliplr(length(worm.skeleton.angles) - worm.skeleton.touchI + 1);
+0025 worm.skeleton.inI = <span class="keyword">...</span>
+0026     fliplr(length(worm.skeleton.angles) - worm.skeleton.inI + 1);
+0027 worm.skeleton.outI = <span class="keyword">...</span>
+0028     fliplr(length(worm.skeleton.angles) - worm.skeleton.outI + 1);
+0029 worm.skeleton.inOutI = <span class="keyword">...</span>
+0030     fliplr(length(worm.skeleton.angles) - worm.skeleton.inOutI + 1);
+0031 worm.skeleton.angles = -flipud(worm.skeleton.angles);
+0032 worm.skeleton.chainCodeLengths = <span class="keyword">...</span>
+0033     flipud(worm.skeleton.length - worm.skeleton.chainCodeLengths);
+0034 worm.skeleton.widths = flipud(worm.skeleton.widths);
+0035 
+0036 <span class="comment">% Flip the head and tail.</span>
+0037 tmp = worm.head;
+0038 worm.head = worm.tail;
+0039 worm.tail = tmp;
+0040 tmp = worm.head.bounds.contour.left;
+0041 worm.head.bounds.contour.left = worm.head.bounds.contour.right;
+0042 worm.head.bounds.contour.right = tmp;
+0043 worm.head.bounds.skeleton = <span class="keyword">...</span>
+0044     flipud(length(worm.skeleton.angles) - worm.head.bounds.skeleton + 1);
+0045 tmp = worm.tail.bounds.contour.left;
+0046 worm.tail.bounds.contour.left = worm.tail.bounds.contour.right;
+0047 worm.tail.bounds.contour.right = tmp;
+0048 worm.tail.bounds.skeleton = <span class="keyword">...</span>
+0049     flipud(length(worm.skeleton.angles) - worm.tail.bounds.skeleton + 1);
+0050 
+0051 <span class="comment">% Flip the left and right side.</span>
+0052 tmp = worm.left;
+0053 worm.left = worm.right;
+0054 worm.right = tmp;
+0055 worm.left.bounds.skeleton = <span class="keyword">...</span>
+0056     flipud(length(worm.skeleton.angles) - worm.left.bounds.skeleton + 1);
+0057 worm.right.bounds.skeleton = <span class="keyword">...</span>
+0058     flipud(length(worm.skeleton.angles) - worm.right.bounds.skeleton + 1);
+0059 
+0060 <span class="comment">% Flip the orientation.</span>
+0061 worm.orientation.head.isFlipped = ~worm.orientation.head.isFlipped;
+0062 worm.orientation.vulva.isClockwiseFromHead = <span class="keyword">...</span>
+0063     ~worm.orientation.vulva.isClockwiseFromHead;
+0064 tmp = worm.orientation.vulva.confidence.vulva;
+0065 worm.orientation.vulva.confidence.vulva = <span class="keyword">...</span>
+0066     worm.orientation.vulva.confidence.nonVulva;
+0067 worm.orientation.vulva.confidence.nonVulva = tmp;
+0068 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

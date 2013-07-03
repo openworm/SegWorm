@@ -1,0 +1,350 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoReader</title>
+  <meta name="keywords" content="videoReader">
+  <meta name="description" content="videoReader class constructor">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html @videoReader -->
+<h1>videoReader
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>videoReader class constructor</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function vr = videoReader(url, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> videoReader class constructor
+   Creates a object that reads video streams.  We use a plugin 
+   architecture in the backend to do the actual reading.  For example, 
+   on Windows, DirectShow will typically be used and on Linux, the 
+   ffmpeg library is often used.
+
+   vr = videoReader(filenameEtc)
+     Opens the given FILENAMEETC file for reading using the default
+     plugin.  We use &quot;filenameEtc&quot; here because some plugins take
+     filenames (e.g. 'DirectShow', 'ffmpegPopen2', 'ffmpegDirect',
+     'matrix'), some take filename masks (e.g. 'imread' and 'load'), and
+     others can take certain in-memory data structures (e.g. 'matrix').
+
+     On Windows, the 'DirectShow' plugin is used by default and on
+     Linux, 'ffmpegPopen2' is used by default.  
+
+   vr = videoReader(filenameEtc, ..., 'plugin',pluginName, ...)
+   vr = videoReader(filenameEtc, pluginName, ...)
+     Uses the manually-specified plugin instead of the default plugin.
+     Note: plugin names are case sensitive.  
+
+     Available plugins include: 
+
+       'DirectShow': For reading videos on Microsoft Windows.  
+         Type &quot;help videoReader_DirectShow&quot; for details.
+
+       'ffmpegPopen2': For safely reading videos on GNU/Linux using the 
+         ffmpeg libraries (libavcodec, libavformat, etc.).
+         Type &quot;help videoReader_ffmpegPopen2&quot; for details.
+
+       'ffmpegDirect': A slightly lower-overhead variant of the
+         'ffmpegPopen2' plugin.
+         Type &quot;help videoReader_ffmpegDirect&quot; for details.
+
+       'imread': For loading sequences of image files as if they were
+         video frames.
+         Type &quot;help videoReader_imread&quot; for details.
+
+       'load': For loading sequences of .mat files as if each .mat
+         file contains a single video frame
+         Type &quot;help videoReader_load&quot; for details.
+
+       'matrix': For wrapping a videoReader interface on an in-memory
+         video and/or loading a whole video from a single .mat file.
+         Type &quot;help videoReader_matrix&quot; for details.
+
+   vr = videoReader(..., param,arg,...)
+     Allows the user to pass extra configuration arguments to plugin.
+     Parameter names are case-insensitive as a convenience.  The allowed
+     parameter names are plugin-specific and are documented by each
+     plugin.
+
+     For example, to see the list of allowable parameter-value pairs
+     when using the 'DirectShow' plugin, type 
+     &quot;help videoReader_DirectShow&quot; without quotes at the Matlab prompt.  
+
+ 
+ IMPORTANT DETAILS:
+   In our current implementation, frame numbers are 0-indexed.  That
+   means that the first frame is frame 0, not frame 1.  
+
+   The current frame in a video is the index of the most
+   recently-decoded frame (as opposed to the index of the next frame to
+   be read and decoded).  
+
+   When a new videoReader object is constructed, its current frame is
+   -1, meaning that the first frame (frame 0) has not been read yet.
+   Before calling GETFRAME, one must call NEXT, SEEK, or STEP at least
+   once to cause a frame to be read from disk.  *After* calling one of
+   these methods, you may call GETFRAME as many times as you like and it
+   will return the current frame without advancing to a different
+   frame. Caveat: GETNEXT is a convenience method that calls NEXT then
+   GETFRAME. 
+
+   GET may be called at any time (even before NEXT, SEEK, or STEP).
+   It returns basic information about the video stream.  The fields
+   present are plugin- and sometimes codec-specific.  
+
+   Once you are done using the videoReader object, make sure you call
+   CLOSE so that any system resources allocated by the plugin may be
+   released.  Here's a simple example of how you might use videoReader...
+
+ EXAMPLE:
+   % Construct a videoReader object using one of the videoIO test videos
+   vr = videoReader(fullfile(videoIODir, 'tests/numbers.uncompressed.avi'));
+
+   % Do some processing on the video and display the results
+   avgIntensity = [];
+   i = 1;
+   figure;
+   while (next(vr))
+     img = getframe(vr);  
+     avgIntensity(i) = mean(img(:));
+     subplot(121); imshow(img);        title('current frame');
+     subplot(122); plot(avgIntensity); title('avg. intensity vs. frame');
+     drawnow;      pause(0.1);         i = i+1;
+   end
+   vr = close(vr);
+
+ SEE ALSO:
+   buildVideoIO
+   videoIODir
+   videoread
+   videoWriter
+
+   videoReader_DirectShow
+   videoReader_ffmpegDirect
+   videoReader_ffmpegPopen2
+   videoReader_imread
+   videoReader_load
+   videoReader_matrix
+
+   videoReader/close
+   videoReader/getframe
+   videoReader/get
+   videoReader/getnext
+   videoReader/next
+   videoReader/seek
+   videoReader/step
+
+Copyright (c) 2006 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>	pluginName = defaultVideoIOPlugin(ctor)</li><li><a href="../../videoIO/pvtVideoIO_mexName.html" class="code" title="function n = pvtVideoIO_mexName(ctor, plugin)">pvtVideoIO_mexName</a>	n = pvtVideoIO_mexName(ctor, plugin)</li><li><a href="../../videoIO/pvtVideoIO_normalizeFilename.html" class="code" title="function canonical = pvtVideoIO_normalizeFilename(raw)">pvtVideoIO_normalizeFilename</a>	canonical = pvtVideoIO_normalizeFilename(raw)</li><li><a href="../../videoIO/pvtVideoIO_parsePlugin.html" class="code" title="function [plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)">pvtVideoIO_parsePlugin</a>	[plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/contrib/videoPlayer/videoPlayer.html" class="code" title="function vp = videoPlayer(varargin)">videoPlayer</a>	function vp = videoPlayer(varargin)</li><li><a href="../../videoIO/tests/analyzeNumFinalHiddenFrames.html" class="code" title="">analyzeNumFinalHiddenFrames</a>	analyzeNumFinalHiddenFrames</li><li><a href="../../videoIO/tests/concatReadTests.html" class="code" title="function concatReadTests(plugin)">concatReadTests</a>	concatReadTests</li><li><a href="../../videoIO/tests/divxSeekExpmt.html" class="code" title="function divxSeekExpmt">divxSeekExpmt</a>	divxSeekExpmt</li><li><a href="../../videoIO/tests/doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>	IMAGES=DOFULLREAD(...)</li><li><a href="../../videoIO/tests/doMultiFullReadTest.html" class="code" title="function doMultiFullReadTest(varargin)">doMultiFullReadTest</a>	DOMULTIFULLREADTEST(...)</li><li><a href="../../videoIO/tests/doPreciseSeekTests.html" class="code" title="function doPreciseSeekTests(varargin)">doPreciseSeekTests</a>	DOPRECISESEEKTESTS(...)</li><li><a href="../../videoIO/tests/getLoadableFiles.html" class="code" title="function [loadables,nonloadables,errors] = getLoadableFiles(varargin)">getLoadableFiles</a>	loadables = getLoadableFiles(...)</li><li><a href="../../videoIO/tests/longWriteTest.html" class="code" title="function longWriteTest(plugin, readerPlugin)">longWriteTest</a>	longWriteTests(plugin)</li><li><a href="../../videoIO/tests/readIndvFrameTests.html" class="code" title="function readIndvFrameTests(plugin,ext,varargin)">readIndvFrameTests</a>	readIndvFrameTests(plugin,ext,...)</li><li><a href="../../videoIO/tests/readTests.html" class="code" title="function readTests(plugin)">readTests</a>	readTests(plugin)</li><li><a href="../../videoIO/tests/resizeTest.html" class="code" title="function resizeTest(plugin)">resizeTest</a>	writeTests(plugin)</li><li><a href="../../videoIO/tests/testAll.html" class="code" title="">testAll</a>	testAll</li><li><a href="../../videoIO/tests/testMatrix.html" class="code" title="function testMatrix">testMatrix</a>	testMatrix</li><li><a href="../../videoIO/tests/writeTests.html" class="code" title="function writeTests(plugin, readerPlugin)">writeTests</a>	writeTests(plugin)</li><li><a href="../../videoIO/videoReader_concat.html" class="code" title="function [out,out2] = videoReader_concat(cmd, handle, varargin)">videoReader_concat</a>	videoReader_concat</li><li><a href="../../videoIO/videoread.html" class="code" title="function mov=videoread(fname,varargin)">videoread</a>	VIDEOREAD Read an video file in a mannter compatible with Matlab's</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function vr = videoReader(url, varargin)</a>
+0002 <span class="comment">% videoReader class constructor</span>
+0003 <span class="comment">%   Creates a object that reads video streams.  We use a plugin</span>
+0004 <span class="comment">%   architecture in the backend to do the actual reading.  For example,</span>
+0005 <span class="comment">%   on Windows, DirectShow will typically be used and on Linux, the</span>
+0006 <span class="comment">%   ffmpeg library is often used.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   vr = videoReader(filenameEtc)</span>
+0009 <span class="comment">%     Opens the given FILENAMEETC file for reading using the default</span>
+0010 <span class="comment">%     plugin.  We use &quot;filenameEtc&quot; here because some plugins take</span>
+0011 <span class="comment">%     filenames (e.g. 'DirectShow', 'ffmpegPopen2', 'ffmpegDirect',</span>
+0012 <span class="comment">%     'matrix'), some take filename masks (e.g. 'imread' and 'load'), and</span>
+0013 <span class="comment">%     others can take certain in-memory data structures (e.g. 'matrix').</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%     On Windows, the 'DirectShow' plugin is used by default and on</span>
+0016 <span class="comment">%     Linux, 'ffmpegPopen2' is used by default.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   vr = videoReader(filenameEtc, ..., 'plugin',pluginName, ...)</span>
+0019 <span class="comment">%   vr = videoReader(filenameEtc, pluginName, ...)</span>
+0020 <span class="comment">%     Uses the manually-specified plugin instead of the default plugin.</span>
+0021 <span class="comment">%     Note: plugin names are case sensitive.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%     Available plugins include:</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%       'DirectShow': For reading videos on Microsoft Windows.</span>
+0026 <span class="comment">%         Type &quot;help videoReader_DirectShow&quot; for details.</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%       'ffmpegPopen2': For safely reading videos on GNU/Linux using the</span>
+0029 <span class="comment">%         ffmpeg libraries (libavcodec, libavformat, etc.).</span>
+0030 <span class="comment">%         Type &quot;help videoReader_ffmpegPopen2&quot; for details.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%       'ffmpegDirect': A slightly lower-overhead variant of the</span>
+0033 <span class="comment">%         'ffmpegPopen2' plugin.</span>
+0034 <span class="comment">%         Type &quot;help videoReader_ffmpegDirect&quot; for details.</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%       'imread': For loading sequences of image files as if they were</span>
+0037 <span class="comment">%         video frames.</span>
+0038 <span class="comment">%         Type &quot;help videoReader_imread&quot; for details.</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%       'load': For loading sequences of .mat files as if each .mat</span>
+0041 <span class="comment">%         file contains a single video frame</span>
+0042 <span class="comment">%         Type &quot;help videoReader_load&quot; for details.</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%       'matrix': For wrapping a videoReader interface on an in-memory</span>
+0045 <span class="comment">%         video and/or loading a whole video from a single .mat file.</span>
+0046 <span class="comment">%         Type &quot;help videoReader_matrix&quot; for details.</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%   vr = videoReader(..., param,arg,...)</span>
+0049 <span class="comment">%     Allows the user to pass extra configuration arguments to plugin.</span>
+0050 <span class="comment">%     Parameter names are case-insensitive as a convenience.  The allowed</span>
+0051 <span class="comment">%     parameter names are plugin-specific and are documented by each</span>
+0052 <span class="comment">%     plugin.</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%     For example, to see the list of allowable parameter-value pairs</span>
+0055 <span class="comment">%     when using the 'DirectShow' plugin, type</span>
+0056 <span class="comment">%     &quot;help videoReader_DirectShow&quot; without quotes at the Matlab prompt.</span>
+0057 <span class="comment">%</span>
+0058 <span class="comment">%</span>
+0059 <span class="comment">% IMPORTANT DETAILS:</span>
+0060 <span class="comment">%   In our current implementation, frame numbers are 0-indexed.  That</span>
+0061 <span class="comment">%   means that the first frame is frame 0, not frame 1.</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">%   The current frame in a video is the index of the most</span>
+0064 <span class="comment">%   recently-decoded frame (as opposed to the index of the next frame to</span>
+0065 <span class="comment">%   be read and decoded).</span>
+0066 <span class="comment">%</span>
+0067 <span class="comment">%   When a new videoReader object is constructed, its current frame is</span>
+0068 <span class="comment">%   -1, meaning that the first frame (frame 0) has not been read yet.</span>
+0069 <span class="comment">%   Before calling GETFRAME, one must call NEXT, SEEK, or STEP at least</span>
+0070 <span class="comment">%   once to cause a frame to be read from disk.  *After* calling one of</span>
+0071 <span class="comment">%   these methods, you may call GETFRAME as many times as you like and it</span>
+0072 <span class="comment">%   will return the current frame without advancing to a different</span>
+0073 <span class="comment">%   frame. Caveat: GETNEXT is a convenience method that calls NEXT then</span>
+0074 <span class="comment">%   GETFRAME.</span>
+0075 <span class="comment">%</span>
+0076 <span class="comment">%   GET may be called at any time (even before NEXT, SEEK, or STEP).</span>
+0077 <span class="comment">%   It returns basic information about the video stream.  The fields</span>
+0078 <span class="comment">%   present are plugin- and sometimes codec-specific.</span>
+0079 <span class="comment">%</span>
+0080 <span class="comment">%   Once you are done using the videoReader object, make sure you call</span>
+0081 <span class="comment">%   CLOSE so that any system resources allocated by the plugin may be</span>
+0082 <span class="comment">%   released.  Here's a simple example of how you might use videoReader...</span>
+0083 <span class="comment">%</span>
+0084 <span class="comment">% EXAMPLE:</span>
+0085 <span class="comment">%   % Construct a videoReader object using one of the videoIO test videos</span>
+0086 <span class="comment">%   vr = videoReader(fullfile(videoIODir, 'tests/numbers.uncompressed.avi'));</span>
+0087 <span class="comment">%</span>
+0088 <span class="comment">%   % Do some processing on the video and display the results</span>
+0089 <span class="comment">%   avgIntensity = [];</span>
+0090 <span class="comment">%   i = 1;</span>
+0091 <span class="comment">%   figure;</span>
+0092 <span class="comment">%   while (next(vr))</span>
+0093 <span class="comment">%     img = getframe(vr);</span>
+0094 <span class="comment">%     avgIntensity(i) = mean(img(:));</span>
+0095 <span class="comment">%     subplot(121); imshow(img);        title('current frame');</span>
+0096 <span class="comment">%     subplot(122); plot(avgIntensity); title('avg. intensity vs. frame');</span>
+0097 <span class="comment">%     drawnow;      pause(0.1);         i = i+1;</span>
+0098 <span class="comment">%   end</span>
+0099 <span class="comment">%   vr = close(vr);</span>
+0100 <span class="comment">%</span>
+0101 <span class="comment">% SEE ALSO:</span>
+0102 <span class="comment">%   buildVideoIO</span>
+0103 <span class="comment">%   videoIODir</span>
+0104 <span class="comment">%   videoread</span>
+0105 <span class="comment">%   videoWriter</span>
+0106 <span class="comment">%</span>
+0107 <span class="comment">%   videoReader_DirectShow</span>
+0108 <span class="comment">%   videoReader_ffmpegDirect</span>
+0109 <span class="comment">%   videoReader_ffmpegPopen2</span>
+0110 <span class="comment">%   videoReader_imread</span>
+0111 <span class="comment">%   videoReader_load</span>
+0112 <span class="comment">%   videoReader_matrix</span>
+0113 <span class="comment">%</span>
+0114 <span class="comment">%   videoReader/close</span>
+0115 <span class="comment">%   videoReader/getframe</span>
+0116 <span class="comment">%   videoReader/get</span>
+0117 <span class="comment">%   videoReader/getnext</span>
+0118 <span class="comment">%   videoReader/next</span>
+0119 <span class="comment">%   videoReader/seek</span>
+0120 <span class="comment">%   videoReader/step</span>
+0121 <span class="comment">%</span>
+0122 <span class="comment">%Copyright (c) 2006 Gerald Dalley</span>
+0123 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0124 <span class="comment">%when using this library on GNU/Linux).</span>
+0125 
+0126 <span class="comment">% parse the function arguments</span>
+0127 [plugin,pluginArgs] = <span class="keyword">...</span>
+0128     <a href="../../videoIO/pvtVideoIO_parsePlugin.html" class="code" title="function [plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)">pvtVideoIO_parsePlugin</a>(varargin, <a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>(mfilename));
+0129 
+0130 <span class="comment">% create the base object with the correct plugin</span>
+0131 vr = struct(<span class="string">'plugin'</span>,<a href="../../videoIO/pvtVideoIO_mexName.html" class="code" title="function n = pvtVideoIO_mexName(ctor, plugin)">pvtVideoIO_mexName</a>(mfilename, plugin), <span class="keyword">...</span>
+0132             <span class="string">'handle'</span>,int32(-1));
+0133 vr = class(vr, mfilename);
+0134 
+0135 <span class="keyword">if</span> ischar(url) 
+0136   <span class="comment">% looks like a source filter</span>
+0137   
+0138   <span class="comment">% Pull apart the URL.  For now, we do this to reassemble the string using</span>
+0139   <span class="comment">% the right filesep.  In the future, we may want to automatically choose</span>
+0140   <span class="comment">% plugins based on extension or do other smarter url handling.</span>
+0141   canonicalUrl = <a href="../../videoIO/pvtVideoIO_normalizeFilename.html" class="code" title="function canonical = pvtVideoIO_normalizeFilename(raw)">pvtVideoIO_normalizeFilename</a>(url);
+0142   
+0143   <span class="comment">% Convert arguments to strings to pass to the plugin.  Doing this string</span>
+0144   <span class="comment">% conversion makes the plugin implementation much easier.</span>
+0145   strArgs = cell(size(pluginArgs));
+0146   <span class="keyword">for</span> i=1:numel(pluginArgs), 
+0147     strArgs{i} = num2str(pluginArgs{i}); 
+0148   <span class="keyword">end</span>
+0149   
+0150   <span class="comment">% Actually instantiate the reader in the plugin.</span>
+0151   vr.handle = feval(vr.plugin, <span class="string">'open'</span>,vr.handle, <span class="keyword">...</span>
+0152     canonicalUrl, strArgs{:});
+0153   
+0154 <span class="keyword">elseif</span> iscell(url)
+0155   <span class="comment">% URL looks like a more complex call like the 'concat' plugin.  For now</span>
+0156   <span class="comment">% we'll avoid string conversions and just try calling the plugin.</span>
+0157   
+0158   vr.handle = feval(vr.plugin, <span class="string">'open'</span>,vr.handle, <span class="keyword">...</span>
+0159     url, pluginArgs{:});
+0160    
+0161 <span class="keyword">elseif</span> isa(url,<span class="string">'videoReader'</span>)
+0162   <span class="comment">% building a filter -- no concrete implementations exist as of revision 566.</span>
+0163   src = url;
+0164   vr.handle = feval(vr.plugin, <span class="string">'attach'</span>,vr.handle, src, pluginArgs{:});
+0165   
+0166 <span class="keyword">elseif</span> isnumeric(url) &amp;&amp; <span class="keyword">...</span><span class="comment">                          % is a numeric matrix</span>
+0167       ((ndims(url)==3) || <span class="keyword">...</span><span class="comment">                         % and grayscale frames</span>
+0168        ((ndims(url)==4) &amp;&amp; (size(url,3)==3))) &amp;&amp; <span class="keyword">...</span><span class="comment">  %   or RGB frames</span>
+0169       strcmp(plugin,<span class="string">'matrix'</span>)                         <span class="comment">% and 'matrix' plugin</span>
+0170   
+0171   <span class="comment">% The 'matrix' plugin is a special one in that it takes an in-memory</span>
+0172   <span class="comment">% data structure as the VIDEO argument (as opposed to a filename or</span>
+0173   <span class="comment">% similar string).  For now, the user must manually-specify the</span>
+0174   <span class="comment">% 'matrix' plugin.  In the future, we might try to automatically choose</span>
+0175   <span class="comment">% default plugins ('matrix' for matrices, 'matrix' for single .mat</span>
+0176   <span class="comment">% files, 'load' for filepatterns with a .mat extension, 'imread' for</span>
+0177   <span class="comment">% other filepatterns, and the current defaults for all other cases).</span>
+0178   vr.handle = feval(vr.plugin, <span class="string">'open'</span>,vr.handle, url, pluginArgs{:});
+0179 
+0180 <span class="keyword">else</span>
+0181   error(<span class="string">'invalid first argument class: %s'</span>, class(url));
+0182 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

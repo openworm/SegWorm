@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotWormPath2</title>
+  <meta name="keywords" content="plotWormPath2">
+  <meta name="description" content="PLOTWORMPATH Plot the worm path(s).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>plotWormPath2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>PLOTWORMPATH Plot the worm path(s).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function plotWormPath(wormPaths, startWorm, endWorm, wormColors, fps,widthPerLength, titleName, axisName, pathNames, pathColors, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOTWORMPATH Plot the worm path(s).
+
+   PLOTWORMPATH(WORMPATH, STARTWORM, ENDWORM, WORMCOLORS, FPS,
+                WIDTHPERLENGTH, TITLENAME, AXISNAME, PATHNAMES, PATHCOLORS)
+
+   PLOTWORMPATH(WORMPATH, STARTWORM, ENDWORM, WORMCOLORS, FPS,
+                WIDTHPERLENGTH, TITLENAME, AXISNAME, PATHNAMES, PATHCOLORS,
+                EVENTS, EVENTNAMES, EVENTMARKERS, EVENTCOLORS)
+
+   Inputs:
+       wormPaths      - the worm path(s) coordinates
+       startWorm      - the starting worm coordinates;
+                        if empty, the worm is not plotted
+       endWorm        - the ending worm coordinates;
+                        if empty, the worm is not plotted
+       wormColors     - the colors for the starting and ending worms
+                        if empty, the worm is not plotted
+       fps            - the frames/second;
+                        if empty, the path time is not shown
+       widthPerLength - the worm's mean width/length
+                        (for plotting the starting and ending worm);
+                        if empty, the worm width defaults to 3 points
+       titleName      - the title for the figure
+       axisName       - the name to label the path axes
+       pathNames      - the name(s) to label the path(s)
+       pathColors     - the path(s) colors
+       events         - the event(s) coordinates (XY coordinates x event
+                        number) -- see events2coordinates
+       eventNames     - the name(s) to label the event(s)
+       eventMarkers   - the marker(s) to label the event(s)
+       eventColors    - the color(s) to label the event(s) marker(s)
+
+ See PLOTWORMPATHDATA, EVENTS2COORDINATES</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%PLOTWORMPATH Plot the worm path(s).</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   PLOTWORMPATH(WORMPATH, STARTWORM, ENDWORM, WORMCOLORS, FPS,</span>
+0004 <span class="comment">%                WIDTHPERLENGTH, TITLENAME, AXISNAME, PATHNAMES, PATHCOLORS)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   PLOTWORMPATH(WORMPATH, STARTWORM, ENDWORM, WORMCOLORS, FPS,</span>
+0007 <span class="comment">%                WIDTHPERLENGTH, TITLENAME, AXISNAME, PATHNAMES, PATHCOLORS,</span>
+0008 <span class="comment">%                EVENTS, EVENTNAMES, EVENTMARKERS, EVENTCOLORS)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Inputs:</span>
+0011 <span class="comment">%       wormPaths      - the worm path(s) coordinates</span>
+0012 <span class="comment">%       startWorm      - the starting worm coordinates;</span>
+0013 <span class="comment">%                        if empty, the worm is not plotted</span>
+0014 <span class="comment">%       endWorm        - the ending worm coordinates;</span>
+0015 <span class="comment">%                        if empty, the worm is not plotted</span>
+0016 <span class="comment">%       wormColors     - the colors for the starting and ending worms</span>
+0017 <span class="comment">%                        if empty, the worm is not plotted</span>
+0018 <span class="comment">%       fps            - the frames/second;</span>
+0019 <span class="comment">%                        if empty, the path time is not shown</span>
+0020 <span class="comment">%       widthPerLength - the worm's mean width/length</span>
+0021 <span class="comment">%                        (for plotting the starting and ending worm);</span>
+0022 <span class="comment">%                        if empty, the worm width defaults to 3 points</span>
+0023 <span class="comment">%       titleName      - the title for the figure</span>
+0024 <span class="comment">%       axisName       - the name to label the path axes</span>
+0025 <span class="comment">%       pathNames      - the name(s) to label the path(s)</span>
+0026 <span class="comment">%       pathColors     - the path(s) colors</span>
+0027 <span class="comment">%       events         - the event(s) coordinates (XY coordinates x event</span>
+0028 <span class="comment">%                        number) -- see events2coordinates</span>
+0029 <span class="comment">%       eventNames     - the name(s) to label the event(s)</span>
+0030 <span class="comment">%       eventMarkers   - the marker(s) to label the event(s)</span>
+0031 <span class="comment">%       eventColors    - the color(s) to label the event(s) marker(s)</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% See PLOTWORMPATHDATA, EVENTS2COORDINATES</span>
+0034 <a name="_sub0" href="#_subfunctions" class="code">function plotWormPath(wormPaths, startWorm, endWorm, wormColors, fps, </a><span class="keyword">...</span>
+0035     widthPerLength, titleName, axisName, pathNames, pathColors, varargin)
+0036 
+0037 <span class="comment">% Are we plotting any events?</span>
+0038 events = [];
+0039 <span class="keyword">if</span> length(varargin) &gt;= 4
+0040     
+0041     <span class="comment">% Determine the events.</span>
+0042     events = varargin{1};
+0043     
+0044     <span class="comment">% Determine the event names.</span>
+0045     eventNames = varargin{2};
+0046     
+0047     <span class="comment">% Determine the event markers.</span>
+0048     eventMarkers = varargin{3};
+0049     
+0050     <span class="comment">% Determine the event colors.</span>
+0051     eventColors = varargin{4};
+0052 <span class="keyword">end</span>
+0053 
+0054 <span class="comment">% Organize the paths.</span>
+0055 <span class="keyword">if</span> ~iscell(wormPaths)
+0056     wormPaths = {wormPaths};
+0057     pathNames = {pathNames};
+0058     pathColors = {pathColors};
+0059 <span class="keyword">end</span>
+0060 
+0061 <span class="comment">% Organize the events.</span>
+0062 <span class="keyword">if</span> ~isempty(events) &amp;&amp; ~iscell(events)
+0063     events = {events};
+0064     eventNames = {eventNames};
+0065     eventMarkers = {eventMarkers};
+0066     eventColors = {eventColors};
+0067 <span class="keyword">end</span>
+0068 
+0069 <span class="comment">% Should we plot the start and end worms?</span>
+0070 <span class="keyword">if</span> isempty(startWorm) || isempty(endWorm)
+0071     startWorm = [];
+0072     endWorm = [];
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="comment">% Plot the start and end worms.</span>
+0076 <span class="comment">% Note: this is repeated to display the legend and layers correctly.</span>
+0077 hold on;
+0078 lineSize = 3;
+0079 <span class="keyword">if</span> ~isempty(startWorm)
+0080     plot(startWorm(1,1), startWorm(1,2), <span class="string">'Color'</span>, wormColors{1}, <span class="keyword">...</span>
+0081         <span class="string">'LineWidth'</span>, lineSize, <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="string">'MarkerSize'</span>, lineSize, <span class="keyword">...</span>
+0082         <span class="string">'MarkerFaceColor'</span>, wormColors{1}, <span class="string">'MarkerEdgeColor'</span>, wormColors{1});
+0083 <span class="keyword">end</span>
+0084 <span class="keyword">if</span> ~isempty(endWorm)
+0085     plot(endWorm(1,1), endWorm(1,2), <span class="string">'Color'</span>, wormColors{2}, <span class="keyword">...</span>
+0086         <span class="string">'LineWidth'</span>, lineSize, <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="string">'MarkerSize'</span>, lineSize, <span class="keyword">...</span>
+0087         <span class="string">'MarkerFaceColor'</span>, wormColors{2}, <span class="string">'MarkerEdgeColor'</span>, wormColors{2});
+0088 <span class="keyword">end</span>
+0089 
+0090 <span class="comment">% Plot the start worm for each path in the respective path color.</span>
+0091 <span class="comment">% Note: this is repeated to display the legend and layers correctly.</span>
+0092 <span class="keyword">if</span> ~isempty(startWorm)
+0093     <span class="keyword">for</span> i = 1:length(pathColors)
+0094         plot(startWorm(1,1), startWorm(1,2), <span class="string">'Color'</span>, pathColors{i}, <span class="keyword">...</span>
+0095             <span class="string">'LineWidth'</span>, lineSize, <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="string">'MarkerSize'</span>, <span class="keyword">...</span>
+0096             lineSize, <span class="string">'MarkerFaceColor'</span>, pathColors{i}, <span class="keyword">...</span>
+0097             <span class="string">'MarkerEdgeColor'</span>, pathColors{i});
+0098     <span class="keyword">end</span>
+0099 <span class="keyword">end</span>
+0100 
+0101 <span class="comment">% Plot the events.</span>
+0102 <span class="comment">% Note: this is repeated to display the legend and layers correctly.</span>
+0103 <span class="keyword">for</span> i = 1:length(events)
+0104     plot(events(1,1), events(2,1), <span class="string">'LineStyle'</span>, <span class="string">'.'</span>, <span class="string">'Color'</span>, <span class="keyword">...</span>
+0105         eventColors{i}, <span class="string">'Marker'</span>, eventMarkers{i});
+0106 <span class="keyword">end</span>
+0107 
+0108 <span class="comment">% Plot the worm paths.</span>
+0109 minXPath = NaN;
+0110 maxXPath = NaN;
+0111 minYPath = NaN;
+0112 maxYPath = NaN;
+0113 plotHandle = [];
+0114 <span class="keyword">for</span> i = 1:length(wormPaths)
+0115     
+0116     <span class="comment">% Plot the path.</span>
+0117     pathHandle = plot(wormPaths{i}(1,:), wormPaths{i}(2,:), <span class="keyword">...</span>
+0118         <span class="string">'LineStyle'</span>, <span class="string">'.'</span>, <span class="string">'Marker'</span>, <span class="string">'.'</span>, <span class="string">'MarkerSize'</span>, 1, <span class="keyword">...</span>
+0119         <span class="string">'Color'</span>, pathColors{i});
+0120     plotHandle = get(pathHandle, <span class="string">'Parent'</span>);
+0121     
+0122     <span class="comment">% Compute the minimum and maximum path coordinates.</span>
+0123     minXPath = min(minXPath, min(wormPaths{i}(1,:)));
+0124     maxXPath = max(maxXPath, max(wormPaths{i}(1,:)));
+0125     minYPath = min(minYPath, min(wormPaths{i}(2,:)));
+0126     maxYPath = max(maxYPath, max(wormPaths{i}(2,:)));
+0127 <span class="keyword">end</span>
+0128 
+0129 <span class="comment">% Plot the start and end worms.</span>
+0130 <span class="comment">% Note: this is repeated to display the legend and layers correctly.</span>
+0131 <span class="keyword">if</span> ~isempty(startWorm)
+0132     plot(startWorm(:,1), startWorm(:,2), <span class="string">'Color'</span>, wormColors{1}, <span class="keyword">...</span>
+0133         <span class="string">'LineWidth'</span>, lineSize, <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="string">'MarkerSize'</span>, lineSize, <span class="keyword">...</span>
+0134         <span class="string">'MarkerFaceColor'</span>, wormColors{1}, <span class="string">'MarkerEdgeColor'</span>, wormColors{1});
+0135     plot(endWorm(:,1), endWorm(:,2), <span class="string">'Color'</span>, wormColors{2}, <span class="keyword">...</span>
+0136         <span class="string">'LineWidth'</span>, lineSize, <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="string">'MarkerSize'</span>, lineSize, <span class="keyword">...</span>
+0137         <span class="string">'MarkerFaceColor'</span>, wormColors{2}, <span class="string">'MarkerEdgeColor'</span>, wormColors{2});
+0138 <span class="keyword">end</span>
+0139 
+0140 <span class="comment">% Plot the events.</span>
+0141 <span class="keyword">for</span> i = 1:length(events)
+0142     plot(events(1,:), events(2,:), <span class="string">'LineStyle'</span>, <span class="string">'.'</span>, <span class="string">'Color'</span>, <span class="keyword">...</span>
+0143         eventColors{i}, <span class="string">'Marker'</span>, eventMarkers{i});
+0144 <span class="keyword">end</span>
+0145 
+0146 <span class="comment">% Construct the starting and ending worm legend.</span>
+0147 legends = [];
+0148 <span class="keyword">if</span> ~isempty(startWorm)
+0149     legends{end + 1} = <span class="string">'Start'</span>;
+0150 <span class="keyword">end</span>
+0151 <span class="keyword">if</span> ~isempty(endWorm)
+0152     time = length(wormPaths{1}) / fps;
+0153     legends{end + 1} = [<span class="string">'End (Time = '</span> num2str(time) <span class="string">' seconds)'</span>];
+0154 <span class="keyword">end</span>
+0155 
+0156 <span class="comment">% Construct the path legend.</span>
+0157 <span class="keyword">for</span> i = 1:length(wormPaths)
+0158     legends{end + 1} = [pathNames{i} <span class="string">' Path'</span>];
+0159 <span class="keyword">end</span>
+0160 
+0161 <span class="comment">% Construct the events legend.</span>
+0162 <span class="keyword">for</span> i = 1:length(events)
+0163     legends{end + 1} = [eventNames <span class="string">'(N = '</span> num2str(length(events{i})) <span class="string">')'</span>];
+0164 <span class="keyword">end</span>
+0165 
+0166 <span class="comment">% Label the figure.</span>
+0167 axis equal;
+0168 title(titleName);
+0169 xlabel([<span class="string">'X '</span> axisName]);
+0170 ylabel([<span class="string">'Y '</span> axisName]);
+0171 <span class="comment">%legendHandle = legend(legends, 'Location', 'North');</span>
+0172 <span class="comment">%set(legendHandle, 'LineWidth', 1.5);</span>
+0173 
+0174 <span class="comment">% Resize the plots to fit the legend.</span>
+0175 <span class="comment">%plotPosition = get(plotHandle, 'Position');</span>
+0176 <span class="comment">%legendPosition = get(legendHandle, 'Position');</span>
+0177 <span class="comment">%pathScale = (legendPosition(2) - plotPosition(2)) / plotPosition(4);</span>
+0178 <span class="comment">%axis equal;</span>
+0179 <span class="comment">%pad = 0.01 * min(maxXPath - minXPath, maxYPath - minYPath);</span>
+0180 <span class="comment">%xlim([minXPath - pad, maxXPath + pad]);</span>
+0181 <span class="comment">%ylim([minYPath - pad, (maxYPath - minYPath) / pathScale + minYPath + pad]);</span>
+0182 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

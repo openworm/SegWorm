@@ -1,0 +1,620 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of findEvent</title>
+  <meta name="keywords" content="findEvent">
+  <meta name="description" content="FINDEVENT Find an event within an array of data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Events -->
+<h1>findEvent
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>FINDEVENT Find an event within an array of data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function frames = findEvent(data, minThr, maxThr, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FINDEVENT Find an event within an array of data.
+ Note: if the first/last event are solely preceded/followed by NaN frames,
+ these frames are swallowed into the respective event.
+
+   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR)
+   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR, ISATTHR)
+   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR, ISATTHR,
+                      MINFRAMESTHR, MAXFRAMESTHR, ISATFRAMESTHR)
+   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR, ISATTHR,
+                      MINFRAMESTHR, MAXFRAMESTHR, ISATFRAMESTHR,
+                      MINSUMTHR, MAXSUMTHR, ISATSUMTHR)
+   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR, ISATTHR,
+                      MINFRAMESTHR, MAXFRAMESTHR, ISATFRAMESTHR,
+                      MINSUMTHR, MAXSUMTHR, ISATSUMTHR, SUMDATA,
+                      MININTERFRAMESTHR, MAXINTERFRAMESTHR, ISATINTERFRAMESTHR)
+   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR, ISATTHR,
+                      MINFRAMESTHR, MAXFRAMESTHR, ISATFRAMESTHR,
+                      MINSUMTHR, MAXSUMTHR, ISATSUMTHR, SUMDATA,
+                      MININTERFRAMESTHR, MAXINTERFRAMESTHR, ISATINTERFRAMESTHR,
+                      MININTERSUMTHR, MAXINTERSUMTHR, ISATINTERSUMTHR)
+
+   Inputs:
+       data              - the event data
+       minThr            - the minimum threshold for the data;
+                           if empty, their is no minimum threshold
+       maxThr            - the maximum threshold for the data
+                           if empty, their is no maximum threshold
+       isAtThr           - is the data threshold inclusive?
+                           the default is false
+       minFramesThr      - the minimum threshold for the event frames
+                           if empty, their is no minimum threshold
+       maxFramesThr      - the maximum threshold for the event frames
+                           if empty, their is no maximum threshold
+       isAtFramesThr     - is the frames threshold inclusive?
+                           the default is false
+       minSumThr         - the minimum threshold for the data sum
+                           if empty, their is no minimum threshold
+       maxSumThr         - the maximum threshold for the data sum
+                           if empty, their is no maximum threshold
+       isAtSumThr        - is the sum threshold inclusive?
+                           the default is false
+       sumData           - the event data for sum thresholding;
+                           if empty, the event data is used
+       minInterFramesThr - the minimum threshold for the number of frames
+                           separating events, events separated by less
+                           frames are unified;
+                           if empty, their is no minimum threshold
+       maxInterFramesThr - the maximum threshold for the number of frames
+                           separating events, events separated by more
+                           frames are unified;
+                           if empty, their is no maximum threshold
+       isAtInterFramesThr - is the frame separation threshold inclusive?
+                           the default is false
+       minInterSumThr    - the minimum threshold for the data sum
+                           separating events, events separated by less
+                           data are unified;
+                           if empty, their is no minimum threshold
+       maxInterSumThr    - the maximum threshold for the data sum
+                           separating events, events separated by more
+                           data are unified;
+                           if empty, their is no minimum threshold
+       isAtInterSumThr   - is the data sum separation threshold inclusive?
+                           the default is false
+
+   Output:
+       frames - the frames at which the event took place;
+                a structure array with fields:
+
+                start = the start frame
+                end   = the end frame
+                
+
+ See also <a href="events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">EVENTS2STATS</a>, <a href="events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">EVENTS2ARRAY</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Features/bendAndSpeedTest.html" class="code" title="">bendAndSpeedTest</a>	Initialize our variables.</li><li><a href="../../SegWorm/Worms/Features/wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li><li><a href="../../SegWorm/Worms/Features/wormVelocity.html" class="code" title="function [velocity events] = wormVelocity(x, y, fps, lengths, varargin)">wormVelocity</a>	WORMVELOCITY Compute the worm velocity (speed & direction) at the</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function frames = findEvent(data, minThr, maxThr, varargin)</a>
+0002 <span class="comment">%FINDEVENT Find an event within an array of data.</span>
+0003 <span class="comment">% Note: if the first/last event are solely preceded/followed by NaN frames,</span>
+0004 <span class="comment">% these frames are swallowed into the respective event.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR)</span>
+0007 <span class="comment">%   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR, ISATTHR)</span>
+0008 <span class="comment">%   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR, ISATTHR,</span>
+0009 <span class="comment">%                      MINFRAMESTHR, MAXFRAMESTHR, ISATFRAMESTHR)</span>
+0010 <span class="comment">%   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR, ISATTHR,</span>
+0011 <span class="comment">%                      MINFRAMESTHR, MAXFRAMESTHR, ISATFRAMESTHR,</span>
+0012 <span class="comment">%                      MINSUMTHR, MAXSUMTHR, ISATSUMTHR)</span>
+0013 <span class="comment">%   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR, ISATTHR,</span>
+0014 <span class="comment">%                      MINFRAMESTHR, MAXFRAMESTHR, ISATFRAMESTHR,</span>
+0015 <span class="comment">%                      MINSUMTHR, MAXSUMTHR, ISATSUMTHR, SUMDATA,</span>
+0016 <span class="comment">%                      MININTERFRAMESTHR, MAXINTERFRAMESTHR, ISATINTERFRAMESTHR)</span>
+0017 <span class="comment">%   FRAMES = FINDEVENT(DATA, MINTHR, MAXTHR, ISATTHR,</span>
+0018 <span class="comment">%                      MINFRAMESTHR, MAXFRAMESTHR, ISATFRAMESTHR,</span>
+0019 <span class="comment">%                      MINSUMTHR, MAXSUMTHR, ISATSUMTHR, SUMDATA,</span>
+0020 <span class="comment">%                      MININTERFRAMESTHR, MAXINTERFRAMESTHR, ISATINTERFRAMESTHR,</span>
+0021 <span class="comment">%                      MININTERSUMTHR, MAXINTERSUMTHR, ISATINTERSUMTHR)</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   Inputs:</span>
+0024 <span class="comment">%       data              - the event data</span>
+0025 <span class="comment">%       minThr            - the minimum threshold for the data;</span>
+0026 <span class="comment">%                           if empty, their is no minimum threshold</span>
+0027 <span class="comment">%       maxThr            - the maximum threshold for the data</span>
+0028 <span class="comment">%                           if empty, their is no maximum threshold</span>
+0029 <span class="comment">%       isAtThr           - is the data threshold inclusive?</span>
+0030 <span class="comment">%                           the default is false</span>
+0031 <span class="comment">%       minFramesThr      - the minimum threshold for the event frames</span>
+0032 <span class="comment">%                           if empty, their is no minimum threshold</span>
+0033 <span class="comment">%       maxFramesThr      - the maximum threshold for the event frames</span>
+0034 <span class="comment">%                           if empty, their is no maximum threshold</span>
+0035 <span class="comment">%       isAtFramesThr     - is the frames threshold inclusive?</span>
+0036 <span class="comment">%                           the default is false</span>
+0037 <span class="comment">%       minSumThr         - the minimum threshold for the data sum</span>
+0038 <span class="comment">%                           if empty, their is no minimum threshold</span>
+0039 <span class="comment">%       maxSumThr         - the maximum threshold for the data sum</span>
+0040 <span class="comment">%                           if empty, their is no maximum threshold</span>
+0041 <span class="comment">%       isAtSumThr        - is the sum threshold inclusive?</span>
+0042 <span class="comment">%                           the default is false</span>
+0043 <span class="comment">%       sumData           - the event data for sum thresholding;</span>
+0044 <span class="comment">%                           if empty, the event data is used</span>
+0045 <span class="comment">%       minInterFramesThr - the minimum threshold for the number of frames</span>
+0046 <span class="comment">%                           separating events, events separated by less</span>
+0047 <span class="comment">%                           frames are unified;</span>
+0048 <span class="comment">%                           if empty, their is no minimum threshold</span>
+0049 <span class="comment">%       maxInterFramesThr - the maximum threshold for the number of frames</span>
+0050 <span class="comment">%                           separating events, events separated by more</span>
+0051 <span class="comment">%                           frames are unified;</span>
+0052 <span class="comment">%                           if empty, their is no maximum threshold</span>
+0053 <span class="comment">%       isAtInterFramesThr - is the frame separation threshold inclusive?</span>
+0054 <span class="comment">%                           the default is false</span>
+0055 <span class="comment">%       minInterSumThr    - the minimum threshold for the data sum</span>
+0056 <span class="comment">%                           separating events, events separated by less</span>
+0057 <span class="comment">%                           data are unified;</span>
+0058 <span class="comment">%                           if empty, their is no minimum threshold</span>
+0059 <span class="comment">%       maxInterSumThr    - the maximum threshold for the data sum</span>
+0060 <span class="comment">%                           separating events, events separated by more</span>
+0061 <span class="comment">%                           data are unified;</span>
+0062 <span class="comment">%                           if empty, their is no minimum threshold</span>
+0063 <span class="comment">%       isAtInterSumThr   - is the data sum separation threshold inclusive?</span>
+0064 <span class="comment">%                           the default is false</span>
+0065 <span class="comment">%</span>
+0066 <span class="comment">%   Output:</span>
+0067 <span class="comment">%       frames - the frames at which the event took place;</span>
+0068 <span class="comment">%                a structure array with fields:</span>
+0069 <span class="comment">%</span>
+0070 <span class="comment">%                start = the start frame</span>
+0071 <span class="comment">%                end   = the end frame</span>
+0072 <span class="comment">%</span>
+0073 <span class="comment">%</span>
+0074 <span class="comment">% See also EVENTS2STATS, EVENTS2ARRAY</span>
+0075 
+0076 <span class="comment">% Is the threshold inclusive?</span>
+0077 isAtThr = false;
+0078 <span class="keyword">if</span> ~isempty(varargin)
+0079     isAtThr = varargin{1};
+0080 <span class="keyword">end</span>
+0081 
+0082 <span class="comment">% Determine the minimum event frames threshold.</span>
+0083 minFramesThr = [];
+0084 <span class="keyword">if</span> length(varargin) &gt; 1
+0085     minFramesThr = varargin{2}(:);
+0086 <span class="keyword">end</span>
+0087 
+0088 <span class="comment">% Determine the maximum event frames threshold.</span>
+0089 maxFramesThr = [];
+0090 <span class="keyword">if</span> length(varargin) &gt; 2
+0091     maxFramesThr = varargin{3}(:);
+0092 <span class="keyword">end</span>
+0093 
+0094 <span class="comment">% Is the event frames threshold inclusive?</span>
+0095 isAtFramesThr = false;
+0096 <span class="keyword">if</span> length(varargin) &gt; 3
+0097     isAtFramesThr = varargin{4};
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="comment">% Determine the minimum data sum threshold.</span>
+0101 minSumThr = [];
+0102 <span class="keyword">if</span> length(varargin) &gt; 4
+0103     minSumThr = varargin{5}(:);
+0104 <span class="keyword">end</span>
+0105 
+0106 <span class="comment">% Determine the maximum data sum threshold.</span>
+0107 maxSumThr = [];
+0108 <span class="keyword">if</span> length(varargin) &gt; 5
+0109     maxSumThr = varargin{6}(:);
+0110 <span class="keyword">end</span>
+0111 
+0112 <span class="comment">% Is the data sum threshold inclusive?</span>
+0113 isAtSumThr = false;
+0114 <span class="keyword">if</span> length(varargin) &gt; 6
+0115     isAtSumThr = varargin{7}(:);
+0116 <span class="keyword">end</span>
+0117 
+0118 <span class="comment">% Determine the event data for sum thresholding.</span>
+0119 sumData = [];
+0120 <span class="keyword">if</span> length(varargin) &gt; 7
+0121     sumData = varargin{8}(:);
+0122 <span class="keyword">end</span>
+0123 <span class="keyword">if</span> isempty(sumData)
+0124     sumData = data;
+0125 <span class="keyword">end</span>
+0126 
+0127 <span class="comment">% Determine the minimum frames separation threshold.</span>
+0128 minInterFramesThr = [];
+0129 <span class="keyword">if</span> length(varargin) &gt; 8
+0130     minInterFramesThr = varargin{9}(:);
+0131 <span class="keyword">end</span>
+0132 
+0133 <span class="comment">% Determine the maximum frames separation threshold.</span>
+0134 maxInterFramesThr = [];
+0135 <span class="keyword">if</span> length(varargin) &gt; 9
+0136     maxInterFramesThr = varargin{10}(:);
+0137 <span class="keyword">end</span>
+0138 
+0139 <span class="comment">% Is the frames separation threshold inclusive?</span>
+0140 isAtInterFramesThr = false;
+0141 <span class="keyword">if</span> length(varargin) &gt; 10
+0142     isAtInterFramesThr = varargin{11};
+0143 <span class="keyword">end</span>
+0144 
+0145 <span class="comment">% Determine the minimum data sum separation threshold.</span>
+0146 minInterSumThr = [];
+0147 <span class="keyword">if</span> length(varargin) &gt; 11
+0148     minInterSumThr = varargin{12}(:);
+0149 <span class="keyword">end</span>
+0150 
+0151 <span class="comment">% Determine the maximum data sum separation threshold.</span>
+0152 maxInterSumThr = [];
+0153 <span class="keyword">if</span> length(varargin) &gt; 12
+0154     maxInterSumThr = varargin{13}(:);
+0155 <span class="keyword">end</span>
+0156 
+0157 <span class="comment">% Is the data sum separation threshold inclusive?</span>
+0158 isAtInterSumThr = false;
+0159 <span class="keyword">if</span> length(varargin) &gt; 13
+0160     isAtInterSumThr = varargin{14};
+0161 <span class="keyword">end</span>
+0162 
+0163 <span class="comment">% Fix the data.</span>
+0164 data = data(:);
+0165 sumData = sumData(:);
+0166 minThr = minThr(:);
+0167 maxThr = maxThr(:);
+0168 
+0169 <span class="comment">% Mark the events.</span>
+0170 isEvent = true(length(data),1);
+0171 <span class="keyword">if</span> ~isempty(minThr)
+0172     <span class="keyword">if</span> isAtThr
+0173         isEvent = data &gt;= minThr;
+0174     <span class="keyword">else</span>
+0175         isEvent = data &gt; minThr;
+0176     <span class="keyword">end</span>
+0177 <span class="keyword">end</span>
+0178 <span class="keyword">if</span> ~isempty(maxThr)
+0179     <span class="keyword">if</span> isAtThr
+0180         isEvent = isEvent &amp; data &lt;= maxThr;
+0181     <span class="keyword">else</span>
+0182         isEvent = isEvent &amp; data &lt; maxThr;
+0183     <span class="keyword">end</span>
+0184 <span class="keyword">end</span>
+0185 
+0186 <span class="comment">% Find the events.</span>
+0187 dEvent = diff(isEvent);
+0188 startFrames = find(dEvent == 1);
+0189 endFrames = find(dEvent == -1) - 1;
+0190 
+0191 <span class="comment">% All event must have a start and end.</span>
+0192 <span class="comment">% if isempty(startFrames)</span>
+0193 <span class="comment">%     endFrames = [];</span>
+0194 <span class="comment">% elseif isempty(endFrames)</span>
+0195 <span class="comment">%     startFrames= [];</span>
+0196 <span class="comment">% else</span>
+0197 <span class="comment">%     if startFrames(1) &gt; endFrames(1)</span>
+0198 <span class="comment">%         endFrames(1) = [];</span>
+0199 <span class="comment">%     end</span>
+0200 <span class="comment">%     if startFrames(end) &gt; endFrames(end)</span>
+0201 <span class="comment">%         startFrames(end) = [];</span>
+0202 <span class="comment">%     end</span>
+0203 <span class="comment">% end</span>
+0204 <span class="keyword">if</span> isEvent(1)
+0205     startFrames(2:(end + 1)) = startFrames;
+0206     startFrames(1) = 0;
+0207 <span class="keyword">end</span>
+0208 <span class="keyword">if</span> isEvent(end)
+0209     endFrames(end + 1) = length(isEvent) - 1;
+0210 <span class="keyword">end</span>
+0211 
+0212 <span class="comment">% Do we have any events?</span>
+0213 <span class="keyword">if</span> ~isempty(startFrames)
+0214     
+0215     <span class="comment">% Include NaNs at the start and end.</span>
+0216     <span class="keyword">if</span> startFrames(1) &gt; 0 &amp;&amp; all(isnan(data(1:startFrames(1))))
+0217         startFrames(1) = 0;
+0218     <span class="keyword">end</span>
+0219     <span class="keyword">if</span> endFrames(end) &lt; length(isEvent) - 1 <span class="keyword">...</span>
+0220             &amp;&amp; all(isnan(data((endFrames(end) + 2):end)))
+0221         endFrames(end) = length(isEvent) - 1;
+0222     <span class="keyword">end</span>
+0223     
+0224     <span class="comment">% Check the number of frames separating events.</span>
+0225     <span class="comment">% Note: unify events before checking their frames and sums.</span>
+0226     <span class="keyword">if</span> ~(isempty(minInterFramesThr) &amp;&amp; isempty(maxInterFramesThr))
+0227         
+0228         <span class="comment">% Unify small time gaps.</span>
+0229         <span class="keyword">if</span> ~isempty(minInterFramesThr)
+0230             <span class="keyword">if</span> isAtInterFramesThr
+0231                 
+0232                 <span class="comment">% Find small gaps.</span>
+0233                 i = 1;
+0234                 <span class="keyword">while</span> i &lt; length(startFrames)
+0235                     
+0236                     <span class="comment">% Swallow the gaps.</span>
+0237                     <span class="keyword">while</span> i &lt; length(startFrames) &amp;&amp; <span class="keyword">...</span>
+0238                             startFrames(i + 1) - endFrames(i) - 1 &lt;= <span class="keyword">...</span>
+0239                             minInterFramesThr
+0240                         endFrames(i) = endFrames(i + 1);
+0241                         startFrames(i + 1) = [];
+0242                         endFrames(i + 1) = [];
+0243                     <span class="keyword">end</span>
+0244                     
+0245                     <span class="comment">% Advance.</span>
+0246                     i = i + 1;
+0247                 <span class="keyword">end</span>
+0248                 
+0249             <span class="keyword">else</span> <span class="comment">% the threshold is exclusive</span>
+0250                 
+0251                 <span class="comment">% Find small gaps.</span>
+0252                 i = 1;
+0253                 <span class="keyword">while</span> i &lt; length(startFrames)
+0254                     
+0255                     <span class="comment">% Swallow the gaps.</span>
+0256                     <span class="keyword">while</span> i &lt; length(startFrames) &amp;&amp; <span class="keyword">...</span>
+0257                             startFrames(i + 1) - endFrames(i) - 1 &lt; <span class="keyword">...</span>
+0258                             minInterFramesThr
+0259                         endFrames(i) = endFrames(i + 1);
+0260                         startFrames(i + 1) = [];
+0261                         endFrames(i + 1) = [];
+0262                     <span class="keyword">end</span>
+0263                     
+0264                     <span class="comment">% Advance.</span>
+0265                     i = i + 1;
+0266                 <span class="keyword">end</span>
+0267             <span class="keyword">end</span>
+0268         <span class="keyword">end</span>
+0269         
+0270         <span class="comment">% Unify large time gaps.</span>
+0271         <span class="keyword">if</span> ~isempty(maxInterFramesThr)
+0272             <span class="keyword">if</span> isAtInterFramesThr
+0273                 
+0274                 <span class="comment">% Find large gaps.</span>
+0275                 i = 1;
+0276                 <span class="keyword">while</span> i &lt; length(startFrames)
+0277                     
+0278                     <span class="comment">% Swallow the gaps.</span>
+0279                     <span class="keyword">while</span> i &lt; length(startFrames) &amp;&amp; <span class="keyword">...</span>
+0280                             startFrames(i + 1) - endFrames(i) - 1 &gt;= <span class="keyword">...</span>
+0281                             maxInterFramesThr
+0282                         endFrames(i) = endFrames(i + 1);
+0283                         startFrames(i + 1) = [];
+0284                         endFrames(i + 1) = [];
+0285                     <span class="keyword">end</span>
+0286                     
+0287                     <span class="comment">% Advance.</span>
+0288                     i = i + 1;
+0289                 <span class="keyword">end</span>
+0290                 
+0291             <span class="keyword">else</span> <span class="comment">% the threshold is exclusive</span>
+0292                 
+0293                 <span class="comment">% Find large gaps.</span>
+0294                 i = 1;
+0295                 <span class="keyword">while</span> i &lt; length(startFrames)
+0296                     
+0297                     <span class="comment">% Swallow the gaps.</span>
+0298                     <span class="keyword">while</span> i &lt; length(startFrames) &amp;&amp; <span class="keyword">...</span>
+0299                             startFrames(i + 1) - endFrames(i) - 1 &gt; <span class="keyword">...</span>
+0300                             maxInterFramesThr
+0301                         endFrames(i) = endFrames(i + 1);
+0302                         startFrames(i + 1) = [];
+0303                         endFrames(i + 1) = [];
+0304                     <span class="keyword">end</span>
+0305                     
+0306                     <span class="comment">% Advance.</span>
+0307                     i = i + 1;
+0308                 <span class="keyword">end</span>
+0309             <span class="keyword">end</span>
+0310         <span class="keyword">end</span>
+0311     <span class="keyword">end</span>
+0312     
+0313     <span class="comment">% Check the data sum separating events.</span>
+0314     <span class="comment">% Note: unify events before checking their frames and sums.</span>
+0315     <span class="keyword">if</span> ~(isempty(minInterSumThr) &amp;&amp; isempty(maxInterSumThr))
+0316         
+0317         <span class="comment">% Unify small time gaps.</span>
+0318         <span class="keyword">if</span> ~isempty(minInterSumThr)
+0319             <span class="keyword">if</span> isAtInterSumThr
+0320                 
+0321                 <span class="comment">% Find small gaps.</span>
+0322                 i = 1;
+0323                 <span class="keyword">while</span> i &lt; length(startFrames)
+0324                     
+0325                     <span class="comment">% Swallow the gaps.</span>
+0326                     <span class="keyword">while</span> i &lt; length(startFrames) &amp;&amp; <span class="keyword">...</span>
+0327                             startFrames(i + 1) - endFrames(i) - 1 &lt;= <span class="keyword">...</span>
+0328                             minInterSumThr
+0329                         endFrames(i) = endFrames(i + 1);
+0330                         startFrames(i + 1) = [];
+0331                         endFrames(i + 1) = [];
+0332                     <span class="keyword">end</span>
+0333                     
+0334                     <span class="comment">% Advance.</span>
+0335                     i = i + 1;
+0336                 <span class="keyword">end</span>
+0337                 
+0338             <span class="keyword">else</span> <span class="comment">% the threshold is exclusive</span>
+0339                 
+0340                 <span class="comment">% Find small gaps.</span>
+0341                 i = 1;
+0342                 <span class="keyword">while</span> i &lt; length(startFrames)
+0343                     
+0344                     <span class="comment">% Swallow the gaps.</span>
+0345                     <span class="keyword">while</span> i &lt; length(startFrames) &amp;&amp; <span class="keyword">...</span>
+0346                             startFrames(i + 1) - endFrames(i) - 1 &lt; <span class="keyword">...</span>
+0347                             minInterSumThr
+0348                         endFrames(i) = endFrames(i + 1);
+0349                         startFrames(i + 1) = [];
+0350                         endFrames(i + 1) = [];
+0351                     <span class="keyword">end</span>
+0352                     
+0353                     <span class="comment">% Advance.</span>
+0354                     i = i + 1;
+0355                 <span class="keyword">end</span>
+0356             <span class="keyword">end</span>
+0357         <span class="keyword">end</span>
+0358         
+0359         <span class="comment">% Unify large time gaps.</span>
+0360         <span class="keyword">if</span> ~isempty(maxInterSumThr)
+0361             <span class="keyword">if</span> isAtInterSumThr
+0362                 
+0363                 <span class="comment">% Find large gaps.</span>
+0364                 i = 1;
+0365                 <span class="keyword">while</span> i &lt; length(startFrames)
+0366                     
+0367                     <span class="comment">% Swallow the gaps.</span>
+0368                     <span class="keyword">while</span> i &lt; length(startFrames) &amp;&amp; <span class="keyword">...</span>
+0369                             startFrames(i + 1) - endFrames(i) - 1 &gt;= <span class="keyword">...</span>
+0370                             maxInterSumThr
+0371                         endFrames(i) = endFrames(i + 1);
+0372                         startFrames(i + 1) = [];
+0373                         endFrames(i + 1) = [];
+0374                     <span class="keyword">end</span>
+0375                     
+0376                     <span class="comment">% Advance.</span>
+0377                     i = i + 1;
+0378                 <span class="keyword">end</span>
+0379                 
+0380             <span class="keyword">else</span> <span class="comment">% the threshold is exclusive</span>
+0381                 
+0382                 <span class="comment">% Find large gaps.</span>
+0383                 i = 1;
+0384                 <span class="keyword">while</span> i &lt; length(startFrames)
+0385                     
+0386                     <span class="comment">% Swallow the gaps.</span>
+0387                     <span class="keyword">while</span> i &lt; length(startFrames) &amp;&amp; <span class="keyword">...</span>
+0388                             startFrames(i + 1) - endFrames(i) - 1 &gt; <span class="keyword">...</span>
+0389                             maxInterSumThr
+0390                         endFrames(i) = endFrames(i + 1);
+0391                         startFrames(i + 1) = [];
+0392                         endFrames(i + 1) = [];
+0393                     <span class="keyword">end</span>
+0394                     
+0395                     <span class="comment">% Advance.</span>
+0396                     i = i + 1;
+0397                 <span class="keyword">end</span>
+0398             <span class="keyword">end</span>
+0399         <span class="keyword">end</span>
+0400     <span class="keyword">end</span>
+0401     
+0402     <span class="comment">% Check the event frames.</span>
+0403     <span class="keyword">if</span> ~(isempty(minFramesThr) &amp;&amp; isempty(maxFramesThr))
+0404     
+0405         <span class="comment">% Compute the event frames.</span>
+0406         eventNumFrames = endFrames - startFrames + 1;
+0407         
+0408         <span class="comment">% Remove small events.</span>
+0409         removeEvents = false(size(eventNumFrames));
+0410         <span class="keyword">if</span> ~isempty(minFramesThr)
+0411             <span class="keyword">if</span> isAtFramesThr
+0412                 removeEvents = eventNumFrames &lt;= minFramesThr;
+0413             <span class="keyword">else</span>
+0414                 removeEvents = eventNumFrames &lt; minFramesThr;
+0415             <span class="keyword">end</span>
+0416         <span class="keyword">end</span>
+0417         
+0418         <span class="comment">% Remove large events.</span>
+0419         <span class="keyword">if</span> ~isempty(maxFramesThr)
+0420             <span class="keyword">if</span> isAtFramesThr
+0421                 removeEvents = removeEvents || <span class="keyword">...</span>
+0422                     eventNumFrames &gt;= maxFramesThr;
+0423             <span class="keyword">else</span>
+0424                 removeEvents = removeEvents || <span class="keyword">...</span>
+0425                     eventNumFrames &gt; maxFramesThr;
+0426             <span class="keyword">end</span>
+0427         <span class="keyword">end</span>
+0428         
+0429         <span class="comment">% Remove the events.</span>
+0430         startFrames(removeEvents) = [];
+0431         endFrames(removeEvents) = [];
+0432     <span class="keyword">end</span>
+0433     
+0434     <span class="comment">% Check the event sums.</span>
+0435     <span class="keyword">if</span> ~(isempty(minSumThr) &amp;&amp; isempty(maxSumThr))
+0436         
+0437         <span class="comment">% Compute the event sums.</span>
+0438         eventSums = nan(length(startFrames), 1);
+0439         <span class="keyword">for</span> i = 1:length(eventSums)
+0440             eventSums(i) = <span class="keyword">...</span>
+0441                 nansum(sumData((startFrames(i) + 1):(endFrames(i) + 1)));
+0442         <span class="keyword">end</span>
+0443         
+0444         <span class="comment">% Compute the event sum thresholds.</span>
+0445         <span class="keyword">if</span> length(minSumThr) &gt; 1
+0446             newMinSumThr = nan(size(eventSums));
+0447             <span class="keyword">for</span> i = 1:length(newMinSumThr)
+0448                 newMinSumThr(i) = nanmean( <span class="keyword">...</span>
+0449                     minSumThr((startFrames(i) + 1):(endFrames(i) + 1)));
+0450             <span class="keyword">end</span>
+0451             minSumThr = newMinSumThr;
+0452         <span class="keyword">end</span>
+0453         <span class="keyword">if</span> length(maxSumThr) &gt; 1
+0454             newMaxSumThr = nan(size(eventSums));
+0455             <span class="keyword">for</span> i = 1:length(newMaxSumThr)
+0456                 newMaxSumThr(i) = nanmean( <span class="keyword">...</span>
+0457                     maxSumThr((startFrames(i) + 1):(endFrames(i) + 1)));
+0458             <span class="keyword">end</span>
+0459             maxSumThr = newMaxSumThr;
+0460         <span class="keyword">end</span>
+0461         
+0462         <span class="comment">% Remove small events.</span>
+0463         removeEvents = false(size(eventSums));
+0464         <span class="keyword">if</span> ~isempty(minSumThr)
+0465             <span class="keyword">if</span> isAtSumThr
+0466                 removeEvents = eventSums &lt;= minSumThr;
+0467             <span class="keyword">else</span>
+0468                 removeEvents = eventSums &lt; minSumThr;
+0469             <span class="keyword">end</span>
+0470         <span class="keyword">end</span>
+0471         
+0472         <span class="comment">% Remove large events.</span>
+0473         <span class="keyword">if</span> ~isempty(maxSumThr)
+0474             <span class="keyword">if</span> isAtSumThr
+0475                 removeEvents =  removeEvents || <span class="keyword">...</span>
+0476                     eventSums &gt;= maxSumThr;
+0477             <span class="keyword">else</span>
+0478                 removeEvents =  removeEvents || <span class="keyword">...</span>
+0479                     eventSums &gt; maxSumThr;
+0480             <span class="keyword">end</span>
+0481         <span class="keyword">end</span>
+0482         
+0483         <span class="comment">% Remove the events.</span>
+0484         startFrames(removeEvents) = [];
+0485         endFrames(removeEvents) = [];
+0486     <span class="keyword">end</span>    
+0487 <span class="keyword">end</span>
+0488 
+0489 <span class="comment">% Record the event frames.</span>
+0490 frames = struct( <span class="keyword">...</span>
+0491     <span class="string">'start'</span>, [], <span class="keyword">...</span>
+0492     <span class="string">'end'</span>,  []);
+0493 <span class="keyword">for</span> i = 1:length(startFrames)
+0494     frames(i).start = startFrames(i);
+0495     frames(i).end = endFrames(i);
+0496 <span class="keyword">end</span>
+0497 
+0498 <span class="comment">% Did we find any event frames?</span>
+0499 <span class="keyword">if</span> isempty(frames(1).start)
+0500     frames = [];
+0501 <span class="keyword">end</span>
+0502 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

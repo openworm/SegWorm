@@ -1,0 +1,513 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotWormStatsMatrix</title>
+  <meta name="keywords" content="plotWormStatsMatrix">
+  <meta name="description" content="PLOTWORMSTATSMATRIX Plot a worms x features matrix.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>plotWormStatsMatrix
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>PLOTWORMSTATSMATRIX Plot a worms x features matrix.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function plotWormStatsMatrix(wormFile, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOTWORMSTATSMATRIX Plot a worms x features matrix.
+
+   PLOTWORMSTATSMATRIX(WORMFILES)
+
+   PLOTWORMSTATSMATRIX(WORMFILES, ISTRANSPOSE, ISZSCORE, ISNORM, MINPCA, 
+                       MINQVALUE, MINPOWER, IMPUTEFACTOR,
+                       ISHOWMAIN, SHOWCATEGORY, SHOWTYPE, SHOWSIGN, SHOWI)
+
+   Inputs:
+       wormFile - the worms x features matrix file;
+                  a file containing structures with fields:
+
+                  dataInfo:
+
+                     name     = the feature's name
+                     field    = the feature's path; a struct where:
+
+                                histogram  = the histogram data path
+                                statistics = the statistics data path
+
+                     index    = the feature's field index
+                     isMain   = is this a main feature?
+                     category = the feature's category, where:
+
+                                m = morphology
+                                s = posture (shape)
+                                l = locomotion
+                                p = path
+
+                     type     = the feature's type, where:
+
+                                s = simple data
+                                m = motion data
+                                e = event data
+                                f = event summary
+
+                     sign     = the feature's sign, where:
+
+                                d = all data
+                                a = the absolute value of the data
+                                p = the positive data
+                                n = the negative data
+
+                  worm:
+
+                     label   = the worm labels
+                     mean    = the worm data means (worms x features)
+                     zScore  = the worm data z-scores (worms x features)
+                     pValue  = the worm data p-values (worms x features)
+                     qValue  = the worm data q-values (worms x features)
+                     power   = the worm data power (worms x features)
+
+       isTranspose  - are we transposing the plot to features x worms?
+       isZScore     - are we using the normalized feature z-scores?
+                      if not, we use the feature means;
+                      the default is yes (true)
+       isNorm       - are we normalizing the features to z-scores?
+                      (using the population mean and variance)?
+       minPCA       - the minimum threshold for PCA covariance to use;
+                      the default is not to use PCA ([])
+
+                      [] = do not use PCA to transform the features
+                      1  = use all eigenfeatures
+
+       maxQValue    - the maximum q-value to use (insignificant features
+                      are not used); the default is all ([])
+       minPower     - the minimum power to use (insignificant features
+                      are not used); the default is all ([])
+       imputeFactor - unmeasurable data is imputed to the maximum and
+                      minimum of the worm population, respectively, when
+                      the worm or the control are NaN (if both are NaN,
+                      the data is imputed to 0); the imputation factor is
+                      a scale for multiplying the imputed value (e.g., use
+                      0 to zero the imputed data)
+       isShowMain   - are we showing the main features?
+                      the default is yes (true)
+       showCategory - which feature categories should we show?
+                      the default is all categories ([] or 'mslp')
+
+                      m = morphology
+                      s = posture (shape)
+                      l = locomotion
+                      p = path
+
+       showType     - which feature types should we show?
+                      the default is all types ([] or 'smef')
+
+                      s = simple data
+                      m = motion data
+                      e = event data
+                      f = event summary
+
+       showSign     - which feature signs should we show?
+                      the default is all signs ([] or 'dapn')
+
+                      d = all data
+                      a = the absolute value of the data
+                      p = the positive data
+                      n = the negative data
+
+       showI        - the indices of the features to show;
+                      the default is all ([])
+
+ See also WORM2STATSMATRIX</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Statistics/wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>	WORMFEATUREINFO Get information for computing the worm statistics.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function plotWormStatsMatrix(wormFile, varargin)</a>
+0002 <span class="comment">%PLOTWORMSTATSMATRIX Plot a worms x features matrix.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   PLOTWORMSTATSMATRIX(WORMFILES)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   PLOTWORMSTATSMATRIX(WORMFILES, ISTRANSPOSE, ISZSCORE, ISNORM, MINPCA,</span>
+0007 <span class="comment">%                       MINQVALUE, MINPOWER, IMPUTEFACTOR,</span>
+0008 <span class="comment">%                       ISHOWMAIN, SHOWCATEGORY, SHOWTYPE, SHOWSIGN, SHOWI)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Inputs:</span>
+0011 <span class="comment">%       wormFile - the worms x features matrix file;</span>
+0012 <span class="comment">%                  a file containing structures with fields:</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%                  dataInfo:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%                     name     = the feature's name</span>
+0017 <span class="comment">%                     field    = the feature's path; a struct where:</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%                                histogram  = the histogram data path</span>
+0020 <span class="comment">%                                statistics = the statistics data path</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%                     index    = the feature's field index</span>
+0023 <span class="comment">%                     isMain   = is this a main feature?</span>
+0024 <span class="comment">%                     category = the feature's category, where:</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%                                m = morphology</span>
+0027 <span class="comment">%                                s = posture (shape)</span>
+0028 <span class="comment">%                                l = locomotion</span>
+0029 <span class="comment">%                                p = path</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%                     type     = the feature's type, where:</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%                                s = simple data</span>
+0034 <span class="comment">%                                m = motion data</span>
+0035 <span class="comment">%                                e = event data</span>
+0036 <span class="comment">%                                f = event summary</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%                     sign     = the feature's sign, where:</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%                                d = all data</span>
+0041 <span class="comment">%                                a = the absolute value of the data</span>
+0042 <span class="comment">%                                p = the positive data</span>
+0043 <span class="comment">%                                n = the negative data</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%                  worm:</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">%                     label   = the worm labels</span>
+0048 <span class="comment">%                     mean    = the worm data means (worms x features)</span>
+0049 <span class="comment">%                     zScore  = the worm data z-scores (worms x features)</span>
+0050 <span class="comment">%                     pValue  = the worm data p-values (worms x features)</span>
+0051 <span class="comment">%                     qValue  = the worm data q-values (worms x features)</span>
+0052 <span class="comment">%                     power   = the worm data power (worms x features)</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%       isTranspose  - are we transposing the plot to features x worms?</span>
+0055 <span class="comment">%       isZScore     - are we using the normalized feature z-scores?</span>
+0056 <span class="comment">%                      if not, we use the feature means;</span>
+0057 <span class="comment">%                      the default is yes (true)</span>
+0058 <span class="comment">%       isNorm       - are we normalizing the features to z-scores?</span>
+0059 <span class="comment">%                      (using the population mean and variance)?</span>
+0060 <span class="comment">%       minPCA       - the minimum threshold for PCA covariance to use;</span>
+0061 <span class="comment">%                      the default is not to use PCA ([])</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">%                      [] = do not use PCA to transform the features</span>
+0064 <span class="comment">%                      1  = use all eigenfeatures</span>
+0065 <span class="comment">%</span>
+0066 <span class="comment">%       maxQValue    - the maximum q-value to use (insignificant features</span>
+0067 <span class="comment">%                      are not used); the default is all ([])</span>
+0068 <span class="comment">%       minPower     - the minimum power to use (insignificant features</span>
+0069 <span class="comment">%                      are not used); the default is all ([])</span>
+0070 <span class="comment">%       imputeFactor - unmeasurable data is imputed to the maximum and</span>
+0071 <span class="comment">%                      minimum of the worm population, respectively, when</span>
+0072 <span class="comment">%                      the worm or the control are NaN (if both are NaN,</span>
+0073 <span class="comment">%                      the data is imputed to 0); the imputation factor is</span>
+0074 <span class="comment">%                      a scale for multiplying the imputed value (e.g., use</span>
+0075 <span class="comment">%                      0 to zero the imputed data)</span>
+0076 <span class="comment">%       isShowMain   - are we showing the main features?</span>
+0077 <span class="comment">%                      the default is yes (true)</span>
+0078 <span class="comment">%       showCategory - which feature categories should we show?</span>
+0079 <span class="comment">%                      the default is all categories ([] or 'mslp')</span>
+0080 <span class="comment">%</span>
+0081 <span class="comment">%                      m = morphology</span>
+0082 <span class="comment">%                      s = posture (shape)</span>
+0083 <span class="comment">%                      l = locomotion</span>
+0084 <span class="comment">%                      p = path</span>
+0085 <span class="comment">%</span>
+0086 <span class="comment">%       showType     - which feature types should we show?</span>
+0087 <span class="comment">%                      the default is all types ([] or 'smef')</span>
+0088 <span class="comment">%</span>
+0089 <span class="comment">%                      s = simple data</span>
+0090 <span class="comment">%                      m = motion data</span>
+0091 <span class="comment">%                      e = event data</span>
+0092 <span class="comment">%                      f = event summary</span>
+0093 <span class="comment">%</span>
+0094 <span class="comment">%       showSign     - which feature signs should we show?</span>
+0095 <span class="comment">%                      the default is all signs ([] or 'dapn')</span>
+0096 <span class="comment">%</span>
+0097 <span class="comment">%                      d = all data</span>
+0098 <span class="comment">%                      a = the absolute value of the data</span>
+0099 <span class="comment">%                      p = the positive data</span>
+0100 <span class="comment">%                      n = the negative data</span>
+0101 <span class="comment">%</span>
+0102 <span class="comment">%       showI        - the indices of the features to show;</span>
+0103 <span class="comment">%                      the default is all ([])</span>
+0104 <span class="comment">%</span>
+0105 <span class="comment">% See also WORM2STATSMATRIX</span>
+0106 
+0107 <span class="comment">% Are we transposing the plot to features x worms?</span>
+0108 isTranspose = true;
+0109 <span class="keyword">if</span> ~isempty(varargin)
+0110     isTranspose = varargin{1};
+0111 <span class="keyword">end</span>
+0112 
+0113 <span class="comment">% Are we using the normalized feature z-scores?</span>
+0114 isZScore = true;
+0115 <span class="keyword">if</span> length(varargin) &gt; 1
+0116     isZScore = varargin{2};
+0117 <span class="keyword">end</span>
+0118 
+0119 <span class="comment">% Are we normalizing the feature population to z-scores?</span>
+0120 isNorm = true;
+0121 <span class="keyword">if</span> length(varargin) &gt; 2
+0122     isNorm = varargin{3};
+0123 <span class="keyword">end</span>
+0124 
+0125 <span class="comment">% Determine the minimum threshold for PCA covariance to use.</span>
+0126 minPCA = [];
+0127 <span class="keyword">if</span> length(varargin) &gt; 3
+0128     minPCA = varargin{4};
+0129 <span class="keyword">end</span>
+0130 
+0131 <span class="comment">% Determine the minimum q-value to use.</span>
+0132 maxQValue = [];
+0133 <span class="keyword">if</span> length(varargin) &gt; 4
+0134     maxQValue = varargin{5};
+0135 <span class="keyword">end</span>
+0136 
+0137 <span class="comment">% Determine the minimum power to use.</span>
+0138 minPower = [];
+0139 <span class="keyword">if</span> length(varargin) &gt; 5
+0140     minPower = varargin{6};
+0141 <span class="keyword">end</span>
+0142 
+0143 <span class="comment">% Determine the imputation factor.</span>
+0144 <span class="comment">% Note: unmeasurable data is imputed to the maximum and minimum of the worm</span>
+0145 <span class="comment">% population, respectively, when the worm or the control are NaN (if both</span>
+0146 <span class="comment">% are NaN, the data is imputed to 0). The imputation factor is a scale for</span>
+0147 <span class="comment">% multiplying the imputed value (e.g., use 0 to zero the imputed data).</span>
+0148 imputeFactor = 2;
+0149 <span class="keyword">if</span> length(varargin) &gt; 6
+0150     imputeFactor = varargin{7};
+0151 <span class="keyword">end</span>
+0152 
+0153 <span class="comment">% Are we showing the main features?</span>
+0154 isShowMain = true;
+0155 <span class="keyword">if</span> length(varargin) &gt; 7
+0156     isShowMain = varargin{8};
+0157 <span class="keyword">end</span>
+0158 
+0159 <span class="comment">% Which feature categories should we show?</span>
+0160 showCategory = [];
+0161 <span class="keyword">if</span> length(varargin) &gt; 8
+0162     showCategory = varargin{9};
+0163 <span class="keyword">end</span>
+0164 
+0165 <span class="comment">% Which feature types should we show?</span>
+0166 showType = [];
+0167 <span class="keyword">if</span> length(varargin) &gt; 9
+0168     showType = varargin{10};
+0169 <span class="keyword">end</span>
+0170 
+0171 <span class="comment">% Which feature signs should we show?</span>
+0172 showSign = [];
+0173 <span class="keyword">if</span> length(varargin) &gt; 10
+0174     showSign = varargin{11};
+0175 <span class="keyword">end</span>
+0176 
+0177 <span class="comment">% Determine the indices of the features to show.</span>
+0178 showI = [];
+0179 <span class="keyword">if</span> length(varargin) &gt; 11
+0180     showI = varargin{12};
+0181 <span class="keyword">end</span>
+0182 
+0183 <span class="comment">% Load the matrix.</span>
+0184 data = load(wormFile);
+0185 
+0186 <span class="comment">% Initialize the feature information.</span>
+0187 dataInfo = <a href="../../../SegWorm/Worms/Statistics/wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>();
+0188 
+0189 <span class="comment">% Determine the worm labels.</span>
+0190 wormLabels = data.worm.genotype;
+0191 
+0192 <span class="comment">% Remove unwanted features.</span>
+0193 isShow = true(length(dataInfo), 1);
+0194 <span class="keyword">if</span> ~isShowMain
+0195     isShow([dataInfo.isMain]) = false;
+0196 <span class="keyword">end</span>
+0197 <span class="keyword">if</span> ~isempty(showCategory)
+0198     hide = setdiff(<span class="string">'mslp'</span>, showCategory);
+0199     <span class="keyword">for</span> i = 1:length(hide)
+0200         isShow([dataInfo.category] == hide(i)) = false;
+0201     <span class="keyword">end</span>
+0202 <span class="keyword">end</span>
+0203 <span class="keyword">if</span> ~isempty(showType)
+0204     hide = setdiff(<span class="string">'smef'</span>, showType);
+0205     <span class="keyword">for</span> i = 1:length(hide)
+0206         isShow([dataInfo.type] == hide(i)) = false;
+0207     <span class="keyword">end</span>
+0208 <span class="keyword">end</span>
+0209 <span class="keyword">if</span> ~isempty(showSign)
+0210     hide = setdiff(<span class="string">'dapn'</span>, showSign);
+0211     <span class="keyword">for</span> i = 1:length(hide)
+0212         isShow([dataInfo.sign] == hide(i)) = false;
+0213     <span class="keyword">end</span>
+0214 <span class="keyword">end</span>
+0215 <span class="keyword">if</span> ~isempty(showI)
+0216     isShow(showI) = true;
+0217 <span class="keyword">end</span>
+0218 
+0219 <span class="comment">% Remove paused motion features.</span>
+0220 featureLabels = {dataInfo.name};
+0221 lowerLabels = lower(featureLabels);
+0222 pausedI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'paused'</span>)), lowerLabels);
+0223 bendI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'bend'</span>)), lowerLabels);
+0224 amplitudeI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'amplitude'</span>)), lowerLabels);
+0225 frequencyI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'frequency'</span>)), lowerLabels);
+0226 isShow(pausedI &amp; bendI &amp; (amplitudeI | frequencyI)) = false;
+0227 featureLabels = featureLabels(isShow);
+0228 
+0229 <span class="comment">% Find the wild-type control values.</span>
+0230 <span class="comment">%controlStr = 'N2: C. elegans Wild Isolate, Schafer Lab N2 (Bristol, UK)';</span>
+0231 controlStr = <span class="string">'C. elegans Wild Isolate, Schafer Lab N2 (Bristol, UK)'</span>;
+0232 controlI = cellfun(@(x) strcmp(x, controlStr), wormLabels);
+0233 controlI = find(controlI);
+0234 <span class="keyword">if</span> length(controlI) ~= 1
+0235     warning(<span class="string">'plotWormStatsMatrix:NoControl'</span>, <span class="keyword">...</span>
+0236         <span class="string">'Cannot find the wild-type control'</span>);
+0237 <span class="keyword">end</span>
+0238 allControlI = find(cellfun(@(x) ~isempty(strfind(x, <span class="string">'N2'</span>)), wormLabels));
+0239 
+0240 <span class="comment">% Use the normalized feature z-scores.</span>
+0241 <span class="keyword">if</span> isZScore
+0242     worms = data.worm.zScore(:,isShow);
+0243     
+0244     <span class="comment">% Find unmeasurable data.</span>
+0245     finiteWorms = worms;
+0246     finiteWorms(abs(finiteWorms) == inf) = NaN;
+0247 
+0248     <span class="comment">% Fix unmeasurable data.</span>
+0249     maxFeature = nanmax(finiteWorms);
+0250     minFeature = nanmin(finiteWorms);
+0251     [i, j] = find(worms == inf);
+0252     worms(sub2ind(size(worms), i, j)) = maxFeature(j) * imputeFactor;
+0253     [i, j] = find(worms == -inf);
+0254     worms(sub2ind(size(worms), i, j)) = minFeature(j) * imputeFactor;
+0255     
+0256     <span class="comment">% Set the control to zero.</span>
+0257     worms(controlI,:) = 0;
+0258     
+0259 <span class="comment">% Use the feature means.</span>
+0260 <span class="keyword">else</span>
+0261     worms = data.worm.mean(:,isShow);
+0262 <span class="keyword">end</span>
+0263 
+0264 <span class="comment">% Fix unmeasurable data.</span>
+0265 maxFeature = nanmax(worms);
+0266 minFeature = nanmin(worms);
+0267 nanWorms = isnan(worms);
+0268 nanControls = repmat(nanWorms(controlI,:), size(nanWorms, 1), 1);
+0269 nanWorms(controlI,:) = false;
+0270 nanControls(controlI,:) = false;
+0271 [i, j] = find(nanWorms &amp; ~nanControls);
+0272 worms(sub2ind(size(worms), i, j)) = maxFeature(j) * imputeFactor;
+0273 [i, j] = find(~nanWorms &amp; nanControls);
+0274 worms(sub2ind(size(worms), i, j)) = minFeature(j) * imputeFactor;
+0275 worms(isnan(worms)) = 0;
+0276     
+0277 <span class="comment">% Set insignificant features to their wild-type value.</span>
+0278 controlValue = worms(controlI,:);
+0279 <span class="keyword">if</span> ~isempty(maxQValue)
+0280     
+0281     <span class="comment">% Set insignificant features to zero.</span>
+0282     <span class="keyword">if</span> isZScore
+0283         worms(data.worm.qValue(:,isShow) &gt; maxQValue) = 0;
+0284         
+0285     <span class="comment">% Set insignificant features to their wild-type value.</span>
+0286     <span class="keyword">else</span>
+0287         <span class="keyword">for</span> i = 1:size(worms, 1)
+0288             insignificant = data.worm.qValue(i,isShow) &gt; maxQValue;
+0289             worms(i,insignificant) = controlValue(insignificant);
+0290         <span class="keyword">end</span>
+0291     <span class="keyword">end</span>
+0292 <span class="keyword">end</span>
+0293 
+0294 <span class="comment">% Set non-powerful features to their wild-type value.</span>
+0295 <span class="keyword">if</span> ~isempty(minPower)
+0296     
+0297     <span class="comment">% Set non-powerful features to zero.</span>
+0298     <span class="keyword">if</span> isZscore
+0299         worms(data.worm.power(:,isShow) &lt; minPower) = 0;
+0300         
+0301     <span class="comment">% Set non-powerful features to their wild-type value.</span>
+0302     <span class="keyword">else</span>
+0303         <span class="keyword">for</span> i = 1:size(worms, 1)
+0304             insignificant = data.worm.power(i,isShow) &lt; minPower;
+0305             worms(i,insignificant) = controlValue(insignificant);
+0306         <span class="keyword">end</span>
+0307     <span class="keyword">end</span>
+0308 <span class="keyword">end</span>
+0309 
+0310 <span class="comment">% Normalize the feature matrix.</span>
+0311 <span class="keyword">if</span> isNorm
+0312     dataMean = nanmean(worms);
+0313     dataStdDev = nanstd(worms);
+0314     <span class="keyword">for</span> i = 1:size(worms, 1)
+0315         worms(i,:) = (worms(i,:) - dataMean) ./ dataStdDev;
+0316     <span class="keyword">end</span>
+0317     worms(isnan(worms)) = 0;
+0318 <span class="keyword">end</span>
+0319 
+0320 <span class="comment">% Take the PCA of the features and transform them to eigenfeatures.</span>
+0321 <span class="keyword">if</span> ~isempty(minPCA)
+0322     
+0323     <span class="comment">% Compute the principal components.</span>
+0324     [pc, score, latent, t2] = princomp(worms);
+0325     
+0326     <span class="comment">% Compute the number of components necessary.</span>
+0327     compVar = cumsum(latent) ./ sum(latent);
+0328     compNum = find(compVar &gt;= minPCA, 1);
+0329     
+0330     <span class="comment">% Sort the coefficients by their loading.</span>
+0331     pcSign = sign(pc);
+0332     [pcWeight, pcFeature] = sort(abs(pc), 2, <span class="string">'descend'</span>);
+0333     
+0334     <span class="comment">% Transform the features to eigenfeatures.</span>
+0335     eigenLabel = <span class="string">'eigenfeature '</span>;
+0336     featureLabels = cell(compNum, 1);
+0337     <span class="keyword">for</span> i = 1:length(featureLabels)
+0338         featureLabels{i} = [eigenLabel num2str(i)];
+0339     <span class="keyword">end</span>
+0340     worms = score(:,1:compNum);
+0341 <span class="keyword">end</span>
+0342 
+0343 <span class="comment">% Transpose the plot to features x worms.</span>
+0344 <span class="keyword">if</span> isTranspose
+0345     worms = worms';
+0346     rowLabels = featureLabels;
+0347     colLabels = wormLabels;
+0348 <span class="keyword">else</span>
+0349     rowLabels = wormLabels;
+0350     colLabels = featureLabels;
+0351 <span class="keyword">end</span>
+0352 
+0353 <span class="comment">% Cluster the worms.</span>
+0354 linkageType = <span class="string">'average'</span>;
+0355 colDistType = <span class="string">'euclidean'</span>;
+0356 rowDistType = <span class="string">'euclidean'</span>;
+0357 cMap = redbluecmap;
+0358 cgo = clustergram(worms, <span class="string">'Linkage'</span>, linkageType, <span class="keyword">...</span>
+0359     <span class="string">'RowPDist'</span>, rowDistType, <span class="string">'ColumnPDist'</span>, colDistType, <span class="keyword">...</span>
+0360     <span class="string">'Standardize'</span>, 3, <span class="keyword">...</span>
+0361     <span class="string">'Dendrogram'</span>, 0, <span class="string">'Colormap'</span>, cMap);
+0362 set(cgo, <span class="string">'RowLabels'</span>, rowLabels);
+0363 set(cgo, <span class="string">'ColumnLabels'</span>, colLabels);
+0364 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

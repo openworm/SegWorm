@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of showWormPostureEigens1</title>
+  <meta name="keywords" content="showWormPostureEigens1">
+  <meta name="description" content="SHOWWORMPOSTUREEIGENS1 Show the first 3 eigenworm posture projections.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>showWormPostureEigens1
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>SHOWWORMPOSTUREEIGENS1 Show the first 3 eigenworm posture projections.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [saveFile pages] = showWormPostureEigens1(worm, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SHOWWORMPOSTUREEIGENS1 Show the first 3 eigenworm posture projections.
+
+   [SAVEFILE PAGES] = SHOWWORMPOSTUREEIGENS1(WORM)
+
+   [SAVEFILE PAGES] = SHOWWORMPOSTUREEIGENS1(WORM, FILEPREFIX)
+
+   [SAVEFILE PAGES] = SHOWWORMPOSTUREEIGENS1(WORM, FILEPREFIX, PAGE)
+
+   [SAVEFILE PAGES] = SHOWWORMPOSTUREEIGENS1(WORM, FILEPREFIX, PAGE, ISCLOSE)
+
+   Inputs:
+       worm        - the worm to show
+       filePrefix  - the file prefix for saving the figure;
+                     if empty, the figure is not saved
+       page        - the page number;
+                     if empty, the page number is not shown
+       isClose     - shoud we close the figure after saving it?
+                     when saving the figure, the default is yes (true)
+                     otherwise, the default is no (false)
+
+   Output:
+       saveFile - the file containing the saved figure;
+                  if empty, the figure was not saved
+       pages    - the number of pages in the figure file
+
+   See WORMORGANIZATION, SHOWORMPOSTURE</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>	PLOTHISTOGRAM Plot a histogram(s) of data.</li><li><a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>	STR2COLORS Convert a string of colors to RGB values.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="showWormPosture.html" class="code" title="function [saveFile pages] = showWormPosture(worm, varargin)">showWormPosture</a>	SHOWWORMPOSTURE Show the worm posture.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [saveFile pages] = showWormPostureEigens1(worm, varargin)</a>
+0002 <span class="comment">%SHOWWORMPOSTUREEIGENS1 Show the first 3 eigenworm posture projections.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORMPOSTUREEIGENS1(WORM)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORMPOSTUREEIGENS1(WORM, FILEPREFIX)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORMPOSTUREEIGENS1(WORM, FILEPREFIX, PAGE)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORMPOSTUREEIGENS1(WORM, FILEPREFIX, PAGE, ISCLOSE)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   Inputs:</span>
+0013 <span class="comment">%       worm        - the worm to show</span>
+0014 <span class="comment">%       filePrefix  - the file prefix for saving the figure;</span>
+0015 <span class="comment">%                     if empty, the figure is not saved</span>
+0016 <span class="comment">%       page        - the page number;</span>
+0017 <span class="comment">%                     if empty, the page number is not shown</span>
+0018 <span class="comment">%       isClose     - shoud we close the figure after saving it?</span>
+0019 <span class="comment">%                     when saving the figure, the default is yes (true)</span>
+0020 <span class="comment">%                     otherwise, the default is no (false)</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   Output:</span>
+0023 <span class="comment">%       saveFile - the file containing the saved figure;</span>
+0024 <span class="comment">%                  if empty, the figure was not saved</span>
+0025 <span class="comment">%       pages    - the number of pages in the figure file</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%   See WORMORGANIZATION, SHOWORMPOSTURE</span>
+0028 
+0029 <span class="comment">% Pad the title when saving the figure.</span>
+0030 <span class="comment">% Note: Matlab has a bug that cuts off the title when saving figures.</span>
+0031 pages = 0;
+0032 titlePad = [];
+0033 <span class="keyword">if</span> ~isempty(varargin) &amp;&amp; ~isempty(varargin{1})
+0034     pages = 1;
+0035     titlePad = <span class="string">'          '</span>;
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="comment">% Determine the locomotion modes.</span>
+0039 motionMode = worm.locomotion.motion.mode;
+0040 motionModes = { <span class="keyword">...</span>
+0041     1, <span class="keyword">...</span>
+0042     0, <span class="keyword">...</span>
+0043     -1};
+0044 motionNames = { <span class="keyword">...</span>
+0045     <span class="string">'Forward'</span>, <span class="keyword">...</span>
+0046     <span class="string">'Paused'</span>, <span class="keyword">...</span>
+0047     <span class="string">'Backward'</span>};
+0048 
+0049 
+0050 
+0051 <span class="comment">%% Show the eigenworm projections.</span>
+0052 
+0053 <span class="comment">% Create a figure.</span>
+0054 h = figure;
+0055 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1]);
+0056 hold on;
+0057 
+0058 <span class="comment">% Show the eigenworm projections.</span>
+0059 <span class="keyword">for</span> i = 1:3
+0060     
+0061     <span class="comment">% Show the eigenworm projections.</span>
+0062     subplot(2, 3, i);
+0063     hold on;
+0064     data = worm.posture.eigenProjection(i,:);
+0065     dataNames = <span class="string">'Eigenworm Projection'</span>;
+0066     samples = sum(~isnan(data));
+0067     titleName = [upper(dataNames) <span class="string">' '</span> num2str(i) <span class="keyword">...</span>
+0068         <span class="string">' (N = '</span> num2str(samples) <span class="string">')'</span> titlePad];
+0069     xAxisName = [dataNames <span class="string">' '</span> num2str(i) <span class="string">' (unitless measure)'</span>];
+0070     resolutions = 0.1;
+0071     histColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0, true);
+0072     statColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'r'</span>, -0.1, true);
+0073     <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>({data}, resolutions, titleName, xAxisName, <span class="keyword">...</span>
+0074         {dataNames}, histColors, statColors);
+0075     
+0076     <span class="comment">% Show the forward/paused/backward eigenworm projections.</span>
+0077     dataAll = data;
+0078     dataAllNames = dataNames;
+0079     dataNames = cell(length(motionModes), 1);
+0080     <span class="keyword">for</span> j = 1:length(motionModes)
+0081         dataNames{j} = [motionNames{j} <span class="string">' Projection'</span>];
+0082     <span class="keyword">end</span>
+0083     resolutions = 0.1;
+0084     histColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'rkb'</span>, 0, true);
+0085     statColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'rkb'</span>, -0.1, true);
+0086     subplot(2, 3, 3 + i);
+0087     hold on;
+0088     data = cell(length(motionModes), 1);
+0089     <span class="keyword">for</span> j = 1:length(motionModes)
+0090         data{j} = dataAll(motionMode == motionModes{j});
+0091     <span class="keyword">end</span>
+0092     samplesAll = sum(~isnan(dataAll));
+0093     meanAll = nanmean(dataAll);
+0094     stdDevAll = nanstd(dataAll);
+0095     titleName = [upper(dataAllNames) <span class="string">' '</span> num2str(i) <span class="keyword">...</span>
+0096         <span class="string">' (N = '</span> num2str(samplesAll) <span class="keyword">...</span>
+0097         <span class="string">', MEAN = '</span> num2str(meanAll) <span class="keyword">...</span>
+0098         <span class="string">', S.D. = '</span> num2str(stdDevAll) <span class="string">')'</span> titlePad];
+0099     <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(data, resolutions, titleName, xAxisName, dataNames, <span class="keyword">...</span>
+0100         histColors, statColors);
+0101 <span class="keyword">end</span>
+0102 
+0103 
+0104 
+0105 <span class="comment">%% Save the figure to a file.</span>
+0106 saveFile = [];
+0107 <span class="keyword">if</span> ~isempty(varargin) &amp;&amp; ~isempty(varargin{1})
+0108     
+0109     <span class="comment">% Construct the title.</span>
+0110     figureTitle = <span class="string">'POSTURE: EIGENWORM PROJECTIONS 1-3'</span>;
+0111     <span class="keyword">if</span> length(varargin) &gt; 1 &amp;&amp; ~isempty(varargin{2})
+0112         figureTitle = [<span class="string">'&lt;html&gt;&lt;b&gt;Page '</span> num2str(varargin{2}) <span class="string">' &amp;rarr; '</span> <span class="keyword">...</span>
+0113             figureTitle <span class="string">'&lt;/b&gt;&lt;/html&gt;'</span>];
+0114     <span class="keyword">else</span>
+0115         figureTitle = [<span class="string">'&lt;html&gt;&lt;b&gt;'</span> figureTitle <span class="string">'&lt;/b&gt;&lt;/html&gt;'</span>];
+0116     <span class="keyword">end</span>
+0117     
+0118     <span class="comment">% Add the title.</span>
+0119     titlePosition = [0, 0, length(figureTitle), 2];
+0120     uicontrol(<span class="string">'units'</span>, <span class="string">'characters'</span>, <span class="string">'String'</span>, figureTitle, <span class="keyword">...</span>
+0121         <span class="string">'Position'</span>, titlePosition);
+0122 
+0123     saveFile = [varargin{1} <span class="string">'_posture_eigens1.pdf'</span>];
+0124     saveFigure(h, saveFile);
+0125     
+0126     <span class="comment">% Close the figure.</span>
+0127     <span class="keyword">if</span> length(varargin) &lt; 3 || isempty(varargin{3}) || varargin{3}
+0128         close(h);
+0129     <span class="keyword">end</span>
+0130 <span class="keyword">end</span>
+0131 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

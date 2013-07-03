@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoReader_DirectShow</title>
+  <meta name="keywords" content="videoReader_DirectShow">
+  <meta name="description" content="videoReader_DirectShow">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>videoReader_DirectShow
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>videoReader_DirectShow</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">videoReader_DirectShow
+  This is a videoReader plugin that uses Microsoft's DirectShow API to
+  decode video files on Windows platforms.  Virtually any DRM-free video
+  file that can be played in Microsoft's Windows Media Player can be
+  loaded with this plugin.
+  
+  Users should not call this function directly.  Instead they should use
+  the videoReader constructor and specify the 'DirectShow' plugin.
+
+  Note that if using 64-bit Matlab, only 64-bit codecs may be used.  If
+  using 32-bit Matlab (on 32-bit or 64-bit Windows), only 32-bit codecs
+  may be used.  See INSTALL.dshow.html for details and installation
+  instructions.  
+
+  vr = videoReader(filename, 'DirectShow', ...)
+  vr = videoReader(filename, ..., 'plugin','DirectShow',...)
+    Loads the FILENAME using DirectShow.  As a convenience, all forward
+    slashes ('/') in FILENAME are automatically converted to backslashes
+    ('\'). 
+
+  vr = videoReader(..., 'preciseFrames',PF, ...)
+    For forward seeks smaller or equal to this integer value, the seek
+    is guaranteed to be precise.  Precise seeking means that if you seek
+    to frame 1032, you will always go exactly to frame 1032.  Imprecise
+    seeks allow a codec to (optionally) jump to approximately the
+    requested frame without worrying about whether it goes exactly
+    there.  
+
+    For forward seeks of less than or equal to PF frames, we override
+    the codec's default behavior to ensure preciseness.  Choosing a
+    small value for 'preciseFrames' can result in much faster seeks
+    (often O(1) for imprecise versus O(n) for precise, where n is the
+    seek distance) with the risk of not going to exactly the requested
+    frame.  If the value of PF is negative, precise seeks are always
+    guaranteed, even for backward seeks.  Note that for many codecs,
+    &quot;imprecise&quot; seeks will actually be precise. 
+
+  vr = videoReader(..., 'frameTimeoutMS',FT, ...)
+    When interfacing with DirectShow, we schedule requests that are
+    fulfilled in a collection of DirectShow-controlled threads.  If it
+    takes more than FT milliseconds per frame to fulfill a request, we
+    assume the request will never be fulfilled and we return with an
+    error from methods such as NEXT and GETFRAME.  Use -1 for an
+    infinite timeout period.
+
+  vr = videoReader(..., 'dfilters',FILT, ...)
+    ADVANCED FEATURE: Sometimes it's useful to add DirectShow filters to
+    perform postprocessing on the videos.  FILT is a colon-delimited
+    list of filter &quot;friendly names&quot;.  For example, 
+       'ffdshow raw video filter' 
+    can be used for a wide array of postprocessing such as smoothing,
+    rescaling, and pulldown removal.  See doc/pulldownRemoval.html for
+    an example.  
+
+ SEE ALSO:
+   <a href="buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>             : how to build the plugin
+   videoReader              : overview, usage examples, other plugins
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%videoReader_DirectShow</span>
+0002 <span class="comment">%  This is a videoReader plugin that uses Microsoft's DirectShow API to</span>
+0003 <span class="comment">%  decode video files on Windows platforms.  Virtually any DRM-free video</span>
+0004 <span class="comment">%  file that can be played in Microsoft's Windows Media Player can be</span>
+0005 <span class="comment">%  loaded with this plugin.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Users should not call this function directly.  Instead they should use</span>
+0008 <span class="comment">%  the videoReader constructor and specify the 'DirectShow' plugin.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%  Note that if using 64-bit Matlab, only 64-bit codecs may be used.  If</span>
+0011 <span class="comment">%  using 32-bit Matlab (on 32-bit or 64-bit Windows), only 32-bit codecs</span>
+0012 <span class="comment">%  may be used.  See INSTALL.dshow.html for details and installation</span>
+0013 <span class="comment">%  instructions.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%  vr = videoReader(filename, 'DirectShow', ...)</span>
+0016 <span class="comment">%  vr = videoReader(filename, ..., 'plugin','DirectShow',...)</span>
+0017 <span class="comment">%    Loads the FILENAME using DirectShow.  As a convenience, all forward</span>
+0018 <span class="comment">%    slashes ('/') in FILENAME are automatically converted to backslashes</span>
+0019 <span class="comment">%    ('\').</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%  vr = videoReader(..., 'preciseFrames',PF, ...)</span>
+0022 <span class="comment">%    For forward seeks smaller or equal to this integer value, the seek</span>
+0023 <span class="comment">%    is guaranteed to be precise.  Precise seeking means that if you seek</span>
+0024 <span class="comment">%    to frame 1032, you will always go exactly to frame 1032.  Imprecise</span>
+0025 <span class="comment">%    seeks allow a codec to (optionally) jump to approximately the</span>
+0026 <span class="comment">%    requested frame without worrying about whether it goes exactly</span>
+0027 <span class="comment">%    there.</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%    For forward seeks of less than or equal to PF frames, we override</span>
+0030 <span class="comment">%    the codec's default behavior to ensure preciseness.  Choosing a</span>
+0031 <span class="comment">%    small value for 'preciseFrames' can result in much faster seeks</span>
+0032 <span class="comment">%    (often O(1) for imprecise versus O(n) for precise, where n is the</span>
+0033 <span class="comment">%    seek distance) with the risk of not going to exactly the requested</span>
+0034 <span class="comment">%    frame.  If the value of PF is negative, precise seeks are always</span>
+0035 <span class="comment">%    guaranteed, even for backward seeks.  Note that for many codecs,</span>
+0036 <span class="comment">%    &quot;imprecise&quot; seeks will actually be precise.</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%  vr = videoReader(..., 'frameTimeoutMS',FT, ...)</span>
+0039 <span class="comment">%    When interfacing with DirectShow, we schedule requests that are</span>
+0040 <span class="comment">%    fulfilled in a collection of DirectShow-controlled threads.  If it</span>
+0041 <span class="comment">%    takes more than FT milliseconds per frame to fulfill a request, we</span>
+0042 <span class="comment">%    assume the request will never be fulfilled and we return with an</span>
+0043 <span class="comment">%    error from methods such as NEXT and GETFRAME.  Use -1 for an</span>
+0044 <span class="comment">%    infinite timeout period.</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%  vr = videoReader(..., 'dfilters',FILT, ...)</span>
+0047 <span class="comment">%    ADVANCED FEATURE: Sometimes it's useful to add DirectShow filters to</span>
+0048 <span class="comment">%    perform postprocessing on the videos.  FILT is a colon-delimited</span>
+0049 <span class="comment">%    list of filter &quot;friendly names&quot;.  For example,</span>
+0050 <span class="comment">%       'ffdshow raw video filter'</span>
+0051 <span class="comment">%    can be used for a wide array of postprocessing such as smoothing,</span>
+0052 <span class="comment">%    rescaling, and pulldown removal.  See doc/pulldownRemoval.html for</span>
+0053 <span class="comment">%    an example.</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">% SEE ALSO:</span>
+0056 <span class="comment">%   buildVideoIO             : how to build the plugin</span>
+0057 <span class="comment">%   videoReader              : overview, usage examples, other plugins</span>
+0058 <span class="comment">%</span>
+0059 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0060 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0061 <span class="comment">%when using this library on GNU/Linux).</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getVariableScore</title>
+  <meta name="keywords" content="getVariableScore">
+  <meta name="description" content="score = getVariableScore(x, asframe)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html private -->
+<h1>getVariableScore
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>score = getVariableScore(x, asframe)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function score = getVariableScore(x, asframe) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">score = getVariableScore(x, asframe) 
+  Assigns a heuristic score to the variable x.  Variables that look like
+  images (are 2D or 3D numeric matrices if ASFRAME is true, or 3D or 4D
+  numeric matrices if ASFRAME is false) receive very high scores.  Bigger
+  variables get higher scores that smaller ones.  All variables receive a
+  non-zero score.
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="loadMat.html" class="code" title="function out = loadMat(varname, fname, asframe)">loadMat</a>	out = loadMat(varname, fname, asframe)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function score = getVariableScore(x, asframe)</a>
+0002 <span class="comment">%score = getVariableScore(x, asframe)</span>
+0003 <span class="comment">%  Assigns a heuristic score to the variable x.  Variables that look like</span>
+0004 <span class="comment">%  images (are 2D or 3D numeric matrices if ASFRAME is true, or 3D or 4D</span>
+0005 <span class="comment">%  numeric matrices if ASFRAME is false) receive very high scores.  Bigger</span>
+0006 <span class="comment">%  variables get higher scores that smaller ones.  All variables receive a</span>
+0007 <span class="comment">%  non-zero score.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0010 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0011 <span class="comment">%when using this library on GNU/Linux).</span>
+0012 
+0013 <span class="comment">% soft-decision bias (makes desired features soft constraints)</span>
+0014 soft = 1e-10; 
+0015 
+0016 asvid = ~asframe;
+0017 
+0018 score = <span class="keyword">...</span>
+0019     ((((ndims(x)==3+asvid)+soft) * <span class="keyword">...</span>
+0020       ((size(x,3)==3)+soft)) +<span class="keyword">...</span><span class="comment">        % rgb or</span>
+0021      ((ndims(x)==2+asvid)+soft)) * <span class="keyword">...</span><span class="comment">   %  grayscale</span>
+0022     (numel(x)+soft) * <span class="keyword">...</span><span class="comment">                % and big</span>
+0023     (isnumeric(x)+soft);                 <span class="comment">% and numeric</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

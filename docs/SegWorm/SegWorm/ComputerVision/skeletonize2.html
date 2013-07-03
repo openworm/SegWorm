@@ -1,0 +1,374 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of skeletonize2</title>
+  <meta name="keywords" content="skeletonize2">
+  <meta name="description" content="SKELETONIZE2 Skeletonize takes the 2 pairs of start and end points on a">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>skeletonize2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>SKELETONIZE2 Skeletonize takes the 2 pairs of start and end points on a</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [skeleton cWidths] = skeletonize2(s1, e1, i1, s2, e2, i2, c1, c2,isAcross) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SKELETONIZE2 Skeletonize takes the 2 pairs of start and end points on a
+contour(s), then traces the skeleton between them using the specified
+increments.
+
+   [SKELETON CWIDTHS] = SKELETONIZE2(S1, E1, I1, S2, E2, I2, C1, C2)
+
+   Inputs:
+       s1       - The starting index for the first contour segment.
+       e1       - The ending index for the first contour segment.
+       i1       - The increment to walk along the first contour segment.
+                  Note: a negative increment means walk backwards.
+                  Contours are circular, hitting an edge wraps around.
+       s2       - The starting index for the second contour segment.
+       e2       - The ending index for the second contour segment.
+       i2       - The increment to walk along the second contour segment.
+                  Note: a negative increment means walk backwards.
+                  Contours are circular, hitting an edge wraps around.
+       c1       - The contour for the first segment.
+       c2       - The contour for the second segment.
+       isAcross - Does the skeleton cut across, connecting s1 with e2?
+                  Otherwise, the skeleton simply traces the midline
+                  between both contour segments.
+
+   Output:
+       skeleton - the skeleton traced between the 2 sets of contour points.
+       cWidths  - the widths between the 2 sets of contour points.
+                  Note: there are no widths when cutting across.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [skeleton cWidths] = skeletonize2(s1, e1, i1, s2, e2, i2, c1, c2, </a><span class="keyword">...</span>
+0002     isAcross)
+0003 <span class="comment">%SKELETONIZE2 Skeletonize takes the 2 pairs of start and end points on a</span>
+0004 <span class="comment">%contour(s), then traces the skeleton between them using the specified</span>
+0005 <span class="comment">%increments.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   [SKELETON CWIDTHS] = SKELETONIZE2(S1, E1, I1, S2, E2, I2, C1, C2)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Inputs:</span>
+0010 <span class="comment">%       s1       - The starting index for the first contour segment.</span>
+0011 <span class="comment">%       e1       - The ending index for the first contour segment.</span>
+0012 <span class="comment">%       i1       - The increment to walk along the first contour segment.</span>
+0013 <span class="comment">%                  Note: a negative increment means walk backwards.</span>
+0014 <span class="comment">%                  Contours are circular, hitting an edge wraps around.</span>
+0015 <span class="comment">%       s2       - The starting index for the second contour segment.</span>
+0016 <span class="comment">%       e2       - The ending index for the second contour segment.</span>
+0017 <span class="comment">%       i2       - The increment to walk along the second contour segment.</span>
+0018 <span class="comment">%                  Note: a negative increment means walk backwards.</span>
+0019 <span class="comment">%                  Contours are circular, hitting an edge wraps around.</span>
+0020 <span class="comment">%       c1       - The contour for the first segment.</span>
+0021 <span class="comment">%       c2       - The contour for the second segment.</span>
+0022 <span class="comment">%       isAcross - Does the skeleton cut across, connecting s1 with e2?</span>
+0023 <span class="comment">%                  Otherwise, the skeleton simply traces the midline</span>
+0024 <span class="comment">%                  between both contour segments.</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   Output:</span>
+0027 <span class="comment">%       skeleton - the skeleton traced between the 2 sets of contour points.</span>
+0028 <span class="comment">%       cWidths  - the widths between the 2 sets of contour points.</span>
+0029 <span class="comment">%                  Note: there are no widths when cutting across.</span>
+0030 
+0031 <span class="comment">% The first starting index is before the ending one.</span>
+0032 ws1 = [];
+0033 <span class="keyword">if</span> s1 &lt;= e1
+0034     
+0035     <span class="comment">% We are going forward.</span>
+0036     <span class="keyword">if</span> i1 &gt; 0
+0037         size1 = (e1 - s1 + 1) / i1;
+0038         
+0039     <span class="comment">% We are wrapping backward.</span>
+0040     <span class="keyword">else</span>
+0041         ws1 = s1;
+0042         we1 = size(c1, 1) - e1 + 1;
+0043         size1 = (ws1 + we1) / i1;
+0044     <span class="keyword">end</span>
+0045     
+0046 <span class="comment">% The first starting index is after the ending one.</span>
+0047 <span class="keyword">else</span>
+0048     <span class="comment">% We are going backward.</span>
+0049     <span class="keyword">if</span> i1 &lt; 0
+0050         size1 = (s1 - e1 + 1) / i1;
+0051 
+0052     <span class="comment">% We are wrapping forward.</span>
+0053     <span class="keyword">else</span>
+0054         ws1 = size(c1, 1) - s1 + 1;
+0055         we1 = e1;
+0056         size1 = (ws1 + we1) / i1;
+0057     <span class="keyword">end</span>
+0058 <span class="keyword">end</span>
+0059 
+0060 <span class="comment">% The second starting index is before the ending one.</span>
+0061 ws2 = [];
+0062 <span class="keyword">if</span> s2 &lt;= e2
+0063     
+0064     <span class="comment">% We are going forward.</span>
+0065     <span class="keyword">if</span> i2 &gt; 0
+0066         size2 = (e2 - s2 + 1) / i2;
+0067         
+0068     <span class="comment">% We are wrapping backward.</span>
+0069     <span class="keyword">else</span>
+0070         ws2 = s2;
+0071         we2 = size(c2, 1) - e2 + 1;
+0072         size2 = (ws2 + we2) / i2;
+0073     <span class="keyword">end</span>
+0074     
+0075 <span class="comment">% The second starting index is after the ending one.</span>
+0076 <span class="keyword">else</span>
+0077     <span class="comment">% We are going backward.</span>
+0078     <span class="keyword">if</span> i2 &lt; 0
+0079         size2 = (s2 - e2 + 1) / i2;
+0080 
+0081     <span class="comment">% We are wrapping forward.</span>
+0082     <span class="keyword">else</span>
+0083         ws2 = size(c2, 1) - s2 + 1;
+0084         we2 = e2;
+0085         size2 = (ws2 + we2) / i2;
+0086     <span class="keyword">end</span>
+0087 <span class="keyword">end</span>
+0088 
+0089 <span class="comment">% How many skeleton points do we have?</span>
+0090 points = max(abs(size1), abs(size2));
+0091 i1 = size1 / points;
+0092 i2 = size2 / points;
+0093 
+0094 <span class="comment">% Initialize the starting indices to work with the offsets.</span>
+0095 s1 = s1 - i1;
+0096 s2 = s2 - i2;
+0097 
+0098 <span class="comment">% Initialize the first contour's wrapping, starting sections to work with</span>
+0099 <span class="comment">% wrapped offsets.</span>
+0100 <span class="keyword">if</span> ~isempty(ws1)
+0101     <span class="keyword">if</span> i1 &gt; 0
+0102         
+0103         <span class="comment">% Initialize the wrapped offset.</span>
+0104         o1 = -size(c1, 1);
+0105         
+0106         <span class="comment">% Determine the number of points till we wrap.</span>
+0107         <span class="comment">% Note: IEEE floating-point issues force us to use the same</span>
+0108         <span class="comment">% equation, both here and when we wrap, to avoid rounding errors.</span>
+0109         ws1 = floor((ws1 - 0.5) / i1) + 1;
+0110         <span class="keyword">if</span> round(s1 + ws1 * i1) &gt; -o1
+0111             ws1 = ws1 - 1;
+0112         <span class="keyword">end</span>
+0113     <span class="keyword">else</span>
+0114         <span class="comment">% Initialize the wrapped offset.</span>
+0115         o1 = size(c1, 1);
+0116 
+0117         <span class="comment">% Determine the number of points till we wrap.</span>
+0118         <span class="comment">% Note: IEEE floating-point issues force us to use the same</span>
+0119         <span class="comment">% equation, both here and when we wrap, to avoid rounding errors.</span>
+0120         ws1 = floor((ws1 - 0.5) / -i1) + 1;
+0121         <span class="keyword">if</span> round(s1 + ws1 * i1) &lt; 1
+0122             ws1 = ws1 - 1;
+0123         <span class="keyword">end</span>
+0124     <span class="keyword">end</span>
+0125 <span class="keyword">end</span>
+0126 
+0127 <span class="comment">% Initialize the second contour's wrapping, starting sections to work with</span>
+0128 <span class="comment">% wrapped offsets.</span>
+0129 <span class="keyword">if</span> ~isempty(ws2)
+0130     <span class="keyword">if</span> i2 &gt; 0
+0131         
+0132         <span class="comment">% Initialize the wrapped offset.</span>
+0133         o2 = -size(c2, 1);
+0134         
+0135         <span class="comment">% Determine the number of points till we wrap.</span>
+0136         <span class="comment">% Note: IEEE floating-point issues force us to use the same</span>
+0137         <span class="comment">% equation, both here and when we wrap, to avoid rounding errors.</span>
+0138         ws2 = floor((ws2 - 0.5) / i2) + 1;
+0139         <span class="keyword">if</span> round(s2 + ws2 * i2) &gt; -o2
+0140             ws2 = ws2 - 1;
+0141         <span class="keyword">end</span>
+0142     <span class="keyword">else</span>
+0143         <span class="comment">% Initialize the wrapped offset.</span>
+0144         o2 = size(c2, 1);
+0145 
+0146         <span class="comment">% Determine the number of points till we wrap.</span>
+0147         <span class="comment">% Note: IEEE floating-point issues force us to use the same</span>
+0148         <span class="comment">% equation, both here and when we wrap, to avoid rounding errors.</span>
+0149         ws2 = floor((ws2 - 0.5) / -i2) + 1;
+0150         <span class="keyword">if</span> round(s2 + ws2 * i2) &lt; 1
+0151             ws2 = ws2 - 1;
+0152         <span class="keyword">end</span>
+0153     <span class="keyword">end</span>
+0154 <span class="keyword">end</span>
+0155 
+0156 <span class="comment">% Trace the midline between the contour segments.</span>
+0157 skeleton = zeros(points, 2); <span class="comment">% pre-allocate memory</span>
+0158 cWidths = []; <span class="comment">% there are no widths when cutting across</span>
+0159 <span class="keyword">if</span> ~isAcross
+0160     cWidths = zeros(points, 1); <span class="comment">% pre-allocate memory</span>
+0161     
+0162     <span class="comment">% We don't wrap.</span>
+0163     <span class="keyword">if</span> isempty(ws1) &amp;&amp; isempty(ws2)
+0164         i = 1:points;
+0165         skeleton(i,:) = (c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0166             c2(round(s2 + i * i2),:)) / 2;
+0167         cWidths(i) = sqrt(sum((c1(round(s1 + i * i1),:) - <span class="keyword">...</span>
+0168             c2(round(s2 + i * i2),:)) .^ 2, 2));
+0169         
+0170     <span class="comment">% The first index wraps.</span>
+0171     <span class="keyword">elseif</span> isempty(ws2)
+0172         i = 1:ws1;
+0173         skeleton(i,:) = (c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0174             c2(round(s2 + i * i2),:)) / 2;
+0175         cWidths(i) = sqrt(sum((c1(round(s1 + i * i1),:) - <span class="keyword">...</span>
+0176             c2(round(s2 + i * i2),:)) .^ 2, 2));
+0177         
+0178         <span class="comment">% Wrap the first index.</span>
+0179         i = (i(end) + 1):points;
+0180         skeleton(i,:) = (c1(round(s1 + i * i1) + o1,:) + <span class="keyword">...</span>
+0181             c2(round(s2 + i * i2),:)) / 2;
+0182         cWidths(i) = sqrt(sum((c1(round(s1 + i * i1) + o1,:) - <span class="keyword">...</span>
+0183             c2(round(s2 + i * i2),:)) .^ 2, 2));
+0184         
+0185     <span class="comment">% The second index wraps.</span>
+0186     <span class="keyword">elseif</span> isempty(ws1)
+0187         i = 1:ws2;
+0188         skeleton(i,:) = (c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0189             c2(round(s2 + i * i2),:)) / 2;
+0190         cWidths(i) = sqrt(sum((c1(round(s1 + i * i1),:) - <span class="keyword">...</span>
+0191             c2(round(s2 + i * i2),:)) .^ 2, 2));
+0192         
+0193         <span class="comment">% Wrap the second index.</span>
+0194         i = (i(end) + 1):points;
+0195         skeleton(i,:) = (c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0196             c2(round(s2 + i * i2) + o2,:)) / 2;
+0197         cWidths(i) = sqrt(sum((c1(round(s1 + i * i1),:) - <span class="keyword">...</span>
+0198             c2(round(s2 + i * i2) + o2,:)) .^ 2, 2));
+0199         
+0200     <span class="comment">% Both inidices wrap.</span>
+0201     <span class="keyword">else</span>
+0202         
+0203         <span class="comment">% Who wraps first?</span>
+0204         [minWS isMinWS2] = min([ws1 ws2]);
+0205         isMinWS2 = isMinWS2 - 1;
+0206         i = 1:minWS;
+0207         skeleton(i,:) = (c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0208             c2(round(s2 + i * i2),:)) / 2;
+0209         cWidths(i) = sqrt(sum((c1(round(s1 + i * i1),:) - <span class="keyword">...</span>
+0210             c2(round(s2 + i * i2),:)) .^ 2, 2));
+0211         
+0212         <span class="comment">% Wrap the second index.</span>
+0213         <span class="keyword">if</span> isMinWS2
+0214             i = (i(end) + 1):ws1;
+0215             skeleton(i,:) = (c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0216                 c2(round(s2 + i * i2) + o2,:)) / 2;
+0217             cWidths(i) = sqrt(sum((c1(round(s1 + i * i1),:) - <span class="keyword">...</span>
+0218                 c2(round(s2 + i * i2) + o2,:)) .^ 2, 2));
+0219             
+0220             <span class="comment">% Wrap the first index.</span>
+0221         <span class="keyword">else</span>
+0222             i = (i(end) + 1):ws2;
+0223             skeleton(i,:) = (c1(round(s1 + i * i1) + o1,:) + <span class="keyword">...</span>
+0224                 c2(round(s2 + i * i2),:)) / 2;
+0225             cWidths(i) = sqrt(sum((c1(round(s1 + i * i1) + o1,:) - <span class="keyword">...</span>
+0226                 c2(round(s2 + i * i2),:)) .^ 2, 2));
+0227         <span class="keyword">end</span>
+0228         
+0229         <span class="comment">% Wrap both indices.</span>
+0230         i = (i(end) + 1):points;
+0231         skeleton(i,:) = (c1(round(s1 + i * i1) + o1,:) + <span class="keyword">...</span>
+0232             c2(round(s2 + i * i2) + o2,:)) / 2;
+0233         cWidths(i) = sqrt(sum((c1(round(s1 + i * i1) + o1,:) - <span class="keyword">...</span>
+0234             c2(round(s2 + i * i2) + o2,:)) .^ 2, 2));
+0235     <span class="keyword">end</span>
+0236 
+0237 <span class="comment">% The skeleton cuts across, connecting s1 with e2.</span>
+0238 <span class="keyword">else</span>
+0239     
+0240     <span class="comment">% Setup the weights from s1 to e2.</span>
+0241     weights = 2 * (points - (1:points)) / (points - 1);
+0242     w1 = [weights; weights]';
+0243     w2 = flipud(w1);
+0244     
+0245     <span class="comment">% We don't wrap.</span>
+0246     <span class="keyword">if</span> isempty(ws1) &amp;&amp; isempty(ws2)
+0247         i = 1:points;
+0248         skeleton(i,:) = (w1 .* c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0249             w2 .* c2(round(s2 + i * i2),:)) / 2;
+0250         
+0251     <span class="comment">% The first index wraps.</span>
+0252     <span class="keyword">elseif</span> isempty(ws2)
+0253         i = 1:ws1;
+0254         skeleton(i,:) = (w1(i,:) .* c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0255             w2(i,:) .* c2(round(s2 + i * i2),:)) / 2;
+0256         
+0257         <span class="comment">% Wrap the first index.</span>
+0258         i = (i(end) + 1):points;
+0259         skeleton(i,:) = (w1(i,:) .* c1(round(s1 + i * i1) + o1,:) + <span class="keyword">...</span>
+0260             w2(i,:) .* c2(round(s2 + i * i2),:)) / 2;
+0261         
+0262     <span class="comment">% The second index wraps.</span>
+0263     <span class="keyword">elseif</span> isempty(ws1)
+0264         i = 1:ws2;
+0265         skeleton(i,:) = (w1(i,:) .* c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0266             w2(i,:) .* c2(round(s2 + i * i2),:)) / 2;
+0267         
+0268         <span class="comment">% Wrap the second index.</span>
+0269         i = (i(end) + 1):points;
+0270         skeleton(i,:) = (w1(i,:) .* c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0271             w2(i,:) .* c2(round(s2 + i * i2) + o2,:)) / 2;
+0272         
+0273     <span class="comment">% Both inidices wrap.</span>
+0274     <span class="keyword">else</span>
+0275         
+0276         <span class="comment">% Who wraps first?</span>
+0277         [minWS isMinWS2] = min([ws1 ws2]);
+0278         isMinWS2 = isMinWS2 - 1;
+0279         i = 1:minWS;
+0280         skeleton(i,:) = (w1(i,:) .* c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0281             w2(i,:) .* c2(round(s2 + i * i2),:)) / 2;
+0282         
+0283         <span class="comment">% Wrap the second index.</span>
+0284         <span class="keyword">if</span> isMinWS2
+0285             i = (i(end) + 1):ws1;
+0286             skeleton(i,:) = (w1(i,:) .* c1(round(s1 + i * i1),:) + <span class="keyword">...</span>
+0287                 w2(i,:) .* c2(round(s2 + i * i2) + o2,:)) / 2;
+0288             
+0289             <span class="comment">% Wrap the first index.</span>
+0290         <span class="keyword">else</span>
+0291             i = (i(end) + 1):ws2;
+0292             skeleton(i,:) = (w1(i,:) .* c1(round(s1 + i * i1) + o1,:) + <span class="keyword">...</span>
+0293                 w2(i,:) .* c2(round(s2 + i * i2),:)) / 2;
+0294         <span class="keyword">end</span>
+0295         
+0296         <span class="comment">% Wrap both indices.</span>
+0297         i = (i(end) + 1):points;
+0298         skeleton(i,:) = (w1(i,:) .* c1(round(s1 + i * i1) + o1,:) + <span class="keyword">...</span>
+0299             w2(i,:) .* c2(round(s2 + i * i2) + o2,:)) / 2;
+0300     <span class="keyword">end</span>
+0301 <span class="keyword">end</span>
+0302 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

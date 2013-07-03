@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormPathTime</title>
+  <meta name="keywords" content="wormPathTime">
+  <meta name="description" content="WORMPATHTIME Compute the time spent at each point along the worm path.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>wormPathTime
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMPATHTIME Compute the time spent at each point along the worm path.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [arena times] = wormPathTime(skeletonX, skeletonY, points,scale, fps) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMPATHTIME Compute the time spent at each point along the worm path.
+
+   [ARENA TIMES] = WORMPATHTIME(SKELETON, POINTS, SCALE, FPS)
+
+   Inputs:
+       skeletonX - the worm skeleton's x coordinates per frame
+                   (x-coordinates x frames)
+       skeletonY - the worm skeleton's y coordinates per frame
+                   (y-coordinates x frames)
+       points    - the skeleton points (cell array) to use; each set of
+                   skeleton points delineates a separate path
+       scale     - the coordinate scale for the path
+                   Note: if the path time is integrated at the standard
+                   micron scale, the matrix will be too large and the
+                   worm's width will be too skinny. Therefore, I suggest
+                   using an a scale of 1/width to match the worm's width
+                   to a pixel edge; or, if you want to account for the
+                   long diagonal axis in the taxi-cab metric of pixels,
+                   use sqrt(2)/width to match the worm's width to a
+                   pixel's diagonal length
+       fps       - the frames/seconds
+
+   Output:
+       arena - a struct of the arena/path size with subfields:
+
+               height = the arena height
+                        (for the matrix of time spent at each point)
+               width  = the arena width
+                        (for the matrix of time spent at each point)
+
+               min:
+                  x = the path location of the arena's minimum x coordinate
+                  y = the path location of the arena's minimum y coordinate
+
+               max:
+                  x = the path location of the arena's maximum x coordinate
+                  y = the path location of the arena's maximum y coordinate
+
+       times - a struct(s) of the time(s) spent, per path, with subfields:
+
+               indices = the indices for the non-zero time points in the
+                         arena matrix
+               times   = the non-zero time point values (in seconds)
+                         corresponding to the arena matrix indices</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [arena times] = wormPathTime(skeletonX, skeletonY, points, </a><span class="keyword">...</span>
+0002     scale, fps)
+0003 <span class="comment">%WORMPATHTIME Compute the time spent at each point along the worm path.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   [ARENA TIMES] = WORMPATHTIME(SKELETON, POINTS, SCALE, FPS)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Inputs:</span>
+0008 <span class="comment">%       skeletonX - the worm skeleton's x coordinates per frame</span>
+0009 <span class="comment">%                   (x-coordinates x frames)</span>
+0010 <span class="comment">%       skeletonY - the worm skeleton's y coordinates per frame</span>
+0011 <span class="comment">%                   (y-coordinates x frames)</span>
+0012 <span class="comment">%       points    - the skeleton points (cell array) to use; each set of</span>
+0013 <span class="comment">%                   skeleton points delineates a separate path</span>
+0014 <span class="comment">%       scale     - the coordinate scale for the path</span>
+0015 <span class="comment">%                   Note: if the path time is integrated at the standard</span>
+0016 <span class="comment">%                   micron scale, the matrix will be too large and the</span>
+0017 <span class="comment">%                   worm's width will be too skinny. Therefore, I suggest</span>
+0018 <span class="comment">%                   using an a scale of 1/width to match the worm's width</span>
+0019 <span class="comment">%                   to a pixel edge; or, if you want to account for the</span>
+0020 <span class="comment">%                   long diagonal axis in the taxi-cab metric of pixels,</span>
+0021 <span class="comment">%                   use sqrt(2)/width to match the worm's width to a</span>
+0022 <span class="comment">%                   pixel's diagonal length</span>
+0023 <span class="comment">%       fps       - the frames/seconds</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   Output:</span>
+0026 <span class="comment">%       arena - a struct of the arena/path size with subfields:</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%               height = the arena height</span>
+0029 <span class="comment">%                        (for the matrix of time spent at each point)</span>
+0030 <span class="comment">%               width  = the arena width</span>
+0031 <span class="comment">%                        (for the matrix of time spent at each point)</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%               min:</span>
+0034 <span class="comment">%                  x = the path location of the arena's minimum x coordinate</span>
+0035 <span class="comment">%                  y = the path location of the arena's minimum y coordinate</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%               max:</span>
+0038 <span class="comment">%                  x = the path location of the arena's maximum x coordinate</span>
+0039 <span class="comment">%                  y = the path location of the arena's maximum y coordinate</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%       times - a struct(s) of the time(s) spent, per path, with subfields:</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">%               indices = the indices for the non-zero time points in the</span>
+0044 <span class="comment">%                         arena matrix</span>
+0045 <span class="comment">%               times   = the non-zero time point values (in seconds)</span>
+0046 <span class="comment">%                         corresponding to the arena matrix indices</span>
+0047 
+0048 <span class="comment">% Organize the skeleton points.</span>
+0049 <span class="keyword">if</span> ~iscell(points)
+0050     points = {points};
+0051 <span class="keyword">end</span>
+0052 
+0053 <span class="comment">% Compute the arena.</span>
+0054 xMin = min(skeletonX(:));
+0055 xMax = max(skeletonX(:));
+0056 yMin = min(skeletonY(:));
+0057 yMax = max(skeletonY(:));
+0058 
+0059 <span class="comment">% The skeletons are empty.</span>
+0060 <span class="keyword">if</span> isempty(xMin) || isnan(xMin)
+0061     arena.height = NaN;
+0062     arena.width = NaN;
+0063     arena.min.x = NaN;
+0064     arena.min.y = NaN;
+0065     arena.max.x = NaN;
+0066     arena.max.y = NaN;
+0067     times(length(points)).indices = NaN;
+0068     times(length(points)).times = NaN;
+0069     <span class="keyword">return</span>;
+0070 <span class="keyword">end</span>
+0071 
+0072 <span class="comment">% Scale the skeleton.</span>
+0073 skeletonX = round(skeletonX * scale);
+0074 skeletonY = round(skeletonY * scale);
+0075 
+0076 <span class="comment">% Translate the skeleton to a zero origin.</span>
+0077 xScaledMin = min(skeletonX(:));
+0078 xScaledMax = max(skeletonX(:));
+0079 yScaledMin = min(skeletonY(:));
+0080 yScaledMax = max(skeletonY(:));
+0081 skeletonX = skeletonX - xScaledMin + 1;
+0082 skeletonY = skeletonY - yScaledMin + 1;
+0083 
+0084 <span class="comment">% Construct the empty arena(s).</span>
+0085 arenaSize = [yScaledMax - yScaledMin + 1, xScaledMax - xScaledMin + 1];
+0086 zeroArena = zeros(arenaSize);
+0087 arenas = cell(length(points),1);
+0088 <span class="keyword">for</span> i = 1:length(points)
+0089     arenas{i} = zeroArena;
+0090 <span class="keyword">end</span>
+0091 
+0092 <span class="comment">% Compute the time spent at each point for the path(s).</span>
+0093 <span class="keyword">for</span> i = 1:size(skeletonX, 2)
+0094 
+0095     <span class="comment">% Is there a skeleton for this frame?</span>
+0096     <span class="keyword">if</span> isnan(skeletonX(1,i))
+0097         <span class="keyword">continue</span>;
+0098     <span class="keyword">end</span>
+0099 
+0100     <span class="comment">% Compute the worm.</span>
+0101     wormI = sub2ind(arenaSize, skeletonY(:,i), skeletonX(:,i));
+0102     
+0103     <span class="comment">% Compute the time at each point for the worm points path(s).</span>
+0104     <span class="keyword">for</span> j = 1:length(arenas)
+0105         
+0106         <span class="comment">% Compute the unique worm points.</span>
+0107         wormPointsI = unique(wormI(points{j}));
+0108         
+0109         <span class="comment">% Integrate the path.</span>
+0110         arenas{j}(wormPointsI) = arenas{j}(wormPointsI) + 1;
+0111     <span class="keyword">end</span>
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">% Correct the y-axis (from image space).</span>
+0115 <span class="keyword">for</span> i = 1:length(arenas)
+0116     arenas{i} = flipud(arenas{i});
+0117 <span class="keyword">end</span>
+0118 
+0119 <span class="comment">% Organize the arena size.</span>
+0120 arena.height = arenaSize(1);
+0121 arena.width = arenaSize(2);
+0122 arena.min.x = xMin;
+0123 arena.min.y = yMin;
+0124 arena.max.x = xMax;
+0125 arena.max.y = yMax;
+0126 
+0127 <span class="comment">% Organize the arena/path time(s).</span>
+0128 times(length(arenas)).indices = [];
+0129 times(length(arenas)).times = [];
+0130 <span class="keyword">for</span> i = 1:length(arenas)
+0131     times(i).indices = find(arenas{i} &gt; 0);
+0132     times(i).times = double(arenas{i}(times(i).indices)) / fps;
+0133 <span class="keyword">end</span>
+0134 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of vignette2RGB</title>
+  <meta name="keywords" content="vignette2RGB">
+  <meta name="description" content="VIGNETTE2RGB Convert the vignette to an RGB image. Positive values are">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Video -->
+<h1>vignette2RGB
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>VIGNETTE2RGB Convert the vignette to an RGB image. Positive values are</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function img = vignette2RGB(vignetteFile, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">VIGNETTE2RGB Convert the vignette to an RGB image. Positive values are
+   green. Negative values are red.
+
+   IMG = VIGNETTE2RGB(VIGNETTEFILE)
+
+   IMG = VIGNETTE2RGB(VIGNETTEFILE, SCALE)
+
+   IMG = VIGNETTE2RGB(VIGNETTEFILE, SCALE, VERBOSE)
+
+   Inputs:
+       vignetteFile - the name of the vignette file
+       scale        - a multiplicative scale for the vignette values;
+                      if empty, the values are scaled by 1
+       verbose      - verbose mode shows the results in a figure
+
+   Output:
+       img - an RGB image of the vignette
+
+   See also <a href="video2Vignette.html" class="code" title="function vignette = video2Vignette(videoFile, frames, threshold,otsuStdDev, dilatePixels, erodePixels, smoothPixels, varargin)">VIDEO2VIGNETTE</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function img = vignette2RGB(vignetteFile, varargin)</a>
+0002 <span class="comment">%VIGNETTE2RGB Convert the vignette to an RGB image. Positive values are</span>
+0003 <span class="comment">%   green. Negative values are red.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   IMG = VIGNETTE2RGB(VIGNETTEFILE)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   IMG = VIGNETTE2RGB(VIGNETTEFILE, SCALE)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   IMG = VIGNETTE2RGB(VIGNETTEFILE, SCALE, VERBOSE)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Inputs:</span>
+0012 <span class="comment">%       vignetteFile - the name of the vignette file</span>
+0013 <span class="comment">%       scale        - a multiplicative scale for the vignette values;</span>
+0014 <span class="comment">%                      if empty, the values are scaled by 1</span>
+0015 <span class="comment">%       verbose      - verbose mode shows the results in a figure</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   Output:</span>
+0018 <span class="comment">%       img - an RGB image of the vignette</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   See also VIDEO2VIGNETTE</span>
+0021 
+0022 <span class="comment">% Initialize the scale and verbose mode.</span>
+0023 scale = 1;
+0024 verbose = false;
+0025 
+0026 <span class="comment">% Are we scaling the vignette values?</span>
+0027 <span class="keyword">if</span> ~isempty(varargin)
+0028     scale = varargin{1};
+0029 <span class="keyword">end</span>
+0030 
+0031 <span class="comment">% Are we showing the results in a figure?</span>
+0032 <span class="keyword">if</span> length(varargin) &gt; 1
+0033     verbose = varargin{2};
+0034 <span class="keyword">end</span>
+0035 
+0036 <span class="comment">% Get the vignette.</span>
+0037 fid = fopen(vignetteFile, <span class="string">'r'</span>);
+0038 vImg = fread(fid, [640 480],<span class="string">'int32=&gt;float'</span>, 0, <span class="string">'b'</span>)' / 255;
+0039 fclose(fid);
+0040 
+0041 <span class="comment">% Color the positive values green and the negative values red.</span>
+0042 emptyImg = double(ones(size(vImg)));
+0043 rImg = emptyImg;
+0044 gImg = emptyImg;
+0045 bImg = emptyImg;
+0046 posImg = vImg &gt; 0;
+0047 rImg(posImg) = 1 - vImg(posImg) * scale;
+0048 bImg(posImg) = rImg(posImg);
+0049 negImg = vImg &lt; 0;
+0050 gImg(negImg) = 1 + vImg(negImg) * scale;
+0051 bImg(negImg) = gImg(negImg);
+0052 
+0053 <span class="comment">% Construct the RGB image.</span>
+0054 img(:,:,1) = rImg;
+0055 img(:,:,2) = gImg;
+0056 img(:,:,3) = bImg;
+0057 
+0058 <span class="comment">% Show the vignette.</span>
+0059 <span class="keyword">if</span> verbose
+0060     figure;
+0061     imshow(img);
+0062     title(strrep(vignetteFile, <span class="string">'_'</span>, <span class="string">'\_'</span>)); <span class="comment">% underscores confuse TeX</span>
+0063 <span class="keyword">end</span>
+0064 <span class="keyword">end</span>
+0065</pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

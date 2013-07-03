@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of chainCodeLength2Index</title>
+  <meta name="keywords" content="chainCodeLength2Index">
+  <meta name="description" content="CHAINCODELENGTH2INDEX Translate a length into an index. The index">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>chainCodeLength2Index
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CHAINCODELENGTH2INDEX Translate a length into an index. The index</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function indices = chainCodeLength2Index(lengths, chainCodeLengths) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CHAINCODELENGTH2INDEX Translate a length into an index. The index
+   represents the numerically-closest element to the desired length in
+   an ascending array of chain code lengths.
+
+   INDICES = CHAINCODELENGTH2INDEX(LENGTHS, CHAINCODELENGTHS)
+
+   Inputs:
+       lengths          - the lengths to translate into indices
+       chainCodeLengths - an ascending array of chain code lengths
+                          Note: the chain code lengths must increase at
+                          every successive index
+
+   Output:
+       indices - the indices for the elements closest to the desired
+                 lengths
+
+ See also <a href="computeChainCodeLengths.html" class="code" title="function lengths = computeChainCodeLengths(points)">COMPUTECHAINCODELENGTHS</a>, <a href="circComputeChainCodeLengths.html" class="code" title="function lengths = circComputeChainCodeLengths(points)">CIRCCOMPUTECHAINCODELENGTHS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>	INTERPDATA Interpolate data values at the requested chain-code lengths.</li><li><a href="circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>	CIRCOPPOSINGNEARESTPOINTS Find the nearest equivalent point indices on the</li><li><a href="circOpposingPoints.html" class="code" title="function pointsI = circOpposingPoints(pointsI, startI, endI, vLength,varargin)">circOpposingPoints</a>	CIRCOPPOSINGPOINTS Find the equivalent point indices on the opposing side</li><li><a href="circPolyCenter.html" class="code" title="function center = circPolyCenter(s1, e1, side1, s2, e2, side2, varargin)">circPolyCenter</a>	CIRCPOLYCENTER Find the center of a polygon between two circularly</li><li><a href="../../SegWorm/Worms/Orientation/orientWormPostCoil.html" class="code" title="function worm2 = orientWormPostCoil(worm1, worm2, varargin)">orientWormPostCoil</a>	ORIENTWORMPOSTCOIL Orient worm2 to match worm1's orientation (by setting</li><li><a href="../../SegWorm/Worms/Segmentation/linearSkeleton.html" class="code" title="function [skeleton cWidths] = linearSkeleton(headI, tailI, minP, minI,maxP, maxI, contour, wormSegSize, varargin)">linearSkeleton</a>	LINEARSKELETON Skeletonize a linear (non-looped) worm. The worm is</li><li><a href="../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li><li><a href="../../SegWorm/Worms/Segmentation/worm2poly.html" class="code" title="function [polygon lcBounds rcBounds sBounds] = worm2poly(startSI, endSI,skeleton, headCI, tailCI, contour, isSplit, varargin)">worm2poly</a>	WORM2POLY Compute the polygon outline for a worm segment.</li><li><a href="../../SegWorm/Worms/Util/norm2Worm.html" class="code" title="function worm = norm2Worm(frame, vulvaContour, nonVulvaContour,skeleton, skeletonAngles, inOutTouch, skeletonLength, widths,headArea, tailArea, vulvaArea, nonVulvaArea,origin, pixel2MicronScale, rotation, worm)">norm2Worm</a>	NORM2WORM Convert normalized worm information into a worm structure.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function indices = chainCodeLength2Index(lengths, chainCodeLengths)</a>
+0002 <span class="comment">%CHAINCODELENGTH2INDEX Translate a length into an index. The index</span>
+0003 <span class="comment">%   represents the numerically-closest element to the desired length in</span>
+0004 <span class="comment">%   an ascending array of chain code lengths.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   INDICES = CHAINCODELENGTH2INDEX(LENGTHS, CHAINCODELENGTHS)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Inputs:</span>
+0009 <span class="comment">%       lengths          - the lengths to translate into indices</span>
+0010 <span class="comment">%       chainCodeLengths - an ascending array of chain code lengths</span>
+0011 <span class="comment">%                          Note: the chain code lengths must increase at</span>
+0012 <span class="comment">%                          every successive index</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   Output:</span>
+0015 <span class="comment">%       indices - the indices for the elements closest to the desired</span>
+0016 <span class="comment">%                 lengths</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% See also COMPUTECHAINCODELENGTHS, CIRCCOMPUTECHAINCODELENGTHS</span>
+0019 
+0020 <span class="comment">% Check the lengths.</span>
+0021 <span class="comment">% Note: circular chain-code lengths are minimally bounded at 0 and</span>
+0022 <span class="comment">% maximally bounded at the first + last lengths.</span>
+0023 <span class="keyword">if</span> any(lengths &lt; 0)
+0024     error(<span class="string">'chainCodeLength2Index:TooShort'</span>, <span class="keyword">...</span>
+0025         <span class="string">'The lengths cannot be negative'</span>);
+0026 <span class="keyword">end</span>
+0027 <span class="keyword">if</span> any(lengths &gt; chainCodeLengths(1) + chainCodeLengths(end))
+0028     error(<span class="string">'chainCodeLength2Index:TooLong'</span>, <span class="keyword">...</span>
+0029         [<span class="string">'The lengths cannot be greater than '</span> <span class="keyword">...</span>
+0030         num2str(chainCodeLengths(end))]);
+0031 <span class="keyword">end</span>
+0032 
+0033 <span class="comment">% Go through the lengths.</span>
+0034 indices = zeros(size(lengths));
+0035 <span class="keyword">for</span> i = 1:numel(lengths)
+0036 
+0037     <span class="comment">% Is the length too small?</span>
+0038     <span class="keyword">if</span> lengths(i) &lt; chainCodeLengths(1)
+0039         
+0040         <span class="comment">% Find the closest index.</span>
+0041         <span class="keyword">if</span> lengths(i) / chainCodeLengths(1) &lt; .5
+0042             indices(i) = length(chainCodeLengths);
+0043         <span class="keyword">else</span>
+0044             indices(i) = 1;
+0045         <span class="keyword">end</span>
+0046         
+0047     <span class="comment">% Is the length too big?</span>
+0048     <span class="keyword">elseif</span> lengths(i) &gt; chainCodeLengths(end)
+0049         
+0050         <span class="comment">% Find the closest index.</span>
+0051         <span class="keyword">if</span> (lengths(i) - chainCodeLengths(end)) / chainCodeLengths(1) &lt; .5
+0052             indices(i) = length(chainCodeLengths);
+0053         <span class="keyword">else</span>
+0054             indices(i) = 1;
+0055         <span class="keyword">end</span>
+0056 
+0057     <span class="comment">% Find the closest index.</span>
+0058     <span class="keyword">else</span>
+0059         
+0060         <span class="comment">% Try jumping to just before the requested length.</span>
+0061         <span class="comment">% Note: most chain-code lengths advance by at most sqrt(2) at each</span>
+0062         <span class="comment">% index. But I don't trust IEEE division so I use 1.5 instead.</span>
+0063         j = round(lengths(i) / 1.5) + 1;
+0064         
+0065         <span class="comment">% Did we jump past the requested length?</span>
+0066         <span class="keyword">if</span> j &gt; length(chainCodeLengths) || lengths(i) &lt; chainCodeLengths(j)
+0067             j = 1;
+0068         <span class="keyword">end</span>
+0069         
+0070         <span class="comment">% find the closest index.</span>
+0071         distJ = abs(lengths(i) - chainCodeLengths(j));
+0072         <span class="keyword">while</span> j &lt; length(chainCodeLengths)
+0073             
+0074             <span class="comment">% Is this index closer than the next one?</span>
+0075             <span class="comment">% Note: overlapping points have equal distances. Therefore, if</span>
+0076             <span class="comment">% the distances are equal, we advance.</span>
+0077             distNextJ = abs(lengths(i) - chainCodeLengths(j + 1));
+0078             <span class="keyword">if</span> distJ &lt; distNextJ
+0079                 <span class="keyword">break</span>;
+0080             <span class="keyword">end</span>
+0081             
+0082             <span class="comment">% Advance.</span>
+0083             distJ = distNextJ;
+0084             j = j + 1;
+0085         <span class="keyword">end</span>
+0086         
+0087         <span class="comment">% Record the closest index.</span>
+0088         indices(i) = j;
+0089     <span class="keyword">end</span>
+0090 <span class="keyword">end</span>
+0091 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

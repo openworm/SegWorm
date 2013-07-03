@@ -1,0 +1,599 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of multiScaleDiff</title>
+  <meta name="keywords" content="multiScaleDiff">
+  <meta name="description" content="MULTISCALEDIFF Differentiate data at multiple scales.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>multiScaleDiff
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>MULTISCALEDIFF Differentiate data at multiple scales.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [diffData usedFramesI] = multiScaleDiff(data, use, startI,endI, rate, type, scales, isSparse, isAtT1) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">MULTISCALEDIFF Differentiate data at multiple scales.
+
+   DIFFDATA = MULTISCALEDIFF(DATA, USE, RATE, TYPE, SCALES, ISSPARSE)
+
+   Inputs:
+       data     - a cell array of data to differentiate; each cell must
+                  contain a vector of values equal, in length, to 'use'.
+                  The data must be 2 dimensional and is differentiated
+                  between columns.
+       use      - for each data element, is it usable? (e.g.,
+                  NaN elements are unusable and should be marked false);
+                  if empty, all the data is treated as usable
+       startI   - the index at which to start differentiating usable data;
+                  if empty, we start at the first data value
+       endI     - the index at which to end differentiating usable data;
+                  if empty, we end at the last data value
+       rate     - the data rate (i.e., the time between subsequent elements)
+       type     - the type of algorithm to use when replacing unusable
+                  data elements. Differentiation is expressed as:
+
+                  dX/dT = -(X1 - X2)/(T1 - T2)
+
+                  type is a 1 or 2 letter string indicating which method
+                  to use when replacing an unusable X1 and/or X2. If type
+                  is 2 characters long:
+
+                  type(1) = X1
+                  type(2) = X2
+
+                  Otherwise, type(1) is used for both X1 and X2. The
+                  methods are as follows:
+
+                  i = linearly interpolate unusable data
+                      (type(2) is ignored)
+                  e = exact match, if data is unusable, the result is NaN
+                  b = backwards nearest neighbor
+                  f = forwards nearest neighbor
+                  n = nearest neighbor
+
+                  Note: the nearest-neighbor type algorithms adjust the
+                  time accordingly. If there is no nearest neighbor,
+                  differentiation results in NaN.
+       scales   - a vector of the scales to use for spacing X1 from X2
+       isSparse - is the differentiation sparse? for each scale, sparse
+                  differentiation only calculates the data differences at
+                  multiples of that scale
+       isAtT1   - is the result of differentiation assigned to time T1?
+                  If so, differentiation must begin at startI minus the
+                  requested scale; if there is no data at startI minus the
+                  requested scale, differentiation results in NaN.
+                  Otherwise, the result of differentiation is assigned to
+                  time T2 and begins at startI. If there is no data at 
+                  endI plus the requested scale, differentiation results
+                  in NaN.
+
+   Output:
+       diffData    - the data differences at each scale. The first
+                     cell array dimension corresponds to the input data's
+                     dimension. The second cell array dimension is the
+                     data differences at each scale.
+       usedFramesI - the indices of the frames used at each scale. The
+                     first cell array dimension corresponds to the input
+                     data's dimension. The second cell array dimension is
+                     matrix of the frame indices used at each scale. The
+                     matrix is 2 dimensional. The first matrix dimension
+                     corresponds to X1 and X2, respectively. The second
+                     matrix dimension corresponds to the frame index used.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Features/multiScaleWorm.html" class="code" title="function [diffData startFrame endFrame fps useSamples] =multiScaleWorm(wormFile, startFrame, endFrame, useSamples,useFrames, type, scales, isSparse, offMode, isNoisy, htDirMode,isAbsDir, varargin)">multiScaleWorm</a>	MULTISCALEWORM Differentiate worm data at multiple scales.</li><li><a href="../../SegWorm/Worms/Features/wormVelocityTest.html" class="code" title="function [velocities centroidVelocities] =wormVelocityTest(wormFile, indices, use, type, scales, isSparse, verbose)">wormVelocityTest</a>	SEGWORMVIDEOFRAMES Segment the worm in a set of video frames and organize</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function i = exactIndex(i, ~, ~)</a></li><li><a href="#_sub2" class="code">function i = backNeighbor(i, prevI, use)</a></li><li><a href="#_sub3" class="code">function i = frontNeighbor(i, prevI, use)</a></li><li><a href="#_sub4" class="code">function i = nearestNeighbor(i, ~, use)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [diffData usedFramesI] = multiScaleDiff(data, use, startI, </a><span class="keyword">...</span>
+0002     endI, rate, type, scales, isSparse, isAtT1)
+0003 <span class="comment">%MULTISCALEDIFF Differentiate data at multiple scales.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   DIFFDATA = MULTISCALEDIFF(DATA, USE, RATE, TYPE, SCALES, ISSPARSE)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Inputs:</span>
+0008 <span class="comment">%       data     - a cell array of data to differentiate; each cell must</span>
+0009 <span class="comment">%                  contain a vector of values equal, in length, to 'use'.</span>
+0010 <span class="comment">%                  The data must be 2 dimensional and is differentiated</span>
+0011 <span class="comment">%                  between columns.</span>
+0012 <span class="comment">%       use      - for each data element, is it usable? (e.g.,</span>
+0013 <span class="comment">%                  NaN elements are unusable and should be marked false);</span>
+0014 <span class="comment">%                  if empty, all the data is treated as usable</span>
+0015 <span class="comment">%       startI   - the index at which to start differentiating usable data;</span>
+0016 <span class="comment">%                  if empty, we start at the first data value</span>
+0017 <span class="comment">%       endI     - the index at which to end differentiating usable data;</span>
+0018 <span class="comment">%                  if empty, we end at the last data value</span>
+0019 <span class="comment">%       rate     - the data rate (i.e., the time between subsequent elements)</span>
+0020 <span class="comment">%       type     - the type of algorithm to use when replacing unusable</span>
+0021 <span class="comment">%                  data elements. Differentiation is expressed as:</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%                  dX/dT = -(X1 - X2)/(T1 - T2)</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%                  type is a 1 or 2 letter string indicating which method</span>
+0026 <span class="comment">%                  to use when replacing an unusable X1 and/or X2. If type</span>
+0027 <span class="comment">%                  is 2 characters long:</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%                  type(1) = X1</span>
+0030 <span class="comment">%                  type(2) = X2</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%                  Otherwise, type(1) is used for both X1 and X2. The</span>
+0033 <span class="comment">%                  methods are as follows:</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%                  i = linearly interpolate unusable data</span>
+0036 <span class="comment">%                      (type(2) is ignored)</span>
+0037 <span class="comment">%                  e = exact match, if data is unusable, the result is NaN</span>
+0038 <span class="comment">%                  b = backwards nearest neighbor</span>
+0039 <span class="comment">%                  f = forwards nearest neighbor</span>
+0040 <span class="comment">%                  n = nearest neighbor</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">%                  Note: the nearest-neighbor type algorithms adjust the</span>
+0043 <span class="comment">%                  time accordingly. If there is no nearest neighbor,</span>
+0044 <span class="comment">%                  differentiation results in NaN.</span>
+0045 <span class="comment">%       scales   - a vector of the scales to use for spacing X1 from X2</span>
+0046 <span class="comment">%       isSparse - is the differentiation sparse? for each scale, sparse</span>
+0047 <span class="comment">%                  differentiation only calculates the data differences at</span>
+0048 <span class="comment">%                  multiples of that scale</span>
+0049 <span class="comment">%       isAtT1   - is the result of differentiation assigned to time T1?</span>
+0050 <span class="comment">%                  If so, differentiation must begin at startI minus the</span>
+0051 <span class="comment">%                  requested scale; if there is no data at startI minus the</span>
+0052 <span class="comment">%                  requested scale, differentiation results in NaN.</span>
+0053 <span class="comment">%                  Otherwise, the result of differentiation is assigned to</span>
+0054 <span class="comment">%                  time T2 and begins at startI. If there is no data at</span>
+0055 <span class="comment">%                  endI plus the requested scale, differentiation results</span>
+0056 <span class="comment">%                  in NaN.</span>
+0057 <span class="comment">%</span>
+0058 <span class="comment">%   Output:</span>
+0059 <span class="comment">%       diffData    - the data differences at each scale. The first</span>
+0060 <span class="comment">%                     cell array dimension corresponds to the input data's</span>
+0061 <span class="comment">%                     dimension. The second cell array dimension is the</span>
+0062 <span class="comment">%                     data differences at each scale.</span>
+0063 <span class="comment">%       usedFramesI - the indices of the frames used at each scale. The</span>
+0064 <span class="comment">%                     first cell array dimension corresponds to the input</span>
+0065 <span class="comment">%                     data's dimension. The second cell array dimension is</span>
+0066 <span class="comment">%                     matrix of the frame indices used at each scale. The</span>
+0067 <span class="comment">%                     matrix is 2 dimensional. The first matrix dimension</span>
+0068 <span class="comment">%                     corresponds to X1 and X2, respectively. The second</span>
+0069 <span class="comment">%                     matrix dimension corresponds to the frame index used.</span>
+0070 
+0071 <span class="comment">% Correct the data types, if necessary.</span>
+0072 <span class="keyword">if</span> ~iscell(data)
+0073     data = {data};
+0074 <span class="keyword">end</span>
+0075 <span class="keyword">if</span> isempty(use)
+0076     use = true(length(data{1}), 1);
+0077 <span class="keyword">else</span>
+0078     use = logical(use);
+0079 <span class="keyword">end</span>
+0080 
+0081 <span class="comment">% Compute the indices.</span>
+0082 <span class="keyword">if</span> isempty(startI)
+0083     startI = 1;
+0084 <span class="keyword">end</span>
+0085 <span class="keyword">if</span> isempty(endI)
+0086     endI = length(use);
+0087 <span class="keyword">end</span>
+0088 
+0089 <span class="comment">% The data and its list of usable elements must have the same length.</span>
+0090 <span class="keyword">for</span> i = 1:length(data)
+0091     <span class="keyword">if</span> size(data{i}, 2) ~= length(use)
+0092         error(<span class="string">'multiScaleDiff:UsableData'</span>, [<span class="string">'The data at cell '</span> <span class="keyword">...</span>
+0093             num2str(i) <span class="string">' and its list of usable elements have '</span> <span class="keyword">...</span>
+0094             <span class="string">'different lengths'</span>]);
+0095     <span class="keyword">end</span>
+0096 <span class="keyword">end</span>
+0097 
+0098 <span class="comment">% Check the scales.</span>
+0099 <span class="keyword">if</span> isAtT1
+0100     badScalesMask = scales &gt;= endI;
+0101 <span class="keyword">else</span>
+0102     badScalesMask = scales &gt; length(use) - startI;
+0103 <span class="keyword">end</span>
+0104 <span class="keyword">if</span> any(badScalesMask)
+0105     
+0106     <span class="comment">% Remove scales that are too large.</span>
+0107     badScales = scales(badScalesMask);
+0108     scales(badScalesMask) = 0;
+0109     <span class="keyword">for</span> i = 1:length(badScales)
+0110         warning(<span class="string">'multiScaleDiff:BadScale'</span>, [<span class="string">'The %d scale cannot be '</span> <span class="keyword">...</span>
+0111             <span class="string">'computed as there is insufficient data'</span>], badScales(i));
+0112     <span class="keyword">end</span>
+0113 <span class="keyword">end</span>
+0114 
+0115 <span class="comment">% There are no scales to compute.</span>
+0116 <span class="keyword">if</span> isempty(scales)
+0117     warning(<span class="string">'multiScaleDiff:NoScales'</span>, <span class="keyword">...</span>
+0118         <span class="string">'There are no scales to differentiate'</span>);
+0119     diffData = [];
+0120     usedFramesI = [];
+0121     <span class="keyword">return</span>;
+0122 <span class="keyword">end</span>
+0123 
+0124 <span class="comment">% Interpolate the missing data.</span>
+0125 <span class="keyword">if</span> type(1) == <span class="string">'i'</span>
+0126     <span class="keyword">for</span> i = 1:length(data)
+0127         <span class="keyword">for</span> j = 1:size(data{i}, 1)
+0128             useVector = use &amp; ~isnan(data{i}(j,:));
+0129             usedI = find(useVector);
+0130             unusedI = find(~useVector);
+0131             <span class="keyword">if</span> ~isempty(unusedI) &amp;&amp; length(usedI) &gt; 1 
+0132                 data{i}(j,unusedI) = interp1(usedI, data{i}(j,usedI), <span class="keyword">...</span>
+0133                     unusedI, <span class="string">'linear'</span>);
+0134             <span class="keyword">end</span>
+0135         <span class="keyword">end</span>
+0136     <span class="keyword">end</span>
+0137     
+0138     <span class="comment">% Use exact indexing.</span>
+0139     type = <span class="string">'ee'</span>;
+0140 <span class="keyword">end</span>
+0141 
+0142 <span class="comment">% Determine the method to use when X1 is missing.</span>
+0143 <span class="comment">% Note: the differential is expressed as dX/dT = -(X1 - X2)/(T1 - T2)</span>
+0144 <span class="keyword">switch</span> type(1)
+0145     
+0146     <span class="comment">% Do nothing (use the exact index).</span>
+0147     <span class="keyword">case</span> <span class="string">'e'</span>
+0148         use1 = @<a href="#_sub1" class="code" title="subfunction i = exactIndex(i, ~, ~)">exactIndex</a>;
+0149         
+0150         <span class="comment">% Find the back nearest neighbor.</span>
+0151     <span class="keyword">case</span> <span class="string">'b'</span>
+0152         use1 = @<a href="#_sub2" class="code" title="subfunction i = backNeighbor(i, prevI, use)">backNeighbor</a>;
+0153         
+0154         <span class="comment">% Find the front nearest neighbor.</span>
+0155     <span class="keyword">case</span> <span class="string">'f'</span>
+0156         use1 = @<a href="#_sub3" class="code" title="subfunction i = frontNeighbor(i, prevI, use)">frontNeighbor</a>;
+0157         
+0158         <span class="comment">% Find the nearest neighbor.</span>
+0159     <span class="keyword">case</span> <span class="string">'n'</span>
+0160         use1 = @<a href="#_sub4" class="code" title="subfunction i = nearestNeighbor(i, ~, use)">nearestNeighbor</a>;
+0161         
+0162         <span class="comment">% Unrecognized type.</span>
+0163     <span class="keyword">otherwise</span>
+0164         error(<span class="string">'multiScaleDiff:type'</span>, [<span class="string">'Type '''</span> type(1) <span class="string">''' is'</span> <span class="keyword">...</span>
+0165             <span class="string">'not a recognized method for handling missing data'</span>])
+0166 <span class="keyword">end</span>
+0167 
+0168 <span class="comment">% Use the same type as X1 for X2.</span>
+0169 <span class="keyword">if</span> length(type) &lt; 2
+0170     type(2) = type(1);
+0171 <span class="keyword">end</span>
+0172 
+0173 <span class="comment">% Determine the method to use when X2 is missing.</span>
+0174 <span class="comment">% Note: the differential is expressed as dX/dT = -(X1 - X2)/(T1 - T2)</span>
+0175 <span class="keyword">switch</span> type(2)
+0176     
+0177     <span class="comment">% Do nothing (use the exact index).</span>
+0178     <span class="keyword">case</span> <span class="string">'e'</span>
+0179         use2 = @<a href="#_sub1" class="code" title="subfunction i = exactIndex(i, ~, ~)">exactIndex</a>;
+0180         
+0181         <span class="comment">% Find the back nearest neighbor.</span>
+0182     <span class="keyword">case</span> <span class="string">'b'</span>
+0183         use2 = @<a href="#_sub2" class="code" title="subfunction i = backNeighbor(i, prevI, use)">backNeighbor</a>;
+0184         
+0185         <span class="comment">% Find the front nearest neighbor.</span>
+0186     <span class="keyword">case</span> <span class="string">'f'</span>
+0187         use2 = @<a href="#_sub3" class="code" title="subfunction i = frontNeighbor(i, prevI, use)">frontNeighbor</a>;
+0188         
+0189         <span class="comment">% Find the nearest neighbor.</span>
+0190     <span class="keyword">case</span> <span class="string">'n'</span>
+0191         use2 = @<a href="#_sub4" class="code" title="subfunction i = nearestNeighbor(i, ~, use)">nearestNeighbor</a>;
+0192         
+0193         <span class="comment">% Unrecognized type.</span>
+0194     <span class="keyword">otherwise</span>
+0195         error(<span class="string">'multiScaleDiff:type'</span>, [<span class="string">'Type '''</span> type(1) <span class="string">''' is'</span> <span class="keyword">...</span>
+0196             <span class="string">'not a recognized method for handling missing data'</span>])
+0197 <span class="keyword">end</span>
+0198 
+0199 <span class="comment">% Correct the data types.</span>
+0200 <span class="keyword">if</span> ~iscell(data)
+0201     data = {data};
+0202 <span class="keyword">end</span>
+0203 startI = double(startI);
+0204 endI = double(endI);
+0205 scales = double(scales);
+0206 
+0207 <span class="comment">% Pre-allocate memory.</span>
+0208 maxScale = max(scales);
+0209 diffData = cell(length(data), 1);
+0210 usedFramesI = cell(length(scales), 1);
+0211 
+0212 <span class="comment">% Compute the sparse data differences.</span>
+0213 <span class="keyword">if</span> isSparse
+0214     
+0215     <span class="comment">% Pre-allocate memory.</span>
+0216     numDataScales = floor((endI - startI) / maxScale) + 1;
+0217     totalDiffSize = 1 + numDataScales * maxScale;
+0218     X1I(1:totalDiffSize) = NaN;
+0219     X2I(1:totalDiffSize) = NaN;
+0220     
+0221     <span class="comment">% Initialize X1.</span>
+0222     <span class="keyword">if</span> ~isAtT1
+0223         X1I(1) = use1(startI, 0, use);
+0224     <span class="keyword">end</span>
+0225     
+0226     <span class="comment">% Only compute X1 and X2 for the used scales.</span>
+0227     sScales = sort(scales);
+0228     <span class="keyword">for</span> i = 1:length(sScales)
+0229         
+0230         <span class="comment">% Are we using a degenerate scale?</span>
+0231         <span class="keyword">if</span> sScales(i) == 0
+0232             <span class="keyword">continue</span>;
+0233         <span class="keyword">end</span>
+0234         
+0235         <span class="comment">% Have we already computed (a divisor of) this scale?</span>
+0236         nScales = [];
+0237         <span class="keyword">if</span> i &gt; 1
+0238             nScales = sScales(i) ./ sScales(1:(i - 1));
+0239         <span class="keyword">end</span>
+0240         <span class="keyword">if</span> isempty(nScales) || ~any(nScales == floor(nScales))
+0241             
+0242             <span class="comment">% Initialize X1 and X2.</span>
+0243             <span class="keyword">if</span> isAtT1
+0244                 startXI = maxScale + 1;
+0245                 startDataI = startI;
+0246                 
+0247                 <span class="comment">% Start at X1 minus the scale.</span>
+0248                 <span class="keyword">if</span> sScales(i) &lt; startI
+0249                     X1I(startXI - sScales(i)) = <span class="keyword">...</span>
+0250                         use1(startDataI - sScales(i), 0, use);
+0251                     X2I(startXI) = use2(startDataI, 0, use);
+0252                     
+0253                 <span class="comment">% Start at X1.</span>
+0254                 <span class="keyword">else</span>
+0255                     X1I(startXI - sScales(i)) = startI;
+0256                     X2I(startXI) = startI;
+0257                 <span class="keyword">end</span>
+0258             
+0259             <span class="comment">% Initialize X2.</span>
+0260             <span class="keyword">else</span>
+0261                 startXI = 1 + sScales(i);
+0262                 startDataI = startI + sScales(i);
+0263                 
+0264                 <span class="comment">% Start at X1 plus the scale.</span>
+0265                 <span class="keyword">if</span> startDataI &lt;= endI
+0266                     X2I(startXI) = use2(startDataI, 0, use);
+0267                     
+0268                 <span class="comment">% Start and finish at X1 plus the scale.</span>
+0269                 <span class="keyword">elseif</span> startDataI &lt;= length(use)
+0270                     X2I(startXI) = use2(startDataI, 0, use);
+0271                     <span class="keyword">continue</span>;
+0272                     
+0273                 <span class="comment">% Start and finish at X1.</span>
+0274                 <span class="keyword">else</span>
+0275                     X2I(startXI) = X1I(1);
+0276                     <span class="keyword">continue</span>;
+0277                 <span class="keyword">end</span>
+0278             <span class="keyword">end</span>
+0279             
+0280             <span class="comment">% Compute X1 and X2 for the scale.</span>
+0281             xI = startXI;
+0282             prevXI = xI - sScales(i);
+0283             nextXI = xI + sScales(i);
+0284             dataI = startDataI;
+0285             nextDataI = dataI + sScales(i);
+0286             <span class="keyword">while</span> nextDataI &lt;= endI
+0287                 
+0288                 <span class="comment">% Compute X1 and X2.</span>
+0289                 X1I(xI) = use1(dataI, X1I(prevXI), use);
+0290                 X2I(nextXI) = use2(nextDataI, X2I(xI), use);
+0291                 
+0292                 <span class="comment">% Advance.</span>
+0293                 prevXI = xI;
+0294                 xI = nextXI;
+0295                 nextXI = nextXI + sScales(i);
+0296                 dataI = nextDataI;
+0297                 nextDataI = nextDataI + sScales(i);
+0298             <span class="keyword">end</span>
+0299             
+0300             <span class="comment">% Compute the last X1 and X2 for the scale.</span>
+0301             <span class="keyword">if</span> ~isAtT1
+0302                 
+0303                 <span class="comment">% End at X2 plus the scale.</span>
+0304                 <span class="keyword">if</span> nextDataI &lt;= length(use)
+0305                     X1I(xI) = use1(dataI, X1I(prevXI), use);
+0306                     X2I(nextXI) = use2(nextDataI, X2I(xI), use);
+0307                     
+0308                 <span class="comment">% End at X2.</span>
+0309                 <span class="keyword">else</span>
+0310                     X1I(xI) = dataI;
+0311                     X2I(nextXI) = dataI;
+0312                 <span class="keyword">end</span>
+0313             <span class="keyword">end</span>
+0314         <span class="keyword">end</span>
+0315     <span class="keyword">end</span>
+0316 
+0317     <span class="comment">% Compute the data differences.</span>
+0318     <span class="keyword">for</span> j = 1:length(scales)
+0319         
+0320         <span class="comment">% Compute the indices for X1 and X2.</span>
+0321         numDataScales = floor((endI - startI) / scales(j)) + 1;
+0322         <span class="keyword">if</span> isAtT1
+0323             firstScalesI = (maxScale - scales(j) + 1);
+0324             lastScalesI = firstScalesI + numDataScales * scales(j);
+0325             scalesI = firstScalesI:scales(j):lastScalesI;
+0326         <span class="keyword">else</span>
+0327             lastScalesI = 1 + numDataScales * scales(j);
+0328             scalesI = 1:scales(j):lastScalesI;
+0329         <span class="keyword">end</span>
+0330         dataSize = length(scalesI) - 1;
+0331         sX1I = X1I(scalesI(1:(end - 1)));
+0332         sX2I = X2I(scalesI(2:end));
+0333         usedFramesI{j}(1,:) = sX1I;
+0334         usedFramesI{j}(2,:) = sX2I;
+0335             
+0336         <span class="comment">% Compute the data difference and divide by the time.</span>
+0337         <span class="keyword">for</span> i = 1:length(data)
+0338             diffs = [];
+0339             diffs(size(data{i},1),1:dataSize) = NaN;
+0340             diffs(:,1:dataSize) = data{i}(:,sX2I) - data{i}(:,sX1I);
+0341             rates = (sX2I - sX1I) * rate;
+0342             <span class="keyword">for</span> k = 1:length(rates)
+0343                 <span class="keyword">if</span> rates(k) ~= 0
+0344                     diffs(:,k) = diffs(:,k) / rates(k);
+0345                 <span class="keyword">else</span>
+0346                     diffs(:,k) = NaN;
+0347                 <span class="keyword">end</span>
+0348             <span class="keyword">end</span>
+0349             diffData{i}{j} = diffs;
+0350         <span class="keyword">end</span>
+0351     <span class="keyword">end</span>
+0352     
+0353 <span class="comment">% Compute the non-sparse data differences.</span>
+0354 <span class="keyword">else</span>
+0355     
+0356     <span class="comment">% Pre-allocate memory.</span>
+0357     totalDiffSize = endI - startI + 1 + maxScale;
+0358     X1I(1:totalDiffSize) = NaN;
+0359     X2I(1:totalDiffSize) = NaN;
+0360     
+0361     <span class="comment">% Initialize X1 and X2.</span>
+0362     minScale = min(scales);
+0363     <span class="keyword">if</span> isAtT1
+0364         startData1I = max(startI - maxScale, 1);
+0365         initI = maxScale - (startI - startData1I);
+0366         <span class="keyword">for</span> i = 1:initI
+0367             X1I(i) =  1;
+0368             X2I(i + minScale) = 1;
+0369         <span class="keyword">end</span>
+0370         startX1I = initI + 1;
+0371         
+0372     <span class="comment">% Initialize X1.</span>
+0373     <span class="keyword">else</span>
+0374         startData1I = startI;
+0375         startX1I = 1;
+0376     <span class="keyword">end</span>
+0377     
+0378     <span class="comment">% Compute the first X1 and X2.</span>
+0379     startX2I = startX1I + minScale;
+0380     startData2I = startData1I + minScale;
+0381     X1I(startX1I) = use1(startData1I, 0, use);
+0382     X2I(startX2I) = use2(startData2I, 0, use);
+0383     
+0384     <span class="comment">% Only compute X1 and X2 for the used scales.</span>
+0385     endData2I = min(endI + maxScale, length(use));
+0386     <span class="keyword">for</span> i = 1:(endData2I - startData2I)
+0387         X1I(startX1I + i) = <span class="keyword">...</span>
+0388             use1(startData1I + i, X1I(startX1I + i - 1), use);
+0389         X2I(startX2I + i) = <span class="keyword">...</span>
+0390             use2(startData2I + i, X2I(startX2I + i - 1), use);
+0391     <span class="keyword">end</span>
+0392 
+0393     <span class="comment">% Compute the last X1 and X2 for the scale.</span>
+0394     <span class="keyword">if</span> ~isAtT1
+0395         endX1I = startX1I + endData2I - startData2I;
+0396         endX2I = endX1I + minScale;
+0397         <span class="keyword">for</span> i = 1:(endI + maxScale - length(use))
+0398             X1I(endX1I + i) = endI;
+0399             X2I(endX2I + i) = endI;
+0400         <span class="keyword">end</span>
+0401     <span class="keyword">end</span>
+0402     
+0403     <span class="comment">% Compute the data differences.</span>
+0404     dataSize = endI - startI + 1;
+0405     <span class="keyword">for</span> j = 1:length(scales)
+0406         
+0407         <span class="comment">% Compute the indices for X1 and X2.</span>
+0408         <span class="keyword">if</span> isAtT1
+0409             scaleOff = maxScale - scales(j);
+0410             sX1I = X1I((1 + scaleOff):(dataSize + scaleOff));
+0411             sX2I = X2I((1 + maxScale):(dataSize + maxScale));
+0412         <span class="keyword">else</span>
+0413             sX1I = X1I(1:dataSize);
+0414             sX2I = X2I((1 + scales(j)):(dataSize + scales(j)));
+0415         <span class="keyword">end</span>
+0416         usedFramesI{j}(1,:) = sX1I;
+0417         usedFramesI{j}(2,:) = sX2I;
+0418             
+0419         <span class="comment">% Compute the data difference and divide by the time.</span>
+0420         <span class="keyword">for</span> i = 1:length(data)
+0421             diffs = [];
+0422             diffs(size(data{i},1),1:dataSize) = NaN;
+0423             diffs(:,1:dataSize) = data{i}(:,sX2I) - data{i}(:,sX1I);
+0424             rates = (sX2I - sX1I) * rate;
+0425             <span class="keyword">for</span> k = 1:length(rates)
+0426                 <span class="keyword">if</span> rates(k) ~= 0
+0427                     diffs(:,k) = diffs(:,k) / rates(k);
+0428                 <span class="keyword">else</span>
+0429                     diffs(:,k) = NaN;
+0430                 <span class="keyword">end</span>
+0431             <span class="keyword">end</span>
+0432             diffData{i}{j} = diffs;
+0433         <span class="keyword">end</span>
+0434     <span class="keyword">end</span>
+0435 <span class="keyword">end</span>
+0436 <span class="keyword">end</span>
+0437 
+0438 <span class="comment">% Do nothing (return the exact index).</span>
+0439 <a name="_sub1" href="#_subfunctions" class="code">function i = exactIndex(i, ~, ~)</a>
+0440 <span class="keyword">end</span>
+0441 
+0442 <span class="comment">% Find the back nearest neighbor.</span>
+0443 <a name="_sub2" href="#_subfunctions" class="code">function i = backNeighbor(i, prevI, use)</a>
+0444 <span class="keyword">while</span> i &gt; 1 &amp;&amp; ~use(i) &amp;&amp; i &gt; prevI
+0445     i = i - 1;
+0446 <span class="keyword">end</span>
+0447 <span class="keyword">end</span>
+0448 
+0449 <span class="comment">% Find the front nearest neighbor.</span>
+0450 <a name="_sub3" href="#_subfunctions" class="code">function i = frontNeighbor(i, prevI, use)</a>
+0451 <span class="keyword">if</span> i &gt; prevI
+0452     <span class="keyword">while</span> i &lt; length(use) &amp;&amp; ~use(i)
+0453         i = i + 1;
+0454     <span class="keyword">end</span>
+0455     
+0456 <span class="comment">% The previous index is the front nearest neighbor.</span>
+0457 <span class="keyword">else</span>
+0458     i = prevI;
+0459 <span class="keyword">end</span>
+0460 <span class="keyword">end</span>
+0461 
+0462 <span class="comment">% Find the nearest neighbor.</span>
+0463 <a name="_sub4" href="#_subfunctions" class="code">function i = nearestNeighbor(i, ~, use)</a>
+0464 maxJ = max(i, length(use) -  i + 1);
+0465 j = 0;
+0466 <span class="keyword">while</span> j &lt; maxJ
+0467     
+0468     <span class="comment">% The nearest neighbor is in back.</span>
+0469     k = i - j;
+0470     <span class="keyword">if</span> k &gt; 0 &amp;&amp; use(k)
+0471         i = k;
+0472         <span class="keyword">break</span>;
+0473     <span class="keyword">end</span>
+0474     
+0475     <span class="comment">% The nearest neighbor is in front.</span>
+0476     k = i + j;
+0477     <span class="keyword">if</span> k &lt;= length(use) &amp;&amp; use(k)
+0478         i = k;
+0479         <span class="keyword">break</span>;
+0480     <span class="keyword">end</span>
+0481     
+0482     <span class="comment">% Advance.</span>
+0483     j = j + 1;
+0484 <span class="keyword">end</span>
+0485 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

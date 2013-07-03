@@ -1,0 +1,358 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of orientWormAtCentroid</title>
+  <meta name="keywords" content="orientWormAtCentroid">
+  <meta name="description" content="ORIENTWORMATCENTROID Orient worm2 to match worm1's orientation (by setting">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Orientation -->
+<h1>orientWormAtCentroid
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>ORIENTWORMATCENTROID Orient worm2 to match worm1's orientation (by setting</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [worm2 confidence flippedConfidence] =orientWormAtCentroid(worm1, worm2, samples, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">ORIENTWORMATCENTROID Orient worm2 to match worm1's orientation (by setting
+   worm2.orientation.head.isFlipped and
+   worm2.orientation.vulva.isClockwiseFromHead) based on the proximity
+   of samples along the skeleton of both worms (controlling for the
+   effects of centroid translation).
+
+   Note: the algorithm is a follows,
+   1. Translate the coordinates of worm 2's skeleton so that its centroid
+      is aligned with worm 1's centroid.
+   2. Sample both worms along their skeletons at the fractional distances
+      in 'samples'.
+   3. Compute the distance between the skeleton samples from (1) in both
+      orientations.
+   4. Compare the distances from both orientations in (2) and treat the
+      comparison as an indicator function (1 if the distance is smaller,
+      0 otherwise).
+   5. Sum the distance ratios from (4), between both orientations, and
+      treat these sums as the measure of the orientation confidence:
+      unflipped confidence = sum(flipped distances / unflipped distances)
+      flipped confidence = sum(unflipped distances / flipped distances)
+      Note: to avoid dividing by 0, when the denominator is 0 we
+      substitute the numerator instead of the ratio.
+   6. Choose the orientation with the most indicators from (4) and, if
+      both orientations have the same number of indicators, choose the
+      orientation with the most confidence from (5).
+
+   [WORM2 CONFIDENCE FLIPPEDCONFIDENCE] =
+       ORIENTWORMATCENTROID(WORM1, WORM2, SAMPLES)
+
+   [WORM2 CONFIDENCE FLIPPEDCONFIDENCE] =
+       ORIENTWORMATCENTROID(WORM1, WORM2, SAMPLES, VERBOSE)
+
+   Input:
+       worm1   - the reference worm
+       worm2   - the worm to orient relative to the reference
+       samples - the fractional sample locations along the skeleton
+       verbose - verbose mode shows the worms in a figure
+
+   Output:
+       worm2             - the oriented worm (with
+                           worm2.orientation.head.isFlipped and
+                           worm2.orientation.vulva.isClockwiseFromHead
+                           correctly set so that worm1 and worm2 share
+                           the same orientation)
+       confidence        - the confidence measurement for the orientation
+       flippedConfidence - the confidence measurement for the flipped
+                           (opposite) orientation
+
+ See also SEGWORM, <a href="orientWorm.html" class="code" title="function [worm2 confidence flippedConfidence] =orientWorm(worm1, worm2, samples, varargin)">ORIENTWORM</a>, <a href="orientWormPostCoil.html" class="code" title="function worm2 = orientWormPostCoil(worm1, worm2, varargin)">ORIENTWORMPOSTCOIL</a>,
+ <a href="headTailMovementConfidence.html" class="code" title="function [headOrthoConfidence tailOrthoConfidenceheadParaConfidence tailParaConfidenceheadMagConfidence tailMagConfidence] =headTailMovementConfidence(worm1, worm2, varargin)">HEADTAILMOVEMENTCONFIDENCE</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>	INTERPDATA Interpolate data values at the requested chain-code lengths.</li><li><a href="flipWormHead.html" class="code" title="function worm = flipWormHead(worm)">flipWormHead</a>	FLIPWORMHEAD Flip the head-to-tail orientation of the worm.</li><li><a href="flipWormVulva.html" class="code" title="function worm = flipWormVulva(worm)">flipWormVulva</a>	FLIPWORMVULVA Flip the vulval orientation of the worm.</li><li><a href="../../../SegWorm/Worms/Video/overlayWormAngles.html" class="code" title="function oImg = overlayWormAngles(img, worm, cRGB360, sRGB360, sRGBNaN,headPattern, headRGB, isHeadOpaque, vulvaPattern, vulvaRGB, isVulvaOpaque)">overlayWormAngles</a>	OVERLAYWORMANGLES Overlay the worm's contour/skeleton angles (curvature)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Video/saveWormFrames.html" class="code" title="function failedFrames = saveWormFrames(wormFile, videoFile, frames,blockSize, varargin)">saveWormFrames</a>	SAVEWORMFRAMES Segment the worm in a set of video frames and save</li><li><a href="../../../SegWorm/Worms/Video/segWormVideo.html" class="code" title="function failedFrames = segWormVideo(videoFile, anglesVideoFile,touchVideoFile, debugVideoFile, varargin)">segWormVideo</a>	SEGWORMVIDEO Segment a worm video.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [worm2 confidence flippedConfidence] = </a><span class="keyword">...</span>
+0002     orientWormAtCentroid(worm1, worm2, samples, varargin)
+0003 <span class="comment">%ORIENTWORMATCENTROID Orient worm2 to match worm1's orientation (by setting</span>
+0004 <span class="comment">%   worm2.orientation.head.isFlipped and</span>
+0005 <span class="comment">%   worm2.orientation.vulva.isClockwiseFromHead) based on the proximity</span>
+0006 <span class="comment">%   of samples along the skeleton of both worms (controlling for the</span>
+0007 <span class="comment">%   effects of centroid translation).</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Note: the algorithm is a follows,</span>
+0010 <span class="comment">%   1. Translate the coordinates of worm 2's skeleton so that its centroid</span>
+0011 <span class="comment">%      is aligned with worm 1's centroid.</span>
+0012 <span class="comment">%   2. Sample both worms along their skeletons at the fractional distances</span>
+0013 <span class="comment">%      in 'samples'.</span>
+0014 <span class="comment">%   3. Compute the distance between the skeleton samples from (1) in both</span>
+0015 <span class="comment">%      orientations.</span>
+0016 <span class="comment">%   4. Compare the distances from both orientations in (2) and treat the</span>
+0017 <span class="comment">%      comparison as an indicator function (1 if the distance is smaller,</span>
+0018 <span class="comment">%      0 otherwise).</span>
+0019 <span class="comment">%   5. Sum the distance ratios from (4), between both orientations, and</span>
+0020 <span class="comment">%      treat these sums as the measure of the orientation confidence:</span>
+0021 <span class="comment">%      unflipped confidence = sum(flipped distances / unflipped distances)</span>
+0022 <span class="comment">%      flipped confidence = sum(unflipped distances / flipped distances)</span>
+0023 <span class="comment">%      Note: to avoid dividing by 0, when the denominator is 0 we</span>
+0024 <span class="comment">%      substitute the numerator instead of the ratio.</span>
+0025 <span class="comment">%   6. Choose the orientation with the most indicators from (4) and, if</span>
+0026 <span class="comment">%      both orientations have the same number of indicators, choose the</span>
+0027 <span class="comment">%      orientation with the most confidence from (5).</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   [WORM2 CONFIDENCE FLIPPEDCONFIDENCE] =</span>
+0030 <span class="comment">%       ORIENTWORMATCENTROID(WORM1, WORM2, SAMPLES)</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%   [WORM2 CONFIDENCE FLIPPEDCONFIDENCE] =</span>
+0033 <span class="comment">%       ORIENTWORMATCENTROID(WORM1, WORM2, SAMPLES, VERBOSE)</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%   Input:</span>
+0036 <span class="comment">%       worm1   - the reference worm</span>
+0037 <span class="comment">%       worm2   - the worm to orient relative to the reference</span>
+0038 <span class="comment">%       samples - the fractional sample locations along the skeleton</span>
+0039 <span class="comment">%       verbose - verbose mode shows the worms in a figure</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%   Output:</span>
+0042 <span class="comment">%       worm2             - the oriented worm (with</span>
+0043 <span class="comment">%                           worm2.orientation.head.isFlipped and</span>
+0044 <span class="comment">%                           worm2.orientation.vulva.isClockwiseFromHead</span>
+0045 <span class="comment">%                           correctly set so that worm1 and worm2 share</span>
+0046 <span class="comment">%                           the same orientation)</span>
+0047 <span class="comment">%       confidence        - the confidence measurement for the orientation</span>
+0048 <span class="comment">%       flippedConfidence - the confidence measurement for the flipped</span>
+0049 <span class="comment">%                           (opposite) orientation</span>
+0050 <span class="comment">%</span>
+0051 <span class="comment">% See also SEGWORM, ORIENTWORM, ORIENTWORMPOSTCOIL,</span>
+0052 <span class="comment">% HEADTAILMOVEMENTCONFIDENCE</span>
+0053 
+0054 <span class="comment">% Are we in verbose mode?</span>
+0055 <span class="keyword">if</span> isempty(varargin)
+0056     verbose = false;
+0057 <span class="keyword">else</span>
+0058     verbose = varargin{1};
+0059 <span class="keyword">end</span>
+0060 
+0061 <span class="comment">% Sample worm 1.</span>
+0062 skeleton1 = worm1.skeleton;
+0063 flippedSamples = [];
+0064 <span class="keyword">if</span> worm1.orientation.head.isFlipped
+0065     flippedSamples = 1 - samples;
+0066     s1 = skeleton1.length * flippedSamples;
+0067 <span class="keyword">else</span>
+0068     s1 = skeleton1.length * samples;
+0069 <span class="keyword">end</span>
+0070 [p1, s1I] = <a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(skeleton1.pixels, s1, <span class="keyword">...</span>
+0071     skeleton1.chainCodeLengths);
+0072 
+0073 <span class="comment">% Sample worm 2.</span>
+0074 skeleton2 = worm2.skeleton;
+0075 <span class="keyword">if</span> worm2.orientation.head.isFlipped
+0076     <span class="keyword">if</span> isempty(flippedSamples)
+0077         flippedSamples = 1 - samples;
+0078     <span class="keyword">end</span>
+0079     s2 = skeleton2.length * flippedSamples;
+0080 <span class="keyword">else</span>
+0081     s2 = skeleton2.length * samples;
+0082 <span class="keyword">end</span>
+0083 [p2, s2I] = <a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(skeleton2.pixels, s2, <span class="keyword">...</span>
+0084     skeleton2.chainCodeLengths);
+0085 
+0086 <span class="comment">% Compute the translation between worms using their centroids.</span>
+0087 c1 = mean(skeleton1.pixels);
+0088 c2 = mean(skeleton2.pixels);
+0089 translation = c1 - c2;
+0090 
+0091 <span class="comment">% Compute the distance between worm 1 and 2 in both orientations</span>
+0092 <span class="comment">% (controlling for the effects of centroid translation).</span>
+0093 <span class="comment">% Note: the skeleton samples are interpolated and, therefore, distances</span>
+0094 <span class="comment">% less than 1 are likely to be, in reality, either 1 or 0. We set these to</span>
+0095 <span class="comment">% 0 to avoid computing extreme confidences.</span>
+0096 p2 = [p2(:,1) + translation(1), p2(:,2) + translation(2)];
+0097 proximity1 = sqrt(sum((p1 - p2) .^ 2, 2));
+0098 proximity1(proximity1 &lt; 1) = 0;
+0099 proximity2 = sqrt(sum((p1 - flipud(p2)) .^ 2, 2));
+0100 proximity2(proximity2 &lt; 1) = 0;
+0101 
+0102 <span class="comment">% Compute the indicators for both orientations.</span>
+0103 indicators1 = sum(proximity1 &lt; proximity2);
+0104 indicators2 = sum(proximity1 &gt; proximity2);
+0105 
+0106 <span class="comment">% Compute the confidence for both orientations.</span>
+0107 <span class="comment">% Note: to avoid dividing by 0, when the magnitude's distance denominator</span>
+0108 <span class="comment">% is 0 we substitute the numerator's distance instead of the ratio.</span>
+0109 magnitudes1 = proximity2 ./ proximity1;
+0110 zeroConfidence = (proximity1 &lt; 1);
+0111 magnitudes1(zeroConfidence) = proximity2(zeroConfidence);
+0112 confidence1 = mean(magnitudes1);
+0113 magnitudes2 = proximity1 ./ proximity2;
+0114 zeroConfidence = (proximity2 &lt; 1);
+0115 magnitudes2(zeroConfidence) = proximity1(zeroConfidence);
+0116 confidence2 = mean(magnitudes2);
+0117 
+0118 <span class="comment">% Retain the head-to-tail orientation.</span>
+0119 <span class="keyword">if</span> indicators1 &gt; indicators2 || <span class="keyword">...</span>
+0120         (indicators1 == indicators2 &amp;&amp; confidence1 &gt;= confidence2)
+0121     confidence = confidence1;
+0122     flippedConfidence = confidence2;
+0123     <span class="keyword">if</span> (verbose)
+0124         isFlipped = false;
+0125     <span class="keyword">end</span>
+0126 
+0127 <span class="comment">% Flip the head-to-tail orientation.</span>
+0128 <span class="keyword">else</span>
+0129     worm2 = <a href="flipWormHead.html" class="code" title="function worm = flipWormHead(worm)">flipWormHead</a>(worm2);
+0130     confidence = confidence2;
+0131     flippedConfidence = confidence1;
+0132     <span class="keyword">if</span> (verbose)
+0133         isFlipped = true;
+0134     <span class="keyword">end</span>
+0135 <span class="keyword">end</span>
+0136 
+0137 <span class="comment">% Flip the vulval side.</span>
+0138 <span class="keyword">if</span> worm2.orientation.vulva.isClockwiseFromHead ~= <span class="keyword">...</span>
+0139     worm1.orientation.vulva.isClockwiseFromHead
+0140     worm2 = <a href="flipWormVulva.html" class="code" title="function worm = flipWormVulva(worm)">flipWormVulva</a>(worm2);
+0141 <span class="keyword">end</span>
+0142 
+0143 <span class="comment">% Show the worms.</span>
+0144 <span class="keyword">if</span> verbose
+0145     
+0146     <span class="comment">% Construct a pattern to identify the head.</span>
+0147     hImg = [1 1 1 1 1; <span class="keyword">...</span>
+0148             1 1 1 1 1; <span class="keyword">...</span>
+0149             1 1 1 1 1; <span class="keyword">...</span>
+0150             1 1 1 1 1; <span class="keyword">...</span>
+0151             1 1 1 1 1];
+0152     [hPattern(:,1) hPattern(:,2)] = find(hImg == 1);
+0153     hPattern(:,1) = hPattern(:,1) - ceil(size(hImg, 1) / 2);
+0154     hPattern(:,2) = hPattern(:,2) - ceil(size(hImg, 2) / 2);
+0155     
+0156     <span class="comment">% Construct a pattern to identify the vulva.</span>
+0157     vImg = [0 0 1 0 0; <span class="keyword">...</span>
+0158             0 1 1 1 0; <span class="keyword">...</span>
+0159             1 1 1 1 1; <span class="keyword">...</span>
+0160             0 1 1 1 0; <span class="keyword">...</span>
+0161             0 0 1 0 0];
+0162     [vPattern(:,1) vPattern(:,2)] = find(vImg == 1);
+0163     vPattern(:,1) = vPattern(:,1) - ceil(size(vImg, 1) / 2);
+0164     vPattern(:,2) = vPattern(:,2) - ceil(size(vImg, 2) / 2);
+0165     
+0166     <span class="comment">% Construct the values for the contour and skeleton curvature heat map.</span>
+0167     intensity = .7;
+0168     zeros361 = zeros(361, 1);
+0169     c361(1:361,1) = intensity;
+0170     cRGB = [c361, zeros361, zeros361]; <span class="comment">% red</span>
+0171     hRGB = [intensity 0 0]; <span class="comment">% red</span>
+0172     vRGB = [intensity 0 0]; <span class="comment">% red</span>
+0173     
+0174     <span class="comment">% Copy the worms for verbose mode.</span>
+0175     vWorm1 = worm1;
+0176     vWorm2 = worm2;
+0177     
+0178     <span class="comment">% Translate worm 2.</span>
+0179     translation = round(translation);
+0180     vWorm2.contour.pixels(:,1) = vWorm2.contour.pixels(:,1) + translation(1);
+0181     vWorm2.contour.pixels(:,2) = vWorm2.contour.pixels(:,2) + translation(2);
+0182     vWorm2.skeleton.pixels(:,1) = vWorm2.skeleton.pixels(:,1) + <span class="keyword">...</span>
+0183         translation(1);
+0184     vWorm2.skeleton.pixels(:,2) = vWorm2.skeleton.pixels(:,2) + <span class="keyword">...</span>
+0185         translation(2);
+0186     
+0187     <span class="comment">% Determine the worms' MER (minimum enclosing rectangle).</span>
+0188     <span class="comment">% Note: the skeleton can exit the contour.</span>
+0189     wMinX = min(min(vWorm1.contour.pixels(:,2)), <span class="keyword">...</span>
+0190         min(vWorm1.skeleton.pixels(:,2)));
+0191     wMaxX = max(max(vWorm1.contour.pixels(:,2)), <span class="keyword">...</span>
+0192         max(vWorm1.skeleton.pixels(:,2)));
+0193     wMinY = min(min(vWorm1.contour.pixels(:,1)), <span class="keyword">...</span>
+0194         min(vWorm1.skeleton.pixels(:,1)));
+0195     wMaxY = max(max(vWorm1.contour.pixels(:,1)), <span class="keyword">...</span>
+0196         max(vWorm1.skeleton.pixels(:,1)));
+0197     wMinX = min([wMinX, min(vWorm2.contour.pixels(:,2)), <span class="keyword">...</span>
+0198         min(vWorm2.skeleton.pixels(:,2))]);
+0199     wMaxX = max([wMaxX, max(vWorm2.contour.pixels(:,2)), <span class="keyword">...</span>
+0200         max(vWorm2.skeleton.pixels(:,2))]);
+0201     wMinY = min([wMinY, min(vWorm2.contour.pixels(:,1)), <span class="keyword">...</span>
+0202         min(vWorm2.skeleton.pixels(:,1))]);
+0203     wMaxY = max([wMaxY, max(vWorm2.contour.pixels(:,1)), <span class="keyword">...</span>
+0204         max(vWorm2.skeleton.pixels(:,1))]);
+0205     
+0206     <span class="comment">% Minimize the worms.</span>
+0207     vWorm1.contour.pixels(:,1) = vWorm1.contour.pixels(:,1) - wMinY + 3;
+0208     vWorm1.contour.pixels(:,2) = vWorm1.contour.pixels(:,2) - wMinX + 3;
+0209     vWorm1.skeleton.pixels(:,1) = vWorm1.skeleton.pixels(:,1) - wMinY + 3;
+0210     vWorm1.skeleton.pixels(:,2) = vWorm1.skeleton.pixels(:,2) - wMinX + 3;
+0211     vWorm2.contour.pixels(:,1) = vWorm2.contour.pixels(:,1) - wMinY + 3;
+0212     vWorm2.contour.pixels(:,2) = vWorm2.contour.pixels(:,2) - wMinX + 3;
+0213     vWorm2.skeleton.pixels(:,1) = vWorm2.skeleton.pixels(:,1) - wMinY + 3;
+0214     vWorm2.skeleton.pixels(:,2) = vWorm2.skeleton.pixels(:,2) - wMinX + 3;
+0215     
+0216     <span class="comment">% Minimize the samples.</span>
+0217     p1(:,1) = round(p1(:,1)) - wMinY + 3;
+0218     p1(:,2) = round(p1(:,2)) - wMinX + 3;
+0219     p2(:,1) = round(p2(:,1)) - wMinY + 3;
+0220     p2(:,2) = round(p2(:,2)) - wMinX + 3;
+0221     
+0222     <span class="comment">% Construct the worms' images.</span>
+0223     emptyImg = ones(wMaxY - wMinY + 5, wMaxX - wMinX + 5);
+0224     img1 = <a href="../../../SegWorm/Worms/Video/overlayWormAngles.html" class="code" title="function oImg = overlayWormAngles(img, worm, cRGB360, sRGB360, sRGBNaN,headPattern, headRGB, isHeadOpaque, vulvaPattern, vulvaRGB, isVulvaOpaque)">overlayWormAngles</a>(emptyImg, vWorm1, cRGB, [], [], <span class="keyword">...</span>
+0225         hPattern, hRGB, 1, vPattern, vRGB, 1);
+0226     img2 = <a href="../../../SegWorm/Worms/Video/overlayWormAngles.html" class="code" title="function oImg = overlayWormAngles(img, worm, cRGB360, sRGB360, sRGBNaN,headPattern, headRGB, isHeadOpaque, vulvaPattern, vulvaRGB, isVulvaOpaque)">overlayWormAngles</a>(emptyImg, vWorm2, cRGB, [], [], <span class="keyword">...</span>
+0227         hPattern, hRGB, 1, vPattern, vRGB, 1);
+0228     
+0229     <span class="comment">% Overlay the worm images.</span>
+0230     rImg = img2(:,:,1);
+0231     gImg = img1(:,:,1);
+0232     bImg = rImg;
+0233     bImg(gImg == intensity) = intensity;
+0234     p1I = sub2ind(size(rImg), p1(:,1), p1(:,2));
+0235     rImg(p1I) = intensity;
+0236     gImg(p1I) = 0;
+0237     bImg(p1I) = 0;
+0238     p2I = sub2ind(size(gImg), p2(:,1), p2(:,2));
+0239     rImg(p2I) = 0;
+0240     gImg(p2I) = intensity;
+0241     bImg(p2I) = 0;
+0242     rgbImg(:,:,1) = rImg;
+0243     rgbImg(:,:,2) = gImg;
+0244     rgbImg(:,:,3) = bImg;
+0245     
+0246     <span class="comment">% Show the overlay.</span>
+0247     figure;
+0248     imshow(rgbImg);
+0249     title([<span class="string">'\color{darkGreen}Worm 2 (frame = '</span> <span class="keyword">...</span>
+0250         num2str(vWorm2.video.frame) <span class="string">')'</span>]);
+0251     ylabel([<span class="string">'\color{red}Worm 1 (frame = '</span> num2str(vWorm1.video.frame) <span class="string">')'</span>]);
+0252     xlabel({[<span class="string">'\color{blue}Orientation confidence: '</span> num2str(confidence)], <span class="keyword">...</span>
+0253         [<span class="string">'\color{orange}Flipped confidence: '</span> num2str(flippedConfidence)]});
+0254     
+0255     <span class="comment">% Show the vectors.</span>
+0256     hold on;
+0257     <span class="keyword">if</span> isFlipped
+0258         p2 = flipud(p2);
+0259     <span class="keyword">end</span>
+0260     pDiff = p2 - p1;
+0261     quiver(p1(:,2), p1(:,1), pDiff(:,2), pDiff(:,1), 0, <span class="string">'b'</span>);
+0262 <span class="keyword">end</span>
+0263 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

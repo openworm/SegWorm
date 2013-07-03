@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of findControls</title>
+  <meta name="keywords" content="findControls">
+  <meta name="description" content="Initialize the control info.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>findControls
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Initialize the control info.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Initialize the control info.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>	FILTERWORMINFO Filter worm information to meet specific criteria.</li><li><a href="standardWormFilter.html" class="code" title="function filter = standardWormFilter()">standardWormFilter</a>	STANDARDWORMFILTER Get a filter for standard worm experiments (roughly 15</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Initialize the control info.</span>
+0002 controlFile = <span class="string">'N2_stat.mat'</span>;
+0003 load(controlFile, <span class="string">'wormInfo'</span>);
+0004 
+0005 <span class="comment">% Filter out bad experiments.</span>
+0006 isUsed = <a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>(wormInfo, <a href="standardWormFilter.html" class="code" title="function filter = standardWormFilter()">standardWormFilter</a>());
+0007 wormInfo = wormInfo(isUsed);
+0008 
+0009 <span class="comment">% Get the dates.</span>
+0010 dates = arrayfun(@(x) datenum(x.experiment.environment.timestamp), <span class="keyword">...</span>
+0011     wormInfo);
+0012 [year month day] = datevec(dates);
+0013 controlDates = datenum(year, month, day);
+0014 
+0015 <span class="comment">% Free memory.</span>
+0016 clear(<span class="string">'wormInfo'</span>);
+0017 
+0018 <span class="comment">% Go through the strains.</span>
+0019 files = rdir(<span class="string">'*_stat.mat'</span>);
+0020 numI = 0;
+0021 numWorms = [];
+0022 numControls = [];
+0023 strains = [];
+0024 genotypes = [];
+0025 <span class="keyword">for</span> i = 1:length(files)
+0026     
+0027     <span class="comment">% Load the worm information.</span>
+0028     name = files(i).name;
+0029     <span class="keyword">if</span> strcmp(name, controlFile);
+0030         <span class="keyword">continue</span>;
+0031     <span class="keyword">end</span>
+0032     load(name, <span class="string">'wormInfo'</span>);
+0033     
+0034     <span class="comment">% Get the dates.</span>
+0035     dates = arrayfun(@(x) datenum(x.experiment.environment.timestamp), <span class="keyword">...</span>
+0036         wormInfo);
+0037     [year month day] = datevec(dates);
+0038     dates = datenum(year, month, day);
+0039     dates = unique(dates);
+0040     
+0041     <span class="comment">% Get the controls.</span>
+0042     isControl = false(size(controlDates));
+0043     <span class="keyword">for</span> j = 1:length(dates)
+0044         isControl = isControl | <span class="keyword">...</span>
+0045             (controlDates &gt;= dates(j) - 7 &amp; controlDates &lt;= dates(j) + 7);
+0046     <span class="keyword">end</span>
+0047     controls = controlDates(isControl);
+0048     
+0049     <span class="comment">% Compute the number of worms and controls.</span>
+0050     numI = numI + 1;
+0051     numWorms(numI) = length(wormInfo);
+0052     numControls(numI) = length(controls);
+0053     
+0054     <span class="comment">% Display the info.</span>
+0055     strains{numI} = wormInfo(1).experiment.worm.strain;
+0056     genotypes{numI} = wormInfo(1).experiment.worm.genotype;
+0057     id = [genotypes{numI} <span class="string">' '</span> strains{numI}];
+0058     disp([<span class="string">'&quot;'</span> id <span class="string">'&quot; worms= '</span> num2str(numWorms(numI)) <span class="keyword">...</span>
+0059         <span class="string">' controls='</span> num2str(numControls(numI))]);
+0060 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

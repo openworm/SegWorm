@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of overlayBadWorm</title>
+  <meta name="keywords" content="overlayBadWorm">
+  <meta name="description" content="OVERLAYBADWORM Overlay a bad worm segmentation onto an image.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Video -->
+<h1>overlayBadWorm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>OVERLAYBADWORM Overlay a bad worm segmentation onto an image.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function oImg = overlayBadWorm(img, type) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">OVERLAYBADWORM Overlay a bad worm segmentation onto an image.
+
+   OIMG = OVERLAYBADWORM(IMG, TYPE)
+
+   Inputs:
+       img  - the image on which to overlay the bad worm segmentation
+       type - the type of overlay:
+           'd' - a dropped frame
+           'm' - a stage movement
+           'f' - a segmentation failure
+
+
+   Outputs:
+       oImg - an image overlayed with the bad worm segmentation</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="segWormVideo.html" class="code" title="function failedFrames = segWormVideo(videoFile, anglesVideoFile,touchVideoFile, debugVideoFile, varargin)">segWormVideo</a>	SEGWORMVIDEO Segment a worm video.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function oImg = overlayBadWorm(img, type)</a>
+0002 <span class="comment">%OVERLAYBADWORM Overlay a bad worm segmentation onto an image.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   OIMG = OVERLAYBADWORM(IMG, TYPE)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       img  - the image on which to overlay the bad worm segmentation</span>
+0008 <span class="comment">%       type - the type of overlay:</span>
+0009 <span class="comment">%           'd' - a dropped frame</span>
+0010 <span class="comment">%           'm' - a stage movement</span>
+0011 <span class="comment">%           'f' - a segmentation failure</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   Outputs:</span>
+0015 <span class="comment">%       oImg - an image overlayed with the bad worm segmentation</span>
+0016 
+0017 <span class="comment">% Convert the image to grayscale.</span>
+0018 <span class="keyword">if</span> (size(img,3) == 3)
+0019     img = rgb2gray(img);
+0020 <span class="keyword">end</span>
+0021 
+0022 <span class="comment">% Pre-allocate memory.</span>
+0023 rgbImg(:,:,1) = img;
+0024 rgbImg(:,:,2) = img;
+0025 rgbImg(:,:,3) = img;
+0026 
+0027 <span class="comment">% Compute the border.</span>
+0028 <span class="keyword">if</span> size(img, 1) &lt; size(img, 2)
+0029     border = ceil(size(img, 1) / 50);
+0030 <span class="keyword">end</span>
+0031 
+0032 <span class="comment">% What's wrong with the worm?</span>
+0033 <span class="keyword">switch</span> lower(type)
+0034     
+0035     <span class="comment">% The image is a dropped frame.</span>
+0036     <span class="keyword">case</span> <span class="string">'d'</span>
+0037         <span class="comment">%oImg(:,:,3) = img;</span>
+0038         <span class="comment">%oImg(:,:,[1 2]) = 96;</span>
+0039         oImg = rgbImg;
+0040         oImg(1:border,1:<span class="keyword">end</span>,[1 2]) = 96;
+0041         oImg((end - border + 1):<span class="keyword">end</span>,1:<span class="keyword">end</span>,[1 2]) = 96;
+0042         oImg(border:(end - border + 1),1:border,[1 2]) = 96;
+0043         oImg(border:(end - border + 1),(end - border + 1):<span class="keyword">end</span>,[1 2]) = 96;
+0044         
+0045     <span class="comment">% The image contains a stage movement.</span>
+0046     <span class="keyword">case</span> <span class="string">'m'</span>
+0047         <span class="comment">%oImg(:,:,2) = img;</span>
+0048         <span class="comment">%oImg(:,:,[1 3]) = 96;</span>
+0049         oImg = rgbImg;
+0050         oImg(1:border,1:<span class="keyword">end</span>,[1 3]) = 96;
+0051         oImg((end - border + 1):<span class="keyword">end</span>,1:<span class="keyword">end</span>,[1 3]) = 96;
+0052         oImg(border:(end - border + 1),1:border,[1 3]) = 96;
+0053         oImg(border:(end - border + 1),(end - border + 1):<span class="keyword">end</span>,[1 3]) = 96;
+0054         
+0055     <span class="comment">% The worm failed to segment.</span>
+0056     <span class="keyword">case</span> <span class="string">'f'</span>
+0057         <span class="comment">%oImg(:,:,1) = img;</span>
+0058         <span class="comment">%oImg(:,:,[2 3]) = 96;</span>
+0059         oImg = rgbImg;
+0060         oImg(1:border,1:<span class="keyword">end</span>,[2 3]) = 96;
+0061         oImg((end - border + 1):<span class="keyword">end</span>,1:<span class="keyword">end</span>,[2 3]) = 96;
+0062         oImg(border:(end - border + 1),1:border,[2 3]) = 96;
+0063         oImg(border:(end - border + 1),(end - border + 1):<span class="keyword">end</span>,[2 3]) = 96;
+0064         
+0065     <span class="comment">% Unrecognized type.</span>
+0066     <span class="keyword">otherwise</span>
+0067         error(<span class="string">'overlayBadWorm:BadType'</span>, [<span class="string">'Type '''</span> type <span class="keyword">...</span>
+0068             <span class="string">''' is not recognized'</span>]);
+0069 <span class="keyword">end</span>
+0070 <span class="keyword">end</span>
+0071</pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

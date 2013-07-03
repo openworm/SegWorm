@@ -1,0 +1,352 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoIoSysInfo</title>
+  <meta name="keywords" content="videoIoSysInfo">
+  <meta name="description" content="videoIoSysInfo">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>videoIoSysInfo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>videoIoSysInfo</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function out = videoIoSysInfo </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">videoIoSysInfo
+  Gathers information about the currently-running version of Matlab, your
+  operating system, and 3rd-party libraries used by the videoIO toolbox.
+  A report is generated which is sent to the screen and also saved to
+  'videoIoSysInfo.txt' in the current directory.  
+
+  The primary purpose of this function is to gather information for
+  debugging system configurations and sending this information to the
+  videoIO author.  If you are having difficulty with videoIO, have already
+  read README.txt and the appropriate INSTALL.*.txt file, then please run
+  this function and send the resulting 'videoIoSysInfo.txt' to the author.
+
+info=videoIoSysInfo
+  Instead of printing the information to the screen and saving it to a
+  file, the configuration information is returned as a struct.
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="isMFileWithCode.html" class="code" title="function mexe = isMFileWithCode(pathname)">isMFileWithCode</a>	mexe = isMFileWithCode(pathname)</li><li><a href="../videoIO/private/split.html" class="code" title="function l = split(d,s)">split</a>	L=SPLIT(S,D) splits a string S delimited by characters in D.  Meant to</li><li><a href="videoIODir.html" class="code" title="function d = videoIODir">videoIODir</a>	d = videoIODir</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function printStruct(info, F)</a></li><li><a href="#_sub2" class="code">function s = pad(in,w)</a></li><li><a href="#_sub3" class="code">function plugins = findPlugins(ctor)</a></li><li><a href="#_sub4" class="code">function paths = getLinkPathsFromGccArgs(gccargs)</a></li><li><a href="#_sub5" class="code">function libsArch = getLibArchs(ffmpegLibs, allLibDirs)</a></li><li><a href="#_sub6" class="code">function arch = getBinaryArch(path)</a></li><li><a href="#_sub7" class="code">function p = splitSemiColonPaths(p)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function out = videoIoSysInfo</a>
+0002 <span class="comment">%videoIoSysInfo</span>
+0003 <span class="comment">%  Gathers information about the currently-running version of Matlab, your</span>
+0004 <span class="comment">%  operating system, and 3rd-party libraries used by the videoIO toolbox.</span>
+0005 <span class="comment">%  A report is generated which is sent to the screen and also saved to</span>
+0006 <span class="comment">%  'videoIoSysInfo.txt' in the current directory.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%  The primary purpose of this function is to gather information for</span>
+0009 <span class="comment">%  debugging system configurations and sending this information to the</span>
+0010 <span class="comment">%  videoIO author.  If you are having difficulty with videoIO, have already</span>
+0011 <span class="comment">%  read README.txt and the appropriate INSTALL.*.txt file, then please run</span>
+0012 <span class="comment">%  this function and send the resulting 'videoIoSysInfo.txt' to the author.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%info=videoIoSysInfo</span>
+0015 <span class="comment">%  Instead of printing the information to the screen and saving it to a</span>
+0016 <span class="comment">%  file, the configuration information is returned as a struct.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0019 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0020 <span class="comment">%when using this library on GNU/Linux).</span>
+0021 
+0022 info = struct;
+0023 
+0024 <span class="comment">% Matlab info</span>
+0025 v = ver(<span class="string">'Matlab'</span>);
+0026 info.matlabVersion = v.Version;
+0027 info.matlabRelease = v.Release;
+0028 info.matlabDate    = v.Date;
+0029 
+0030 info.java = char(strread(version(<span class="string">'-java'</span>),<span class="string">'%s'</span>,1,<span class="string">'delimiter'</span>,<span class="string">'\n'</span>));
+0031 
+0032 <span class="comment">% Matlab platform</span>
+0033 info.mexext   = mexext;
+0034 [info.computer, info.maxsize, info.endian] = computer;
+0035 <span class="keyword">try</span>
+0036   info.arch = computer(<span class="string">'arch'</span>);
+0037 <span class="keyword">catch</span> <span class="comment">%#ok&lt;CTCH&gt;</span>
+0038   info.arch = <span class="string">'unknown'</span>;
+0039 <span class="keyword">end</span>
+0040 
+0041 <span class="comment">% get OS information (uses undocumented matlab features found in VER).</span>
+0042 <span class="keyword">if</span> ispc
+0043   info.os      = system_dependent(<span class="string">'getos'</span>);
+0044   info.osver   = system_dependent(<span class="string">'getwinsys'</span>);
+0045   info.osarch  = getenv(<span class="string">'PROCESSOR_ARCHITECTURE'</span>);
+0046 <span class="keyword">elseif</span> ismac
+0047   [fail, info.os] = unix(<span class="string">'sw_vers'</span>);
+0048   <span class="keyword">if</span> fail, info.os = <span class="string">'Unknown Macintosh'</span>; <span class="keyword">end</span>
+0049 <span class="keyword">else</span>
+0050   info.os = system_dependent(<span class="string">'getos'</span>);
+0051 <span class="keyword">end</span>
+0052 
+0053 <span class="comment">% Check status of 3rd-party lib installation described in INSTALL.*.txt.</span>
+0054 <span class="comment">% This code is system-specific.</span>
+0055 <span class="keyword">if</span> ispc
+0056   info.include = getenv(<span class="string">'INCLUDE'</span>);
+0057   info.lib32   = getenv(<span class="string">'LIB32'</span>);
+0058   info.lib64   = getenv(<span class="string">'LIB64'</span>);
+0059   <span class="keyword">if</span> strcmpi(info.mexext, <span class="string">'mex'</span>) || <span class="keyword">...</span>
+0060       ~isempty(strfind(info.mexext, <span class="string">'32'</span>)) || <span class="keyword">...</span>
+0061       strcmpi(info.mexext, <span class="string">'dll'</span>) <span class="comment">% handle older versions</span>
+0062     info.allLibDirs = <a href="#_sub7" class="code" title="subfunction p = splitSemiColonPaths(p)">splitSemiColonPaths</a>(info.lib32);
+0063   <span class="keyword">else</span>
+0064     info.allLibDirs = <a href="#_sub7" class="code" title="subfunction p = splitSemiColonPaths(p)">splitSemiColonPaths</a>(info.lib64);
+0065   <span class="keyword">end</span>
+0066 <span class="keyword">else</span>
+0067   <span class="comment">% We may want to move this block into the makefile at some point</span>
+0068   info.cxxflags              = getenv(<span class="string">'CXXFLAGS'</span>);
+0069   [status,info.ffmpegCflags] = system(sprintf(<span class="keyword">...</span>
+0070       <span class="string">'cd %s; ./ffmpeg-config-internal.pl --cflags'</span>, <a href="videoIODir.html" class="code" title="function d = videoIODir">videoIODir</a>));
+0071   [status,info.ffmpegLibs]   = system(sprintf(<span class="keyword">...</span>
+0072       <span class="string">'cd %s; ./ffmpeg-config-internal.pl --libs'</span>,   <a href="videoIODir.html" class="code" title="function d = videoIODir">videoIODir</a>));
+0073   [status,info.gccLibDirs]   = system(<span class="keyword">...</span>
+0074       <span class="string">'gcc -print-search-dirs | grep libraries'</span>);
+0075   <span class="keyword">if</span> status == 0
+0076     info.gccLibDirs = <a href="../videoIO/private/split.html" class="code" title="function l = split(d,s)">split</a>(<span class="string">':'</span>,<span class="keyword">...</span>
+0077                             info.gccLibDirs(length(<span class="string">'libraries: ='</span>)+1:end))';
+0078   <span class="keyword">end</span>
+0079   
+0080   d1 = <a href="#_sub4" class="code" title="subfunction paths = getLinkPathsFromGccArgs(gccargs)">getLinkPathsFromGccArgs</a>(info.cxxflags);
+0081   d2 = <a href="#_sub4" class="code" title="subfunction paths = getLinkPathsFromGccArgs(gccargs)">getLinkPathsFromGccArgs</a>(info.ffmpegLibs);
+0082   d3 = info.gccLibDirs;
+0083   info.allLibDirs = {d1{:},d2{:},d3{:}};
+0084   mask = true(1,length(info.allLibDirs));
+0085   <span class="keyword">for</span> i=1:length(mask)
+0086     <span class="keyword">if</span> isempty(info.allLibDirs{i})
+0087       mask(i)=0;
+0088     <span class="keyword">end</span>
+0089   <span class="keyword">end</span>
+0090   info.allLibDirs = { info.allLibDirs{mask} }';
+0091   
+0092   info.libsArch = <a href="#_sub5" class="code" title="subfunction libsArch = getLibArchs(ffmpegLibs, allLibDirs)">getLibArchs</a>(info.ffmpegLibs, info.allLibDirs);
+0093 <span class="keyword">end</span>
+0094 
+0095 <span class="comment">% find all plugins</span>
+0096 info.vrplugins = <a href="#_sub3" class="code" title="subfunction plugins = findPlugins(ctor)">findPlugins</a>(<span class="string">'videoReader'</span>);
+0097 info.vwplugins = <a href="#_sub3" class="code" title="subfunction plugins = findPlugins(ctor)">findPlugins</a>(<span class="string">'videoWriter'</span>);
+0098 
+0099 <span class="comment">% try to find the version info</span>
+0100 <span class="keyword">try</span>
+0101   parts = <a href="../videoIO/private/split.html" class="code" title="function l = split(d,s)">split</a>(<span class="string">'\/'</span>, <a href="videoIODir.html" class="code" title="function d = videoIODir">videoIODir</a>);
+0102   v = ver(parts{end});
+0103   fns = fieldnames(v);
+0104   <span class="keyword">for</span> i=1:length(fns)    
+0105     info.([<span class="string">'version_'</span> lower(fns{i})]) = v.(fns{i});
+0106   <span class="keyword">end</span>
+0107 <span class="keyword">catch</span>  <span class="comment">%#ok&lt;CTCH&gt;</span>
+0108   info.version = <span class="string">'could not retrieve'</span>;
+0109 <span class="keyword">end</span>
+0110 
+0111 <span class="comment">% return result or print</span>
+0112 <span class="keyword">if</span> nargout==0
+0113   <a href="#_sub1" class="code" title="subfunction printStruct(info, F)">printStruct</a>(info, 1);
+0114   
+0115   fname = <span class="string">'videoIoSysInfo.txt'</span>;
+0116   F = fopen(fname, <span class="string">'w'</span>);
+0117   <a href="#_sub1" class="code" title="subfunction printStruct(info, F)">printStruct</a>(info, F);
+0118   fclose(F);
+0119   fprintf(<span class="string">'System information saved to %s.\n'</span>, fname);
+0120 <span class="keyword">else</span>
+0121   out = info;
+0122 <span class="keyword">end</span>  
+0123 
+0124 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0125 <a name="_sub1" href="#_subfunctions" class="code">function printStruct(info, F)</a>
+0126 <span class="comment">%printStruct(info, F)</span>
+0127 <span class="comment">%  prints a structure to the given file handle.  The structure must have a</span>
+0128 <span class="comment">%  single element and its fields may be strings, 1D or 2D numeric matrices,</span>
+0129 <span class="comment">%  and/or 1D or 2D cell arrays containing strings.</span>
+0130 <span class="comment">%</span>
+0131 <span class="comment">%  This implementation is specialized for use with videoIoSysInfo.  A more</span>
+0132 <span class="comment">%  general version would be much more complicated.  Look for 'serialize.m'</span>
+0133 <span class="comment">%  and 'gen_obj_display.m' at the MatlabCentral website for some approaches</span>
+0134 <span class="comment">%  taken by other authors.</span>
+0135 
+0136 <span class="keyword">for</span> fn = sort(fieldnames(info))'
+0137   fprintf(F, <span class="string">'%s:\n'</span>, fn{1});
+0138   field = info.(fn{1});
+0139   <span class="keyword">if</span> isempty(field)
+0140     <span class="comment">% do nothing</span>
+0141   <span class="keyword">elseif</span> ischar(field)
+0142     fprintf(F, <span class="string">'  %s\n'</span>, field);
+0143   <span class="keyword">elseif</span> isnumeric(field)
+0144     fprintf(F, <span class="string">'  %s\n'</span>, mat2str(field));
+0145   <span class="keyword">elseif</span> iscell(field)
+0146     <span class="keyword">if</span> isempty(field)
+0147       <span class="comment">% do nothing</span>
+0148     <span class="keyword">else</span>
+0149       padwidths = max(cellfun(@length, field), [], 1);
+0150       <span class="keyword">for</span> r=1:size(field,1)
+0151         <span class="keyword">for</span> c=1:size(field,2)
+0152           field{r,c} = <a href="#_sub2" class="code" title="subfunction s = pad(in,w)">pad</a>(sprintf(<span class="string">'%s'</span>,field{r,c}), padwidths(c)+1);
+0153         <span class="keyword">end</span>
+0154       <span class="keyword">end</span>
+0155       field = cell2mat(field);
+0156       field = [<span class="keyword">...</span>
+0157         char(zeros(size(field,1),2))+<span class="string">' '</span>, <span class="keyword">...</span>
+0158         field, <span class="keyword">...</span>
+0159         char(zeros(size(field,1),1))+sprintf(<span class="string">'\n'</span>)]'; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0160       field = field(:)';
+0161       field = field(1:end-1);
+0162       fprintf(F, <span class="string">'%s\n'</span>, field);
+0163     <span class="keyword">end</span>
+0164   <span class="keyword">else</span>
+0165     error(<span class="string">'unsupported data type'</span>);
+0166   <span class="keyword">end</span>
+0167   fprintf(F, <span class="string">'\n'</span>);
+0168 <span class="keyword">end</span>
+0169 
+0170 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0171 <a name="_sub2" href="#_subfunctions" class="code">function s = pad(in,w)</a>
+0172 <span class="comment">%s = pad(in,w)</span>
+0173 <span class="comment">%  Pads an input string with trailing spaces so it is at least W characters</span>
+0174 <span class="comment">%  wide.</span>
+0175 s = [in char(zeros(1,w-numel(in)))+<span class="string">' '</span>];
+0176 
+0177 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0178 <a name="_sub3" href="#_subfunctions" class="code">function plugins = findPlugins(ctor)</a>
+0179 <span class="comment">%plugins = findPlugins(ctor)</span>
+0180 <span class="comment">%   Finds all videoIO plugin implementations for a given object class and</span>
+0181 <span class="comment">%   attempts to find the binary architecture for them.</span>
+0182 
+0183 plugins = cell(0,2);
+0184 allpaths = cat(2,<a href="../videoIO/private/split.html" class="code" title="function l = split(d,s)">split</a>(pathsep, path), unique({<a href="videoIODir.html" class="code" title="function d = videoIODir">videoIODir</a>, pwd}));
+0185 <span class="keyword">for</span> i=1:length(allpaths)
+0186   p = allpaths{i};
+0187   myplugins = dir(fullfile(p,[ctor <span class="string">'_*'</span>]));
+0188   <span class="keyword">for</span> j=1:length(myplugins)
+0189     plugin = myplugins(j).name;
+0190     <span class="comment">% skip obvious backup files</span>
+0191     <span class="keyword">if</span> ~ismember(plugin(end), <span class="string">'#~'</span>) &amp;&amp; ~strcmpi(plugin(end-3:end), <span class="string">'.bak'</span>)
+0192       pathname = fullfile(p, plugin);
+0193       arch = <a href="#_sub6" class="code" title="subfunction arch = getBinaryArch(path)">getBinaryArch</a>(pathname);
+0194       plugins{end+1,1} = pathname; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0195       plugins{<span class="keyword">end</span>,2}   = arch;
+0196     <span class="keyword">end</span>
+0197   <span class="keyword">end</span>
+0198 <span class="keyword">end</span>
+0199 
+0200 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0201 <a name="_sub4" href="#_subfunctions" class="code">function paths = getLinkPathsFromGccArgs(gccargs)</a>
+0202 <span class="comment">%paths = getLinkPathsFromGccArgs(gccargs)</span>
+0203 <span class="comment">%  Extract paths from -L arguments in a gcc-style parameter string</span>
+0204 
+0205 args = <a href="../videoIO/private/split.html" class="code" title="function l = split(d,s)">split</a>(<span class="string">' '</span>, gccargs);
+0206 paths = {};
+0207 <span class="keyword">for</span> i=1:length(args)
+0208   <span class="keyword">if</span> strmatch(<span class="string">'-L'</span>, args{i})
+0209     newpaths = <a href="../videoIO/private/split.html" class="code" title="function l = split(d,s)">split</a>(<span class="string">':'</span>, args{i}(3:end));
+0210     paths = {paths{:} newpaths{:}};
+0211   <span class="keyword">end</span>
+0212 <span class="keyword">end</span>
+0213 
+0214 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0215 <a name="_sub5" href="#_subfunctions" class="code">function libsArch = getLibArchs(ffmpegLibs, allLibDirs)</a>
+0216 <span class="comment">%libsArch = getLibArchs(ffmpegLibs, allLibDirs)</span>
+0217 <span class="comment">%  Takes a set of gcc-style linker arguments (ffmpegLibs) and a list of</span>
+0218 <span class="comment">%  library search directories and returns a 2D cell array containing the</span>
+0219 <span class="comment">%  library files actually found and their architecture.</span>
+0220 
+0221 args = <a href="../videoIO/private/split.html" class="code" title="function l = split(d,s)">split</a>(<span class="string">' '</span>, ffmpegLibs);
+0222 libs = {};
+0223 <span class="keyword">for</span> i=1:length(args)
+0224   <span class="keyword">if</span> strmatch(<span class="string">'-l'</span>, args{i})
+0225     newlibs = <a href="../videoIO/private/split.html" class="code" title="function l = split(d,s)">split</a>(<span class="string">':'</span>, args{i}(3:end));
+0226     libs = {libs{:} newlibs{:}};
+0227   <span class="keyword">end</span>
+0228 <span class="keyword">end</span>
+0229 
+0230 libsArch = cell(length(libs)*length(allLibDirs)*2,2);
+0231 row = 1;
+0232 <span class="keyword">for</span> i=1:length(libs)
+0233   l = libs{i};
+0234   <span class="keyword">for</span> j=1:length(allLibDirs)
+0235     d = allLibDirs{j};
+0236     <span class="keyword">for</span> ext = {<span class="string">'so'</span>, <span class="string">'a'</span>};
+0237       libname = [<span class="string">'lib'</span> l <span class="string">'.'</span> ext{1}];
+0238       p = fullfile(d,libname);
+0239       <span class="keyword">if</span> exist(p,<span class="string">'file'</span>)
+0240         arch = <a href="#_sub6" class="code" title="subfunction arch = getBinaryArch(path)">getBinaryArch</a>(p);
+0241         <span class="keyword">if</span> ~isempty(arch)
+0242           libsArch{row,1} = libname;<span class="comment">%#ok&lt;AGROW&gt;</span>
+0243           libsArch{row,2} = arch;
+0244         <span class="keyword">else</span>
+0245           libsArch{row,1} = libname; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0246         <span class="keyword">end</span>
+0247         row = row+1;
+0248       <span class="keyword">end</span>
+0249     <span class="keyword">end</span>
+0250   <span class="keyword">end</span>
+0251 <span class="keyword">end</span>
+0252 libsArch = reshape({libsArch{1:row-1,:}}, [row-1,2]);
+0253 
+0254 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0255 <a name="_sub6" href="#_subfunctions" class="code">function arch = getBinaryArch(path)</a>
+0256 <span class="comment">%arch = getBinaryArch(path)</span>
+0257 <span class="comment">%  Given a full pathname to an executable or shared library (e.g. a mex</span>
+0258 <span class="comment">%  function), tries to find the binary architecture of that file.</span>
+0259 <span class="comment">%</span>
+0260 <span class="comment">%  On Windows, this will silently fail (i.e. return an empty string) if</span>
+0261 <span class="comment">%  cygwin is not installed or not in the current path.  As of 11 Jan 2008,</span>
+0262 <span class="comment">%  it will also fail for 64-bit mex extensions.</span>
+0263 
+0264 arch = <span class="string">''</span>;
+0265 <span class="keyword">if</span> ~isempty(dir(path))
+0266   <span class="keyword">if</span> strcmpi(path(end-1:end), <span class="string">'.m'</span>)
+0267     <span class="keyword">if</span> <a href="isMFileWithCode.html" class="code" title="function mexe = isMFileWithCode(pathname)">isMFileWithCode</a>(path)
+0268       arch = <span class="string">'mfile'</span>;
+0269     <span class="keyword">else</span>
+0270       arch = <span class="string">'mdoc'</span>;
+0271     <span class="keyword">end</span>
+0272   <span class="keyword">else</span>
+0273     [status,objdump] = system(sprintf(<span class="keyword">...</span>
+0274         <span class="string">'objdump -x ''%s'' | grep &quot;file format&quot; | head -n 1'</span>, path));
+0275     <span class="keyword">if</span> status==0
+0276       arch = objdump(strfind(objdump, <span class="string">'file format '</span>)+12:end-1);
+0277     <span class="keyword">end</span>
+0278   <span class="keyword">end</span>
+0279 <span class="keyword">end</span>
+0280 
+0281 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0282 <a name="_sub7" href="#_subfunctions" class="code">function p = splitSemiColonPaths(p)</a>
+0283 <span class="comment">%p = splitSemiColonPaths(p)</span>
+0284 <span class="comment">%  Splits semicolon-delimited strings</span>
+0285 p = <a href="../videoIO/private/split.html" class="code" title="function l = split(d,s)">split</a>(<span class="string">';'</span>,p);
+0286</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

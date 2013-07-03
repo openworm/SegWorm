@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of pvtVideoIO_normalizeFilename</title>
+  <meta name="keywords" content="pvtVideoIO_normalizeFilename">
+  <meta name="description" content="canonical = pvtVideoIO_normalizeFilename(raw)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>pvtVideoIO_normalizeFilename
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>canonical = pvtVideoIO_normalizeFilename(raw)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function canonical = pvtVideoIO_normalizeFilename(raw) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">canonical = pvtVideoIO_normalizeFilename(raw)
+  PRIVATE function for the VideoIO Library.  Typical users should not use
+  this function.  This function is shared by multiple components in a way
+  that it cannot sit in a private/ directory, hence the verbose name.
+
+  Takes a raw filename and produces a canonical filename.  
+
+  On Windows, the canonical one will have all forward slashes replaced
+  with backslashes.
+
+  On non-Windows platforms, the canonical one will have all backslashes
+  replaced by forward ones.  Pathnames starting with a '~' character
+  will expand it according to standard user directory rules.
+
+  EXAMPLE:
+    &gt; pvtVideoIO_normalizeFilename('~/foo.avi')
+    '/home/myuser/foo.avi'
+
+Copyright (c) 2008 Gerald Dalley
+
+ Modified 2013-06-11 by Barry Bentley to remove 4th output argument from
+ fileparts (file version) due to absence in Matlab 2012b.
+
+See &quot;MIT.txt&quot; in the installation directory for licensing details 
+(especially when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>	videoWriter class constructor</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function canonical = pvtVideoIO_normalizeFilename(raw)</a>
+0002 <span class="comment">%canonical = pvtVideoIO_normalizeFilename(raw)</span>
+0003 <span class="comment">%  PRIVATE function for the VideoIO Library.  Typical users should not use</span>
+0004 <span class="comment">%  this function.  This function is shared by multiple components in a way</span>
+0005 <span class="comment">%  that it cannot sit in a private/ directory, hence the verbose name.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Takes a raw filename and produces a canonical filename.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%  On Windows, the canonical one will have all forward slashes replaced</span>
+0010 <span class="comment">%  with backslashes.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%  On non-Windows platforms, the canonical one will have all backslashes</span>
+0013 <span class="comment">%  replaced by forward ones.  Pathnames starting with a '~' character</span>
+0014 <span class="comment">%  will expand it according to standard user directory rules.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%  EXAMPLE:</span>
+0017 <span class="comment">%    &gt; pvtVideoIO_normalizeFilename('~/foo.avi')</span>
+0018 <span class="comment">%    '/home/myuser/foo.avi'</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% Modified 2013-06-11 by Barry Bentley to remove 4th output argument from</span>
+0023 <span class="comment">% fileparts (file version) due to absence in Matlab 2012b.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details</span>
+0026 <span class="comment">%(especially when using this library on GNU/Linux).</span>
+0027 
+0028 [pathstr, name, ext] = fileparts(raw);
+0029 <span class="keyword">if</span> ispc
+0030   canonical = fullfile(strrep(pathstr,<span class="string">'/'</span>,<span class="string">'\'</span>), [name, ext]);
+0031 <span class="keyword">else</span>
+0032   canonical = fullfile(strrep(pathstr,<span class="string">'\'</span>,<span class="string">'/'</span>), [name, ext]);
+0033   <span class="comment">% user directory resolution</span>
+0034   <span class="keyword">if</span> canonical(1) == <span class="string">'~'</span>
+0035     splitPt = find(canonical, filesep);
+0036     <span class="keyword">if</span> isempty(splitPt)
+0037       tildePortion = canonical;
+0038       remainder    = <span class="string">''</span>;
+0039     <span class="keyword">else</span>
+0040       tildePortion = canonical(1:splitPt(1));
+0041       remainder    = canonical(splitPt(1)+2:end);
+0042     <span class="keyword">end</span>
+0043     fprintf(<span class="string">'tp: &quot;%s&quot;, r: &quot;%s&quot;\n'</span>, tildePortion, remainder);
+0044     currDir = pwd;
+0045     cd(tildePortion);
+0046     baseDir = pwd;
+0047     cd(currDir);
+0048     canonical = fullfile(baseDir, remainder);
+0049   <span class="keyword">end</span>
+0050 <span class="keyword">end</span>
+0051</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

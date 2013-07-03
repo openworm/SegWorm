@@ -1,0 +1,514 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of histogram</title>
+  <meta name="keywords" content="histogram">
+  <meta name="description" content="HISTOGRAM Compute the data's histogram.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>histogram
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>HISTOGRAM Compute the data's histogram.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function histData = histogram(data, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">HISTOGRAM Compute the data's histogram.
+
+   HISTDATA = HISTOGRAM(DATA)
+
+   HISTDATA = HISTOGRAM(DATA, RESOLUTIONS)
+
+   HISTDATA = HISTOGRAM(DATA, RESOLUTIONS, ISZEROBIN)
+
+   HISTDATA = HISTOGRAM(DATA, RESOLUTIONS, ISZEROBIN, ISSIGNED)
+
+   HISTDATA = HISTOGRAM(DATA, RESOLUTIONS, ISZEROBIN, ISSIGNED, VERBOSE)
+
+   Inputs:
+       data       - the data for the histogram(s) (a cell array of
+                    observed sets)
+       resolution - the data resolution;
+                    if empty, the resolution is estimated from the square
+                    root of the data's length (a very popular method)
+       isZeroBin  - is there a bin center at 0?
+                    if empty, data with values greater and less than 0 is
+                    centered at 0
+       isSigned   - is the data signed (+/-)?
+                    if empty, the data is tested to see whether its signed
+       verbose    - verbose mode shows the results in a figure
+
+   Outputs:
+       histData - the histogram(s) data. A struct with fields:
+                  Note: the absolute, positive, and negative value
+                  statistics are only available when the data is signed
+                  (see wormDisplayInfo).
+
+                  PDF        = the PDF (probability density of each bin)
+                  bins       = the center of each bin
+                  resolution = the data resolution
+                  isZeroBin  = is there a bin center at 0
+                  isSigned   = is the data signed (+/-)?
+                  sets       = a struct with fields:
+                     samples    = the number of set samples
+                     mean.all   = the mean of the sets
+                     stdDev.all = the standard deviation of the sets
+                     mean.abs   = the mean of the set magnitudes
+                     stdDev.abs = the deviation of the set magnitudes
+                     mean.pos   = the mean of the positive set values
+                     stdDev.pos = the deviation of the positive set values
+                     mean.neg   = the mean of the negative set values
+                     stdDev.neg = the deviation of the negative set values
+                  data       = a struct with fields:
+                     counts     = the count per set per bin (sets x bins)
+                     samples    = the number of data samples per set
+                     mean.all   = the mean of the data per set
+                     stdDev.all = the standard deviation the data per set
+                     mean.abs   = the mean of the data magnitudes per set
+                     stdDev.abs = the deviation of the data magnitudes per set
+                     mean.pos   = the mean of the positive data per set
+                     stdDev.pos = the deviation of the positive data per set
+                     mean.neg   = the mean of the negative data per set
+                     stdDev.neg = the deviation of the negative data per set
+                  allData    = a struct with fields:
+                     counts     = the count per bin
+                     samples    = the total number of all data samples
+                     mean.all   = the mean of all the data
+                     stdDev.all = the standard deviation of all the data
+                     mean.abs   = the mean of all the data magnitudes
+                     stdDev.abs = the deviation of all the data magnitudes
+                     mean.pos   = the mean of all the positive data
+                     stdDev.pos = the deviation of all the positive data
+                     mean.neg   = the mean of all the negative data
+                     stdDev.neg = the deviation of all the negative data</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="nanHistogram.html" class="code" title="function data = nanHistogram(varargin)">nanHistogram</a>	HISTOGRAM Get a histogram full of NaNs.</li><li><a href="plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>	PLOTHISTOGRAM Plot a histogram(s) of data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="absHistogram.html" class="code" title="function histogram = absHistogram(histogram)">absHistogram</a>	ABSHISTOGRAM Convert a histogram to its absolute value.</li><li><a href="downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>	DOWNSAMPLEHISTOGRAM Downsample a histogram(s).</li><li><a href="filterHistogram.html" class="code" title="function histogram = filterHistogram(histogram, isUsed)">filterHistogram</a>	FILTERHISTOGRAM Filter a histogram to remove data.</li><li><a href="logHistogram.html" class="code" title="function histogram = logHistogram(histogram, varargin)">logHistogram</a>	LOGHISTOGRAM Convert a histogram to its base-10 logarithm.</li><li><a href="../../SegWorm/Worms/Features/multiScaleWorm.html" class="code" title="function [diffData startFrame endFrame fps useSamples] =multiScaleWorm(wormFile, startFrame, endFrame, useSamples,useFrames, type, scales, isSparse, offMode, isNoisy, htDirMode,isAbsDir, varargin)">multiScaleWorm</a>	MULTISCALEWORM Differentiate worm data at multiple scales.</li><li><a href="../../SegWorm/Worms/Features/worm2pdf.html" class="code" title="function worm2pdf(wormFile, varargin)">worm2pdf</a>	WORM2PDF Show the worm information in a PDF.</li><li><a href="../../SegWorm/Worms/Features/wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li><li><a href="../../SegWorm/Worms/Printing/showWormMorphologyLength.html" class="code" title="function [saveFile pages] = showWormMorphologyLength(worm, varargin)">showWormMorphologyLength</a>	SHOWWORMMORPHOLOGYLENGTHWIDTH Show the worm length morphology.</li><li><a href="../../SegWorm/Worms/Printing/showWormMorphologyLengthWidth.html" class="code" title="function [saveFile pages] = showWormMorphologyLengthWidth(worm, varargin)">showWormMorphologyLengthWidth</a>	SHOWWORMMORPHOLOGYLENGTHWIDTH Show the worm length and width morphology.</li><li><a href="../../SegWorm/Worms/Printing/worm2CSV.html" class="code" title="function filenames = worm2CSV(filename, wormInfo, worm, wormName, varargin)">worm2CSV</a>	WORM2CSV Convert worm features to a CSV file.</li><li><a href="../../SegWorm/Worms/Statistics/worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li><li><a href="../../SegWorm/Worms/Statistics/worm2histogram2.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram2</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function histData = histogram(data, varargin)</a>
+0002 <span class="comment">%HISTOGRAM Compute the data's histogram.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   HISTDATA = HISTOGRAM(DATA)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   HISTDATA = HISTOGRAM(DATA, RESOLUTIONS)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   HISTDATA = HISTOGRAM(DATA, RESOLUTIONS, ISZEROBIN)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   HISTDATA = HISTOGRAM(DATA, RESOLUTIONS, ISZEROBIN, ISSIGNED)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   HISTDATA = HISTOGRAM(DATA, RESOLUTIONS, ISZEROBIN, ISSIGNED, VERBOSE)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   Inputs:</span>
+0015 <span class="comment">%       data       - the data for the histogram(s) (a cell array of</span>
+0016 <span class="comment">%                    observed sets)</span>
+0017 <span class="comment">%       resolution - the data resolution;</span>
+0018 <span class="comment">%                    if empty, the resolution is estimated from the square</span>
+0019 <span class="comment">%                    root of the data's length (a very popular method)</span>
+0020 <span class="comment">%       isZeroBin  - is there a bin center at 0?</span>
+0021 <span class="comment">%                    if empty, data with values greater and less than 0 is</span>
+0022 <span class="comment">%                    centered at 0</span>
+0023 <span class="comment">%       isSigned   - is the data signed (+/-)?</span>
+0024 <span class="comment">%                    if empty, the data is tested to see whether its signed</span>
+0025 <span class="comment">%       verbose    - verbose mode shows the results in a figure</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%   Outputs:</span>
+0028 <span class="comment">%       histData - the histogram(s) data. A struct with fields:</span>
+0029 <span class="comment">%                  Note: the absolute, positive, and negative value</span>
+0030 <span class="comment">%                  statistics are only available when the data is signed</span>
+0031 <span class="comment">%                  (see wormDisplayInfo).</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%                  PDF        = the PDF (probability density of each bin)</span>
+0034 <span class="comment">%                  bins       = the center of each bin</span>
+0035 <span class="comment">%                  resolution = the data resolution</span>
+0036 <span class="comment">%                  isZeroBin  = is there a bin center at 0</span>
+0037 <span class="comment">%                  isSigned   = is the data signed (+/-)?</span>
+0038 <span class="comment">%                  sets       = a struct with fields:</span>
+0039 <span class="comment">%                     samples    = the number of set samples</span>
+0040 <span class="comment">%                     mean.all   = the mean of the sets</span>
+0041 <span class="comment">%                     stdDev.all = the standard deviation of the sets</span>
+0042 <span class="comment">%                     mean.abs   = the mean of the set magnitudes</span>
+0043 <span class="comment">%                     stdDev.abs = the deviation of the set magnitudes</span>
+0044 <span class="comment">%                     mean.pos   = the mean of the positive set values</span>
+0045 <span class="comment">%                     stdDev.pos = the deviation of the positive set values</span>
+0046 <span class="comment">%                     mean.neg   = the mean of the negative set values</span>
+0047 <span class="comment">%                     stdDev.neg = the deviation of the negative set values</span>
+0048 <span class="comment">%                  data       = a struct with fields:</span>
+0049 <span class="comment">%                     counts     = the count per set per bin (sets x bins)</span>
+0050 <span class="comment">%                     samples    = the number of data samples per set</span>
+0051 <span class="comment">%                     mean.all   = the mean of the data per set</span>
+0052 <span class="comment">%                     stdDev.all = the standard deviation the data per set</span>
+0053 <span class="comment">%                     mean.abs   = the mean of the data magnitudes per set</span>
+0054 <span class="comment">%                     stdDev.abs = the deviation of the data magnitudes per set</span>
+0055 <span class="comment">%                     mean.pos   = the mean of the positive data per set</span>
+0056 <span class="comment">%                     stdDev.pos = the deviation of the positive data per set</span>
+0057 <span class="comment">%                     mean.neg   = the mean of the negative data per set</span>
+0058 <span class="comment">%                     stdDev.neg = the deviation of the negative data per set</span>
+0059 <span class="comment">%                  allData    = a struct with fields:</span>
+0060 <span class="comment">%                     counts     = the count per bin</span>
+0061 <span class="comment">%                     samples    = the total number of all data samples</span>
+0062 <span class="comment">%                     mean.all   = the mean of all the data</span>
+0063 <span class="comment">%                     stdDev.all = the standard deviation of all the data</span>
+0064 <span class="comment">%                     mean.abs   = the mean of all the data magnitudes</span>
+0065 <span class="comment">%                     stdDev.abs = the deviation of all the data magnitudes</span>
+0066 <span class="comment">%                     mean.pos   = the mean of all the positive data</span>
+0067 <span class="comment">%                     stdDev.pos = the deviation of all the positive data</span>
+0068 <span class="comment">%                     mean.neg   = the mean of all the negative data</span>
+0069 <span class="comment">%                     stdDev.neg = the deviation of all the negative data</span>
+0070 
+0071 <span class="comment">% Organize the data.</span>
+0072 <span class="keyword">if</span> ~iscell(data)
+0073     data = {data};
+0074 <span class="keyword">end</span>
+0075 
+0076 <span class="comment">% Determine the data resolution.</span>
+0077 resolution = [];
+0078 <span class="keyword">if</span> ~isempty(varargin)
+0079     resolution = varargin{1};
+0080 <span class="keyword">end</span>
+0081 
+0082 <span class="comment">% Is there a bin center at 0?</span>
+0083 isZeroBin = [];
+0084 <span class="keyword">if</span> length(varargin) &gt; 1
+0085     isZeroBin = varargin{2};
+0086 <span class="keyword">end</span>
+0087 
+0088 <span class="comment">% Is the data signed (+/-)?</span>
+0089 isSigned = [];
+0090 <span class="keyword">if</span> length(varargin) &gt; 2
+0091     isSigned = varargin{3};
+0092 <span class="keyword">end</span>
+0093 
+0094 <span class="comment">% Are we displaying the results?</span>
+0095 verbose = false;
+0096 <span class="keyword">if</span> length(varargin) &gt; 3
+0097     verbose = varargin{4};
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="comment">% Combine the data into a single array of observations.</span>
+0101 <span class="keyword">if</span> size(data, 1) ~= size(data{1}, 1) &amp;&amp; size(data, 2) ~= size(data{1}, 2)
+0102     data = data';
+0103 <span class="keyword">end</span>
+0104 allData = cell2mat(data);
+0105 allData = allData(:);
+0106 
+0107 <span class="comment">% Remove empty data.</span>
+0108 samples = cellfun(@(x) sum(~isnan(x)), data);
+0109 keepI = find(samples &gt; 0);
+0110 <span class="keyword">if</span> length(data) ~= length(keepI)
+0111     data = data(keepI);
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">% Remove infinite data measurements.</span>
+0115 <span class="keyword">for</span> i = 1:length(data)
+0116     data{i}(data{i} == -inf) = NaN;
+0117     data{i}(data{i} == inf) = NaN;
+0118 <span class="keyword">end</span>
+0119 
+0120 <span class="comment">% Is there any data?</span>
+0121 <span class="keyword">if</span> isempty(data)
+0122     warning(<span class="string">'histogram:NoData'</span>, <span class="string">'There is no data to bin'</span>);
+0123     histData = <a href="nanHistogram.html" class="code" title="function data = nanHistogram(varargin)">nanHistogram</a>(isSigned);
+0124     <span class="keyword">return</span>;
+0125 <span class="keyword">end</span>
+0126 empty = cellfun(@(x) isempty(x) || all(isnan(x)), data);
+0127 <span class="keyword">if</span> all(empty)
+0128     warning(<span class="string">'histogram:NoData'</span>, <span class="string">'There is no data to bin'</span>);
+0129     histData = <a href="nanHistogram.html" class="code" title="function data = nanHistogram(varargin)">nanHistogram</a>(isSigned, length(empty));
+0130     <span class="keyword">return</span>;
+0131 <span class="keyword">end</span>
+0132 
+0133 <span class="comment">% Compute the data range.</span>
+0134 minDataLength = min(cellfun(<span class="string">'length'</span>, data));
+0135 minData = min(cellfun(@min, data));
+0136 maxData = max(cellfun(@max, data));
+0137 
+0138 <span class="comment">% Compute the data resolution.</span>
+0139 <span class="keyword">if</span> isempty(resolution)
+0140     resolution = (maxData - minData) / sqrt(minDataLength);
+0141 <span class="keyword">end</span>
+0142 
+0143 <span class="comment">% Compute the bin center.</span>
+0144 <span class="keyword">if</span> isempty(isZeroBin)
+0145     isZeroBin = sign(minData) ~= sign(maxData);
+0146 <span class="keyword">end</span>
+0147 
+0148 <span class="comment">% Compute the data sign.</span>
+0149 <span class="keyword">if</span> isempty(isSigned)
+0150     isSigned = any(allData &lt; 0);
+0151 <span class="keyword">end</span>
+0152 
+0153 <span class="comment">% Compute the padding.</span>
+0154 <span class="keyword">if</span> minData &lt; 0
+0155     minPad = resolution - abs(rem(minData, resolution));
+0156 <span class="keyword">else</span>
+0157     minPad = abs(rem(minData, resolution));
+0158 <span class="keyword">end</span>
+0159 <span class="keyword">if</span> maxData &lt; 0
+0160     maxPad = abs(rem(maxData, resolution));
+0161 <span class="keyword">else</span>
+0162     maxPad = resolution - abs(rem(maxData, resolution));
+0163 <span class="keyword">end</span>
+0164 
+0165 <span class="comment">% Translate the bins by half the resolution to create a zero bin.</span>
+0166 <span class="comment">% Note: we compute just enough padding to capture the data.</span>
+0167 halfResolution = resolution / 2;
+0168 <span class="keyword">if</span> isZeroBin
+0169     <span class="keyword">if</span> minPad &gt; halfResolution
+0170         minPad = minPad - halfResolution;
+0171     <span class="keyword">else</span>
+0172         minPad = minPad + halfResolution;
+0173     <span class="keyword">end</span>
+0174     <span class="keyword">if</span> maxPad &gt; halfResolution
+0175         maxPad = maxPad - halfResolution;
+0176     <span class="keyword">else</span>
+0177         maxPad = maxPad + halfResolution;
+0178     <span class="keyword">end</span>
+0179 <span class="keyword">end</span>
+0180 
+0181 <span class="comment">% Compute the edge range.</span>
+0182 minEdge = minData - minPad;
+0183 maxEdge = maxData + maxPad;
+0184 
+0185 <span class="comment">% Compute the bins and their edges.</span>
+0186 <span class="comment">% Note: histc fills all bins with edges(k) &lt;= data &lt; edges(k + 1).</span>
+0187 <span class="comment">% The last bin is filled with data == edges(end).</span>
+0188 <span class="comment">% Therefore, we keep the last bin empty and throw it away to preserve</span>
+0189 <span class="comment">% equal bin sizes. For this reason the bin centers are spaced for</span>
+0190 <span class="comment">% their final composition (what they will look like after tossing away</span>
+0191 <span class="comment">% the empty last bin).</span>
+0192 numBins = round((maxEdge - minEdge) / resolution);
+0193 bins = linspace(minEdge + halfResolution, maxEdge - halfResolution, <span class="keyword">...</span>
+0194     numBins);
+0195 edges = bins - halfResolution;
+0196 edges(end + 1) = edges(end) + resolution;
+0197 
+0198 <span class="comment">% Fix the zero bin.</span>
+0199 <span class="comment">% Note: IEEE floating point issues may shift us just off zero.</span>
+0200 <span class="keyword">if</span> isZeroBin
+0201     [zeroBin, zeroI] = min(abs(bins));
+0202     <span class="keyword">if</span> zeroBin &lt; halfResolution / 2
+0203         bins(zeroI) = 0;
+0204     <span class="keyword">end</span>
+0205 <span class="keyword">end</span>
+0206     
+0207 <span class="comment">% Compute the histogram counts for all the data.</span>
+0208 counts(1,:) = histc(allData, edges);
+0209 <span class="keyword">if</span> length(edges) &gt; 1
+0210     
+0211     <span class="comment">% Add the very last bin.</span>
+0212     <span class="keyword">if</span> counts(1,end) &gt; 0
+0213         bins(end + 1) = bins(end) + resolution;
+0214         
+0215     <span class="comment">% Strip off the empty last bin.</span>
+0216     <span class="keyword">else</span>
+0217         counts(end) = [];
+0218     <span class="keyword">end</span>
+0219     
+0220     <span class="comment">% Strip off the empty first bin.</span>
+0221     <span class="keyword">if</span> counts(1,1) == 0
+0222         bins(1) = [];
+0223         counts(1) = [];
+0224     <span class="keyword">end</span>
+0225 <span class="keyword">end</span>
+0226 
+0227 <span class="comment">% Compute the counts for the data set.</span>
+0228 allCounts(1,:) = counts;
+0229 <span class="keyword">if</span> length(data) == 1
+0230     pdfs(1,:) = counts ./ sum(counts);
+0231     
+0232 <span class="comment">% Compute the normalized histogram for the data sets.</span>
+0233 <span class="keyword">else</span>
+0234     counts = zeros(length(data), length(edges));
+0235     pdfs = zeros(length(data), length(edges));
+0236     <span class="keyword">for</span> i = 1:length(data)
+0237         <span class="keyword">if</span> ~empty(i)
+0238             counts(i,:) = histc(data{i}, edges);
+0239             pdfs(i,:) = counts(i,:) ./ sum(counts(i,:));
+0240         <span class="keyword">end</span>
+0241     <span class="keyword">end</span>
+0242     pdfs = mean(pdfs, 1);
+0243     
+0244     <span class="comment">% Strip off the empty bin.</span>
+0245     <span class="keyword">if</span> length(edges) &gt; 1
+0246         
+0247         <span class="comment">% Add a bin (this should never happen).</span>
+0248         <span class="keyword">if</span> any(counts(:,end) &gt; 0)
+0249             bins(end + 1) = bins(end) + resolution;
+0250             warning(<span class="string">'histogram:LastBinNotEmpty'</span>, <span class="keyword">...</span>
+0251                 [<span class="string">'The last bin in the histogram is not empty like it '</span> <span class="keyword">...</span>
+0252                 <span class="string">'should be. Please contact the programmer)'</span>]);
+0253             
+0254         <span class="comment">% Strip off the empty bin.</span>
+0255         <span class="keyword">else</span>
+0256             counts(:,end) = [];
+0257             pdfs(:,end) = [];
+0258         <span class="keyword">end</span>
+0259     <span class="keyword">end</span>
+0260 <span class="keyword">end</span>
+0261 
+0262 <span class="comment">% Compute the means of the data sets.</span>
+0263 means = cellfun(@nanmean, data);
+0264 stdDevs = cellfun(@nanstd, data);
+0265 <span class="keyword">if</span> isSigned
+0266     
+0267     <span class="comment">% Compute the absolute value statisitics.</span>
+0268     absData = cellfun(@(x) abs(x), data, <span class="string">'UniformOutput'</span>, false);
+0269     absMeans = cellfun(@(x) nanmean(x), absData);
+0270     absStdDevs = cellfun(@(x) nanstd(x), absData);
+0271     
+0272     <span class="comment">% Compute the positive value statisitics.</span>
+0273     posData = cellfun(@(x) x(x &gt; 0), data, <span class="string">'UniformOutput'</span>, false);
+0274     posMeans = cellfun(@(x) nanmean(x), posData);
+0275     posStdDevs = cellfun(@(x) nanstd(x), posData);
+0276     
+0277     <span class="comment">% Compute the negative value statisitics.</span>
+0278     negData = cellfun(@(x) x(x &lt; 0), data, <span class="string">'UniformOutput'</span>, false);
+0279     negMeans = cellfun(@(x) nanmean(x), negData);
+0280     negStdDevs = cellfun(@(x) nanstd(x), negData);
+0281 <span class="keyword">end</span>
+0282 
+0283 <span class="comment">% Organize the histogram set data.</span>
+0284 histData.sets.samples = length(data);
+0285 histData.sets.mean.all = nanmean(means);
+0286 histData.sets.stdDev.all = nanstd(means);
+0287 <span class="keyword">if</span> isSigned
+0288     
+0289     <span class="comment">% Compute the absolute value statisitics.</span>
+0290     histData.sets.mean.abs = nanmean(absMeans);
+0291     histData.sets.stdDev.abs = nanstd(absMeans);
+0292     
+0293     <span class="comment">% Compute the positive value statisitics.</span>
+0294     histData.sets.mean.pos = nanmean(posMeans);
+0295     histData.sets.stdDev.pos = nanstd(posMeans);
+0296     
+0297     <span class="comment">% Compute the negative value statisitics.</span>
+0298     histData.sets.mean.neg = nanmean(negMeans);
+0299     histData.sets.stdDev.neg = nanstd(negMeans);
+0300 <span class="keyword">end</span>
+0301 
+0302 <span class="comment">% Organize the histogram data sets.</span>
+0303 histData.data.counts = counts;
+0304 histData.data.samples(:,1) = samples;
+0305 histData.data.mean.all(:,1) = means;
+0306 histData.data.stdDev.all(:,1) = stdDevs;
+0307 <span class="keyword">if</span> isSigned
+0308     
+0309     <span class="comment">% Compute the absolute value statisitics.</span>
+0310     histData.data.mean.abs(:,1) = absMeans;
+0311     histData.data.stdDev.abs(:,1) = absStdDevs;
+0312     
+0313     <span class="comment">% Compute the positive value statisitics.</span>
+0314     histData.data.mean.pos(:,1) = posMeans;
+0315     histData.data.stdDev.pos(:,1) = posStdDevs;
+0316     
+0317     <span class="comment">% Compute the negative value statisitics.</span>
+0318     histData.data.mean.neg(:,1) = negMeans;
+0319     histData.data.stdDev.neg(:,1) = negStdDevs;
+0320 <span class="keyword">end</span>
+0321 
+0322 <span class="comment">% Organize the histogram total data.</span>
+0323 histData.allData.counts = allCounts;
+0324 histData.allData.samples = sum(samples);
+0325 histData.allData.mean.all = nanmean(allData);
+0326 histData.allData.stdDev.all = nanstd(allData);
+0327 <span class="keyword">if</span> isSigned
+0328     
+0329     <span class="comment">% Compute the absolute value statisitics.</span>
+0330     absAllData = abs(allData);
+0331     histData.allData.mean.abs = nanmean(absAllData);
+0332     histData.allData.stdDev.abs = nanstd(absAllData);
+0333     
+0334     <span class="comment">% Compute the positive value statisitics.</span>
+0335     posAllData = allData(allData &gt; 0);
+0336     histData.allData.mean.pos = nanmean(posAllData);
+0337     histData.allData.stdDev.pos = nanstd(posAllData);
+0338     
+0339     <span class="comment">% Compute the negative value statisitics.</span>
+0340     negAllData = allData(allData &lt; 0);
+0341     histData.allData.mean.neg = nanmean(negAllData);
+0342     histData.allData.stdDev.neg = nanstd(negAllData);
+0343 <span class="keyword">end</span>
+0344 
+0345 <span class="comment">% Organize the histogram.</span>
+0346 histData.PDF = pdfs;
+0347 histData.bins = bins;
+0348 histData.resolution = resolution;
+0349 histData.isZeroBin = isZeroBin;
+0350 histData.isSigned = isSigned;
+0351 
+0352 <span class="comment">% Show the results.</span>
+0353 <span class="keyword">if</span> verbose
+0354     
+0355     <span class="comment">% Create a figure.</span>
+0356     h = figure;
+0357     set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1]);
+0358     hold on;
+0359     
+0360     <span class="comment">% Plot the histogram.</span>
+0361     <span class="keyword">if</span> length(data) &gt; 1
+0362         subplot(1, 2, 1);
+0363     <span class="keyword">end</span>
+0364     histColor = [0 0 0];
+0365     statColor = [1 0 0];
+0366     <a href="plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, <span class="string">'Histogram'</span>, <span class="string">'Value'</span>, <span class="string">'Data'</span>, <span class="string">''</span>, <span class="keyword">...</span>
+0367         histColor, statColor, 2);
+0368     
+0369     <span class="comment">% Plot the contributing histograms.</span>
+0370     <span class="keyword">if</span> length(data) &gt; 1
+0371         
+0372         <span class="comment">% Construct the contributing histograms.</span>
+0373         histDatas(1:length(data)) = histData;
+0374         <span class="keyword">for</span> i = 1:length(data)
+0375             
+0376             <span class="comment">% Set the statistics.</span>
+0377             histDatas(i).sets.samples = 1;
+0378             histDatas(i).sets.mean = histData.data.mean(i);
+0379             histDatas(i).sets.stdDev = 0;
+0380             histDatas(i).data.counts = histData.data.counts(i,:);
+0381             histDatas(i).data.samples = histData.data.samples(i);
+0382             histDatas(i).data.mean = histData.data.mean(i);
+0383             histDatas(i).data.stdDev = histData.data.stdDev(i);
+0384             histDatas(i).allData.samples = histData.data.samples(i);
+0385             histDatas(i).allData.mean = histData.data.mean(i);
+0386             histDatas(i).allData.stdDev = histData.data.stdDev(i);
+0387             
+0388             <span class="comment">% Set the PDF.</span>
+0389             counts = histDatas(i).data.counts;
+0390             histDatas(i).PDF = counts ./ sum(counts);
+0391         <span class="keyword">end</span>
+0392         
+0393         <span class="comment">% Plot the contributing histograms.</span>
+0394         subplot(1, 2, 2);
+0395         dataNames(1:length(data)) = {<span class="string">'Data'</span>};
+0396         colors = lines(length(data));
+0397         <a href="plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histDatas, <span class="string">'Histogram'</span>, <span class="string">'Value'</span>, dataNames, <span class="keyword">...</span>
+0398             colors, colors);
+0399     <span class="keyword">end</span>
+0400 <span class="keyword">end</span>
+0401 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

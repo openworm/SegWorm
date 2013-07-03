@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of linearSkeleton2</title>
+  <meta name="keywords" content="linearSkeleton2">
+  <meta name="description" content="LINEARSKELETON2 Skeletonize a linear (non-looped) worm. The worm is">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Segmentation -->
+<h1>linearSkeleton2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>LINEARSKELETON2 Skeletonize a linear (non-looped) worm. The worm is</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function skeleton =linearSkeleton2(headI, tailI, minP, minI, maxP, maxI, contour, wormSegSize) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">LINEARSKELETON2 Skeletonize a linear (non-looped) worm. The worm is
+skeletonized by splitting its contour, from head to tail, into short
+segments. These short segments are bounded by matching pairs of maximal
+and minimal angles (with magnitude &gt; 20 degrees) on opposite sides of the
+worm's contour. We then walk along the opposing sides of these short
+segments and mark the midline as our skeleton. The final step is cleaning
+up this skeleton to remove overlapping points and interpolate missing ones.
+
+   LINEARSKELETON2(HEADI, TAILI, MINP, MINI, MAXP, MAXI, CONTOUR)
+
+   Inputs:
+       headI       - the head's contour index
+       tailI       - the tail's contour index
+       minP        - the local minimal peaks
+       minI        - the local minimal peaks' contour indices
+       maxP        - the local maximal peaks
+       maxI        - the local maximal peaks' contour indices
+       contour     - the worm's contour
+       wormSegSize - the size (in contour points) of a worm segment.
+                     Note: The worm's contour is roughly divided into 50
+                     segments of musculature (i.e., hinges that represent
+                     degrees of freedom).
+
+   Output:
+       skeleton - the worm's skeleton</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>	SKELETONIZE Skeletonize takes the 2 pairs of start and end points on a</li><li><a href="cleanSkeleton.html" class="code" title="function [cSkeleton cWidths] = cleanSkeleton(skeleton, widths, wormSegSize)">cleanSkeleton</a>	CLEANSKELETON Clean an 8-connected skeleton by removing any overlap and</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function matchedBends = matchBends(side1, side2, scale, head, cLength, edgeSize)</a></li><li><a href="#_sub2" class="code">function points = matchPoints1to2(points, scale, head, cLength)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function skeleton = </a><span class="keyword">...</span>
+0002     linearSkeleton2(headI, tailI, minP, minI, maxP, maxI, contour, wormSegSize)
+0003 <span class="comment">%LINEARSKELETON2 Skeletonize a linear (non-looped) worm. The worm is</span>
+0004 <span class="comment">%skeletonized by splitting its contour, from head to tail, into short</span>
+0005 <span class="comment">%segments. These short segments are bounded by matching pairs of maximal</span>
+0006 <span class="comment">%and minimal angles (with magnitude &gt; 20 degrees) on opposite sides of the</span>
+0007 <span class="comment">%worm's contour. We then walk along the opposing sides of these short</span>
+0008 <span class="comment">%segments and mark the midline as our skeleton. The final step is cleaning</span>
+0009 <span class="comment">%up this skeleton to remove overlapping points and interpolate missing ones.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   LINEARSKELETON2(HEADI, TAILI, MINP, MINI, MAXP, MAXI, CONTOUR)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Inputs:</span>
+0014 <span class="comment">%       headI       - the head's contour index</span>
+0015 <span class="comment">%       tailI       - the tail's contour index</span>
+0016 <span class="comment">%       minP        - the local minimal peaks</span>
+0017 <span class="comment">%       minI        - the local minimal peaks' contour indices</span>
+0018 <span class="comment">%       maxP        - the local maximal peaks</span>
+0019 <span class="comment">%       maxI        - the local maximal peaks' contour indices</span>
+0020 <span class="comment">%       contour     - the worm's contour</span>
+0021 <span class="comment">%       wormSegSize - the size (in contour points) of a worm segment.</span>
+0022 <span class="comment">%                     Note: The worm's contour is roughly divided into 50</span>
+0023 <span class="comment">%                     segments of musculature (i.e., hinges that represent</span>
+0024 <span class="comment">%                     degrees of freedom).</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   Output:</span>
+0027 <span class="comment">%       skeleton - the worm's skeleton</span>
+0028         
+0029 <span class="comment">% Find and order the large bends (greater than +-20 degrees) on each side.</span>
+0030 <span class="comment">% Side1 always goes from head to tail in positive, index increments.</span>
+0031 <span class="comment">% Side2 always goes from head to tail in negative, index increments.</span>
+0032 bendMinI = minI(minP &lt; -20);
+0033 bendMaxI = maxI(maxP &gt; 20);
+0034 <span class="keyword">if</span> headI &gt; tailI
+0035     minSide1 = [bendMinI(bendMinI &gt; headI) bendMinI(bendMinI &lt; tailI)];
+0036     maxSide1 = [bendMaxI(bendMaxI &gt; headI) bendMaxI(bendMaxI &lt; tailI)];
+0037     minSide2 = fliplr(bendMinI(bendMinI &gt; tailI &amp; bendMinI &lt; headI));
+0038     maxSide2 = fliplr(bendMaxI(bendMaxI &gt; tailI &amp; bendMaxI &lt; headI));
+0039 <span class="keyword">else</span>
+0040     minSide1 = bendMinI(bendMinI &gt; headI &amp; bendMinI &lt; tailI);
+0041     maxSide1 = bendMaxI(bendMaxI &gt; headI &amp; bendMaxI &lt; tailI);
+0042     minSide2 = fliplr([bendMinI(bendMinI &gt; tailI) bendMinI(bendMinI &lt; headI)]);
+0043     maxSide2 = fliplr([bendMaxI(bendMaxI &gt; tailI) bendMaxI(bendMaxI &lt; headI)]);
+0044 <span class="keyword">end</span>
+0045 
+0046 <span class="comment">% Find the length of each side.</span>
+0047 cLength = size(contour, 1);
+0048 <span class="keyword">if</span> headI &gt; tailI
+0049     size1 = headI - tailI + 1;
+0050     size2 = cLength - headI + 1 + tailI;
+0051 <span class="keyword">else</span>
+0052     size1 = tailI - headI + 1;
+0053     size2 = cLength - tailI + 1 + headI;
+0054 <span class="keyword">end</span>
+0055 
+0056 <span class="comment">% Find the scale of side2 to side1.</span>
+0057 scale1to2 = size2 / size1;
+0058 
+0059 <span class="comment">% Try to match large bends on either side.</span>
+0060 mb1 = <a href="#_sub1" class="code" title="subfunction matchedBends = matchBends(side1, side2, scale, head, cLength, edgeSize)">matchBends</a>(minSide1, maxSide2, scale1to2, headI, cLength, wormSegSize);
+0061 mb2 = <a href="#_sub1" class="code" title="subfunction matchedBends = matchBends(side1, side2, scale, head, cLength, edgeSize)">matchBends</a>(maxSide1, minSide2, scale1to2, headI, cLength, wormSegSize);
+0062 
+0063 <span class="comment">% Skeletonize the bend segments by walking the midline between their</span>
+0064 <span class="comment">% opposing contour sides.</span>
+0065 <span class="comment">% Note: the maximal skeleton length occurs when one side of the contour</span>
+0066 <span class="comment">% contains all of the points (the head and tail are always shared by both</span>
+0067 <span class="comment">% sides).</span>
+0068 skeleton = zeros(cLength, 2); <span class="comment">% pre-allocate memory</span>
+0069 prevBend(1:2) = headI;
+0070 sLength = 1;
+0071 i = 1;
+0072 j = 1;
+0073 <span class="keyword">while</span> i &lt;= size(mb1, 1) || j &lt;= size(mb2, 1)
+0074     
+0075     <span class="comment">% Which bend comes first?</span>
+0076     <span class="keyword">if</span> j &gt; size(mb2, 1) || (i &lt;= size(mb1, 1) &amp;&amp; mb1(i,1) &lt; mb2(j,1))
+0077         bend = mb1(i,:);
+0078         i = i + 1;
+0079     <span class="keyword">else</span>
+0080         bend = mb2(j,:);
+0081         j = j + 1;
+0082     <span class="keyword">end</span>
+0083     
+0084     <span class="comment">% Skeletonize the segment between the previous bend and this one.</span>
+0085     segment = round(<a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>(prevBend(1), bend(1), 1, <span class="keyword">...</span>
+0086         prevBend(2), bend(2), -1, contour));
+0087     skeleton(sLength:(sLength + size(segment, 1) - 1),:) = segment;
+0088     sLength = sLength + size(segment, 1);
+0089     
+0090     <span class="comment">% Advance.</span>
+0091     prevBend = bend;
+0092 <span class="keyword">end</span>
+0093 
+0094 <span class="comment">% Skeletonize the last segment between the previous bend and the tail.</span>
+0095 segment = round(<a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>(prevBend(1), tailI, 1, <span class="keyword">...</span>
+0096     prevBend(2), tailI, -1, contour));
+0097 skeleton(sLength:(sLength + size(segment, 1) - 1),:) = segment;
+0098 sLength = sLength + size(segment, 1);
+0099 
+0100 <span class="comment">% Collapse any extra memory.</span>
+0101 skeleton(sLength:<span class="keyword">end</span>,:) = [];
+0102 
+0103 <span class="comment">% Clean up the skeleton</span>
+0104 skeleton = <a href="cleanSkeleton.html" class="code" title="function [cSkeleton cWidths] = cleanSkeleton(skeleton, widths, wormSegSize)">cleanSkeleton</a>(skeleton);
+0105 <span class="keyword">end</span>
+0106 
+0107 <span class="comment">% Try to match bends on either side. Do this by choosing points on</span>
+0108 <span class="comment">% side 1, then searching for a match, within an interval, on side 2.</span>
+0109 <a name="_sub1" href="#_subfunctions" class="code">function matchedBends = matchBends(side1, side2, scale, head, cLength, edgeSize)</a>
+0110 
+0111 <span class="comment">% Convert the lower bounds for search intervals on side 1 to upper bounds</span>
+0112 <span class="comment">% for search intervals on side 2.</span>
+0113 minPoints1 = side1 - edgeSize;
+0114 wrap = minPoints1 &lt; 1; <span class="comment">% correct any wrapped points</span>
+0115 minPoints1(wrap) = minPoints1(wrap) + cLength;
+0116 maxPoints2 = <a href="#_sub2" class="code" title="subfunction points = matchPoints1to2(points, scale, head, cLength)">matchPoints1to2</a>(minPoints1, scale, head, cLength);
+0117 
+0118 <span class="comment">% Convert the upper bounds for search intervals on side 1 to lower bounds</span>
+0119 <span class="comment">% for search intervals on side 2.</span>
+0120 maxPoints1 = side1 + edgeSize;
+0121 wrap = maxPoints1 &lt; 1; <span class="comment">% correct any wrapped points</span>
+0122 maxPoints1(wrap) = maxPoints1(wrap) + cLength;
+0123 minPoints2 = <a href="#_sub2" class="code" title="subfunction points = matchPoints1to2(points, scale, head, cLength)">matchPoints1to2</a>(maxPoints1, scale, head, cLength);
+0124 
+0125 <span class="comment">% Try to match the bends on side 1 to those on side 2.</span>
+0126 matchedBends = zeros(length(side1), 2); <span class="comment">% pre-allocate memory</span>
+0127 mbLength = 1;
+0128 <span class="keyword">for</span> i = 1:length(side1)
+0129     
+0130     <span class="comment">% Match the bend on side 1 to those within an interval on side 2.</span>
+0131     minI2 = minPoints2(i);
+0132     maxI2 = maxPoints2(i);
+0133     <span class="keyword">if</span> minI2 &lt;= maxI2
+0134         side2Matches = find(side2 &gt;= minI2 &amp; side2 &lt;= maxI2);
+0135     <span class="keyword">else</span> <span class="comment">% the interval wraps</span>
+0136         side2Matches = find(side2 &gt;= minI2 | side2 &lt;= maxI2);
+0137     <span class="keyword">end</span>
+0138     
+0139     <span class="comment">% We found matching bends on side 2.</span>
+0140     <span class="keyword">if</span> ~isempty(side2Matches)
+0141         
+0142         <span class="comment">% Match the bend on side 1 to the earliest choice on side 2.</span>
+0143         matchedBends(mbLength,:) = [side1(i) side2(side2Matches(1))];
+0144         mbLength = mbLength + 1;
+0145         
+0146         <span class="comment">% Remove everything from side 2 up to, and including, the matching bend.</span>
+0147         side2(1:side2Matches(1)) = [];
+0148     <span class="keyword">end</span>
+0149 <span class="keyword">end</span>
+0150 
+0151 <span class="comment">% Collapse any extra memory.</span>
+0152 matchedBends(mbLength:<span class="keyword">end</span>,:) = [];
+0153 <span class="keyword">end</span>
+0154 
+0155 <span class="comment">% Match points on side 1 to their equivalent points on side 2.</span>
+0156 <a name="_sub2" href="#_subfunctions" class="code">function points = matchPoints1to2(points, scale, head, cLength)</a>
+0157 
+0158 <span class="comment">% Find the distance of the points from the head, scale it for the opposite</span>
+0159 <span class="comment">% side, then find the equivalent point, at the scaled distance from the</span>
+0160 <span class="comment">% head, on the opposite side.</span>
+0161 minPoints = points &lt; head;
+0162 points(minPoints) = head - (points(minPoints) + cLength - head + 1) * scale + 1;
+0163 maxPoints = points &gt;= head;
+0164 points(maxPoints) = head - (points(maxPoints) - head + 1) * scale + 1;
+0165 
+0166 <span class="comment">% Round the points off to be proper inidices.</span>
+0167 points = round(points);
+0168 
+0169 <span class="comment">% Correct any wrapped points.</span>
+0170 minPoints = points &lt; 1;
+0171 points(minPoints) = points(minPoints) + cLength;
+0172 maxPoints = points &gt; cLength;
+0173 points(maxPoints) = points(maxPoints) - cLength;
+0174 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

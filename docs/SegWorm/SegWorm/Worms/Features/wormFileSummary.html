@@ -1,0 +1,651 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormFileSummary</title>
+  <meta name="keywords" content="wormFileSummary">
+  <meta name="description" content="WORMFILESUMMARY Get a summary of the worm experiment analysis file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>wormFileSummary
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMFILESUMMARY Get a summary of the worm experiment analysis file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function summary = wormFileSummary() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMFILESUMMARY Get a summary of the worm experiment analysis file.
+
+   WORMFILESUMMARY
+
+   Output:
+       summary - the worm file summary;
+                 a struct, identically organized to the ones found in the
+                 worm experiment analysis files, where every terminal
+                 value field contains a descriptive summary.
+                 For experimental annotations, within the top-level struct
+                 &quot;info&quot;, the summary is simply a string. For analyzed
+                 values, within the top-level struct &quot;worm&quot;, the summary
+                 is a struct with the fields:
+
+                 summary    = a descriptive summary of the value
+                 method     = a descriptive summary of the method
+                 references = reference publications for the method</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function summary = wormFileSummary()</a>
+0002 <span class="comment">%WORMFILESUMMARY Get a summary of the worm experiment analysis file.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   WORMFILESUMMARY</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Output:</span>
+0007 <span class="comment">%       summary - the worm file summary;</span>
+0008 <span class="comment">%                 a struct, identically organized to the ones found in the</span>
+0009 <span class="comment">%                 worm experiment analysis files, where every terminal</span>
+0010 <span class="comment">%                 value field contains a descriptive summary.</span>
+0011 <span class="comment">%                 For experimental annotations, within the top-level struct</span>
+0012 <span class="comment">%                 &quot;info&quot;, the summary is simply a string. For analyzed</span>
+0013 <span class="comment">%                 values, within the top-level struct &quot;worm&quot;, the summary</span>
+0014 <span class="comment">%                 is a struct with the fields:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%                 summary    = a descriptive summary of the value</span>
+0017 <span class="comment">%                 method     = a descriptive summary of the method</span>
+0018 <span class="comment">%                 references = reference publications for the method</span>
+0019 
+0020 <span class="comment">%% *** EXPERIMENTAL ANNOTATION</span>
+0021 
+0022 <span class="comment">%% The WT2 information.</span>
+0023 wt2 = struct( <span class="keyword">...</span>
+0024     <span class="string">'tracker'</span>, <span class="string">'The WT2 tracker software version.'</span>, <span class="keyword">...</span>
+0025     <span class="string">'hardware'</span>, <span class="string">'The WT2 tracker hardware version.'</span>, <span class="keyword">...</span>
+0026     <span class="string">'analysis'</span>, <span class="string">'The WT2 tracker analysis version.'</span>, <span class="keyword">...</span>
+0027     <span class="string">'annotations'</span>, <span class="string">'Additional WT2 system annotations (if any exist).'</span>);
+0028 
+0029 
+0030 <span class="comment">%% The video information.</span>
+0031 <span class="comment">% The microns/pixels.</span>
+0032 videoLength = struct( <span class="keyword">...</span>
+0033     <span class="string">'frames'</span>, <span class="string">'The video frame length.'</span>, <span class="keyword">...</span>
+0034     <span class="string">'time'</span>, <span class="string">'The video time length.'</span>);
+0035 micronsPerPixels = struct( <span class="keyword">...</span>
+0036     <span class="string">'x'</span>, <span class="string">'The video''s x-axis microns/pixels resolution.'</span>, <span class="keyword">...</span>
+0037     <span class="string">'y'</span>, <span class="string">'The video''s y-axis microns/pixels resolution.'</span>);
+0038 resolution = struct( <span class="keyword">...</span>
+0039     <span class="string">'fps'</span>, <span class="string">'The video''s frames/second resolution.'</span>, <span class="keyword">...</span>
+0040     <span class="string">'height'</span>, <span class="string">'The video''s pixel height resolution.'</span>, <span class="keyword">...</span>
+0041     <span class="string">'width'</span>, <span class="string">'The video''s pixel width resolution.'</span>, <span class="keyword">...</span>
+0042     <span class="string">'micronsPerPixels'</span>, micronsPerPixels, <span class="keyword">...</span>
+0043     <span class="string">'fourcc'</span>, <span class="string">'The video codec''s FOURCC (four character code).'</span>);
+0044 videoAnnotations = struct( <span class="keyword">...</span>
+0045     <span class="string">'frames'</span>, [<span class="string">'The video annotation codes, per frame (e.g., 1 = the '</span> <span class="keyword">...</span>
+0046     <span class="string">'worm was succesfully extracted from the image, 2 = the video '</span> <span class="keyword">...</span>
+0047     <span class="string">'lost the image, 3 = the stage moved during the video frame, ...).'</span>], <span class="keyword">...</span>
+0048     <span class="string">'reference'</span>, <span class="string">'A reference explaining the video frame annotation codes.'</span>);
+0049 video = struct( <span class="keyword">...</span>
+0050     <span class="string">'length'</span>, videoLength, <span class="keyword">...</span>
+0051     <span class="string">'resolution'</span>, resolution, <span class="keyword">...</span>
+0052     <span class="string">'annotations'</span>, videoAnnotations);
+0053 
+0054 
+0055 
+0056 <span class="comment">%% The experiment information.</span>
+0057 expFiles = struct( <span class="keyword">...</span>
+0058     <span class="string">'video'</span>, <span class="string">'The full path for the experiment''s video file.'</span>, <span class="keyword">...</span>
+0059     <span class="string">'vignette'</span>, [<span class="string">'The full path for the experiment''s video, '</span> <span class="keyword">...</span>
+0060     <span class="string">'vignette-correction file (if one exists).'</span>], <span class="keyword">...</span>
+0061     <span class="string">'info'</span>, <span class="string">'The full path for the experiment''s information file.'</span>, <span class="keyword">...</span>
+0062     <span class="string">'stage'</span>, <span class="string">'The full path for the experiment''s stage movement file.'</span>, <span class="keyword">...</span>
+0063     <span class="string">'directory'</span>, <span class="string">'The full path for the experiment''s directory.'</span>, <span class="keyword">...</span>
+0064     <span class="string">'computer'</span>, <span class="string">'The computer name and IP address for the experiment.'</span>);
+0065 expWorm = struct( <span class="keyword">...</span>
+0066     <span class="string">'timestamp'</span>, <span class="string">'The timestamp when the experiment began.'</span>, <span class="keyword">...</span>
+0067     <span class="string">'genotype'</span>, <span class="string">'The worm''s genotype.'</span>, <span class="keyword">...</span>
+0068     <span class="string">'gene'</span>, <span class="string">'The worm''s gene mutation(s) (if any exist).'</span>, <span class="keyword">...</span>
+0069     <span class="string">'allele'</span>, [<span class="string">'The worm''s allelic variants for its gene mutation(s) '</span> <span class="keyword">...</span>
+0070     <span class="string">'(if any exist).'</span>], <span class="keyword">...</span>
+0071     <span class="string">'strain'</span>, <span class="string">'The worm''s strain.'</span>, <span class="keyword">...</span>
+0072     <span class="string">'food'</span>, <span class="string">'The worm''s food during the experiment (e.g., &quot;OP50&quot;).'</span>, <span class="keyword">...</span>
+0073     <span class="string">'ventralSide'</span>, [<span class="string">'The worm''s ventral side, in the video, relative '</span> <span class="keyword">...</span>
+0074     <span class="string">'to its head (e.g., &quot;clockwise&quot; if the ventral side is clockwise '</span> <span class="keyword">...</span>
+0075     <span class="string">'from the head in video).'</span>], <span class="keyword">...</span>
+0076     <span class="string">'agarSide'</span>, [<span class="string">'The side on which the worm is crawling (e.g. &quot;left&quot; '</span> <span class="keyword">...</span>
+0077     <span class="string">'if the worm is crawling on its left side.'</span>], <span class="keyword">...</span>
+0078     <span class="string">'sex'</span>, [<span class="string">'The worm''s gender (e.g. &quot;XX&quot; for hemaphrodites and &quot;XO&quot; '</span> <span class="keyword">...</span>
+0079     <span class="string">'for males).'</span>], <span class="keyword">...</span>
+0080     <span class="string">'age'</span>, <span class="string">'The worm''s age (e.g. &quot;L1&quot;, &quot;young adult&quot;, ...).'</span>, <span class="keyword">...</span>
+0081     <span class="string">'illumination'</span>, <span class="string">'The illumination used (e.g., &quot;627nm&quot;).'</span>, <span class="keyword">...</span>
+0082     <span class="string">'temperature'</span>, <span class="string">'The temperature during the experiment (e.g., &quot;22C&quot;).'</span>, <span class="keyword">...</span>
+0083     <span class="string">'chemicals'</span>, [<span class="string">'The chemicals used during the experiment (e.g. '</span> <span class="keyword">...</span>
+0084     <span class="string">'&quot;1mM dopamine&quot;).'</span>], <span class="keyword">...</span>
+0085     <span class="string">'arena'</span>, <span class="string">'The experiment arena (e.g. &quot;low-peptone NGM plate&quot;).'</span>, <span class="keyword">...</span>
+0086     <span class="string">'tracker'</span>, <span class="string">'The tracker used (if you own more than one).'</span>, <span class="keyword">...</span>
+0087     <span class="string">'experimenter'</span>, <span class="string">'The experimenter (e.g., &quot;Eviatar Yemini&quot;).'</span>, <span class="keyword">...</span>
+0088     <span class="string">'lab'</span>, [<span class="string">'The lab in which the experiment was performed (e.g., '</span> <span class="keyword">...</span>
+0089     <span class="string">'&quot;William R Schafer&quot;).'</span>], <span class="keyword">...</span>
+0090     <span class="string">'address'</span>, [<span class="string">'The address where the experiment took place (e.g. '</span> <span class="keyword">...</span>
+0091     <span class="string">'&quot;Room S220, MRC Laboratory of Molecular Biology, Hills Road, '</span> <span class="keyword">...</span>
+0092     <span class="string">'Cambridge, CB2 0NT, UK&quot;).'</span>], <span class="keyword">...</span>
+0093     <span class="string">'annotations'</span>, <span class="string">'Additional experimental annotations (if any exist).'</span>);
+0094 experiment = struct( <span class="keyword">...</span>
+0095     <span class="string">'worm'</span>, expWorm, <span class="keyword">...</span>
+0096     <span class="string">'files'</span>, expFiles);
+0097 
+0098 
+0099 
+0100 <span class="comment">%% The overall information</span>
+0101 info = struct( <span class="keyword">...</span>
+0102     <span class="string">'wt2'</span>, wt2, <span class="keyword">...</span>
+0103     <span class="string">'video'</span>, video, <span class="keyword">...</span>
+0104     <span class="string">'experiment'</span>, experiment);
+0105 
+0106 
+0107 
+0108 <span class="comment">%% *** ANALYZED VALUES</span>
+0109 
+0110 <span class="comment">%% The worm morphology data.</span>
+0111 
+0112 <span class="comment">% The worm widths.</span>
+0113 headWidths = struct( <span class="keyword">...</span>
+0114     <span class="string">'summary'</span>, <span class="string">'The head''s width (in microns), per frame.'</span>, <span class="keyword">...</span>
+0115     <span class="string">'method'</span>, <span class="string">'The mean of the widths at the front 1/6 of the worm.'</span>, <span class="keyword">...</span>
+0116     <span class="string">'references'</span>, []);
+0117 tailWidths = struct( <span class="keyword">...</span>
+0118     <span class="string">'summary'</span>, <span class="string">'The tail''s width (in microns), per frame.'</span>, <span class="keyword">...</span>
+0119     <span class="string">'method'</span>, <span class="string">'The mean of the widths at the back 1/6 of the worm.'</span>);
+0120 tailWidths = struct( <span class="keyword">...</span>
+0121     <span class="string">'summary'</span>, <span class="string">'The tail''s width (in microns), per frame.'</span>, <span class="keyword">...</span>
+0122     <span class="string">'method'</span>, <span class="string">'The mean of the widths at the back 1/6 of the worm.'</span>);
+0123 widths = struct( <span class="keyword">...</span>
+0124     <span class="string">'head'</span>, headWidths, <span class="keyword">...</span>
+0125     <span class="string">'midbody'</span>, midbodyWidths, <span class="keyword">...</span>
+0126     <span class="string">'tail'</span>, tailWidths);
+0127 
+0128 <span class="comment">%% The worm morphology.</span>
+0129 lengths = struct( <span class="keyword">...</span>
+0130     <span class="string">'summary'</span>, <span class="string">'The worm''s length (in microns), per frame.'</span>, <span class="keyword">...</span>
+0131     <span class="string">'method'</span>, [<span class="string">'The chain-code pixel length of the skeleton converted '</span> <span class="keyword">...</span>
+0132     <span class="string">'to microns.'</span>]);
+0133 areas = struct( <span class="keyword">...</span>
+0134     <span class="string">'summary'</span>, <span class="string">'The worm''s area (in microns squared), per frame.'</span>, <span class="keyword">...</span>
+0135     <span class="string">'method'</span>, [<span class="string">'The pixel area, bounded by the worm contour, converted '</span> <span class="keyword">...</span>
+0136     <span class="string">'to microns.'</span>]);
+0137 fatness = struct( <span class="keyword">...</span>
+0138     <span class="string">'summary'</span>, <span class="string">'The worm''s area/length (in microns), per frame.'</span>, <span class="keyword">...</span>
+0139     <span class="string">'method'</span>, [<span class="string">'The area/length (computation of these values is '</span> <span class="keyword">...</span>
+0140     <span class="string">'described in the relevant &quot;morphology&quot; sections).'</span>]);
+0141 thickness = struct( <span class="keyword">...</span>
+0142     <span class="string">'summary'</span>, [<span class="string">'The worm''s width/length (a unitless measure), per '</span> <span class="keyword">...</span>
+0143     <span class="string">'frame.'</span>], <span class="keyword">...</span>
+0144     <span class="string">'method'</span>, [<span class="string">'The width/length (computation of these values is '</span> <span class="keyword">...</span>
+0145     <span class="string">'described in the relevant &quot;morphology&quot; sections).'</span>]);
+0146 morphology = struct( <span class="keyword">...</span>
+0147     <span class="string">'length'</span>, lengths, <span class="keyword">...</span>
+0148     <span class="string">'width'</span>, widths, <span class="keyword">...</span>
+0149     <span class="string">'area'</span>, areas, <span class="keyword">...</span>
+0150     <span class="string">'areaPerLength'</span>, fatness, <span class="keyword">...</span>
+0151     <span class="string">'widthPerLength'</span>, thickness);
+0152 
+0153 
+0154 
+0155 <span class="comment">%% The worm posture data.</span>
+0156 
+0157 <span class="comment">% The worm posture bends.</span>
+0158 headPosMeanBends = struct( <span class="keyword">...</span>
+0159     <span class="string">'summary'</span>, [<span class="string">'The mean of the worm''s bend posture (in degrees), '</span> <span class="keyword">...</span>
+0160     <span class="string">'at the head, per frame.'</span>], <span class="keyword">...</span>
+0161     <span class="string">'method'</span>, [<span class="string">'The mean of the supplementary angles across the front '</span> <span class="keyword">...</span>
+0162     <span class="string">'1/6 of the worm.'</span>]);
+0163 headPosStdDevBends = struct( <span class="keyword">...</span>
+0164     <span class="string">'summary'</span>, [<span class="string">'The standard deviation of the worm''s bend posture '</span> <span class="keyword">...</span>
+0165     <span class="string">'(in degrees), at the head, per frame.'</span>], <span class="keyword">...</span>
+0166     <span class="string">'method'</span>, [<span class="string">'The standard deviation of the supplementary angles '</span> <span class="keyword">...</span>
+0167     <span class="string">'across the front 1/6 of the worm.'</span>]);
+0168 headPosBends = struct( <span class="keyword">...</span>
+0169     <span class="string">'mean'</span>, headPosMeanBends, <span class="keyword">...</span>
+0170     <span class="string">'stdDev'</span>, headPosStdDevBends);
+0171 neckPosMeanBends = struct( <span class="keyword">...</span>
+0172     <span class="string">'summary'</span>, [<span class="string">'The mean of the worm''s bend posture (in degrees), '</span> <span class="keyword">...</span>
+0173     <span class="string">'at the neck, per frame.'</span>], <span class="keyword">...</span>
+0174     <span class="string">'method'</span>, [<span class="string">'The mean of the supplementary angles across the front '</span> <span class="keyword">...</span>
+0175     <span class="string">'1/6 to 2/6 of the worm.'</span>]);
+0176 neckPosStdDevBends = struct( <span class="keyword">...</span>
+0177     <span class="string">'summary'</span>, [<span class="string">'The standard deviation of the worm''s bend posture '</span> <span class="keyword">...</span>
+0178     <span class="string">'(in degrees), at the neck, per frame.'</span>], <span class="keyword">...</span>
+0179     <span class="string">'method'</span>, [<span class="string">'The standard deviation of the supplementary angles '</span> <span class="keyword">...</span>
+0180     <span class="string">'across the front 1/6 to 2/6 of the worm.'</span>]);
+0181 neckPosBends = struct( <span class="keyword">...</span>
+0182     <span class="string">'mean'</span>, neckPosMeanBends, <span class="keyword">...</span>
+0183     <span class="string">'stdDev'</span>, neckPosStdDevBends);
+0184 midbodyPosMeanBends = struct( <span class="keyword">...</span>
+0185     <span class="string">'summary'</span>, [<span class="string">'The mean of the worm''s bend posture (in degrees), '</span> <span class="keyword">...</span>
+0186     <span class="string">'at the midbody, per frame.'</span>], <span class="keyword">...</span>
+0187     <span class="string">'method'</span>, [<span class="string">'The mean of the supplementary angles across the middle '</span> <span class="keyword">...</span>
+0188     <span class="string">'1/3 to 2/3 of the worm.'</span>]);
+0189 midbodyPosStdDevBends = struct( <span class="keyword">...</span>
+0190     <span class="string">'summary'</span>, [<span class="string">'The standard deviation of the worm''s bend posture '</span> <span class="keyword">...</span>
+0191     <span class="string">'(in degrees), at the midbody, per frame.'</span>], <span class="keyword">...</span>
+0192     <span class="string">'method'</span>, [<span class="string">'The standard deviation of the supplementary angles '</span> <span class="keyword">...</span>
+0193     <span class="string">'across the middle 1/3 to 2/3 of the worm.'</span>]);
+0194 midbodyPosBends = struct( <span class="keyword">...</span>
+0195     <span class="string">'mean'</span>, midbodyPosMeanBends, <span class="keyword">...</span>
+0196     <span class="string">'stdDev'</span>, midbodyPosStdDevBends);
+0197 hipsPosMeanBends = struct( <span class="keyword">...</span>
+0198     <span class="string">'summary'</span>, [<span class="string">'The mean of the worm''s bend posture (in degrees), '</span> <span class="keyword">...</span>
+0199     <span class="string">'at the hips, per frame.'</span>], <span class="keyword">...</span>
+0200     <span class="string">'method'</span>, [<span class="string">'The mean of the supplementary angles across the back '</span> <span class="keyword">...</span>
+0201     <span class="string">'1/6 to 2/6 of the worm.'</span>]);
+0202 hipsPosStdDevBends = struct( <span class="keyword">...</span>
+0203     <span class="string">'summary'</span>, [<span class="string">'The standard deviation of the worm''s bend posture '</span> <span class="keyword">...</span>
+0204     <span class="string">'(in degrees), at the hips, per frame.'</span>], <span class="keyword">...</span>
+0205     <span class="string">'method'</span>, [<span class="string">'The standard deviation of the supplementary angles '</span> <span class="keyword">...</span>
+0206     <span class="string">'across the back 1/6 to 2/6 of the worm.'</span>]);
+0207 hipsPosBends = struct( <span class="keyword">...</span>
+0208     <span class="string">'mean'</span>, hipsPosMeanBends, <span class="keyword">...</span>
+0209     <span class="string">'stdDev'</span>, hipsPosStdDevBends);
+0210 tailPosMeanBends = struct( <span class="keyword">...</span>
+0211     <span class="string">'summary'</span>, [<span class="string">'The mean of the worm''s bend posture (in degrees), '</span> <span class="keyword">...</span>
+0212     <span class="string">'at the tail, per frame.'</span>], <span class="keyword">...</span>
+0213     <span class="string">'method'</span>, [<span class="string">'The mean of the supplementary angles across the back '</span> <span class="keyword">...</span>
+0214     <span class="string">'1/6 of the worm.'</span>]);
+0215 tailPosStdDevBends = struct( <span class="keyword">...</span>
+0216     <span class="string">'summary'</span>, [<span class="string">'The standard deviation of the worm''s bend posture '</span> <span class="keyword">...</span>
+0217     <span class="string">'(in degrees), at the tail, per frame.'</span>], <span class="keyword">...</span>
+0218     <span class="string">'method'</span>, [<span class="string">'The standard deviation of the supplementary angles '</span> <span class="keyword">...</span>
+0219     <span class="string">'across the back 1/6 of the worm.'</span>]);
+0220 tailPosBends = struct( <span class="keyword">...</span>
+0221     <span class="string">'mean'</span>, tailPosMeanBends, <span class="keyword">...</span>
+0222     <span class="string">'stdDev'</span>, tailPosStdDevBends);
+0223 postureBends = struct( <span class="keyword">...</span>
+0224     <span class="string">'head'</span>, headPosBends, <span class="keyword">...</span>
+0225     <span class="string">'neck'</span>, neckPosBends, <span class="keyword">...</span>
+0226     <span class="string">'midbody'</span>, midbodyPosBends, <span class="keyword">...</span>
+0227     <span class="string">'hips'</span>, hipsPosBends, <span class="keyword">...</span>
+0228     <span class="string">'tail'</span>, tailPosBends);
+0229 
+0230 <span class="comment">% The worm amplitudes.</span>
+0231 maximumAmpPosture = struct( <span class="keyword">...</span>
+0232     <span class="string">'summary'</span>, [<span class="string">'The maximum amplitude (in microns) present in the '</span> <span class="keyword">...</span>
+0233     <span class="string">'worm posture.'</span>], <span class="keyword">...</span>
+0234     <span class="string">'method'</span>, <span class="string">''</span>);
+0235 ratioAmpPosture = struct( <span class="keyword">...</span>
+0236     <span class="string">'summary'</span>, [<span class="string">'The ratio between the maximum amplitudes on either '</span> <span class="keyword">...</span>
+0237     <span class="string">'side of the worm (a unitless measure). The smaller amplitude of '</span> <span class="keyword">...</span>
+0238     <span class="string">'the two is the numerator and the larger amplitude is the '</span> <span class="keyword">...</span>
+0239     <span class="string">'denomiator.'</span>], <span class="keyword">...</span>
+0240     <span class="string">'method'</span>, <span class="string">''</span>);
+0241 postureAmplitudes = struct( <span class="keyword">...</span>
+0242     <span class="string">'max'</span>, maximumAmpPosture, <span class="keyword">...</span>
+0243     <span class="string">'ratio'</span>, ratioAmpPosture);
+0244 
+0245 <span class="comment">% The worm wavelengths.</span>
+0246 wavelength1 = struct( <span class="keyword">...</span>
+0247     <span class="string">'summary'</span>, <span class="string">'The primary wavelength present in the worm''s posture.'</span>, <span class="keyword">...</span>
+0248     <span class="string">'method'</span>, <span class="string">''</span>);
+0249 wavelength2 = struct( <span class="keyword">...</span>
+0250     <span class="string">'summary'</span>, [<span class="string">'The secondary wavelength present in the worm''s '</span> <span class="keyword">...</span>
+0251     <span class="string">'posture (if one exists).'</span>, <span class="keyword">...</span>
+0252     <span class="string">'method'</span>, <span class="string">''</span>);
+0253 wavelengths = struct( <span class="keyword">...</span>
+0254     <span class="string">'primary'</span>, wavelength1, <span class="keyword">...</span>
+0255     <span class="string">'secondary'</span>, wavelength2);
+0256 
+0257 <span class="comment">% The worm coils.</span>
+0258 coilStartFrames = struct( <span class="keyword">...</span>
+0259     <span class="string">'summary'</span>, <span class="string">'The starting frame number per worm coil event.'</span>, <span class="keyword">...</span>
+0260     <span class="string">'method'</span>, [<span class="string">'Frames where the worm is coiled are determined by '</span> <span class="keyword">...</span>
+0261     <span class="string">'searching for a run of segmentation failures bracketed by '</span> <span class="keyword">...</span>
+0262     <span class="string">'annotations indicating failures as a result of not finding both '</span> <span class="keyword">...</span>
+0263     <span class="string">'a head and tail or, finding a large mismatch between the lengths '</span> <span class="keyword">...</span>
+0264     <span class="string">'on either side of the worm''s contour. This run of failures must '</span> <span class="keyword">...</span>
+0265     <span class="string">'exceed 1/5 of a second.'</span>]);
+0266 coilEndFrames = struct( <span class="keyword">...</span>
+0267     <span class="string">'summary'</span>, <span class="string">'The ending frame number per worm coil event.'</span>, <span class="keyword">...</span>
+0268     <span class="string">'method'</span>, [<span class="string">'Frames where the worm is coiled are determined by '</span> <span class="keyword">...</span>
+0269     <span class="string">'searching for a run of segmentation failures bracketed by '</span> <span class="keyword">...</span>
+0270     <span class="string">'annotations indicating failures as a result of not finding both '</span> <span class="keyword">...</span>
+0271     <span class="string">'a head and tail or, finding a large mismatch between the lengths '</span> <span class="keyword">...</span>
+0272     <span class="string">'on either side of the worm''s contour. This run of failures must '</span> <span class="keyword">...</span>
+0273     <span class="string">'exceed 1/5 of a second.'</span>]);
+0274 coilTimes = struct( <span class="keyword">...</span>
+0275     <span class="string">'summary'</span>, <span class="string">'The time (in seconds) per worm coil event.'</span>, <span class="keyword">...</span>
+0276     <span class="string">'method'</span>, [<span class="string">'Frames where the worm is coiled are determined by '</span> <span class="keyword">...</span>
+0277     <span class="string">'searching for a run of segmentation failures bracketed by '</span> <span class="keyword">...</span>
+0278     <span class="string">'annotations indicating failures as a result of not finding both '</span> <span class="keyword">...</span>
+0279     <span class="string">'a head and tail or, finding a large mismatch between the lengths '</span> <span class="keyword">...</span>
+0280     <span class="string">'on either side of the worm''s contour. This run of failures must '</span> <span class="keyword">...</span>
+0281     <span class="string">'exceed 1/5 of a second.'</span>]);
+0282 coilInterTimes = struct( <span class="keyword">...</span>
+0283     <span class="string">'summary'</span>, [<span class="string">'The time (in seconds), from the end of each worm '</span> <span class="keyword">...</span>
+0284     <span class="string">'coiling event, till the next one took place.'</span>], <span class="keyword">...</span>
+0285     <span class="string">'method'</span>, [<span class="string">'Frames where the worm is coiled are determined by '</span> <span class="keyword">...</span>
+0286     <span class="string">'searching for a run of segmentation failures bracketed by '</span> <span class="keyword">...</span>
+0287     <span class="string">'annotations indicating failures as a result of not finding both '</span> <span class="keyword">...</span>
+0288     <span class="string">'a head and tail or, finding a large mismatch between the lengths '</span> <span class="keyword">...</span>
+0289     <span class="string">'on either side of the worm''s contour. This run of failures must '</span> <span class="keyword">...</span>
+0290     <span class="string">'exceed 1/5 of a second.'</span>]);
+0291 coilInterDistances = struct( <span class="keyword">...</span>
+0292     <span class="string">'summary'</span>, [<span class="string">'The distance traveled (in microns), from the end of '</span> <span class="keyword">...</span>
+0293     <span class="string">'each worm coiling event, till the next one took place.'</span>], <span class="keyword">...</span>
+0294     <span class="string">'method'</span>, [<span class="string">'Frames where the worm is coiled are determined by '</span> <span class="keyword">...</span>
+0295     <span class="string">'searching for a run of segmentation failures bracketed by '</span> <span class="keyword">...</span>
+0296     <span class="string">'annotations indicating failures as a result of not finding both '</span> <span class="keyword">...</span>
+0297     <span class="string">'a head and tail or, finding a large mismatch between the lengths '</span> <span class="keyword">...</span>
+0298     <span class="string">'on either side of the worm''s contour. This run of failures must '</span> <span class="keyword">...</span>
+0299     <span class="string">'exceed 1/5 of a second.'</span>]);
+0300 coilFrames = struct( <span class="keyword">...</span>
+0301     <span class="string">'start'</span>, coilStartFrames, <span class="keyword">...</span>
+0302     <span class="string">'end'</span>, coilEndFrames, <span class="keyword">...</span>
+0303     <span class="string">'time'</span>, coilTimes, <span class="keyword">...</span>
+0304     <span class="string">'interTime'</span>, coilInterTimes, <span class="keyword">...</span>
+0305     <span class="string">'interDistance'</span>, coilInterDistances);
+0306 coilFrequency = struct( <span class="keyword">...</span>
+0307     <span class="string">'summary'</span>, <span class="string">'The frequency (in hertz) of coiling events.'</span>, <span class="keyword">...</span>
+0308     <span class="string">'method'</span>, <span class="string">'The number of coiling events divided by the video length.'</span>);
+0309 coilTimeRatio = struct( <span class="keyword">...</span>
+0310     <span class="string">'summary'</span>, [<span class="string">'The ratio of time (a unitless measure) the worm '</span> <span class="keyword">...</span>
+0311     <span class="string">'spent coiled.'</span>], <span class="keyword">...</span>
+0312     <span class="string">'method'</span>, <span class="string">'The sum of the coiling times divided by the video length.'</span>);
+0313 coils = struct( <span class="keyword">...</span>
+0314     <span class="string">'frames'</span>, coilFrames, <span class="keyword">...</span>
+0315     <span class="string">'frequency'</span>, coilFrequency, <span class="keyword">...</span>
+0316     <span class="string">'timeRatio'</span>, coilTimeRatio);
+0317 
+0318 <span class="comment">% The worm posture directions.</span>
+0319 tailToHeadDirection = struct( <span class="keyword">...</span>
+0320     <span class="string">'summary'</span>, <span class="string">'The direction the worm is facing (in degrees).'</span>, <span class="keyword">...</span>
+0321     <span class="string">'method'</span>, [<span class="string">'The direction the worm is facing is measured as '</span> <span class="keyword">...</span>
+0322     <span class="string">'as the angle from its head to its tail (which acts as the '</span> <span class="keyword">...</span>
+0323     <span class="string">'origin). The head and tail are defined as the centroids of the '</span> <span class="keyword">...</span>
+0324     <span class="string">'front and back 1/12 of the worm.'</span>]);
+0325 headPosDirection = struct( <span class="keyword">...</span>
+0326     <span class="string">'summary'</span>, <span class="string">'The direction the worm''s head is facing (in degrees).'</span>, <span class="keyword">...</span>
+0327     <span class="string">'method'</span>, [<span class="string">'The direction the worm''s head is facing is measured as '</span> <span class="keyword">...</span>
+0328     <span class="string">'as the mean angle across its head starting at 1/6 the body and '</span> <span class="keyword">...</span>
+0329     <span class="string">'extending to the tip.'</span>]);
+0330 tailPosDirection = struct( <span class="keyword">...</span>
+0331     <span class="string">'summary'</span>, <span class="string">'The direction the worm''s tail is facing (in degrees).'</span>, <span class="keyword">...</span>
+0332     <span class="string">'method'</span>, [<span class="string">'The direction the worm''s tail is facing is measured as '</span> <span class="keyword">...</span>
+0333     <span class="string">'as the mean angle across its head starting at 1/6 the body and '</span> <span class="keyword">...</span>
+0334     <span class="string">'extending to the tip.'</span>]);
+0335 postureDirections = struct( <span class="keyword">...</span>
+0336     <span class="string">'tail2head'</span>, tailToHeadDirection, <span class="keyword">...</span>
+0337     <span class="string">'head'</span>, headPosDirection, <span class="keyword">...</span>
+0338     <span class="string">'tail'</span>, tailPosDirection);
+0339 
+0340 <span class="comment">% The worm posture skeletons.</span>
+0341 <span class="comment">% Note: the orientation is from head to tail in the rows; row 1 is the</span>
+0342 <span class="comment">% head, the end row is the tail. Each frame is represented by a column.</span>
+0343 postureXSkeletons = struct( <span class="keyword">...</span>
+0344     <span class="string">'summary'</span>, <span class="string">'The worm''s x-axis skeleton coordinates (in microns).'</span>, <span class="keyword">...</span>
+0345     <span class="string">'method'</span>, [<span class="string">'The worm''s x-axis skeleton coordinates are segmented '</span> <span class="keyword">...</span>
+0346     <span class="string">'from the video. Each row represents a point on the skeleton; '</span> <span class="keyword">...</span>
+0347     <span class="string">'row 1 is the head and the last row is the tail. Each column '</span> <span class="keyword">...</span>
+0348     <span class="string">'represents a frame. Unsegmented frames are represented by column '</span> <span class="keyword">...</span>
+0349     <span class="string">'filled with NaNs.'</span>]);
+0350 postureYSkeletons = struct( <span class="keyword">...</span>
+0351     <span class="string">'summary'</span>, <span class="string">'The worm''s y-axis skeleton coordinates (in microns).'</span>, <span class="keyword">...</span>
+0352     <span class="string">'method'</span>, [<span class="string">'The worm''s y-axis skeleton coordinates are segmented '</span> <span class="keyword">...</span>
+0353     <span class="string">'from the video. Each row represents a point on the skeleton; '</span> <span class="keyword">...</span>
+0354     <span class="string">'row 1 is the head and the last row is the tail. Each column '</span> <span class="keyword">...</span>
+0355     <span class="string">'represents a frame. Unsegmented frames are represented by column '</span> <span class="keyword">...</span>
+0356     <span class="string">'filled with NaNs.'</span>]);
+0357 postureSkeletons = struct( <span class="keyword">...</span>
+0358     <span class="string">'x'</span>, postureXSkeletons, <span class="keyword">...</span>
+0359     <span class="string">'y'</span>, postureYSkeletons);
+0360 
+0361 <span class="comment">% The worm eigen projections.</span>
+0362 <span class="comment">% Note: the eigen projections are oriented, by their contribution, in rows;</span>
+0363 <span class="comment">% row 1 accounts for the most variance. Each frame is represented by a</span>
+0364 <span class="comment">% column.</span>
+0365 eigenProjections = struct( <span class="keyword">...</span>
+0366     <span class="string">'summary'</span>, <span class="string">'The eigen projections of the worm (a unitless measure).'</span>, <span class="keyword">...</span>
+0367     <span class="string">'method'</span>, [<span class="string">'The worm is transformed into an orientation-invariant '</span> <span class="keyword">...</span>
+0368     <span class="string">'postural representation as the angles between each subsequent '</span> <span class="keyword">...</span>
+0369     <span class="string">'skeleton point. A wild-type PCA (principal components analysis) '</span> <span class="keyword">...</span>
+0370     <span class="string">'of N2 shapes provides the eigen basis. The worm''s posture is '</span>
+0371     <span class="string">'projected into a lower dimensional space that accounts for '</span> <span class="keyword">...</span>
+0372     <span class="string">'roughly 95% of the variance in N2 shapes. Another way of looking '</span> <span class="keyword">...</span>
+0373     <span class="string">'at this is that the worm shape is compressed with roughly 5% '</span> <span class="keyword">...</span>
+0374     <span class="string">'loss. See &quot;&quot; by Stephens et al., 2008.'</span>);
+0375 
+0376 <span class="comment">%% The worm posture.</span>
+0377 trackLength = struct( <span class="keyword">...</span>
+0378     <span class="string">'summary'</span>, [<span class="string">'The length of the line (in microns) extending from '</span> <span class="keyword">...</span>
+0379     <span class="string">'the worm''s head to its tail'</span>], <span class="keyword">...</span>
+0380     <span class="string">'method'</span>, <span class="string">''</span>);
+0381 eccentricity = struct( <span class="keyword">...</span>
+0382     <span class="string">'summary'</span>, [<span class="string">'The eccentricity (circularness) of the worm''s body '</span> <span class="keyword">...</span>
+0383     <span class="string">'(a unitless measure from just above 0, representing, to 1, representing  ).'</span>], <span class="keyword">...</span>
+0384     <span class="string">'method'</span>, <span class="string">''</span>);
+0385 kinks = struct( <span class="keyword">...</span>
+0386     <span class="string">'summary'</span>, <span class="string">'The number of kinks in the worm''s posture.'</span>, <span class="keyword">...</span>
+0387     <span class="string">'method'</span>, <span class="string">''</span>);
+0388 posture = struct( <span class="keyword">...</span>
+0389     <span class="string">'bends'</span>, postureBends, <span class="keyword">...</span>
+0390     <span class="string">'amplitude'</span>, postureAmplitudes, <span class="keyword">...</span>
+0391     <span class="string">'wavelength'</span>, wavelengths, <span class="keyword">...</span>
+0392     <span class="string">'tracklength'</span>, trackLength, <span class="keyword">...</span>
+0393     <span class="string">'eccentricity'</span>, eccentricity, <span class="keyword">...</span>
+0394     <span class="string">'kinks'</span>, kinks, <span class="keyword">...</span>
+0395     <span class="string">'coils'</span>, coils, <span class="keyword">...</span>
+0396     <span class="string">'directions'</span>, postureDirections, <span class="keyword">...</span>
+0397     <span class="string">'skeleton'</span>, postureSkeletons, <span class="keyword">...</span>
+0398     <span class="string">'eigenProjection'</span>, eigenProjections);
+0399 
+0400 
+0401 
+0402 <span class="comment">%% The worm locomotion data.</span>
+0403 
+0404 <span class="comment">% The worm forward motion.</span>
+0405 forwardFrames = struct( <span class="keyword">...</span>
+0406     <span class="string">'start'</span>, forwardStartFrames, <span class="keyword">...</span>
+0407     <span class="string">'end'</span>, forwardEndFrames, <span class="keyword">...</span>
+0408     <span class="string">'time'</span>, forwardTimes, <span class="keyword">...</span>
+0409     <span class="string">'distance'</span>, forwardDistances, <span class="keyword">...</span>
+0410     <span class="string">'interTime'</span>, forwardInterTimes, <span class="keyword">...</span>
+0411     <span class="string">'interDistance'</span>, forwardInterDistances);
+0412 forwardRatios = struct( <span class="keyword">...</span>
+0413     <span class="string">'time'</span>, forwardTimeRatio, <span class="keyword">...</span>
+0414     <span class="string">'distance'</span>, forwardDistanceRatio);
+0415 forward = struct( <span class="keyword">...</span>
+0416     <span class="string">'frames'</span>, forwardFrames, <span class="keyword">...</span>
+0417     <span class="string">'frequency'</span>, forwardFrequency, <span class="keyword">...</span>
+0418     <span class="string">'ratio'</span>, forwardRatios);
+0419 
+0420 <span class="comment">% The worm backward motion.</span>
+0421 backwardFrames = struct( <span class="keyword">...</span>
+0422     <span class="string">'start'</span>, backwardStartFrames, <span class="keyword">...</span>
+0423     <span class="string">'end'</span>, backwardEndFrames, <span class="keyword">...</span>
+0424     <span class="string">'time'</span>, backwardTimes, <span class="keyword">...</span>
+0425     <span class="string">'distance'</span>, backwardDistances, <span class="keyword">...</span>
+0426     <span class="string">'interTime'</span>, backwardInterTimes, <span class="keyword">...</span>
+0427     <span class="string">'interDistance'</span>, backwardInterDistances);
+0428 backwardRatios = struct( <span class="keyword">...</span>
+0429     <span class="string">'time'</span>, backwardTimeRatio, <span class="keyword">...</span>
+0430     <span class="string">'distance'</span>, backwardDistanceRatio);
+0431 backward = struct( <span class="keyword">...</span>
+0432     <span class="string">'frames'</span>, backwardFrames, <span class="keyword">...</span>
+0433     <span class="string">'frequency'</span>, backwardFrequency, <span class="keyword">...</span>
+0434     <span class="string">'ratio'</span>, backwardRatios);
+0435 
+0436 <span class="comment">% The worm paused motion.</span>
+0437 pausedFrames = struct( <span class="keyword">...</span>
+0438     <span class="string">'start'</span>, pausedStartFrames, <span class="keyword">...</span>
+0439     <span class="string">'end'</span>, pausedEndFrames, <span class="keyword">...</span>
+0440     <span class="string">'time'</span>, pausedTimes, <span class="keyword">...</span>
+0441     <span class="string">'distance'</span>, pausedDistances, <span class="keyword">...</span>
+0442     <span class="string">'interTime'</span>, pausedInterTimes, <span class="keyword">...</span>
+0443     <span class="string">'interDistance'</span>, pausedInterDistances);
+0444 pausedRatios = struct( <span class="keyword">...</span>
+0445     <span class="string">'time'</span>, pausedTimeRatio, <span class="keyword">...</span>
+0446     <span class="string">'distance'</span>, pausedDistanceRatio);
+0447 paused = struct( <span class="keyword">...</span>
+0448     <span class="string">'frames'</span>, pausedFrames, <span class="keyword">...</span>
+0449     <span class="string">'frequency'</span>, pausedFrequency, <span class="keyword">...</span>
+0450     <span class="string">'ratio'</span>, pausedRatios);
+0451 
+0452 <span class="comment">% The worm motion.</span>
+0453  = struct( <span class="keyword">...</span>
+0454     <span class="string">'summary'</span>, <span class="string">''</span>, <span class="keyword">...</span>
+0455     <span class="string">'method'</span>, <span class="string">''</span>);
+0456 motion = struct( <span class="keyword">...</span>
+0457     <span class="string">'mode'</span>, motionModes, <span class="keyword">...</span>
+0458     <span class="string">'forward'</span>, forward, <span class="keyword">...</span>
+0459     <span class="string">'backward'</span>, backward, <span class="keyword">...</span>
+0460     <span class="string">'paused'</span>, paused);
+0461 
+0462 <span class="comment">% The worm velocity.</span>
+0463  = struct( <span class="keyword">...</span>
+0464     <span class="string">'summary'</span>, <span class="string">''</span>, <span class="keyword">...</span>
+0465     <span class="string">'method'</span>, <span class="string">''</span>);
+0466  = struct( <span class="keyword">...</span>
+0467     <span class="string">'summary'</span>, <span class="string">''</span>, <span class="keyword">...</span>
+0468     <span class="string">'method'</span>, <span class="string">''</span>);
+0469 headTipVelocity = struct( <span class="keyword">...</span>
+0470     <span class="string">'speed'</span>, headTipSpeed, <span class="keyword">...</span>
+0471     <span class="string">'direction'</span>, headTipVelDirection);
+0472 headVelocity = struct( <span class="keyword">...</span>
+0473     <span class="string">'speed'</span>, headSpeed, <span class="keyword">...</span>
+0474     <span class="string">'direction'</span>, headVelDirection);
+0475 midbodyVelocity = struct( <span class="keyword">...</span>
+0476     <span class="string">'speed'</span>, midbodySpeed, <span class="keyword">...</span>
+0477     <span class="string">'direction'</span>, midbodyVelDirection);
+0478 tailVelocity = struct( <span class="keyword">...</span>
+0479     <span class="string">'speed'</span>, tailSpeed, <span class="keyword">...</span>
+0480     <span class="string">'direction'</span>, tailVelDirection);
+0481 tailTipVelocity = struct( <span class="keyword">...</span>
+0482     <span class="string">'speed'</span>, tailTipSpeed, <span class="keyword">...</span>
+0483     <span class="string">'direction'</span>, tailTipVelDirection);
+0484 velocity = struct( <span class="keyword">...</span>
+0485     <span class="string">'headTip'</span>, headTipVelocity, <span class="keyword">...</span>
+0486     <span class="string">'head'</span>, headVelocity, <span class="keyword">...</span>
+0487     <span class="string">'midbody'</span>, midbodyVelocity, <span class="keyword">...</span>
+0488     <span class="string">'tail'</span>, tailVelocity, <span class="keyword">...</span>
+0489     <span class="string">'tailTip'</span>, tailTipVelocity);
+0490 
+0491 <span class="comment">% The worm locomotion bends.</span>
+0492  = struct( <span class="keyword">...</span>
+0493     <span class="string">'summary'</span>, <span class="string">''</span>, <span class="keyword">...</span>
+0494     <span class="string">'method'</span>, <span class="string">''</span>);
+0495  = struct( <span class="keyword">...</span>
+0496     <span class="string">'summary'</span>, <span class="string">''</span>, <span class="keyword">...</span>
+0497     <span class="string">'method'</span>, <span class="string">''</span>);
+0498 foragingLocBends = struct( <span class="keyword">...</span>
+0499     <span class="string">'amplitude'</span>, foragingAmpBends, <span class="keyword">...</span>
+0500     <span class="string">'angleSpeed'</span>, foragingFreqBends);
+0501 headLocBends = struct( <span class="keyword">...</span>
+0502     <span class="string">'amplitude'</span>, headAmpBends, <span class="keyword">...</span>
+0503     <span class="string">'frequency'</span>, headFreqBends);
+0504 midbodyVelocity = struct( <span class="keyword">...</span>
+0505     <span class="string">'amplitude'</span>, midbodyAmpBends, <span class="keyword">...</span>
+0506     <span class="string">'frequency'</span>, midbodyFreqBends);
+0507 tailLocBends = struct( <span class="keyword">...</span>
+0508     <span class="string">'amplitude'</span>, tailAmpBends, <span class="keyword">...</span>
+0509     <span class="string">'frequency'</span>, tailFreqBends);
+0510 locomotionBends = struct( <span class="keyword">...</span>
+0511     <span class="string">'foraging'</span>, headTipVelocity, <span class="keyword">...</span>
+0512     <span class="string">'head'</span>, headLocBends, <span class="keyword">...</span>
+0513     <span class="string">'midbody'</span>, midbodyLocBends, <span class="keyword">...</span>
+0514     <span class="string">'tail'</span>, tailLocBends);
+0515 
+0516 <span class="comment">% The worm omega turns.</span>
+0517 omegaFrames = struct( <span class="keyword">...</span>
+0518     <span class="string">'start'</span>, omegaStartFrames, <span class="keyword">...</span>
+0519     <span class="string">'end'</span>, omegaEndFrames, <span class="keyword">...</span>
+0520     <span class="string">'time'</span>, omegaTimes, <span class="keyword">...</span>
+0521     <span class="string">'interTime'</span>, omegaInterTimes, <span class="keyword">...</span>
+0522     <span class="string">'interDistance'</span>, omegaInterDistances, <span class="keyword">...</span>
+0523     <span class="string">'isVentral'</span>, isOmegaFramesVentral);
+0524 
+0525 omegas = struct( <span class="keyword">...</span>
+0526     <span class="string">'frames'</span>, omegaFrames, <span class="keyword">...</span>
+0527     <span class="string">'frequency'</span>, omegaFrequency, <span class="keyword">...</span>
+0528     <span class="string">'timeRatio'</span>, omegaTimeRatio);
+0529 
+0530 <span class="comment">% The worm upsilon turns.</span>
+0531 upsilonFrames = struct( <span class="keyword">...</span>
+0532     <span class="string">'start'</span>, upsilonStartFrames, <span class="keyword">...</span>
+0533     <span class="string">'end'</span>, upsilonEndFrames, <span class="keyword">...</span>
+0534     <span class="string">'time'</span>, upsilonTimes, <span class="keyword">...</span>
+0535     <span class="string">'interTime'</span>, upsilonInterTimes, <span class="keyword">...</span>
+0536     <span class="string">'interDistance'</span>, upsilonInterDistances, <span class="keyword">...</span>
+0537     <span class="string">'isVentral'</span>, isUpsilonFramesVentral);
+0538 upsilons = struct( <span class="keyword">...</span>
+0539     <span class="string">'frames'</span>, upsilonFrames, <span class="keyword">...</span>
+0540     <span class="string">'frequency'</span>, upsilonFrequency, <span class="keyword">...</span>
+0541     <span class="string">'timeRatio'</span>, upsilonTimeRatio);
+0542 
+0543 <span class="comment">% The worm locomotion turns.</span>
+0544 locomotionTurns = struct( <span class="keyword">...</span>
+0545     <span class="string">'omegas'</span>, omegas, <span class="keyword">...</span>
+0546     <span class="string">'upsilons'</span>, upsilons);
+0547 
+0548 <span class="comment">% The worm locomotion path centroid coordinates.</span>
+0549  = struct( <span class="keyword">...</span>
+0550     <span class="string">'summary'</span>, <span class="string">''</span>, <span class="keyword">...</span>
+0551     <span class="string">'method'</span>, <span class="string">''</span>);
+0552 centroidCoordinates = struct( <span class="keyword">...</span>
+0553     <span class="string">'x'</span>, centroidXCoordinates, <span class="keyword">...</span>
+0554     <span class="string">'y'</span>, centroidYCoordinates);
+0555 
+0556 <span class="comment">% The worm locomotion path.</span>
+0557  = struct( <span class="keyword">...</span>
+0558     <span class="string">'summary'</span>, <span class="string">''</span>, <span class="keyword">...</span>
+0559     <span class="string">'method'</span>, <span class="string">''</span>);
+0560 locomotionPath = struct( <span class="keyword">...</span>
+0561     <span class="string">'stdDev'</span>, pathStdDev, <span class="keyword">...</span>
+0562     <span class="string">'skewness'</span>, pathSkewness, <span class="keyword">...</span>
+0563     <span class="string">'kurtosis'</span>, pathKurtosis, <span class="keyword">...</span>
+0564     <span class="string">'coordinates'</span>, centroidCoordinates);
+0565 
+0566 <span class="comment">%% The worm locomotion.</span>
+0567 locomotion = struct( <span class="keyword">...</span>
+0568     <span class="string">'motion'</span>, motion, <span class="keyword">...</span>
+0569     <span class="string">'velocity'</span>, velocity, <span class="keyword">...</span>
+0570     <span class="string">'bends'</span>, locomotionBends, <span class="keyword">...</span>
+0571     <span class="string">'turns'</span>, locomotionTurns, <span class="keyword">...</span>
+0572     <span class="string">'path'</span>, locomotionPath);
+0573 
+0574 
+0575 
+0576 <span class="comment">%% The worm data.</span>
+0577 worm = struct(<span class="keyword">...</span>
+0578     <span class="string">'morphology'</span>, morphology, <span class="keyword">...</span>
+0579     <span class="string">'posture'</span>, posture, <span class="keyword">...</span>
+0580     <span class="string">'locomotion'</span>, locomotion);
+0581 
+0582 
+0583 
+0584 <span class="comment">%% *** THE SUMMARY</span>
+0585 summary = struct( <span class="keyword">...</span>
+0586     <span class="string">'info'</span>, info, <span class="keyword">...</span>
+0587     <span class="string">'worm'</span>, worm);
+0588 <span class="keyword">end</span>
+0589</pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

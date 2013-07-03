@@ -1,0 +1,305 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of events2video</title>
+  <meta name="keywords" content="events2video">
+  <meta name="description" content="EVENTS2VIDEO Create a video of events.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Events -->
+<h1>events2video
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>EVENTS2VIDEO Create a video of events.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function events2video(eventFrames, videoFile, eventVideoFile, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">EVENTS2VIDEO Create a video of events.
+
+   EVENTS2VIDEO(EVENTFRAMES, VIDEOFILE, EVENTVIDEOFILE)
+
+   EVENTS2VIDEO(EVENTFRAMES, VIDEOFILE, EVENTVIDEOFILE, CONVERT2GRAY)
+
+   EVENTS2VIDEO(EVENTFRAMES, VIDEOFILE, EVENTVIDEOFILE, CONVERT2GRAY
+                ISHOWFRAME)
+
+   EVENTS2VIDEO(EVENTFRAMES, VIDEOFILE, EVENTVIDEOFILE, CONVERT2GRAY
+                ISHOWFRAME, ISSHOWTIME)
+
+   EVENTS2VIDEO(EVENTFRAMES, VIDEOFILE, EVENTVIDEOFILE, CONVERT2GRAY
+                ISHOWFRAME, ISSHOWTIME, EVENTSEPARATORTIME)
+
+   Inputs:
+       eventFrames        - the event frames (see findEvent)
+       videoFile          - the name of the video file
+       eventVideoFile     - the name for the event video file to create
+       isConvert2Gray     - should we convert the video to grayscale?
+                            The default is false.
+       isShowFrame        - are we showing the frame numbers in the video?
+                            The default is true.
+       isShowTime         - are we showing the timestamp in the video?
+                            The default is true.
+       eventSeparatorTime - how much time separates each event?
+                            The default is 2 seconds.
+
+ See also <a href="findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">FINDEVENT</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Util/text2im.html" class="code" title="function imtext=text2im(text)">text2im</a>	text2im - generates an image, containing the input text</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Features/bendAndSpeedTest.html" class="code" title="">bendAndSpeedTest</a>	Initialize our variables.</li><li><a href="../../SegWorm/Worms/Features/wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function events2video(eventFrames, videoFile, eventVideoFile, varargin)</a>
+0002 <span class="comment">%EVENTS2VIDEO Create a video of events.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   EVENTS2VIDEO(EVENTFRAMES, VIDEOFILE, EVENTVIDEOFILE)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   EVENTS2VIDEO(EVENTFRAMES, VIDEOFILE, EVENTVIDEOFILE, CONVERT2GRAY)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   EVENTS2VIDEO(EVENTFRAMES, VIDEOFILE, EVENTVIDEOFILE, CONVERT2GRAY</span>
+0009 <span class="comment">%                ISHOWFRAME)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   EVENTS2VIDEO(EVENTFRAMES, VIDEOFILE, EVENTVIDEOFILE, CONVERT2GRAY</span>
+0012 <span class="comment">%                ISHOWFRAME, ISSHOWTIME)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   EVENTS2VIDEO(EVENTFRAMES, VIDEOFILE, EVENTVIDEOFILE, CONVERT2GRAY</span>
+0015 <span class="comment">%                ISHOWFRAME, ISSHOWTIME, EVENTSEPARATORTIME)</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   Inputs:</span>
+0018 <span class="comment">%       eventFrames        - the event frames (see findEvent)</span>
+0019 <span class="comment">%       videoFile          - the name of the video file</span>
+0020 <span class="comment">%       eventVideoFile     - the name for the event video file to create</span>
+0021 <span class="comment">%       isConvert2Gray     - should we convert the video to grayscale?</span>
+0022 <span class="comment">%                            The default is false.</span>
+0023 <span class="comment">%       isShowFrame        - are we showing the frame numbers in the video?</span>
+0024 <span class="comment">%                            The default is true.</span>
+0025 <span class="comment">%       isShowTime         - are we showing the timestamp in the video?</span>
+0026 <span class="comment">%                            The default is true.</span>
+0027 <span class="comment">%       eventSeparatorTime - how much time separates each event?</span>
+0028 <span class="comment">%                            The default is 2 seconds.</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% See also FINDEVENT</span>
+0031 
+0032 <span class="comment">% Are there any events?</span>
+0033 <span class="keyword">if</span> isempty(eventFrames)
+0034     warning(<span class="string">'events2video:NoEvents'</span>, <span class="string">'There are no events'</span>);
+0035     <span class="keyword">return</span>;
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="comment">% Are we converting the video to grayscale?</span>
+0039 isConvert2Gray = false;
+0040 <span class="keyword">if</span> ~isempty(varargin)
+0041     isConvert2Gray = varargin{1};
+0042 <span class="keyword">end</span>
+0043 
+0044 <span class="comment">% Are we showing the frame number?</span>
+0045 isShowFrame = true;
+0046 <span class="keyword">if</span> length(varargin) &gt; 1
+0047     isShowFrame = varargin{2};
+0048 <span class="keyword">end</span>
+0049 
+0050 <span class="comment">% Are we showing the timestamp?</span>
+0051 isShowTime = true;
+0052 <span class="keyword">if</span> length(varargin) &gt; 2
+0053     isShowTime = varargin{3};
+0054 <span class="keyword">end</span>
+0055 
+0056 <span class="comment">% How many seconds interlude is there between showing events?</span>
+0057 eventSeparatorTime = 2;
+0058 <span class="keyword">if</span> length(varargin) &gt; 3
+0059     eventSeparatorTime = varargin{4};
+0060 <span class="keyword">end</span>
+0061 
+0062 <span class="comment">% Open the video.</span>
+0063 <span class="keyword">if</span> ispc()
+0064     vr = videoReader(videoFile, <span class="string">'plugin'</span>, <span class="string">'DirectShow'</span>);
+0065 <span class="keyword">else</span>
+0066     vr = videoReader(videoFile, <span class="string">'plugin'</span>, <span class="string">'ffmpegDirect'</span>);
+0067 <span class="keyword">end</span>
+0068 fps = get(vr, <span class="string">'fps'</span>);
+0069 
+0070 <span class="comment">% Is the video grayscale?</span>
+0071 <span class="comment">% Note: if there's no difference between the red and green channel, we</span>
+0072 <span class="comment">% consider all 3 RGB channels identical grayscale images.</span>
+0073 isGray = false;
+0074 isNextFrame = next(vr);
+0075 <span class="keyword">if</span> isNextFrame
+0076     img = getframe(vr);
+0077     imgSize = size(img);
+0078     <span class="keyword">if</span> max(max(abs(img(:,:,1) - img(:,:,2)))) == 0
+0079         isGray = true;
+0080     <span class="keyword">end</span>
+0081     
+0082 <span class="comment">% The video is empty.</span>
+0083 <span class="keyword">else</span>
+0084     close(vr);
+0085     error(<span class="string">'events2video:EmptyVideo'</span>, <span class="string">'The video is empty'</span>);
+0086 <span class="keyword">end</span>
+0087 
+0088 <span class="comment">% Construct the video file of events.</span>
+0089 <span class="keyword">if</span> ispc()
+0090     vw = videoWriter(eventVideoFile, <span class="string">'fps'</span>, fps, <span class="string">'plugin'</span>, <span class="string">'DirectShow'</span>);
+0091 <span class="keyword">else</span>
+0092     vw = videoWriter(eventVideoFile, <span class="string">'fps'</span>, fps, <span class="string">'plugin'</span>, <span class="string">'ffmpegDirect'</span>);
+0093 <span class="keyword">end</span>
+0094 
+0095 <span class="comment">% Create a video of the events.</span>
+0096 eventSeperatorFrames = round(eventSeparatorTime * fps);
+0097 timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0098 frame = round(timestamp * fps);
+0099 <span class="keyword">for</span> i = 1:length(eventFrames)
+0100     
+0101     <span class="comment">% Record the event seperator.</span>
+0102     <span class="keyword">if</span> eventSeperatorFrames &gt; 0
+0103         
+0104         <span class="comment">% Construct an image with the event information.</span>
+0105         <span class="keyword">if</span> isConvert2Gray
+0106             infoImg = uint8(zeros(imgSize(1:2)));
+0107         <span class="keyword">else</span>
+0108             infoImg = uint8(zeros(imgSize));
+0109         <span class="keyword">end</span>
+0110         
+0111         <span class="comment">% Show the event's starting frame number.</span>
+0112         startImg = <span class="keyword">...</span>
+0113             <a href="../../SegWorm/Util/text2im.html" class="code" title="function imtext=text2im(text)">text2im</a>([<span class="string">'Start Frame: '</span> num2str(eventFrames(i).start)]);
+0114         infoImg(1:size(startImg,1),1:size(startImg,2),1) = <span class="keyword">...</span>
+0115             startImg * 255;
+0116         <span class="keyword">if</span> ndims(infoImg) &gt; 2
+0117             infoImg(1:size(startImg,1),1:size(startImg,2),2) = <span class="keyword">...</span>
+0118                 startImg * 255;
+0119             infoImg(1:size(startImg,1),1:size(startImg,2),3) = <span class="keyword">...</span>
+0120                 startImg * 255;
+0121         <span class="keyword">end</span>
+0122 
+0123         <span class="comment">% Show the event's ending frame number.</span>
+0124         endImg = <a href="../../SegWorm/Util/text2im.html" class="code" title="function imtext=text2im(text)">text2im</a>([<span class="string">'End Frame: '</span> num2str(eventFrames(i).end)]);
+0125         infoImg((end - size(endImg,1) + 1):<span class="keyword">end</span>, <span class="keyword">...</span>
+0126             (end - size(endImg,2) + 1):<span class="keyword">end</span>,1) = endImg * 255;
+0127         <span class="keyword">if</span> ndims(infoImg) &gt; 2
+0128             infoImg((end - size(endImg,1) + 1):<span class="keyword">end</span>, <span class="keyword">...</span>
+0129                 (end - size(endImg,2) + 1):<span class="keyword">end</span>,2) = endImg * 255;
+0130             infoImg((end - size(endImg,1) + 1):<span class="keyword">end</span>, <span class="keyword">...</span>
+0131                 (end - size(endImg,2) + 1):<span class="keyword">end</span>,3) = endImg * 255;
+0132         <span class="keyword">end</span>
+0133 
+0134         <span class="comment">% Record the event information image.</span>
+0135         <span class="keyword">for</span> j = 1:eventSeperatorFrames
+0136             addframe(vw, infoImg);
+0137         <span class="keyword">end</span>
+0138     <span class="keyword">end</span>
+0139     
+0140     <span class="comment">% Are we at the start frame?</span>
+0141     startFrame = eventFrames(i).start;
+0142     <span class="keyword">if</span> frame ~= startFrame
+0143         
+0144         <span class="comment">% Step to the next video frame.</span>
+0145         <span class="keyword">if</span> startFrame - frame == 1
+0146             next(vr);
+0147             timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0148             frame = round(timestamp * fps);
+0149             
+0150         <span class="comment">% Seek the next video frame.</span>
+0151         <span class="keyword">else</span>
+0152             
+0153             <span class="comment">% Find the requested frame.</span>
+0154             <span class="comment">% Note: seek is inaccurate.</span>
+0155             seek(vr, startFrame);
+0156             timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0157             
+0158             <span class="comment">% We overshot the requested frame.</span>
+0159             j = startFrame;
+0160             <span class="keyword">while</span> j &gt; 0 &amp;&amp; round(timestamp * fps) &gt; startFrame
+0161                 j = j - 1;
+0162                 seek(vr, j);
+0163                 timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0164             <span class="keyword">end</span>
+0165             
+0166             <span class="comment">% We undershot the requested frame.</span>
+0167             isNextFrame = true;
+0168             <span class="keyword">while</span> isNextFrame &amp;&amp; round(timestamp * fps) &lt; startFrame
+0169                 isNextFrame = next(vr);
+0170                 timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0171             <span class="keyword">end</span>
+0172             frame = round(timestamp * fps);
+0173         <span class="keyword">end</span>
+0174     <span class="keyword">end</span>
+0175     
+0176     <span class="comment">% Save the event frames.</span>
+0177     endFrame = eventFrames(i).end;
+0178     <span class="keyword">while</span> isNextFrame &amp;&amp; frame &lt;= endFrame
+0179         
+0180         <span class="comment">% Get the video frame.</span>
+0181         img = getframe(vr);
+0182         
+0183         <span class="comment">% Convert the frame to grayscale.</span>
+0184         <span class="keyword">if</span> isConvert2Gray
+0185             <span class="keyword">if</span> isGray
+0186                 img = img(:,:,1);
+0187             <span class="keyword">else</span>
+0188                 img = rgb2gray(getframe(vr));
+0189             <span class="keyword">end</span>
+0190         <span class="keyword">end</span>
+0191         
+0192         <span class="comment">% Show the frame number.</span>
+0193         <span class="keyword">if</span> isShowFrame
+0194             frameImg = <a href="../../SegWorm/Util/text2im.html" class="code" title="function imtext=text2im(text)">text2im</a>([<span class="string">'Frame: '</span> num2str(frame)]);
+0195             img(1:size(frameImg,1),1:size(frameImg,2),1) = <span class="keyword">...</span>
+0196                 frameImg * 255;
+0197             <span class="keyword">if</span> ndims(img) &gt; 2
+0198                 img(1:size(frameImg,1),1:size(frameImg,2),2) = <span class="keyword">...</span>
+0199                     frameImg * 255;
+0200                 img(1:size(frameImg,1),1:size(frameImg,2),3) = <span class="keyword">...</span>
+0201                     frameImg * 255;
+0202             <span class="keyword">end</span>
+0203         <span class="keyword">end</span>
+0204         
+0205         <span class="comment">% Show the timestamp.</span>
+0206         <span class="keyword">if</span> isShowTime
+0207             timeImg = <a href="../../SegWorm/Util/text2im.html" class="code" title="function imtext=text2im(text)">text2im</a>([<span class="string">'Time: '</span> num2str(timestamp, <span class="string">'%.3f'</span>)]);
+0208             img((end - size(timeImg,1) + 1):<span class="keyword">end</span>, <span class="keyword">...</span>
+0209                 (end - size(timeImg,2) + 1):<span class="keyword">end</span>,1) = timeImg * 255;
+0210             <span class="keyword">if</span> ndims(img) &gt; 2
+0211                 img((end - size(timeImg,1) + 1):<span class="keyword">end</span>, <span class="keyword">...</span>
+0212                     (end - size(timeImg,2) + 1):<span class="keyword">end</span>,2) = timeImg * 255;
+0213                 img((end - size(timeImg,1) + 1):<span class="keyword">end</span>, <span class="keyword">...</span>
+0214                     (end - size(timeImg,2) + 1):<span class="keyword">end</span>,3) = timeImg * 255;
+0215             <span class="keyword">end</span>
+0216         <span class="keyword">end</span>
+0217         
+0218         <span class="comment">% Record the image.</span>
+0219         addframe(vw, img);
+0220         
+0221         <span class="comment">% Advance to the next video frame.</span>
+0222         isNextFrame = next(vr);
+0223         timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0224         frame = round(timestamp * fps);
+0225     <span class="keyword">end</span>
+0226 <span class="keyword">end</span>
+0227 
+0228 <span class="comment">% Clean up.</span>
+0229 close(vr);
+0230 close(vw);
+0231 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of buildVideoIO</title>
+  <meta name="keywords" content="buildVideoIO">
+  <meta name="description" content="buildVideoIO">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>buildVideoIO
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>buildVideoIO</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function buildVideoIO(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">buildVideoIO
+  Wrapper function for building the videoIO (videoReader and videoWriter) 
+  plugins.  Assumes that the user has already installed all required 
+  prerequisites, as described in INSTALL.*.txt.  
+
+  Those using 32-bit Matlab and/or 32-bit ffmpeg on 64-bit GNU/Linux
+  should read the corresponding sections of INSTALL.ffmpeg.txt and will
+  likely want to use at least one of the command-line shell script to
+  perform the build instead of buildVideoIO.
+
+buildVideoIO(makefileTarget)
+  Builds a specific makefile target, where makefileTarget is one of the 
+  following strings:
+
+    'clean'      : removes any compiled and/or temp files
+    'ffmpeg'     : builds the ffmpeg plugins               (Linux only)
+    'DirectShow' : builds the DirectShow plugins           (Windows only)
+    'echo'       : builds a simple popen2 protocol tester  (Linux only)
+
+  Other targets may exist as defined in 'makefile' (Linux only) and
+  'dshow.mak' (Windows only).
+
+buildVideoIO(...)
+  Passes along any arguments as command-line parameters to the
+  underlying makefile.  See 'dshow.mak' on Windows and 'makefile' on
+  GNU/Linux for additional targets and/or environment variables.
+
+Examples:
+  % build plugins using default settings
+  buildVideoIO       
+  % delete all temporary build and all mex files
+  buildVideoIO clean 
+  % build just the popen2 plugins with 32-bit ffmpeg for 64-bit Matlab
+  buildVideoIO FFMPEG_ARCH=glnx86 MEXEXT=mexa64 iffmpegPopen2 offmpegPopen2
+
+SEE ALSO:
+  videoReader
+  videoWriter
+  makefile
+  dshow.mak
+  INSTALL.dshow.html
+  INSTALL.ffmpeg.txt
+
+Copyright (c) 2006,2007,2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="clearVideoIO.html" class="code" title="function clearVideoIO(varargin)">clearVideoIO</a>	clearVideoIO</li><li><a href="videoIODir.html" class="code" title="function d = videoIODir">videoIODir</a>	d = videoIODir</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="buildVideoIoPackages.html" class="code" title="">buildVideoIoPackages</a>	buildVideoIoPackages</li><li><a href="../videoIO/tests/addFrameDemo.html" class="code" title="function addFrameDemo">addFrameDemo</a>	addFrameDemo</li><li><a href="../videoIO/tests/divxSeekExpmt.html" class="code" title="function divxSeekExpmt">divxSeekExpmt</a>	divxSeekExpmt</li><li><a href="../videoIO/tests/testDirectShow.html" class="code" title="">testDirectShow</a>	testDirectShow</li><li><a href="../videoIO/tests/testEcho.html" class="code" title="function testEcho">testEcho</a>	testEcho</li><li><a href="../videoIO/tests/testVfw.html" class="code" title="">testVfw</a>	testVfw</li><li><a href="../videoIO/tests/videoWriterDemo.html" class="code" title="">videoWriterDemo</a>	videoWriterDemo</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function buildVideoIO(varargin)</a>
+0002 <span class="comment">%buildVideoIO</span>
+0003 <span class="comment">%  Wrapper function for building the videoIO (videoReader and videoWriter)</span>
+0004 <span class="comment">%  plugins.  Assumes that the user has already installed all required</span>
+0005 <span class="comment">%  prerequisites, as described in INSTALL.*.txt.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Those using 32-bit Matlab and/or 32-bit ffmpeg on 64-bit GNU/Linux</span>
+0008 <span class="comment">%  should read the corresponding sections of INSTALL.ffmpeg.txt and will</span>
+0009 <span class="comment">%  likely want to use at least one of the command-line shell script to</span>
+0010 <span class="comment">%  perform the build instead of buildVideoIO.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%buildVideoIO(makefileTarget)</span>
+0013 <span class="comment">%  Builds a specific makefile target, where makefileTarget is one of the</span>
+0014 <span class="comment">%  following strings:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%    'clean'      : removes any compiled and/or temp files</span>
+0017 <span class="comment">%    'ffmpeg'     : builds the ffmpeg plugins               (Linux only)</span>
+0018 <span class="comment">%    'DirectShow' : builds the DirectShow plugins           (Windows only)</span>
+0019 <span class="comment">%    'echo'       : builds a simple popen2 protocol tester  (Linux only)</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%  Other targets may exist as defined in 'makefile' (Linux only) and</span>
+0022 <span class="comment">%  'dshow.mak' (Windows only).</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%buildVideoIO(...)</span>
+0025 <span class="comment">%  Passes along any arguments as command-line parameters to the</span>
+0026 <span class="comment">%  underlying makefile.  See 'dshow.mak' on Windows and 'makefile' on</span>
+0027 <span class="comment">%  GNU/Linux for additional targets and/or environment variables.</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%Examples:</span>
+0030 <span class="comment">%  % build plugins using default settings</span>
+0031 <span class="comment">%  buildVideoIO</span>
+0032 <span class="comment">%  % delete all temporary build and all mex files</span>
+0033 <span class="comment">%  buildVideoIO clean</span>
+0034 <span class="comment">%  % build just the popen2 plugins with 32-bit ffmpeg for 64-bit Matlab</span>
+0035 <span class="comment">%  buildVideoIO FFMPEG_ARCH=glnx86 MEXEXT=mexa64 iffmpegPopen2 offmpegPopen2</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%SEE ALSO:</span>
+0038 <span class="comment">%  videoReader</span>
+0039 <span class="comment">%  videoWriter</span>
+0040 <span class="comment">%  makefile</span>
+0041 <span class="comment">%  dshow.mak</span>
+0042 <span class="comment">%  INSTALL.dshow.html</span>
+0043 <span class="comment">%  INSTALL.ffmpeg.txt</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%Copyright (c) 2006,2007,2008 Gerald Dalley</span>
+0046 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0047 <span class="comment">%when using this library on GNU/Linux).</span>
+0048 
+0049 <a href="clearVideoIO.html" class="code" title="function clearVideoIO(varargin)">clearVideoIO</a>; <span class="comment">% avoids file locking issues on .mex* files</span>
+0050 
+0051 origDir = pwd;
+0052 cd(<a href="videoIODir.html" class="code" title="function d = videoIODir">videoIODir</a>);
+0053 
+0054 setenv(<span class="string">'MATLAB_PATH'</span>, matlabroot);
+0055 
+0056 <span class="comment">% Construct command-line call to make or nmake</span>
+0057 <span class="keyword">if</span> ispc
+0058   <span class="comment">% Windows</span>
+0059   <span class="keyword">if</span> (isempty(varargin))
+0060     <span class="comment">% No varargin</span>
+0061     cmd = [<span class="string">'nmake -f dshow.mak all MEXEXT='</span> mexext];
+0062   <span class="keyword">elseif</span> isempty(strmatch(<span class="string">'MEXEXT='</span>, varargin{:}))
+0063     <span class="comment">% No MEXEXT=&lt;ext&gt; arg</span>
+0064     cmd = [<span class="string">'nmake -f dshow.mak MEXEXT='</span> mexext <span class="string">' '</span> sprintf(<span class="string">'%s '</span>,varargin{:})];
+0065   <span class="keyword">else</span>
+0066     <span class="comment">% At least one MEXEXT=&lt;ext&gt; arg</span>
+0067     <span class="keyword">if</span> all(strcmp([<span class="string">'MEXEXT='</span> mexext], {varargin{strmatch(<span class="string">'MEXEXT='</span>, varargin)}}))
+0068       <span class="comment">% &lt;ext&gt; matches the current platform</span>
+0069       cmd = [<span class="string">'nmake -f dshow.mak '</span>, sprintf(<span class="string">'%s '</span>,varargin{:})];
+0070     <span class="keyword">else</span>
+0071       error(<span class="string">'Cross-compilation is not supported yet on Windows.'</span>);
+0072     <span class="keyword">end</span>
+0073   <span class="keyword">end</span>
+0074   
+0075 <span class="keyword">else</span>
+0076   <span class="comment">% Linux / Mac</span>
+0077   cmd = [<span class="string">'make '</span>, sprintf(<span class="string">'%s '</span>,varargin{:},[<span class="string">'MEXEXT='</span> mexext])];
+0078 <span class="keyword">end</span>
+0079 
+0080 fprintf(<span class="string">'%s\n'</span>, cmd);
+0081 [s] = system(cmd);
+0082 
+0083 cd(origDir);
+0084 <span class="keyword">if</span> (s~=0), 
+0085   error([<span class="string">'build failed.  Make sure you read and follow '</span>,<span class="keyword">...</span>
+0086     <span class="string">'all instructions found in INSTALL.*.txt before attempting '</span>,<span class="keyword">...</span>
+0087     <span class="string">'to build portions of the videoIO library.'</span>]);
+0088 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

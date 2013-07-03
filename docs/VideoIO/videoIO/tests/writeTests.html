@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of writeTests</title>
+  <meta name="keywords" content="writeTests">
+  <meta name="description" content="writeTests(plugin)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>writeTests
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>writeTests(plugin)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function writeTests(plugin, readerPlugin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">writeTests(plugin)
+writeTests(writerPlugin, readerPlugin)
+  Performs a battery of simple read-write tests on a given videoReader/
+  videoWriter plugin.  Uses the default codec.
+
+Examples:
+  writeTests
+  writeTests ffmpegPopen2  % linux &amp; similar
+  writeTests ffmpegDirect  % ...if system's gcc is compatible w/ Matlab's
+  writeTests DirectShow    % Windows</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>	INFO=GET(VR)</li><li><a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>	FRAME=GETFRAME(VR)</li><li><a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>	WORKED=NEXT(VR)</li><li><a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>	ADDFRAME  Add video frame to VIDEOWRITER stream.</li><li><a href="../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="../../videoIO/@videoWriter/get.html" class="code" title="function info = get(vw,varargin)">get</a>	INFO=GET(VW)</li><li><a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>	videoWriter class constructor</li><li><a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>	pluginName = defaultVideoIOPlugin(ctor)</li><li><a href="getDigit.html" class="code" title="function d = getDigit(num)">getDigit</a>	d = getDigit(num)</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a>	vrassert(testCondition)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="standardTestBattery.html" class="code" title="function standardTestBattery(plugin)">standardTestBattery</a>	standardTestBattery(plugin)</li><li><a href="testVfw.html" class="code" title="">testVfw</a>	testVfw</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function writeTests(plugin, readerPlugin)</a>
+0002 <span class="comment">%writeTests(plugin)</span>
+0003 <span class="comment">%writeTests(writerPlugin, readerPlugin)</span>
+0004 <span class="comment">%  Performs a battery of simple read-write tests on a given videoReader/</span>
+0005 <span class="comment">%  videoWriter plugin.  Uses the default codec.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%Examples:</span>
+0008 <span class="comment">%  writeTests</span>
+0009 <span class="comment">%  writeTests ffmpegPopen2  % linux &amp; similar</span>
+0010 <span class="comment">%  writeTests ffmpegDirect  % ...if system's gcc is compatible w/ Matlab's</span>
+0011 <span class="comment">%  writeTests DirectShow    % Windows</span>
+0012 
+0013 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>
+0014 
+0015 <span class="keyword">if</span> nargin &lt; 1, plugin = <a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>; <span class="keyword">end</span>
+0016 <span class="keyword">if</span> nargin &lt; 2, readerPlugin = plugin;         <span class="keyword">end</span>
+0017 
+0018 w = 720;
+0019 h = 480;
+0020 N = 100;
+0021 
+0022 tmpFile = [tempname <span class="string">'.avi'</span>];
+0023 
+0024 <span class="comment">% Make sure the plugin catches bad argument errors</span>
+0025 <span class="keyword">try</span>
+0026   vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>(tmpFile, plugin, <span class="string">'thisIsNotAValidParameterName'</span>,0);
+0027   error(<span class="string">'invalid parameter name not caught'</span>);
+0028 <span class="keyword">catch</span>  <span class="comment">%#ok&lt;CTCH&gt;</span>
+0029   <span class="comment">% good...we expected an error</span>
+0030 <span class="keyword">end</span>
+0031 <span class="keyword">try</span>
+0032   <span class="comment">% make sure ordering doesn't matter</span>
+0033   vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>(tmpFile, plugin, <span class="keyword">...</span>
+0034                    <span class="string">'width'</span>,320, <span class="string">'thisIsNotAValidParameterName'</span>,0);
+0035   error(<span class="string">'invalid parameter name not caught'</span>);
+0036 <span class="keyword">catch</span>  <span class="comment">%#ok&lt;CTCH&gt;</span>
+0037   <span class="comment">% good...we expected an error</span>
+0038 <span class="keyword">end</span>
+0039 
+0040 <span class="comment">% Try writing a short video</span>
+0041 <span class="keyword">try</span>
+0042   <span class="comment">% write the video</span>
+0043   vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>(tmpFile, plugin, <span class="string">'width'</span>,w, <span class="string">'height'</span>,h);
+0044   
+0045   frames = {};
+0046   <span class="keyword">for</span> i=1:N
+0047     frame = [<a href="getDigit.html" class="code" title="function d = getDigit(num)">getDigit</a>(floor(i/100)) <span class="keyword">...</span>
+0048              <a href="getDigit.html" class="code" title="function d = getDigit(num)">getDigit</a>(mod(floor(i/10), 10)) <span class="keyword">...</span>
+0049              <a href="getDigit.html" class="code" title="function d = getDigit(num)">getDigit</a>(mod(i,10))];
+0050     frame = imresize(frame, [h,w]);
+0051     frames{i} = repmat(uint8(255*frame), [1 1 3]); <span class="comment">%#ok&lt;AGROW&gt;</span>
+0052     <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, frame);
+0053   <span class="keyword">end</span>
+0054   vw = <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw);
+0055   
+0056   <span class="comment">% read it back in</span>
+0057   vr = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(tmpFile, readerPlugin);
+0058   info = <a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(vr);
+0059   filt = fspecial(<span class="string">'gaussian'</span>, 5,2);
+0060   <span class="keyword">for</span> i=1:N-double(info.nHiddenFinalFrames) - 2 <span class="comment">%don't worry if the last few frames didn't work</span>
+0061     <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr);  
+0062     currImg = <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr);
+0063     diffImg = abs(double(imfilter(frames{i},filt)) - <span class="keyword">...</span>
+0064                   double(imfilter(currImg,filt))); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0065     <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> all(all(rgb2gray(diffImg) &lt; 10));
+0066     <span class="comment">%subplot(121); imshow(frames{i}); subplot(122); imshow(getframe(vr)); pause(0.01);</span>
+0067   <span class="keyword">end</span>
+0068   <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr);
+0069   
+0070   delete(tmpFile);
+0071 <span class="keyword">catch</span> <span class="comment">%#ok&lt;CTCH&gt;</span>
+0072   e = lasterror; <span class="comment">%#ok&lt;LERR&gt;</span>
+0073   <span class="keyword">try</span> <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr); <span class="keyword">catch</span> <span class="keyword">end</span> <span class="comment">%#ok&lt;CTCH&gt;</span>
+0074   <span class="keyword">try</span> <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw); <span class="keyword">catch</span> <span class="keyword">end</span> <span class="comment">%#ok&lt;CTCH&gt;</span>
+0075   delete(tmpFile);
+0076   rethrow(e);
+0077 <span class="keyword">end</span>
+0078   
+0079 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of testAll</title>
+  <meta name="keywords" content="testAll">
+  <meta name="description" content="testAll">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>testAll
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>testAll</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">testAll
+  Script that runs all known tests for the current platform, using the
+  appropriate videoReader/videoWriter plugins.
+
+Example:
+  testAll
+
+Copyright (c) 2006 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>	videoWriter class constructor</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="testDirectShow.html" class="code" title="">testDirectShow</a>	testDirectShow</li><li><a href="testFfmpeg.html" class="code" title="function testFfmpeg">testFfmpeg</a>	testFfmpeg</li><li><a href="testLoadAndImread.html" class="code" title="function testLoadAndImread">testLoadAndImread</a>	testLoadAndImread</li><li><a href="testMatrix.html" class="code" title="function testMatrix">testMatrix</a>	testMatrix</li><li><a href="testVfw.html" class="code" title="">testVfw</a>	testVfw</li><li><a href="testVideoRead.html" class="code" title="">testVideoRead</a>	testVideoRead</li><li><a href="test_pvtVideoIO_mexName.html" class="code" title="">test_pvtVideoIO_mexName</a>	This is a regression test for the pseudo-private pvtVideoIO_mexName</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%testAll</span>
+0002 <span class="comment">%  Script that runs all known tests for the current platform, using the</span>
+0003 <span class="comment">%  appropriate videoReader/videoWriter plugins.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%Example:</span>
+0006 <span class="comment">%  testAll</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%Copyright (c) 2006 Gerald Dalley</span>
+0009 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0010 <span class="comment">%when using this library on GNU/Linux).</span>
+0011 
+0012 <span class="comment">% make sure that we have fresh plugins</span>
+0013 clear mex <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>* <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>*;
+0014 <span class="comment">% clear our indentation shared variable (assumes testAll is never called</span>
+0015 <span class="comment">% by a higher-level script).</span>
+0016 clear <span class="keyword">global</span> videoIO_test_indentLevel;
+0017 
+0018 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>
+0019 
+0020 <span class="comment">% this is an internal test that should never fail</span>
+0021 <a href="test_pvtVideoIO_mexName.html" class="code" title="">test_pvtVideoIO_mexName</a>;
+0022 
+0023 <span class="comment">% Test the 'load' and 'imread' plugins</span>
+0024 <a href="testLoadAndImread.html" class="code" title="function testLoadAndImread">testLoadAndImread</a>;
+0025 
+0026 <span class="comment">% Test the 'matrix' plugin</span>
+0027 <a href="testMatrix.html" class="code" title="function testMatrix">testMatrix</a>;
+0028 
+0029 <span class="comment">% Test the primary videoReader and videoWriter plugins for the current</span>
+0030 <span class="comment">% platform.</span>
+0031 <span class="keyword">if</span> ispc, 
+0032   <a href="testDirectShow.html" class="code" title="">testDirectShow</a>; 
+0033   <a href="testVfw.html" class="code" title="">testVfw</a>; 
+0034 <span class="keyword">else</span>
+0035   <a href="testFfmpeg.html" class="code" title="function testFfmpeg">testFfmpeg</a>;
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="comment">% Test the videoread function</span>
+0039 <a href="testVideoRead.html" class="code" title="">testVideoRead</a>;
+0040 
+0041 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

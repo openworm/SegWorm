@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormKinks2</title>
+  <meta name="keywords" content="wormKinks2">
+  <meta name="description" content="WORMKINKS Compute the kinks in a worm.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>wormKinks2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMKINKS Compute the kinks in a worm.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [numKinks indices] = wormKinks2(worms, distance, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMKINKS Compute the kinks in a worm.
+
+   [numKinks indices] = wormKinks(angles, distance)
+
+   [numKinks indices] = wormKinks(angles, distance, isPeaks)
+
+   [numKinks indices] = wormKinks(angles, distance, iPeaks, peakThr)
+
+   [numKinks indices] = wormKinks(angles, distance, iPeaks, peakThr,
+                        verbose)
+
+   Inputs:
+       worms    - a 2-D worm (x and y coordinates in rows); or,
+                  a 3-D matrix of worms (the 3rd dimension is worms)
+       distance - the distance to use in computing the angle and peaks
+       isPeaks  - are we computing the peaks or crossovers between peaks
+       peakThr  - the peak threshold (to ignore noise)
+       verbose  - verbose mode shows the results in a figure
+
+   Outputs:
+       numKinks - the number of kinks
+       indices  - the indices of the kinks</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a>	CURVATURE Compute the curvature for a vector of points.</li><li><a href="../../../SegWorm/Util/maxPeaksDist.html" class="code" title="function [peaks indices] = maxPeaksDist(x, dist, varargin)">maxPeaksDist</a>	MAXPEAKSDIST Find the maximum peaks in a vector. The peaks</li><li><a href="../../../SegWorm/Util/minPeaksDist.html" class="code" title="function [peaks indices] = minPeaksDist(x, dist, varargin)">minPeaksDist</a>	MINPEAKSDIST Find the minimum peaks in a vector. The peaks</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function indices = findWormKinks(angles, distance, isPeaks, peakThr)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [numKinks indices] = wormKinks2(worms, distance, varargin)</a>
+0002 <span class="comment">%WORMKINKS Compute the kinks in a worm.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [numKinks indices] = wormKinks(angles, distance)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [numKinks indices] = wormKinks(angles, distance, isPeaks)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   [numKinks indices] = wormKinks(angles, distance, iPeaks, peakThr)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   [numKinks indices] = wormKinks(angles, distance, iPeaks, peakThr,</span>
+0011 <span class="comment">%                        verbose)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Inputs:</span>
+0014 <span class="comment">%       worms    - a 2-D worm (x and y coordinates in rows); or,</span>
+0015 <span class="comment">%                  a 3-D matrix of worms (the 3rd dimension is worms)</span>
+0016 <span class="comment">%       distance - the distance to use in computing the angle and peaks</span>
+0017 <span class="comment">%       isPeaks  - are we computing the peaks or crossovers between peaks</span>
+0018 <span class="comment">%       peakThr  - the peak threshold (to ignore noise)</span>
+0019 <span class="comment">%       verbose  - verbose mode shows the results in a figure</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   Outputs:</span>
+0022 <span class="comment">%       numKinks - the number of kinks</span>
+0023 <span class="comment">%       indices  - the indices of the kinks</span>
+0024 
+0025 <span class="comment">% Return the peak indices as the default.</span>
+0026 isPeaks = 1;
+0027 <span class="keyword">if</span> ~isempty(varargin)
+0028     isPeaks = varargin{1};
+0029 <span class="keyword">end</span>
+0030 
+0031 <span class="comment">% Use no peak threshold as the default.</span>
+0032 peakThr = [];
+0033 <span class="keyword">if</span> length(varargin) &gt; 1
+0034     peakThr = varargin{2};
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="comment">% Should we show the results on the worm?</span>
+0038 verbose = 0;
+0039 <span class="keyword">if</span> length(varargin) &gt; 2
+0040     verbose = varargin{3};
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="comment">% Compute the kinks for the worms.</span>
+0044 indices = cell(size(worms, 3),1);
+0045 numKinks(1:size(worms, 3)) = NaN;
+0046 <span class="keyword">for</span> i = 1:size(worms, 3)
+0047     
+0048     <span class="comment">% Compute the worm curvature.</span>
+0049     angles = <a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a>(worms(:,:,i), distance);
+0050     
+0051     <span class="comment">% Compute the worm kinks.</span>
+0052     indices(i) = {<a href="#_sub1" class="code" title="subfunction indices = findWormKinks(angles, distance, isPeaks, peakThr)">findWormKinks</a>(angles, distance, isPeaks, peakThr)};
+0053     <span class="keyword">if</span> ~isnan(indices{i})
+0054         numKinks(i) = length(indices{i});
+0055         
+0056         <span class="comment">% Show the results on the worm.</span>
+0057         <span class="keyword">if</span> verbose
+0058             
+0059             <span class="comment">% Orient the worm correctly.</span>
+0060             worm = squeeze(worms(:,:,i));
+0061             <span class="keyword">if</span> size(worm, 2) &gt; 2
+0062                 worm = worm';
+0063             <span class="keyword">end</span>
+0064             
+0065             <span class="comment">% Determine which angles have not been computed.</span>
+0066             nanAngles = isnan(angles);
+0067             
+0068             <span class="comment">% Show the results.</span>
+0069             figure;
+0070             hold on;
+0071             plot(worm(:,1), worm(:,2), <span class="string">'k.'</span>);
+0072             <span class="keyword">if</span> numKinks(i) &gt; 0
+0073                 plot(worm(indices{i},1), worm(indices{i},2), <span class="string">'g.'</span>);
+0074             <span class="keyword">end</span>
+0075             plot(worm(nanAngles,1), worm(nanAngles,2), <span class="string">'r.'</span>);
+0076             axis image;
+0077         <span class="keyword">end</span>
+0078     <span class="keyword">end</span>
+0079 <span class="keyword">end</span>
+0080 <span class="keyword">end</span>
+0081 
+0082 <span class="comment">% Compute the kinks for a worm.</span>
+0083 <a name="_sub1" href="#_subfunctions" class="code">function indices = findWormKinks(angles, distance, isPeaks, peakThr)</a>
+0084 
+0085 <span class="comment">% Find the start of the angles.</span>
+0086 i = 1;
+0087 <span class="keyword">while</span> i &lt;= length(angles) &amp;&amp; isnan(angles(i))
+0088     i = i + 1;
+0089 <span class="keyword">end</span>
+0090 angleStart = i;
+0091 
+0092 <span class="comment">% Find the end of the angles.</span>
+0093 i = length(angles);
+0094 <span class="keyword">while</span> i &gt;= 1 &amp;&amp; isnan(angles(i))
+0095     i = i - 1;
+0096 <span class="keyword">end</span>
+0097 angleEnd = i;
+0098 
+0099 <span class="comment">% Use the non-NaN angles.</span>
+0100 angles = angles(angleStart:angleEnd);
+0101 
+0102 <span class="comment">% Empty worm.</span>
+0103 <span class="keyword">if</span> isempty(angles)
+0104     indices = NaN;
+0105     
+0106 <span class="comment">% Locate the peak angles.</span>
+0107 <span class="keyword">elseif</span> isPeaks
+0108     aAngles = abs(angles);
+0109     [~, indices] = <a href="../../../SegWorm/Util/maxPeaksDist.html" class="code" title="function [peaks indices] = maxPeaksDist(x, dist, varargin)">maxPeaksDist</a>(aAngles, distance);
+0110     <span class="comment">%[~, minIs] = minPeaksDist(angles, distance);</span>
+0111     <span class="comment">%indices = [minIs; maxIs];</span>
+0112     
+0113     <span class="comment">% Clean up the indices.</span>
+0114     indices = sort(indices);
+0115     <span class="comment">%indices = unique(indices);</span>
+0116     
+0117     <span class="comment">% Remove small peaks.</span>
+0118     <span class="keyword">if</span> ~isempty(peakThr)
+0119         indices(aAngles(indices) &lt; peakThr) = [];
+0120     
+0121     <span class="comment">% Remove the start and end peaks, if necessary.</span>
+0122     <span class="keyword">else</span>
+0123         <span class="keyword">if</span> indices(1) == 1
+0124             indices(1) = [];
+0125         <span class="keyword">end</span>
+0126         <span class="keyword">if</span> indices(end) == length(aAngles)
+0127             indices(end) = [];
+0128         <span class="keyword">end</span>
+0129     <span class="keyword">end</span>
+0130     
+0131 <span class="comment">% Locate the cross over points (where the derivative of the angles is 0).</span>
+0132 <span class="keyword">else</span>
+0133     aAngles = abs(angles);
+0134     [~, indices] = <a href="../../../SegWorm/Util/minPeaksDist.html" class="code" title="function [peaks indices] = minPeaksDist(x, dist, varargin)">minPeaksDist</a>(aAngles, distance);
+0135     
+0136     <span class="comment">% Remove large peaks.</span>
+0137     <span class="keyword">if</span> ~isempty(peakThr)
+0138         indices(aAngles(indices) &gt; peakThr) = [];
+0139         
+0140     <span class="comment">% Remove the start and end peaks, if necessary.</span>
+0141     <span class="keyword">else</span>
+0142         <span class="keyword">if</span> indices(1) == 1
+0143             indices(1) = [];
+0144         <span class="keyword">end</span>
+0145         <span class="keyword">if</span> indices(end) == length(aAngles)
+0146             indices(end) = [];
+0147         <span class="keyword">end</span>
+0148     <span class="keyword">end</span>
+0149 <span class="keyword">end</span>
+0150 
+0151 <span class="comment">% Offset the indices to their correct values.</span>
+0152 indices = indices + angleStart - 1;
+0153 <span class="keyword">end</span>
+0154</pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

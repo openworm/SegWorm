@@ -1,0 +1,1551 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of segWorm</title>
+  <meta name="keywords" content="segWorm">
+  <meta name="description" content="SEGWORM Segment the worm in an image and organize the information in a">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Segmentation -->
+<h1>segWorm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>SEGWORM Segment the worm in an image and organize the information in a</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm = segWorm(img, frame, isNormalized, verbose, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SEGWORM Segment the worm in an image and organize the information in a
+   structure.
+
+   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE)
+
+   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, SAMPLES)
+
+   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, SAMPLES, ISINTERP)
+
+   Inputs:
+       img          - the image to segment
+       frame        - the frame number (if the image comes from video)
+       isNormalized - is the image already normalized (i.e., all pixel
+                      values are between 0 to 1, inclusive)?
+       verbose      - verbose mode shows the results in a figure
+       samples      - the number of samples to use in verbose mode;
+                      if empty, all the worm is used.
+       isInterp     - when downsampling, should we interpolate the missing
+                      data or copy it from the original worm;
+                      if empty, we interpolate the missing data.
+
+   Output:
+       worm - the worm information organized in a structure
+              This structure contains 8 sub-structures,
+              6 sub-sub-structures, and 4 sub-sub-sub-structures:
+
+              * Video *
+              video = {frame}
+
+              * Contour *
+              contour = {pixels, touchI, inI, outI, angles, headI, tailI}
+
+              * Skeleton *
+              skeleton = {pixels, touchI, inI, outI, inOutI, angles,
+                          length, chainCodeLengths, widths}
+
+              Note: positive skeleton angles bulge towards the side
+              clockwise from the worm's head (unless the worm is flipped).
+
+              * Head *
+              head = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              head.bounds{contour.left (indices for [start end]),
+                          contour.right (indices for [start end]),
+                          skeleton indices for [start end]}
+
+              * Tail *
+              tail = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              tail.bounds{contour.left (indices for [start end]),
+                          contour.right (indices for [start end]),
+                          skeleton indices for [start end]}
+
+              * Left Side (Counter Clockwise from the Head) *
+              left = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              left.bounds{contour (indices for [start end]),
+                          skeleton (indices for [start end])}
+
+              * Right Side (Clockwise from the Head) *
+              right = {bounds, pixels, area,
+                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              right.bounds{contour (indices for [start end]),
+                           skeleton (indices for [start end])}
+
+              * Orientation *
+              orientation = {head, vulva}
+              orientation.head = {isFlipped,
+                                  confidence.head, confidence.tail}
+              orientation.vulva = {isClockwiseFromHead,
+                                  confidence.vulva, confidence.nonVulva}
+
+   See also WORM2STRUCT, NORMWORMS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/bwClockTrace.html" class="code" title="function [contour] = bwClockTrace(img, seed, isClockwise)">bwClockTrace</a>	BWCLOCKTRACE Trace a contour (counter) clockwise.</li><li><a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>	CHAINCODELENGTH2INDEX Translate a length into an index. The index</li><li><a href="../../../SegWorm/ComputerVision/circComputeChainCodeLengths.html" class="code" title="function lengths = circComputeChainCodeLengths(points)">circComputeChainCodeLengths</a>	CIRCCOMPUTECHAINCODELENGTHS Compute the chain-code length, at each point,</li><li><a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>	CIRCCURVATURE Compute the curvature for a clockwise, circularly-connected</li><li><a href="../../../SegWorm/ComputerVision/computeChainCodeLengths.html" class="code" title="function lengths = computeChainCodeLengths(points)">computeChainCodeLengths</a>	COMPUTECHAINCODELENGTHS Compute the chain-code length, at each point, for</li><li><a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a>	CURVATURE Compute the curvature for a vector of points.</li><li><a href="../../../SegWorm/ComputerVision/inPolyMask.html" class="code" title="function [mask polygonI] = inPolyMask(polygon, seed, maskSize)">inPolyMask</a>	INPOLYMASK Create a mask of the inside of a polygon.</li><li><a href="../../../SegWorm/ComputerVision/otsuImg.html" class="code" title="function [bwImg] = otsuImg(img, varargin)">otsuImg</a>	OTSUIMG Use the Otsu threshold to binarize an image.</li><li><a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>	CIRCCONV Convolve the circularly connected vector a with b.</li><li><a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>	MAXPEAKSCIRCDIST Find the maximum peaks in a circular vector. The peaks</li><li><a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>	MINPEAKSCIRCDIST Find the minimum peaks in a circular vector. The peaks</li><li><a href="../../../SegWorm/Worms/Orientation/flipWormHead.html" class="code" title="function worm = flipWormHead(worm)">flipWormHead</a>	FLIPWORMHEAD Flip the head-to-tail orientation of the worm.</li><li><a href="../../../SegWorm/Worms/Orientation/flipWormVulva.html" class="code" title="function worm = flipWormVulva(worm)">flipWormVulva</a>	FLIPWORMVULVA Flip the vulval orientation of the worm.</li><li><a href="cleanWorm.html" class="code" title="function contour = cleanWorm(contour, wormSegSize)">cleanWorm</a>	CLEANWORM Clean up the worm contour by connecting any splits ends.</li><li><a href="coiledSkeleton.html" class="code" title="function worm = coiledSkeleton(oContour, iContour, sWormSegs)">coiledSkeleton</a>	COILEDSKELETON Summary of this function goes here</li><li><a href="linearSkeleton.html" class="code" title="function [skeleton cWidths] = linearSkeleton(headI, tailI, minP, minI,maxP, maxI, contour, wormSegSize, varargin)">linearSkeleton</a>	LINEARSKELETON Skeletonize a linear (non-looped) worm. The worm is</li><li><a href="worm2poly.html" class="code" title="function [polygon lcBounds rcBounds sBounds] = worm2poly(startSI, endSI,skeleton, headCI, tailCI, contour, isSplit, varargin)">worm2poly</a>	WORM2POLY Compute the polygon outline for a worm segment.</li><li><a href="../../../SegWorm/Worms/Util/norm2Worm.html" class="code" title="function worm = norm2Worm(frame, vulvaContour, nonVulvaContour,skeleton, skeletonAngles, inOutTouch, skeletonLength, widths,headArea, tailArea, vulvaArea, nonVulvaArea,origin, pixel2MicronScale, rotation, worm)">norm2Worm</a>	NORM2WORM Convert normalized worm information into a worm structure.</li><li><a href="../../../SegWorm/Worms/Util/normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">normWorms</a>	NORMWORMS Normalize the worms' information to a standard, compact set.</li><li><a href="../../../SegWorm/Worms/Util/worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>	WORM2STRUCT Organize worm information in a structure.</li><li><a href="../../../SegWorm/Worms/Video/overlayWormAngles.html" class="code" title="function oImg = overlayWormAngles(img, worm, cRGB360, sRGB360, sRGBNaN,headPattern, headRGB, isHeadOpaque, vulvaPattern, vulvaRGB, isVulvaOpaque)">overlayWormAngles</a>	OVERLAYWORMANGLES Overlay the worm's contour/skeleton angles (curvature)</li><li><a href="../../../SegWorm/Worms/Video/overlayWormTouch.html" class="code" title="function oImg = overlayWormTouch(img, worm, headRGB, isHeadOpaque,tailRGB, isTailOpaque, vulvaRGB, isVulvaOpaque, nonVulvaRGB, isNonVulvaOpaque,cTouchRGB, isCTouchOpaque, cInRGB, isCInOpaque, cOutRGB, isCOutOpaque,sTouchRGB, isSTouchOpaque, sInRGB, isSInOpaque, sOutRGB, isSOutOpaque,sInOutRGB, isSInOutOpaque)">overlayWormTouch</a>	OVERLAYWORMTOUCH Overlay the worm's contour/skeleton touching/inner/outer</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Features/wormVelocityTest.html" class="code" title="function [velocities centroidVelocities] =wormVelocityTest(wormFile, indices, use, type, scales, isSparse, verbose)">wormVelocityTest</a>	SEGWORMVIDEOFRAMES Segment the worm in a set of video frames and organize</li><li><a href="../../../SegWorm/Worms/Video/saveWormFrames.html" class="code" title="function failedFrames = saveWormFrames(wormFile, videoFile, frames,blockSize, varargin)">saveWormFrames</a>	SAVEWORMFRAMES Segment the worm in a set of video frames and save</li><li><a href="../../../SegWorm/Worms/Video/segWormFrames.html" class="code" title="function [worms imgs oImgs] = segWormFrames(videoFile, frames, verbose,varargin)">segWormFrames</a>	SEGWORMFRAMES Segment the worm in a set of video frames and organize</li><li><a href="../../../SegWorm/Worms/Video/segWormVideo.html" class="code" title="function failedFrames = segWormVideo(videoFile, anglesVideoFile,touchVideoFile, debugVideoFile, varargin)">segWormVideo</a>	SEGWORMVIDEO Segment a worm video.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm = segWorm(img, frame, isNormalized, verbose, varargin)</a>
+0002 <span class="comment">%SEGWORM Segment the worm in an image and organize the information in a</span>
+0003 <span class="comment">%   structure.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, SAMPLES)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, SAMPLES, ISINTERP)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Inputs:</span>
+0012 <span class="comment">%       img          - the image to segment</span>
+0013 <span class="comment">%       frame        - the frame number (if the image comes from video)</span>
+0014 <span class="comment">%       isNormalized - is the image already normalized (i.e., all pixel</span>
+0015 <span class="comment">%                      values are between 0 to 1, inclusive)?</span>
+0016 <span class="comment">%       verbose      - verbose mode shows the results in a figure</span>
+0017 <span class="comment">%       samples      - the number of samples to use in verbose mode;</span>
+0018 <span class="comment">%                      if empty, all the worm is used.</span>
+0019 <span class="comment">%       isInterp     - when downsampling, should we interpolate the missing</span>
+0020 <span class="comment">%                      data or copy it from the original worm;</span>
+0021 <span class="comment">%                      if empty, we interpolate the missing data.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   Output:</span>
+0024 <span class="comment">%       worm - the worm information organized in a structure</span>
+0025 <span class="comment">%              This structure contains 8 sub-structures,</span>
+0026 <span class="comment">%              6 sub-sub-structures, and 4 sub-sub-sub-structures:</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%              * Video *</span>
+0029 <span class="comment">%              video = {frame}</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%              * Contour *</span>
+0032 <span class="comment">%              contour = {pixels, touchI, inI, outI, angles, headI, tailI}</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%              * Skeleton *</span>
+0035 <span class="comment">%              skeleton = {pixels, touchI, inI, outI, inOutI, angles,</span>
+0036 <span class="comment">%                          length, chainCodeLengths, widths}</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%              Note: positive skeleton angles bulge towards the side</span>
+0039 <span class="comment">%              clockwise from the worm's head (unless the worm is flipped).</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%              * Head *</span>
+0042 <span class="comment">%              head = {bounds, pixels, area,</span>
+0043 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0044 <span class="comment">%              head.bounds{contour.left (indices for [start end]),</span>
+0045 <span class="comment">%                          contour.right (indices for [start end]),</span>
+0046 <span class="comment">%                          skeleton indices for [start end]}</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%              * Tail *</span>
+0049 <span class="comment">%              tail = {bounds, pixels, area,</span>
+0050 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0051 <span class="comment">%              tail.bounds{contour.left (indices for [start end]),</span>
+0052 <span class="comment">%                          contour.right (indices for [start end]),</span>
+0053 <span class="comment">%                          skeleton indices for [start end]}</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">%              * Left Side (Counter Clockwise from the Head) *</span>
+0056 <span class="comment">%              left = {bounds, pixels, area,</span>
+0057 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0058 <span class="comment">%              left.bounds{contour (indices for [start end]),</span>
+0059 <span class="comment">%                          skeleton (indices for [start end])}</span>
+0060 <span class="comment">%</span>
+0061 <span class="comment">%              * Right Side (Clockwise from the Head) *</span>
+0062 <span class="comment">%              right = {bounds, pixels, area,</span>
+0063 <span class="comment">%                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0064 <span class="comment">%              right.bounds{contour (indices for [start end]),</span>
+0065 <span class="comment">%                           skeleton (indices for [start end])}</span>
+0066 <span class="comment">%</span>
+0067 <span class="comment">%              * Orientation *</span>
+0068 <span class="comment">%              orientation = {head, vulva}</span>
+0069 <span class="comment">%              orientation.head = {isFlipped,</span>
+0070 <span class="comment">%                                  confidence.head, confidence.tail}</span>
+0071 <span class="comment">%              orientation.vulva = {isClockwiseFromHead,</span>
+0072 <span class="comment">%                                  confidence.vulva, confidence.nonVulva}</span>
+0073 <span class="comment">%</span>
+0074 <span class="comment">%   See also WORM2STRUCT, NORMWORMS</span>
+0075 
+0076 <span class="comment">% Convert the image to grayscale.</span>
+0077 worm = [];
+0078 vWorm = []; <span class="comment">% the verbose-mode worm</span>
+0079 <span class="keyword">if</span> (size(img,3) == 3)
+0080     img = rgb2gray(img);
+0081 <span class="keyword">end</span>
+0082 
+0083 <span class="comment">% Store the original then binarize the image.</span>
+0084 oImg = img;
+0085 img = <a href="../../../SegWorm/ComputerVision/otsuImg.html" class="code" title="function [bwImg] = otsuImg(img, varargin)">otsuImg</a>(img, isNormalized);
+0086 
+0087 <span class="comment">% Find the worm.</span>
+0088 img = ~img;
+0089 cc = bwconncomp(img);
+0090 wormPixels = [];
+0091 <span class="keyword">if</span> ~isempty(cc.PixelIdxList)
+0092     maxCCIdx = 0;
+0093     maxCCSize = 0;
+0094     <span class="keyword">for</span> i = 1:length(cc.PixelIdxList)
+0095         ccSize = length(cc.PixelIdxList{i});
+0096         <span class="keyword">if</span> ccSize &gt; maxCCSize
+0097             maxCCSize = ccSize;
+0098             maxCCIdx = i;
+0099         <span class="keyword">end</span>
+0100     <span class="keyword">end</span>
+0101     wormPixels = cc.PixelIdxList{maxCCIdx};
+0102 <span class="keyword">end</span>
+0103 
+0104 <span class="comment">% No worm found.</span>
+0105 <span class="keyword">if</span> isempty(wormPixels)
+0106     warning(<span class="string">'segWorm:NoWormFound'</span>, <span class="string">'Frame %d: No worm was found'</span>, frame);
+0107 
+0108     <span class="comment">% Show the failure.</span>
+0109     <span class="keyword">if</span> verbose
+0110         
+0111         <span class="comment">% Open a big figure.</span>
+0112         figure(<span class="string">'OuterPosition'</span>, [50 50 1280 960]);
+0113         set(gcf, <span class="string">'Color'</span>, [1 .5 .5]);
+0114         
+0115         <span class="comment">% Show the original image.</span>
+0116         imshow(oImg);
+0117         title(<span class="string">'Original Image'</span>);
+0118     <span class="keyword">end</span>
+0119     <span class="keyword">return</span>;
+0120 <span class="keyword">end</span>
+0121 
+0122 <span class="comment">% Find a point on the contour.</span>
+0123 [y x] = ind2sub(size(img), min(wormPixels));
+0124 
+0125 <span class="comment">% Trace the contour clockwise.</span>
+0126 contour = <a href="../../../SegWorm/ComputerVision/bwClockTrace.html" class="code" title="function [contour] = bwClockTrace(img, seed, isClockwise)">bwClockTrace</a>(img, [x y], true);
+0127 
+0128 <span class="comment">% The contour touches a boundary.</span>
+0129 <span class="keyword">if</span> min(contour(:,1)) == 1 || min(contour(:,2)) == 1 || <span class="keyword">...</span>
+0130         max(contour(:,1)) == size(img, 1) || max(contour(:,2)) == size(img, 2)
+0131     warning(<span class="string">'segWorm:ContourTouchesBoundary'</span>, <span class="keyword">...</span>
+0132         <span class="string">'Frame %d: The worm contour touches the image boundary'</span>, frame);
+0133     
+0134     <span class="comment">% Show the failure.</span>
+0135     <span class="keyword">if</span> verbose
+0136         
+0137         <span class="comment">% Open a big figure.</span>
+0138         figure(<span class="string">'OuterPosition'</span>, [50 50 1280 960]);
+0139         set(gcf, <span class="string">'Color'</span>, [1 .5 .5]);
+0140         
+0141         <span class="comment">% Show the original image.</span>
+0142         subplot(1,2,1), imshow(oImg);
+0143         title(<span class="string">'Original Image'</span>);
+0144         
+0145         <span class="comment">% Show the thresholded image.</span>
+0146         subplot(1,2,2), imshow(img);
+0147         title(<span class="string">'Thresholded Image'</span>);
+0148     <span class="keyword">end</span>
+0149     <span class="keyword">return</span>;
+0150 <span class="keyword">end</span>
+0151 
+0152 <span class="comment">% The worm is roughly divided into 24 segments of musculature (i.e., hinges</span>
+0153 <span class="comment">% that represent degrees of freedom) on each side. Therefore, 48 segments</span>
+0154 <span class="comment">% around a 2-D contour.</span>
+0155 <span class="comment">% Note: &quot;In C. elegans the 95 rhomboid-shaped body wall muscle cells are</span>
+0156 <span class="comment">% arranged as staggered pairs in four longitudinal bundles located in four</span>
+0157 <span class="comment">% quadrants. Three of these bundles (DL, DR, VR) contain 24 cells each,</span>
+0158 <span class="comment">% whereas VL bundle contains 23 cells.&quot; - www.wormatlas.org</span>
+0159 sWormSegs = 24;
+0160 cWormSegs = 2 * sWormSegs;
+0161 
+0162 <span class="comment">% The contour is too small.</span>
+0163 <span class="keyword">if</span> size(contour, 1) &lt; cWormSegs
+0164     warning(<span class="string">'segWorm:ContourTooSmall'</span>, <span class="keyword">...</span>
+0165         <span class="string">'Frame %d: The worm contour is too small'</span>, frame);
+0166     
+0167     <span class="comment">% Show the failure.</span>
+0168     <span class="keyword">if</span> verbose
+0169         
+0170         <span class="comment">% Open a big figure.</span>
+0171         figure(<span class="string">'OuterPosition'</span>, [50 50 1280 960]);
+0172         set(gcf, <span class="string">'Color'</span>, [1 .5 .5]);
+0173         
+0174         <span class="comment">% Show the original image.</span>
+0175         subplot(1,2,1), imshow(oImg);
+0176         title(<span class="string">'Original Image'</span>);
+0177         
+0178         <span class="comment">% Show the thresholded image.</span>
+0179         subplot(1,2,2), imshow(img);
+0180         title(<span class="string">'Thresholded Image'</span>);
+0181     <span class="keyword">end</span>
+0182     <span class="keyword">return</span>;
+0183 <span class="keyword">end</span>
+0184 
+0185 <span class="comment">% % Code for debugging purposes.</span>
+0186 <span class="comment">% cMinY = min(contour(:,1));</span>
+0187 <span class="comment">% cMaxY = max(contour(:,1));</span>
+0188 <span class="comment">% cMinX = min(contour(:,2));</span>
+0189 <span class="comment">% cMaxX = max(contour(:,2));</span>
+0190 <span class="comment">% cHeight = cMaxY - cMinY + 1;</span>
+0191 <span class="comment">% cWidth = cMaxX - cMinX + 1;</span>
+0192 <span class="comment">% cImg = zeros(cHeight, cWidth);</span>
+0193 <span class="comment">% cImg(sub2ind(size(cImg), contour(:,1) - cMinY + 1, ...</span>
+0194 <span class="comment">%     contour(:,2) - cMinX + 1)) = 255;</span>
+0195 <span class="comment">% figure;</span>
+0196 <span class="comment">% subplot(1,2,1), imshow(cImg);</span>
+0197 <span class="comment">% wormSegSize = round(size(contour, 1) / cWormSegs);</span>
+0198 <span class="comment">% hfAngleEdgeLength = wormSegSize;</span>
+0199 <span class="comment">% hfCAngles = circCurvature(contour, hfAngleEdgeLength);</span>
+0200 <span class="comment">% hfBlurSize = ceil(hfAngleEdgeLength / 2);</span>
+0201 <span class="comment">% hfBlurWin(1:hfBlurSize) = 1 / hfBlurSize;</span>
+0202 <span class="comment">% mhfCAngles = circConv(hfCAngles, hfBlurWin);</span>
+0203 <span class="comment">% subplot(1,2,2), plot(mhfCAngles);</span>
+0204 
+0205 <span class="comment">% Clean up the worm's contour.</span>
+0206 <span class="keyword">if</span> verbose
+0207     roughContour = contour;
+0208 <span class="keyword">end</span>
+0209 contour = <a href="cleanWorm.html" class="code" title="function contour = cleanWorm(contour, wormSegSize)">cleanWorm</a>(contour, size(contour, 1) / cWormSegs);
+0210 
+0211 <span class="comment">% The contour is too small.</span>
+0212 <span class="keyword">if</span> size(contour, 1) &lt; cWormSegs
+0213     warning(<span class="string">'segWorm:ContourTooSmall'</span>, <span class="keyword">...</span>
+0214         <span class="string">'Frame %d: The worm contour is too small'</span>, frame);
+0215     
+0216     <span class="comment">% Show the failure.</span>
+0217     <span class="keyword">if</span> verbose
+0218         
+0219         <span class="comment">% Open a big figure.</span>
+0220         figure(<span class="string">'OuterPosition'</span>, [50 50 1280 960]);
+0221         set(gcf, <span class="string">'Color'</span>, [1 .5 .5]);
+0222         
+0223         <span class="comment">% Show the original image.</span>
+0224         subplot(1,2,1), imshow(oImg);
+0225         title(<span class="string">'Original Image'</span>);
+0226         
+0227         <span class="comment">% Show the thresholded image.</span>
+0228         subplot(1,2,2), imshow(img);
+0229         title(<span class="string">'Thresholded Image'</span>);
+0230     <span class="keyword">end</span>
+0231     <span class="keyword">return</span>;
+0232 <span class="keyword">end</span>
+0233 
+0234 <span class="comment">% Compute the contour's local high/low-frequency curvature.</span>
+0235 <span class="comment">% Note: worm body muscles are arranged and innervated as staggered pairs.</span>
+0236 <span class="comment">% Therefore, 2 segments have one theoretical degree of freedom (i.e. one</span>
+0237 <span class="comment">% approximation of a hinge). In the head, muscles are innervated</span>
+0238 <span class="comment">% individually. Therefore, we sample the worm head's curvature at twice the</span>
+0239 <span class="comment">% frequency of its body.</span>
+0240 <span class="comment">% Note 2: we ignore Nyquist sampling theorem (sampling at twice the</span>
+0241 <span class="comment">% frequency) since the worm's cuticle constrains its mobility and practical</span>
+0242 <span class="comment">% degrees of freedom.</span>
+0243 cCCLengths = <a href="../../../SegWorm/ComputerVision/circComputeChainCodeLengths.html" class="code" title="function lengths = circComputeChainCodeLengths(points)">circComputeChainCodeLengths</a>(contour);
+0244 wormSegLength = (cCCLengths(1) + cCCLengths(end)) / cWormSegs;
+0245 hfAngleEdgeLength = wormSegLength;
+0246 hfCAngles = <a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>(contour, hfAngleEdgeLength, cCCLengths);
+0247 lfAngleEdgeLength = 2 * hfAngleEdgeLength;
+0248 lfCAngles = <a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>(contour, lfAngleEdgeLength, cCCLengths);
+0249 
+0250 <span class="comment">% Blur the contour's local high-frequency curvature.</span>
+0251 <span class="comment">% Note: on a small scale, noise causes contour imperfections that shift an</span>
+0252 <span class="comment">% angle from its correct location. Therefore, blurring angles by averaging</span>
+0253 <span class="comment">% them with their neighbors can localize them better.</span>
+0254 wormSegSize = size(contour, 1) / cWormSegs;
+0255 hfAngleEdgeSize = wormSegSize;
+0256 hfBlurSize = ceil(hfAngleEdgeSize / 2);
+0257 hfBlurWin(1:hfBlurSize) = 1 / hfBlurSize;
+0258 mhfCAngles = <a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>(hfCAngles, hfBlurWin);
+0259 
+0260 <span class="comment">% Compute the contour's local high/low-frequency curvature maxima.</span>
+0261 [mhfCMaxP mhfCMaxI] = <a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>(mhfCAngles, hfAngleEdgeLength, <span class="keyword">...</span>
+0262     cCCLengths);
+0263 [lfCMaxP lfCMaxI] = <a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>(lfCAngles, lfAngleEdgeLength, <span class="keyword">...</span>
+0264     cCCLengths);
+0265 
+0266 <span class="comment">% Are there too many possible head/tail points?</span>
+0267 lfHT = lfCMaxP &gt; 90;
+0268 lfHTSize = sum(lfHT);
+0269 <span class="keyword">if</span> lfHTSize &gt; 2
+0270     warning(<span class="string">'segWorm:TooManyEnds'</span>, [<span class="string">'Frame %d: The worm has 3 or more '</span> <span class="keyword">...</span>
+0271         <span class="string">'low-frequency sampled convexities sharper than 90 degrees '</span> <span class="keyword">...</span>
+0272         <span class="string">'(possible head/tail points).'</span>], frame);
+0273     
+0274     <span class="comment">% Organize the available worm information.</span>
+0275     <span class="keyword">if</span> verbose
+0276         vWorm = <a href="../../../SegWorm/Worms/Util/worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>(frame, contour, [], [], [], lfCAngles, [], <span class="keyword">...</span>
+0277             [], cCCLengths, [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0278             [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0279             [], [], [], [], [], [], [], [], [], 0, [], [], 0, [], []);
+0280     <span class="keyword">else</span>
+0281         <span class="keyword">return</span>;
+0282     <span class="keyword">end</span>
+0283 <span class="keyword">end</span>
+0284 
+0285 <span class="comment">% Are the head and tail on the outer contour?</span>
+0286 mhfHT = mhfCMaxP &gt; 60;
+0287 mhfHTSize = sum(mhfHT);
+0288 <span class="keyword">if</span> mhfHTSize &lt; 2
+0289     warning(<span class="string">'segWorm:TooFewEnds'</span>, [<span class="string">'Frame %d: The worm contour has '</span> <span class="keyword">...</span>
+0290         <span class="string">'less than 2 high-frequency sampled convexities sharper than '</span> <span class="keyword">...</span>
+0291         <span class="string">'60 degrees (the head and tail). Therefore, the worm is '</span> <span class="keyword">...</span>
+0292         <span class="string">'coiled or obscured and cannot be segmented'</span>], frame);
+0293     
+0294     <span class="comment">% Organize the available worm information.</span>
+0295     <span class="keyword">if</span> verbose
+0296         vWorm = <a href="../../../SegWorm/Worms/Util/worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>(frame, contour, [], [], [], lfCAngles, [], <span class="keyword">...</span>
+0297             [], cCCLengths, [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0298             [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0299             [], [], [], [], [], [], [], [], [], 0, [], [], 0, [], []);
+0300     <span class="keyword">else</span>
+0301         <span class="keyword">return</span>;
+0302     <span class="keyword">end</span>
+0303 
+0304 <span class="comment">% The head and tail are on the outer contour.</span>
+0305 <span class="keyword">else</span>
+0306     
+0307     <span class="comment">% The low-frequency sampling identified the head and tail.</span>
+0308     <span class="keyword">if</span> lfHTSize &gt; 1
+0309         
+0310         <span class="comment">% Find the head and tail convexities in the low-frequency sampling.</span>
+0311         <span class="comment">% Note: the tail should have a sharper angle.</span>
+0312         lfHTI = lfCMaxI(lfHT);
+0313         lfHTP = lfCMaxP(lfHT);
+0314         <span class="keyword">if</span> lfHTP(1) &lt;= lfHTP(2)
+0315             headI = lfHTI(1);
+0316             tailI = lfHTI(2);
+0317         <span class="keyword">else</span>
+0318             headI = lfHTI(2);
+0319             tailI = lfHTI(1);
+0320         <span class="keyword">end</span>
+0321         
+0322         <span class="comment">% Localize the head by finding its nearest, sharpest (but blurred),</span>
+0323         <span class="comment">% high-frequency convexity.</span>
+0324         mhfHTI = mhfCMaxI(mhfHT);
+0325         dhfHeadI = abs(cCCLengths(headI) - cCCLengths(mhfHTI));
+0326         dhfHeadI = min(dhfHeadI, cCCLengths(end) - dhfHeadI);
+0327         [~, hfHeadI] = min(dhfHeadI);
+0328         headI = mhfHTI(hfHeadI);
+0329         
+0330         <span class="comment">% Localize the tail by finding its nearest, sharpest (but blurred),</span>
+0331         <span class="comment">% high-frequency convexity.</span>
+0332         dhfTailI = abs(cCCLengths(tailI) - cCCLengths(mhfHTI));
+0333         dhfTailI = min(dhfTailI, cCCLengths(end) - dhfTailI);
+0334         [~, hfTailI] = min(dhfTailI);
+0335         tailI = mhfHTI(hfTailI);
+0336         
+0337     <span class="comment">% The high-frequency sampling identifies the head and tail.</span>
+0338     <span class="keyword">elseif</span> mhfHTSize &lt; 3
+0339         
+0340         <span class="comment">% Find the head and tail convexities in the high-frequency sampling.</span>
+0341         <span class="comment">% Note: the tail should have a sharper angle.</span>
+0342         mhfHTI = mhfCMaxI(mhfHT);
+0343         mhfHTP = mhfCMaxP(mhfHT);
+0344         <span class="keyword">if</span> mhfHTP(1) &lt;= mhfHTP(2)
+0345             headI = mhfHTI(1);
+0346             tailI = mhfHTI(2);
+0347         <span class="keyword">else</span>
+0348             headI = mhfHTI(2);
+0349             tailI = mhfHTI(1);
+0350         <span class="keyword">end</span>
+0351         
+0352     <span class="comment">% The high-frequency sampling identifies several, potential heads/tails.</span>
+0353     <span class="keyword">else</span>
+0354         
+0355         <span class="comment">% Initialize our head and tail choicse.</span>
+0356         mhfHTI = mhfCMaxI(mhfHT);
+0357         mhfHTI1 = mhfHTI(1);
+0358         mhfHTI2 = mhfHTI(2);
+0359         
+0360         <span class="comment">% How far apart are the head and tail?</span>
+0361         dmhfHTI12 = abs(cCCLengths(mhfHTI(1)) - cCCLengths(mhfHTI(2)));
+0362         dmhfHTI12 = min(dmhfHTI12, cCCLengths(end) - dmhfHTI12);
+0363         
+0364         <span class="comment">% Search for the 2 sharp convexities that are furthest apart.</span>
+0365         <span class="keyword">for</span> i = 1:(mhfHTSize - 1)
+0366             <span class="keyword">for</span> j = (i + 1):mhfHTSize
+0367                 
+0368                 <span class="comment">% How far apart are these 2 convexities?</span>
+0369                 dmhfHTIij = abs(cCCLengths(mhfHTI(i)) - <span class="keyword">...</span>
+0370                     cCCLengths(mhfHTI(j)));
+0371                 dmhfHTIij = min(dmhfHTIij, cCCLengths(end) - dmhfHTIij);
+0372                 
+0373                 <span class="comment">% These 2 convexities are better head and tail choices.</span>
+0374                 <span class="keyword">if</span> dmhfHTIij &gt; dmhfHTI12
+0375                     mhfHTI1 = mhfHTI(i);
+0376                     mhfHTI2 = mhfHTI(j);
+0377                     dmhfHTI12 = dmhfHTIij;
+0378                 <span class="keyword">end</span>
+0379             <span class="keyword">end</span>
+0380         <span class="keyword">end</span>
+0381         
+0382         <span class="comment">% Which convexity is the head and which is the tail?</span>
+0383         <span class="comment">% Note: the tail should have a sharper angle.</span>
+0384         <span class="keyword">if</span> mhfCAngles(mhfHTI1) &lt; mhfCAngles(mhfHTI2)
+0385             headI = mhfHTI1;
+0386             tailI = mhfHTI2;
+0387         <span class="keyword">else</span>
+0388             headI = mhfHTI2;
+0389             tailI = mhfHTI1;
+0390         <span class="keyword">end</span>            
+0391     <span class="keyword">end</span>
+0392     
+0393     <span class="comment">% Find the length of each side.</span>
+0394     <span class="keyword">if</span> headI &gt; tailI
+0395         size1 = cCCLengths(headI) - cCCLengths(tailI);
+0396         size2 = cCCLengths(end) - cCCLengths(headI) + cCCLengths(tailI);
+0397     <span class="keyword">else</span>
+0398         size1 = cCCLengths(tailI) - cCCLengths(headI);
+0399         size2 = cCCLengths(end) - cCCLengths(tailI) + cCCLengths(headI);
+0400     <span class="keyword">end</span>
+0401     
+0402     <span class="comment">% Are the sides within 50% of each others size?</span>
+0403     <span class="comment">% Note: if a worm's length from head to tail is at least twice larger</span>
+0404     <span class="comment">% on one side (relative to the other), than the worm must be touching</span>
+0405     <span class="comment">% itself.</span>
+0406     <span class="keyword">if</span> min(size1, size2)/ max(size1, size2) &lt;= .5
+0407         warning(<span class="string">'segWorm:DoubleLengthSide'</span>, [<span class="string">'Frame %d: The worm '</span> <span class="keyword">...</span>
+0408             <span class="string">'length, from head to tail, is more than twice as large '</span> <span class="keyword">...</span>
+0409             <span class="string">'on one side than it is on the other. Therefore, the worm '</span> <span class="keyword">...</span>
+0410             <span class="string">'is coiled or obscured and cannot be segmented'</span>], frame);
+0411         
+0412         <span class="comment">% Organize the available worm information.</span>
+0413         <span class="keyword">if</span> verbose
+0414             vWorm = <a href="../../../SegWorm/Worms/Util/worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>(frame, contour, [], [], [], lfCAngles, <span class="keyword">...</span>
+0415                 headI, tailI, cCCLengths, [], [], [], [], [], [], [], <span class="keyword">...</span>
+0416                 [], [], [], [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0417                 [], [], [], [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0418                 0, [], [], 0, [], []);
+0419         <span class="keyword">else</span>
+0420             <span class="keyword">return</span>;
+0421         <span class="keyword">end</span>
+0422     <span class="keyword">end</span>
+0423     
+0424 <span class="comment">% In theory, it was a good idea to look for very sharp concavities and</span>
+0425 <span class="comment">% assume they indicated a worm end sticking out of a coiled body. But, in</span>
+0426 <span class="comment">% practice, the worm can bend tightly at its ends without touching itself</span>
+0427 <span class="comment">% and achieve concavities greater than 120 degrees.</span>
+0428 <span class="comment">%</span>
+0429 <span class="comment">%     % Compute the contour's local high-frequency curvature minima.</span>
+0430 <span class="comment">%     [mhfCMinP, ~] = minPeaksCircDist(mhfCAngles, hfAngleEdgeLength);</span>
+0431 <span class="comment">%</span>
+0432 <span class="comment">%     % Is there a sharp concavity on the contour?</span>
+0433 <span class="comment">%     % Note: if a worm has a sharp concavity, it's probably touching itself.</span>
+0434 <span class="comment">%     if sum(mhfCMinP &lt; -90) &gt; 0</span>
+0435 <span class="comment">%         warning('segWorm:CoiledWorm', ...</span>
+0436 <span class="comment">%             ['The worm contour has a concavity sharper than 90 degrees. ' ...</span>
+0437 <span class="comment">%             'Therefore, the worm is coiled and cannot be segmented']);</span>
+0438 <span class="comment">%         return;</span>
+0439 <span class="comment">%     end</span>
+0440 
+0441 <span class="comment">%         % Smooth the contour.</span>
+0442 <span class="comment">%         gWin = gausswin(2 * round(wormSegLength / 2) + 1);</span>
+0443 <span class="comment">%         gWin = gWin / sum(gWin);</span>
+0444 <span class="comment">%         contour(:,1) = round(circConv(contour(:,1), gWin));</span>
+0445 <span class="comment">%         contour(:,2) = round(circConv(contour(:,2), gWin));</span>
+0446 <span class="comment">%</span>
+0447 <span class="comment">%         % Clean up the contour.</span>
+0448 <span class="comment">%         contour = cleanContour(contour);</span>
+0449 <span class="comment">%</span>
+0450 <span class="comment">%         % Compute the contour's local curvature.</span>
+0451 <span class="comment">%         % On a small scale, noise causes contour imperfections that shift an angle</span>
+0452 <span class="comment">%         % from its correct location. Therefore, blurring angles by averaging them</span>
+0453 <span class="comment">%         % with their neighbors can localize them better.</span>
+0454 <span class="comment">%         hfCAngles = circCurvature(contour, round(size(contour, 1) / (cWormSegs / 2)));</span>
+0455 <span class="comment">%         hfBlurSize = 2 * round(size(contour, 1) / (cWormSegs * 2)) + 1;</span>
+0456 <span class="comment">%         hfBlurWin(1:hfBlurSize) = 1 / hfBlurSize;</span>
+0457 <span class="comment">%         mhfCAngles = circConv(hfCAngles, hfBlurWin);</span>
+0458 <span class="comment">%</span>
+0459 <span class="comment">%         % Compute the contour's local curvature maxima.</span>
+0460 <span class="comment">%         hfAngleEdgeLength = round(length(mhfCAngles) / (cWormSegs / 2));</span>
+0461 <span class="comment">%         [mhfcMaxP mhfcMaxI] = maxPeaksCircDist(mhfCAngles, hfAngleEdgeLength);</span>
+0462 <span class="comment">%</span>
+0463 <span class="comment">%         % Determine the head and tail.</span>
+0464 <span class="comment">%         htPI = mhfcMaxP &gt; 90;</span>
+0465 <span class="comment">%         htP = mhfcMaxP(htPI);</span>
+0466 <span class="comment">%         htI = mhfcMaxI(htPI);</span>
+0467 <span class="comment">%         if htP(1) &gt;= htP(2)</span>
+0468 <span class="comment">%             headI = htI(1);</span>
+0469 <span class="comment">%             tailI = htI(2);</span>
+0470 <span class="comment">%         else</span>
+0471 <span class="comment">%             headI = htI(2);</span>
+0472 <span class="comment">%             tailI = htI(1);</span>
+0473 <span class="comment">%         end</span>
+0474 
+0475 <span class="comment">%if 0</span>
+0476     <span class="comment">% Orient the contour and angles at the maximum curvature (the head or tail).</span>
+0477     <span class="keyword">if</span> headI &gt; 1
+0478         contour = [contour(headI:<span class="keyword">end</span>,:); contour(1:(headI - 1),:)];
+0479         cCCLengths = [cCCLengths(headI:end) - cCCLengths(headI - 1); <span class="keyword">...</span>
+0480             cCCLengths(1:(headI - 1)) + <span class="keyword">...</span>
+0481             (cCCLengths(end) - cCCLengths(headI - 1))];
+0482         <span class="comment">%hfCAngles = [hfCAngles(headI:end); hfCAngles(1:(headI - 1))];</span>
+0483         lfCAngles = [lfCAngles(headI:end); lfCAngles(1:(headI - 1))];
+0484         lfCMaxI = lfCMaxI - headI + 1;
+0485         wrap = lfCMaxI &lt; 1;
+0486         lfCMaxI(wrap) = lfCMaxI(wrap) + length(lfCAngles);
+0487         tailI = tailI - headI + 1;
+0488         headI = 1;
+0489         <span class="keyword">if</span> tailI &lt; 1
+0490             tailI = tailI + size(contour, 1);
+0491         <span class="keyword">end</span>
+0492     <span class="keyword">end</span>
+0493 <span class="comment">%end</span>
+0494 
+0495     <span class="comment">% Compute the contour's local low-frequency curvature minima.</span>
+0496     [lfCMinP lfCMinI] = <a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>(lfCAngles, lfAngleEdgeLength, <span class="keyword">...</span>
+0497         cCCLengths);
+0498     
+0499     <span class="comment">% Compute the worm's skeleton.</span>
+0500     [skeleton cWidths] = <a href="linearSkeleton.html" class="code" title="function [skeleton cWidths] = linearSkeleton(headI, tailI, minP, minI,maxP, maxI, contour, wormSegSize, varargin)">linearSkeleton</a>(headI, tailI, lfCMinP, lfCMinI, <span class="keyword">...</span>
+0501         lfCMaxP, lfCMaxI, contour, wormSegLength, cCCLengths);
+0502     
+0503     <span class="comment">% Measure the skeleton's chain code length.</span>
+0504     sCCLengths = <a href="../../../SegWorm/ComputerVision/computeChainCodeLengths.html" class="code" title="function lengths = computeChainCodeLengths(points)">computeChainCodeLengths</a>(skeleton);
+0505     sLength = sCCLengths(end);
+0506     
+0507     <span class="comment">% Compute the worm's head and tail (at this point, we cannot</span>
+0508     <span class="comment">% distinguish between the two). The worm's head and tail occupy,</span>
+0509     <span class="comment">% approximately, 4 muscle segments each, on the skeleton and either</span>
+0510     <span class="comment">% side of the contour.</span>
+0511     <span class="comment">% Note: &quot;The first two muscle cells in the two ventral and two dorsal</span>
+0512     <span class="comment">% rows [of the head] are smaller than their lateral counterparts,</span>
+0513     <span class="comment">% giving a stagger to the packing of the two rows of cells in a</span>
+0514     <span class="comment">% quadrant. The first four muscles in each quadrant are innervated</span>
+0515     <span class="comment">% exclusively by motoneurons in the nerve ring. The second block of</span>
+0516     <span class="comment">% four muscles is dually innervated, receiving synaptic input from</span>
+0517     <span class="comment">% motoneurons in the nerve ring and the anterior ventral cord. The rest</span>
+0518     <span class="comment">% of the muscles in the body are exclusively innervated by NMJs in the</span>
+0519     <span class="comment">% dorsal and ventral cords.&quot; - The Structure of the Nervous System of</span>
+0520     <span class="comment">% the Nematode C. elegans, on www.wormatlas.org</span>
+0521     htSSegLength = sCCLengths(end) * (4 / sWormSegs);
+0522     [head hlcBounds hrcBounds hsBounds] = <span class="keyword">...</span>
+0523         <a href="worm2poly.html" class="code" title="function [polygon lcBounds rcBounds sBounds] = worm2poly(startSI, endSI,skeleton, headCI, tailCI, contour, isSplit, varargin)">worm2poly</a>(1, <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(htSSegLength, sCCLengths), <span class="keyword">...</span>
+0524         skeleton, headI, tailI, contour, false, sCCLengths, cCCLengths);
+0525     [tail tlcBounds trcBounds tsBounds] = <span class="keyword">...</span>
+0526         <a href="worm2poly.html" class="code" title="function [polygon lcBounds rcBounds sBounds] = worm2poly(startSI, endSI,skeleton, headCI, tailCI, contour, isSplit, varargin)">worm2poly</a>(size(skeleton, 1), <span class="keyword">...</span>
+0527         <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(sCCLengths(end) - htSSegLength, sCCLengths), <span class="keyword">...</span>
+0528         skeleton, headI, tailI, contour, false, sCCLengths, cCCLengths);
+0529 
+0530     <span class="comment">% Compute the contour's local low-frequency curvature minima.</span>
+0531     [lfCMinP, lfCMinI] = <a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>(lfCAngles, lfAngleEdgeLength, <span class="keyword">...</span>
+0532         cCCLengths);
+0533 
+0534     <span class="comment">% Is the worm coiled?</span>
+0535     <span class="comment">% If there are no large concavities, the worm is not coiled.</span>
+0536     lfCBendI = lfCMinI(lfCMinP &lt; -30);
+0537     <span class="keyword">if</span> ~isempty(lfCBendI)
+0538         
+0539         <span class="comment">% Find concavities near the head. If there are any concavities</span>
+0540         <span class="comment">% near the tail, the head may be portruding from a coil; in</span>
+0541         <span class="comment">% which case, the width at the end of the head may be</span>
+0542         <span class="comment">% inaccurate.</span>
+0543         <span class="keyword">if</span> hlcBounds(1) &lt; hrcBounds(2)
+0544             hBendI = lfCBendI(lfCBendI &gt; hlcBounds(1) &amp; <span class="keyword">...</span>
+0545                 lfCBendI &lt; hrcBounds(2));
+0546         <span class="keyword">else</span>
+0547             hBendI = lfCBendI(lfCBendI &gt; hlcBounds(1) | <span class="keyword">...</span>
+0548                 lfCBendI &lt; hrcBounds(2));
+0549         <span class="keyword">end</span>
+0550         
+0551         <span class="comment">% Does the worm more than double its width from the head?</span>
+0552         <span class="comment">% Note: if the worm coils, its width will grow to more than</span>
+0553         <span class="comment">% double that at the end of the head.</span>
+0554         maxWidth = max(cWidths);
+0555         <span class="keyword">if</span> isempty(hBendI)
+0556             <span class="keyword">if</span> maxWidth / cWidths(hsBounds(2)) &gt; 2
+0557                 warning(<span class="string">'segWorm:DoubleHeadWidth'</span>, <span class="keyword">...</span>
+0558                     [<span class="string">'Frame %d: The worm more than doubles its width '</span> <span class="keyword">...</span>
+0559                     <span class="string">'from end of its head. Therefore, the worm is '</span> <span class="keyword">...</span>
+0560                     <span class="string">'coiled, laid an egg, and/or is significantly '</span> <span class="keyword">...</span>
+0561                     <span class="string">'obscured and cannot be segmented'</span>], frame);
+0562                 
+0563                 <span class="comment">% Organize the available worm information.</span>
+0564                 <span class="keyword">if</span> verbose
+0565                     vWorm = <a href="../../../SegWorm/Worms/Util/worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>(frame, contour, [], [], [], <span class="keyword">...</span>
+0566                         lfCAngles, headI, tailI, cCCLengths, [], [], <span class="keyword">...</span>
+0567                         [], [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0568                         [], [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0569                         [], [], [], [], [], [], [], [], [], 0, [], [], <span class="keyword">...</span>
+0570                         0, [], []);
+0571                 <span class="keyword">else</span>
+0572                     <span class="keyword">return</span>;
+0573                 <span class="keyword">end</span>
+0574             <span class="keyword">end</span>
+0575         <span class="keyword">end</span>
+0576         
+0577         <span class="comment">% Find concavities near the tail. If there are any concavities near</span>
+0578         <span class="comment">% the tail, the tail may be portruding from a coil; in which case,</span>
+0579         <span class="comment">% the width at the end of the tail may be inaccurate.</span>
+0580         <span class="keyword">if</span> trcBounds(1) &lt; tlcBounds(2)
+0581             tBendI = lfCBendI(lfCBendI &gt; trcBounds(1) &amp; <span class="keyword">...</span>
+0582                 lfCBendI &lt; tlcBounds(2));
+0583         <span class="keyword">else</span>
+0584             tBendI = lfCBendI(lfCBendI &gt; trcBounds(1) | <span class="keyword">...</span>
+0585                 lfCBendI &lt; tlcBounds(2));
+0586         <span class="keyword">end</span>
+0587         
+0588         <span class="comment">% Does the worm more than double its width from the tail?</span>
+0589         <span class="comment">% If the worm coils, its width will grow to more than double</span>
+0590         <span class="comment">% that at the end of the tail.</span>
+0591         <span class="keyword">if</span> isempty(tBendI)
+0592             <span class="keyword">if</span> maxWidth / cWidths(tsBounds(1)) &gt; 2
+0593                 warning(<span class="string">'segWorm:DoubleTailWidth'</span>, <span class="keyword">...</span>
+0594                     [<span class="string">'Frame %d: The worm more than doubles its width '</span> <span class="keyword">...</span>
+0595                     <span class="string">'from end of its tail. Therefore, the worm is '</span> <span class="keyword">...</span>
+0596                     <span class="string">'coiled, laid an egg, and/or is significantly '</span> <span class="keyword">...</span>
+0597                     <span class="string">'obscured and cannot be segmented'</span>], frame);
+0598                 
+0599                 <span class="comment">% Organize the available worm information.</span>
+0600                 <span class="keyword">if</span> verbose
+0601                     vWorm = <a href="../../../SegWorm/Worms/Util/worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>(frame, contour, [], [], [], <span class="keyword">...</span>
+0602                         lfCAngles, headI, tailI, cCCLengths, [], [], <span class="keyword">...</span>
+0603                         [], [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0604                         [], [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0605                         [], [], [], [], [], [], [], [], [], 0, [], [], <span class="keyword">...</span>
+0606                         0, [], []);
+0607                 <span class="keyword">else</span>
+0608                     <span class="keyword">return</span>;
+0609                 <span class="keyword">end</span>
+0610             <span class="keyword">end</span>
+0611         <span class="keyword">end</span>
+0612         
+0613         <span class="comment">% Use the most accurate estimate of head/tail width to</span>
+0614         <span class="comment">% determine whether the width of the body is more than double</span>
+0615         <span class="comment">% that at the end of the head/tail; in which case; the worm is</span>
+0616         <span class="comment">% coiled.</span>
+0617         <span class="keyword">if</span> ~(isempty(hBendI) &amp;&amp; isempty(tBendI))
+0618             
+0619             <span class="comment">% Find the distances of bends near the head.</span>
+0620             hBendDist = abs(headI - hBendI);
+0621             hBendDist = min(hBendDist, abs(hBendDist - length(lfCAngles)));
+0622             
+0623             <span class="comment">% Find the distances of bends near the tail.</span>
+0624             tBendDist = abs(tailI - tBendI);
+0625             tBendDist = min(tBendDist, abs(tBendDist - length(lfCAngles)));
+0626             
+0627             <span class="comment">% The bend near the head is furthest and, therefore, the</span>
+0628             <span class="comment">% width at the end of the head is our most accurate</span>
+0629             <span class="comment">% estimate of the worm's width.</span>
+0630             <span class="keyword">if</span> min(hBendDist) &gt;= min(tBendDist)
+0631                 <span class="keyword">if</span> maxWidth / cWidths(hsBounds(2)) &gt; 2
+0632                     warning(<span class="string">'segWorm:DoubleHeadWidth'</span>, <span class="keyword">...</span>
+0633                         [<span class="string">'Frame %d: The worm more than doubles its '</span> <span class="keyword">...</span>
+0634                         <span class="string">'width from end of its head. Therefore, the '</span> <span class="keyword">...</span>
+0635                         <span class="string">'worm is coiled, laid an egg, and/or is '</span> <span class="keyword">...</span>
+0636                         <span class="string">'significantly obscured and cannot be '</span> <span class="keyword">...</span>
+0637                         <span class="string">'segmented'</span>], frame);
+0638                 
+0639                     <span class="comment">% Organize the available worm information.</span>
+0640                     <span class="keyword">if</span> verbose
+0641                         vWorm = <a href="../../../SegWorm/Worms/Util/worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>(frame, contour, [], [], [], <span class="keyword">...</span>
+0642                             lfCAngles, headI, tailI, cCCLengths, [], <span class="keyword">...</span>
+0643                             [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0644                             [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0645                             [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0646                             [], 0, [], [], 0, [], []);
+0647                     <span class="keyword">else</span>
+0648                         <span class="keyword">return</span>;
+0649                     <span class="keyword">end</span>
+0650                 <span class="keyword">end</span>
+0651                 
+0652             <span class="comment">% The bend near the tail is furthest and, therefore, the</span>
+0653             <span class="comment">% width at the end of the tail is our most accurate</span>
+0654             <span class="comment">% estimate of the worm's width.</span>
+0655             <span class="keyword">else</span>
+0656                 <span class="keyword">if</span> maxWidth / cWidths(tsBounds(1)) &gt; 2
+0657                     warning(<span class="string">'segWorm:DoubleTailWidth'</span>, <span class="keyword">...</span>
+0658                         [<span class="string">'Frame %d: The worm more than doubles its '</span> <span class="keyword">...</span>
+0659                         <span class="string">'width from end of its tail. Therefore, the '</span> <span class="keyword">...</span>
+0660                         <span class="string">'worm is coiled, laid an egg, and/or is '</span> <span class="keyword">...</span>
+0661                         <span class="string">'significantly obscured and cannot be '</span> <span class="keyword">...</span>
+0662                         <span class="string">'segmented'</span>], frame);
+0663                     
+0664                     <span class="comment">% Organize the available worm information.</span>
+0665                     <span class="keyword">if</span> verbose
+0666                         vWorm = <a href="../../../SegWorm/Worms/Util/worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>(frame, contour, [], [], [], <span class="keyword">...</span>
+0667                             lfCAngles, headI, tailI, cCCLengths, [], <span class="keyword">...</span>
+0668                             [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0669                             [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0670                             [], [], [], [], [], [], [], [], [], [], [], <span class="keyword">...</span>
+0671                             [], 0, [], [], 0, [], []);
+0672                     <span class="keyword">else</span>
+0673                         <span class="keyword">return</span>;
+0674                     <span class="keyword">end</span>
+0675                 <span class="keyword">end</span>
+0676             <span class="keyword">end</span>
+0677         <span class="keyword">end</span>
+0678     <span class="keyword">end</span>
+0679     
+0680     <span class="comment">% % Unify the contour angles as a mix of high-frequency head/tail</span>
+0681     <span class="comment">% % curvature and, low-frequency body curvature.</span>
+0682     <span class="comment">% % Note: the worm's head has finer muscle control than the rest of its body.</span>
+0683     <span class="comment">% % Therefore, we sample its curvature at twice the frequency of its segments.</span>
+0684     <span class="comment">% cAngles = lfCAngles;</span>
+0685     <span class="comment">% if hlcBounds(1) &lt; hrcBounds(2)</span>
+0686     <span class="comment">%     cAngles(hlcBounds(1):hrcBounds(2)) = hfCAngles(hlcBounds(1):hrcBounds(2));</span>
+0687     <span class="comment">% else % wrap</span>
+0688     <span class="comment">%     cAngles(hlcBounds(1):end) = hfCAngles(hlcBounds(1):end);</span>
+0689     <span class="comment">%     cAngles(1:hrcBounds(2)) = hfCAngles(1:hrcBounds(2));</span>
+0690     <span class="comment">% end</span>
+0691     <span class="comment">% if trcBounds(1) &lt; tlcBounds(2)</span>
+0692     <span class="comment">%     cAngles(trcBounds(1):tlcBounds(2)) = hfCAngles(trcBounds(1):tlcBounds(2));</span>
+0693     <span class="comment">% else % wrap</span>
+0694     <span class="comment">%     cAngles(trcBounds(1):end) = hfCAngles(trcBounds(1):end);</span>
+0695     <span class="comment">%     cAngles(1:tlcBounds(2)) = hfCAngles(1:tlcBounds(2));</span>
+0696     <span class="comment">% end</span>
+0697     <span class="comment">% worm.contour.angles = cAngles;</span>
+0698     <span class="comment">%</span>
+0699     <span class="comment">% % Unify the skeleton angles as a mix of high-frequency head/tail</span>
+0700     <span class="comment">% % curvature and, low-frequency body curvature.</span>
+0701     <span class="comment">% % Note: the worm's head has finer muscle control than the rest of its body.</span>
+0702     <span class="comment">% % Therefore, we sample its curvature at twice the frequency of its segments.</span>
+0703     <span class="comment">% skeleton = worm.skeleton.pixels;</span>
+0704     <span class="comment">% sAngles = curvature(skeleton, lfAngleEdgeLength);</span>
+0705     <span class="comment">% hsAngles = curvature(skeleton(1:(hsBounds(2) + hfAngleEdgeLength),:), ...</span>
+0706     <span class="comment">%     hfAngleEdgeLength);</span>
+0707     <span class="comment">% sAngles(1:hsBounds(2)) = hsAngles(1:hsBounds(2));</span>
+0708     <span class="comment">% tsAngles = curvature(skeleton((tsBounds(1) - hfAngleEdgeLength):end,:), ...</span>
+0709     <span class="comment">%     hfAngleEdgeLength);</span>
+0710     <span class="comment">% sAngles(tsBounds(1):end) = tsAngles((hfAngleEdgeLength + 1):end);</span>
+0711     <span class="comment">% worm.skeleton.angles = sAngles;</span>
+0712     
+0713     <span class="comment">% Measure the skeleton angles (curvature).</span>
+0714     lfAngleEdgeLength = sCCLengths(end) * 2 / sWormSegs;
+0715     sAngles = <a href="../../../SegWorm/ComputerVision/curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">curvature</a>(skeleton, lfAngleEdgeLength, sCCLengths);
+0716     
+0717     <span class="comment">% Determine the head's MER (minimum enclosing rectangle).</span>
+0718     hMinY = min(head(:,1));
+0719     hMaxY = max(head(:,1));
+0720     hMinX = min(head(:,2));
+0721     hMaxX = max(head(:,2));
+0722     
+0723     <span class="comment">% Measure the head statistics.</span>
+0724     merHImg = oImg(hMinY:hMaxY, hMinX:hMaxX);
+0725     merHead = [head(:,1) - hMinY + 1, head(:,2) - hMinX + 1];
+0726     [merHMask merHeadI] = <a href="../../../SegWorm/ComputerVision/inPolyMask.html" class="code" title="function [mask polygonI] = inPolyMask(polygon, seed, maskSize)">inPolyMask</a>(merHead, [], size(merHImg));
+0727     hColors = single(merHImg(merHMask));
+0728     hArea = length(hColors);
+0729     hCDF = prctile(hColors,[2.5 25 50 75 97.5]);
+0730     hStdev = std(hColors);
+0731     
+0732     <span class="comment">% Determine the tail's MER (minimum enclosing rectangle).</span>
+0733     tMinY = min(tail(:,1));
+0734     tMaxY = max(tail(:,1));
+0735     tMinX = min(tail(:,2));
+0736     tMaxX = max(tail(:,2));
+0737     
+0738     <span class="comment">% Measure the tail statistics.</span>
+0739     merTImg = oImg(tMinY:tMaxY, tMinX:tMaxX);
+0740     merTail = [tail(:,1) - tMinY + 1, tail(:,2) - tMinX + 1];
+0741     [merTMask merTailI] = <a href="../../../SegWorm/ComputerVision/inPolyMask.html" class="code" title="function [mask polygonI] = inPolyMask(polygon, seed, maskSize)">inPolyMask</a>(merTail, [], size(merTImg));
+0742     tColors = single(merTImg(merTMask));
+0743     tArea = length(tColors);
+0744     tCDF = prctile(tColors,[2.5 25 50 75 97.5]);
+0745     tStdev = std(tColors);
+0746     
+0747     <span class="comment">% Is the tail too small (or the head too large)?</span>
+0748     <span class="comment">% Note: the area of the head and tail should be roughly the same size.</span>
+0749     <span class="comment">% A 2-fold difference is huge!</span>
+0750     <span class="keyword">if</span> hArea &gt; 2 * tArea
+0751         warning(<span class="string">'segWorm:SmallTail'</span>, [<span class="string">'Frame %d: The worm tail is '</span> <span class="keyword">...</span>
+0752             <span class="string">'less than half the size of its head. Therefore, the worm '</span> <span class="keyword">...</span>
+0753             <span class="string">'is significantly obscured and cannot be segmented'</span>], frame);
+0754         
+0755         <span class="comment">% Defer organizing the available worm information.</span>
+0756         <span class="keyword">if</span> verbose
+0757             vWorm = 0;
+0758         <span class="keyword">else</span>
+0759             <span class="keyword">return</span>;
+0760         <span class="keyword">end</span>
+0761 
+0762     <span class="comment">% Is the head too small (or the tail too large)?</span>
+0763     <span class="comment">% Note: the area of the head and tail should be roughly the same size.</span>
+0764     <span class="comment">% A 2-fold difference is huge!</span>
+0765     <span class="keyword">elseif</span> tArea &gt; 2 * hArea
+0766         warning(<span class="string">'segWorm:SmallHead'</span>, [<span class="string">'Frame %d: The worm head is '</span> <span class="keyword">...</span>
+0767             <span class="string">'less than half the size of its tail. Therefore, the worm '</span> <span class="keyword">...</span>
+0768             <span class="string">'is significantly obscured and cannot be segmented'</span>], frame);
+0769         
+0770         <span class="comment">% Defer organizing the available worm information.</span>
+0771         <span class="keyword">if</span> verbose
+0772             vWorm = 0;
+0773         <span class="keyword">else</span>
+0774             <span class="keyword">return</span>;
+0775         <span class="keyword">end</span>
+0776     <span class="keyword">end</span>
+0777     
+0778 <span class="comment">%     % Does the skeleton exit the head?</span>
+0779 <span class="comment">%     merHMask(merHeadI) = true;</span>
+0780 <span class="comment">%     merHSkeleton = [skeleton(hsBounds(1):hsBounds(2),1) - hMinY + 1, ...</span>
+0781 <span class="comment">%         skeleton(hsBounds(1):hsBounds(2),2) - hMinX + 1];</span>
+0782 <span class="comment">%     merHSkeletonI = sub2ind(size(merHMask), merHSkeleton(:,1), ...</span>
+0783 <span class="comment">%         merHSkeleton(:,2));</span>
+0784 <span class="comment">%     if any(merHMask(merHSkeletonI) == false)</span>
+0785 <span class="comment">%         warning('segWorm:SkeletonExitsHead', ['Frame ' num2str(frame) ...</span>
+0786 <span class="comment">%             ': The worm skeleton exits its head. Therefore, the worm ' ...</span>
+0787 <span class="comment">%             'is significantly obscured and cannot be segmented']);</span>
+0788 <span class="comment">%</span>
+0789 <span class="comment">%         % Defer organizing the available worm information.</span>
+0790 <span class="comment">%         if verbose</span>
+0791 <span class="comment">%             vWorm = 0;</span>
+0792 <span class="comment">%         else</span>
+0793 <span class="comment">%             return;</span>
+0794 <span class="comment">%         end</span>
+0795 <span class="comment">%     end</span>
+0796 <span class="comment">%</span>
+0797 <span class="comment">%     % Does the skeleton exit the tail?</span>
+0798 <span class="comment">%     merTMask(merTailI) = true;</span>
+0799 <span class="comment">%     merTSkeleton = [skeleton(tsBounds(1):tsBounds(2),1) - tMinY + 1, ...</span>
+0800 <span class="comment">%         skeleton(tsBounds(1):tsBounds(2),2) - tMinX + 1];</span>
+0801 <span class="comment">%     merTSkeletonI = sub2ind(size(merTMask), merTSkeleton(:,1), ...</span>
+0802 <span class="comment">%         merTSkeleton(:,2));</span>
+0803 <span class="comment">%     if any(merTMask(merTSkeletonI) == false)</span>
+0804 <span class="comment">%         warning('segWorm:SkeletonExitsTail', ['Frame ' num2str(frame) ...</span>
+0805 <span class="comment">%             ': The worm skeleton exits its tail. Therefore, the worm ' ...</span>
+0806 <span class="comment">%             'is significantly obscured and cannot be segmented']);</span>
+0807 <span class="comment">%</span>
+0808 <span class="comment">%         % Defer organizing the available worm information.</span>
+0809 <span class="comment">%         if verbose</span>
+0810 <span class="comment">%             vWorm = 0;</span>
+0811 <span class="comment">%         else</span>
+0812 <span class="comment">%             return;</span>
+0813 <span class="comment">%         end</span>
+0814 <span class="comment">%     end</span>
+0815     
+0816     <span class="comment">% How much confidence do we have in our head-to-tail orientation?</span>
+0817     <span class="comment">% Note: generally, the head is less angled, and contains more white</span>
+0818     <span class="comment">% pixels (a higher 50% and 75% CDF for color) and less gray pixels (a higher</span>
+0819     <span class="comment">% variance and 25% to 75% interquartile range) than the tail. We give</span>
+0820     <span class="comment">% each probability equal weight, then compare.</span>
+0821     isHeadTailFlipped = 0; <span class="comment">% default orientation</span>
+0822     hConfidenceScale = 134217728; <span class="comment">% 2^26</span>
+0823     hConfidence = ((180 - lfCAngles(headI)) * hCDF(3) * hCDF(4) * <span class="keyword">...</span>
+0824         hStdev * (hCDF(4) - hCDF(2))) / hConfidenceScale;
+0825     tConfidence = ((180 - lfCAngles(tailI)) * tCDF(3) * tCDF(4) * <span class="keyword">...</span>
+0826         tStdev * (tCDF(4) - tCDF(2))) / hConfidenceScale;
+0827 
+0828     <span class="comment">% Determine the left-side's MER (minimum enclosing rectangle).</span>
+0829     [sides lcBounds rcBounds sBounds] = <a href="worm2poly.html" class="code" title="function [polygon lcBounds rcBounds sBounds] = worm2poly(startSI, endSI,skeleton, headCI, tailCI, contour, isSplit, varargin)">worm2poly</a>(hsBounds(2), <span class="keyword">...</span>
+0830         tsBounds(1), skeleton, headI, tailI, contour, true, <span class="keyword">...</span>
+0831         sCCLengths, cCCLengths);
+0832     lSide = sides{2};
+0833     lMinY = min(lSide(:,1));
+0834     lMaxY = max(lSide(:,1));
+0835     lMinX = min(lSide(:,2));
+0836     lMaxX = max(lSide(:,2));
+0837     
+0838     <span class="comment">% Measure the left side (counter clockwise from the head) statistics.</span>
+0839     <span class="comment">%lCDF = [];</span>
+0840     <span class="comment">%lStdev = [];</span>
+0841     merLImg = oImg(lMinY:lMaxY, lMinX:lMaxX);
+0842     merLSide = [lSide(:,1) - lMinY + 1, lSide(:,2) - lMinX + 1];
+0843     [merLMask, ~] = <a href="../../../SegWorm/ComputerVision/inPolyMask.html" class="code" title="function [mask polygonI] = inPolyMask(polygon, seed, maskSize)">inPolyMask</a>(merLSide, [], size(merLImg));
+0844     lColors = single(merLImg(merLMask));
+0845     lArea = length(lColors);
+0846     lCDF = prctile(lColors,[2.5 25 50 75 97.5]);
+0847     lStdev = std(lColors);
+0848     
+0849     <span class="comment">% Determine the right-side's MER (minimum enclosing rectangle).</span>
+0850     rSide = sides{1};
+0851     rMinY = min(rSide(:,1));
+0852     rMaxY = max(rSide(:,1));
+0853     rMinX = min(rSide(:,2));
+0854     rMaxX = max(rSide(:,2));
+0855     
+0856     
+0857     <span class="comment">% Measure the right side (clockwise from the head) statistics.</span>
+0858     <span class="comment">%rCDF = [];</span>
+0859     <span class="comment">%rStdev = [];</span>
+0860     merRImg = oImg(rMinY:rMaxY, rMinX:rMaxX);
+0861     merRSide = [rSide(:,1) - rMinY + 1, rSide(:,2) - rMinX + 1];
+0862     [merRMask, ~] = <a href="../../../SegWorm/ComputerVision/inPolyMask.html" class="code" title="function [mask polygonI] = inPolyMask(polygon, seed, maskSize)">inPolyMask</a>(merRSide, [], size(merRImg));
+0863     rColors = single(merRImg(merRMask));
+0864     rArea = length(rColors);
+0865     rCDF = prctile(rColors,[2.5 25 50 75 97.5]);
+0866     rStdev = std(rColors);
+0867 
+0868     <span class="comment">% Are the head and tail too small (or the body too large)?</span>
+0869     <span class="comment">% Note: earlier, the head and tail were each chosen to be 4/24 = 1/6</span>
+0870     <span class="comment">% the body length of the worm. The head and tail are roughly shaped</span>
+0871     <span class="comment">% like rounded triangles with a convex taper. And, the width at their</span>
+0872     <span class="comment">% ends is nearly the width at the center of the worm. Imagine they were</span>
+0873     <span class="comment">% 2 triangles that, when combined, formed a rectangle similar to the</span>
+0874     <span class="comment">% midsection of the worm. The area of this rectangle would be greater</span>
+0875     <span class="comment">% than a 1/6 length portion from the midsection of the worm (the</span>
+0876     <span class="comment">% maximum area per length in a worm is located at its midsection). The</span>
+0877     <span class="comment">% combined area of the right and left sides is 4/6 of the worm.</span>
+0878     <span class="comment">% Therefore, the combined area of the head and tail must be greater</span>
+0879     <span class="comment">% than (1/6) / (4/6) = 1/4 the combined area of the left and right</span>
+0880     <span class="comment">% sides.</span>
+0881     <span class="keyword">if</span> 4 * (hArea + tArea) &lt; lArea + rArea
+0882         warning(<span class="string">'segWorm:SmallHeadTail'</span>, [<span class="string">'Frame %d: The worm '</span> <span class="keyword">...</span>
+0883             <span class="string">'head and tail are less than 1/4 the size of its '</span> <span class="keyword">...</span>
+0884             <span class="string">'remaining body. Therefore, the worm is significantly '</span> <span class="keyword">...</span>
+0885             <span class="string">'obscured and cannot be segmented'</span>], frame);
+0886         
+0887         <span class="comment">% Defer organizing the available worm information.</span>
+0888         <span class="keyword">if</span> verbose
+0889             vWorm = 0;
+0890         <span class="keyword">else</span>
+0891             <span class="keyword">return</span>;
+0892         <span class="keyword">end</span>
+0893     <span class="keyword">end</span>
+0894     
+0895     <span class="comment">% How much confidence do we have in our vulva orientation?</span>
+0896     <span class="comment">% Note: generally, the vulval side contains less white pixels (a lower</span>
+0897     <span class="comment">% 50% and 75% CDF for color) and more gray pixels (a lower variance and</span>
+0898     <span class="comment">% 25% to 75% interquartile range) than the opposing side. We give each</span>
+0899     <span class="comment">% probability equal weight, then compare. Also, in the absence of</span>
+0900     <span class="comment">% information, we assume the vulva is on the left side (and use a trick</span>
+0901     <span class="comment">% to avoid reciprocals in our equations).</span>
+0902     isVulvaClockwiseFromHead = 0; <span class="comment">% default orientation</span>
+0903     vConfidenceScale = 1048576; <span class="comment">% 2^20</span>
+0904     vConfidence = (rCDF(3) * rCDF(4) * rStdev * (rCDF(4) - rCDF(2))) <span class="keyword">...</span>
+0905         / vConfidenceScale;
+0906     nvConfidence = (lCDF(3) * lCDF(4) * lStdev * (lCDF(4) - lCDF(2))) <span class="keyword">...</span>
+0907         / vConfidenceScale;
+0908     
+0909     <span class="comment">% Organize the available worm information.</span>
+0910     <span class="keyword">if</span> isempty(vWorm)
+0911         worm = <a href="../../../SegWorm/Worms/Util/worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>(frame, contour, [], [], [], lfCAngles, <span class="keyword">...</span>
+0912             headI, tailI, cCCLengths, skeleton, [], [], [], [], <span class="keyword">...</span>
+0913             sAngles, sLength, sCCLengths, cWidths, <span class="keyword">...</span>
+0914             hlcBounds, hrcBounds, hsBounds, head, hArea, hCDF, hStdev, <span class="keyword">...</span>
+0915             tlcBounds, trcBounds, tsBounds, tail, tArea, tCDF, tStdev, <span class="keyword">...</span>
+0916             lcBounds, sBounds, lSide, lArea, lCDF, lStdev, <span class="keyword">...</span>
+0917             rcBounds, sBounds, rSide, rArea, rCDF, rStdev, <span class="keyword">...</span>
+0918             isHeadTailFlipped, hConfidence, tConfidence, <span class="keyword">...</span>
+0919             isVulvaClockwiseFromHead, vConfidence, nvConfidence);
+0920     <span class="keyword">else</span>
+0921         vWorm = <a href="../../../SegWorm/Worms/Util/worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>(frame, contour, [], [], [], lfCAngles, <span class="keyword">...</span>
+0922             headI, tailI, cCCLengths, skeleton, [], [], [], [], <span class="keyword">...</span>
+0923             sAngles, sLength, sCCLengths, cWidths, <span class="keyword">...</span>
+0924             hlcBounds, hrcBounds, hsBounds, head, hArea, hCDF, hStdev, <span class="keyword">...</span>
+0925             tlcBounds, trcBounds, tsBounds, tail, tArea, tCDF, tStdev, <span class="keyword">...</span>
+0926             lcBounds, sBounds, lSide, lArea, lCDF, lStdev, <span class="keyword">...</span>
+0927             rcBounds, sBounds, rSide, rArea, rCDF, rStdev, <span class="keyword">...</span>
+0928             isHeadTailFlipped, hConfidence, tConfidence, <span class="keyword">...</span>
+0929             isVulvaClockwiseFromHead, vConfidence, nvConfidence);
+0930     <span class="keyword">end</span>
+0931 <span class="keyword">end</span>
+0932 
+0933 <span class="comment">% Get the inner contour, if it exists.</span>
+0934 <span class="keyword">if</span> ~verbose &amp;&amp; isempty(worm)
+0935     
+0936     warning(<span class="string">'segWorm:CannotSegment'</span>, <span class="keyword">...</span>
+0937         <span class="string">'Frame %d: The worm cannot be segmented'</span>, frame);
+0938     <span class="keyword">return</span>;
+0939     
+0940     <span class="comment">% Create a small image of the worm's complement to locate its inner loop.</span>
+0941     minY = min(contour(:,1));
+0942     maxY = max(contour(:,1));
+0943     minX = min(contour(:,2));
+0944     maxX = max(contour(:,2));
+0945     cImg = ~img(minY:maxY, minX:maxX);
+0946     
+0947     <span class="comment">% Order the connected components by size.</span>
+0948     cc = bwconncomp(cImg);
+0949     ccSizes = zeros(length(cc.PixelIdxList), 1);
+0950     <span class="keyword">for</span> i = 1:length(cc.PixelIdxList)
+0951         ccSizes(i) = length(cc.PixelIdxList{i});
+0952     <span class="keyword">end</span>
+0953     [~, o] = sort(ccSizes, 1, <span class="string">'descend'</span>);
+0954 
+0955     <span class="comment">% Choose the largest connected component that doesn't touch any image edges.</span>
+0956     iWormPixels = [];
+0957     wMinX = 0;
+0958     wMaxX = 0;
+0959     wMinY = 0;
+0960     wMaxY = 0;
+0961     <span class="keyword">for</span> i = o'
+0962         [y x] = ind2sub(size(cImg), cc.PixelIdxList{i});
+0963         wMinX = min(x);
+0964         wMaxX = max(x);
+0965         wMinY = min(y);
+0966         wMaxY = max(y);
+0967         <span class="keyword">if</span> (wMinY &gt; 1 &amp;&amp; wMaxY &lt; size(cImg,1) &amp;&amp; <span class="keyword">...</span>
+0968                 wMinX &gt; 1 &amp;&amp; wMaxX &lt; size(cImg,2))
+0969             iWormPixels = [y x];
+0970             <span class="keyword">break</span>;
+0971         <span class="keyword">end</span>
+0972     <span class="keyword">end</span>
+0973 
+0974     <span class="comment">% Use the inner loop's maxima/minima to find a point on the worm's</span>
+0975     <span class="comment">% inner contour. Try to avoid 1-pixel width sections as they may end up</span>
+0976     <span class="comment">% tracing the outer contour.</span>
+0977     <span class="keyword">if</span> ~isempty(iWormPixels)
+0978         <span class="keyword">if</span> wMinX &gt; 2
+0979             i = find(iWormPixels(:,2) == wMinX);
+0980             x = wMinX + minX - 2;
+0981             y = iWormPixels(i(1),1) + minY - 1;
+0982         <span class="keyword">elseif</span> wMinY &gt; 2
+0983             i = find(iWormPixels(:,2) == wMinY);
+0984             x = iWormPixels(i(1),2) + minX - 1;
+0985             y = wMinY + minY - 2;
+0986         <span class="keyword">elseif</span> wMaxX &lt; size(cImg, 2) - 1
+0987             i = find(iWormPixels(:,2) == wMaxX);
+0988             x = wMaxX + minX;
+0989             y = iWormPixels(i(1),1) + minY - 1;
+0990         <span class="keyword">else</span> <span class="comment">% default to wMaxY &lt; size(cImg, 1) - 1</span>
+0991             i = find(iWormPixels(:,2) == wMaxY);
+0992             x = iWormPixels(i(1),2) + minX - 1;
+0993             y = wMaxY + minY;
+0994         <span class="keyword">end</span>
+0995         
+0996         <span class="comment">% Trace the contour counter clockwise.</span>
+0997         iContour = <a href="../../../SegWorm/ComputerVision/bwClockTrace.html" class="code" title="function [contour] = bwClockTrace(img, seed, isClockwise)">bwClockTrace</a>(img, [x y], false);
+0998         
+0999         <span class="comment">% Correct the worm segment size.</span>
+1000         <span class="comment">% Note: a looped worm can take the shape of an upper-case omega and</span>
+1001         <span class="comment">% omicron or, lower-case alpha and delta. An omega and omicron</span>
+1002         <span class="comment">% hide, approximately, at least 2 segments of the worm's contour. A</span>
+1003         <span class="comment">% delta hides, approximately, at least 3 segments. And, and alpha</span>
+1004         <span class="comment">% hides, approximately, at least 4 segments. Therefore, we</span>
+1005         <span class="comment">% approximate the new contour size as the inner and outer contour</span>
+1006         <span class="comment">% sizes plus 3 additional, hidden segments.</span>
+1007         wormSegLength = round((size(iContour, 1) + size(contour, 1)) / <span class="keyword">...</span>
+1008             (cWormSegs - 3));
+1009 
+1010         <span class="comment">% Clean up the worm's inner contour.</span>
+1011         <span class="keyword">if</span> verbose
+1012             roughIContour = iContour;
+1013         <span class="keyword">end</span>
+1014         [iContour] = <a href="cleanWorm.html" class="code" title="function contour = cleanWorm(contour, wormSegSize)">cleanWorm</a>(iContour, wormSegLength);
+1015         
+1016         <span class="comment">% Are the inner and outer contour identical or switched?</span>
+1017         <span class="comment">% Note: if we begin tracing either contour at a 1-pixel wide worm</span>
+1018         <span class="comment">% section we may end up tracing the wrong contour when we fork.</span>
+1019         <span class="keyword">if</span> size(iContour, 1) &gt;= size(contour, 1)
+1020             iMinX = min(iContour(:,2));
+1021             iMaxX = max(iContour(:,2));
+1022             iMinY = min(iContour(:,1));
+1023             iMaxY = max(iContour(:,1));
+1024             oMinX = min(contour(:,2));
+1025             oMaxX = max(contour(:,2));
+1026             oMinY = min(contour(:,1));
+1027             oMaxY = max(contour(:,1));
+1028             
+1029             <span class="comment">% The contours are switched.</span>
+1030             <span class="keyword">if</span> iMinX &lt; oMinX || iMaxX &gt; oMaxX || <span class="keyword">...</span>
+1031                     iMinY &lt; oMinY || iMaxY &gt; oMaxY
+1032                 
+1033                 <span class="comment">% Switch the contours.</span>
+1034                 tmp = flipud(contour);
+1035                 contour = flipud(iContour);
+1036                 iContour = tmp;
+1037                 
+1038             <span class="comment">% The contours are identical.</span>
+1039             <span class="keyword">elseif</span> iMinX == oMinX &amp;&amp; iMaxX == oMaxX &amp;&amp; <span class="keyword">...</span>
+1040                     iMinY == oMinY &amp;&amp; iMaxY == oMaxY
+1041                 warning(<span class="string">'segWorm:IdenticalContours'</span>, <span class="keyword">...</span>
+1042                     [<span class="string">'Frame '</span> num2str(frame) <span class="keyword">...</span>
+1043                     <span class="string">': The inner and outer contour cannot be '</span><span class="keyword">...</span>
+1044                      <span class="string">'distinguished from each other'</span>]);
+1045                 <span class="keyword">return</span>;
+1046             <span class="keyword">end</span>
+1047         <span class="keyword">end</span>
+1048         
+1049         <span class="comment">% Compute the worm's contour and skeleton.</span>
+1050         worm = <a href="coiledSkeleton.html" class="code" title="function worm = coiledSkeleton(oContour, iContour, sWormSegs)">coiledSkeleton</a>(headI, tailI, contour, iContour, wormSegLength);
+1051         
+1052         <span class="comment">% Orient the contour and angles at the maximum curvature (the head or tail).</span>
+1053         <span class="comment">% FIXME!!!</span>
+1054         <span class="keyword">if</span> 0
+1055             contour = [contour(headI:<span class="keyword">end</span>,:); contour(1:(headI - 1),:)];
+1056             hfCAngles = [hfCAngles(headI:end), hfCAngles(1:(headI - 1))];
+1057             mhfCAngles = [mhfCAngles(headI:end), mhfCAngles(1:(headI - 1))];
+1058             <span class="keyword">if</span> headI &lt;= tailI
+1059                 tailI = tailI - headI + 1;
+1060             <span class="keyword">else</span>
+1061                 tailI = tailI + size(contour, 1) - headI + 1;
+1062             <span class="keyword">end</span>
+1063             headI = 1;
+1064         <span class="keyword">end</span>
+1065     <span class="keyword">end</span>
+1066 <span class="keyword">end</span>
+1067 
+1068 <span class="comment">% Show the results.</span>
+1069 <span class="keyword">if</span> verbose
+1070 
+1071     <span class="comment">% Open a big figure.</span>
+1072     figure(<span class="string">'OuterPosition'</span>, [50 50 1280 960]);
+1073     <span class="comment">%fullscreen = get(0,'ScreenSize');</span>
+1074     <span class="comment">%figure('OuterPosition',[50 50 (fullscreen(3) - 100) (fullscreen(4) - 100)]);</span>
+1075     
+1076     <span class="comment">% The worm failed to segment.</span>
+1077     <span class="keyword">if</span> isempty(worm)
+1078         set(gcf, <span class="string">'Color'</span>, [1 .75 .75]);
+1079         worm = vWorm;
+1080     <span class="keyword">end</span>
+1081     
+1082     <span class="comment">% Are the head and tail flipped?</span>
+1083     hConfidence = worm.orientation.head.confidence;
+1084     <span class="keyword">if</span> hConfidence.head &lt; hConfidence.tail
+1085         worm = <a href="../../../SegWorm/Worms/Orientation/flipWormHead.html" class="code" title="function worm = flipWormHead(worm)">flipWormHead</a>(worm);
+1086         hConfidence = worm.orientation.head.confidence;
+1087     <span class="keyword">end</span>
+1088     
+1089     <span class="comment">% Is the vulva on the correct side?</span>
+1090     vConfidence = worm.orientation.vulva.confidence;
+1091     <span class="keyword">if</span> vConfidence.vulva &lt; vConfidence.nonVulva
+1092         worm = <a href="../../../SegWorm/Worms/Orientation/flipWormVulva.html" class="code" title="function worm = flipWormVulva(worm)">flipWormVulva</a>(worm);
+1093         vConfidence = worm.orientation.vulva.confidence;
+1094     <span class="keyword">end</span>
+1095     
+1096     <span class="comment">% Are we downsampling the worm?</span>
+1097     <span class="keyword">if</span> ~isempty(varargin)
+1098         samples = varargin{1};
+1099     <span class="keyword">else</span>
+1100         samples = [];
+1101     <span class="keyword">end</span>
+1102     
+1103     <span class="comment">% When downsampling, are we interpolating the missing data or copying</span>
+1104     <span class="comment">% it from the original worm?</span>
+1105     <span class="keyword">if</span> length(varargin) &gt; 1
+1106         isInterp = varargin{2};
+1107     <span class="keyword">else</span>
+1108         isInterp = true;
+1109     <span class="keyword">end</span>
+1110 
+1111     <span class="comment">% Downsample the worm.</span>
+1112     <span class="keyword">if</span> isempty(vWorm)
+1113         <span class="keyword">if</span> ~isempty(samples)
+1114             origins = [0 0];
+1115             moves = [0 0];
+1116             pixel2MicronScale = [1 1];
+1117             rotation = 1;
+1118             
+1119             <span class="comment">% Normalize the worm.</span>
+1120             [vulvaContour nonVulvaContour skeleton skeletonAngles <span class="keyword">...</span>
+1121                 inOutTouch skeletonLength widths headArea tailArea <span class="keyword">...</span>
+1122                 vulvaArea nonVulvaArea] = <a href="../../../SegWorm/Worms/Util/normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">normWorms</a>({worm}, samples, <span class="keyword">...</span>
+1123                 origins, moves, pixel2MicronScale, rotation, false);
+1124             <span class="keyword">if</span> isInterp
+1125                 worm = [];
+1126             <span class="keyword">end</span>
+1127             
+1128             <span class="comment">% Reconstruct the normalized worm.</span>
+1129             worm = <a href="../../../SegWorm/Worms/Util/norm2Worm.html" class="code" title="function worm = norm2Worm(frame, vulvaContour, nonVulvaContour,skeleton, skeletonAngles, inOutTouch, skeletonLength, widths,headArea, tailArea, vulvaArea, nonVulvaArea,origin, pixel2MicronScale, rotation, worm)">norm2Worm</a>(frame, vulvaContour, nonVulvaContour, <span class="keyword">...</span>
+1130                 skeleton, skeletonAngles, inOutTouch, skeletonLength, <span class="keyword">...</span>
+1131                 widths, headArea, tailArea, vulvaArea, nonVulvaArea, <span class="keyword">...</span>
+1132                 origins, pixel2MicronScale, rotation, worm);
+1133         <span class="keyword">end</span>
+1134     <span class="keyword">end</span>
+1135 
+1136     <span class="comment">% Setup the contour, skeleton, pixels, angles, head/tail, and</span>
+1137     <span class="comment">% left/right sides.</span>
+1138     contour = worm.contour;
+1139     cPixels = contour.pixels;
+1140     cAngles = contour.angles;
+1141     wormSegSize = size(cPixels, 1) / cWormSegs;
+1142     skeleton = worm.skeleton;
+1143     sPixels = skeleton.pixels;
+1144     sAngles = worm.skeleton.angles;
+1145     cWidths = worm.skeleton.widths;
+1146     head = worm.head;
+1147     tail = worm.tail;
+1148     left = worm.left;
+1149     right = worm.right;
+1150     
+1151     <span class="comment">% Are the head and tail flipped?</span>
+1152     <span class="keyword">if</span> worm.orientation.head.isFlipped
+1153         sPixels = flipud(sPixels);
+1154         sAngles = -flipud(sAngles);
+1155         cWidths = flipud(cWidths);
+1156         tmp = head;
+1157         head = tail;
+1158         tail = tmp;
+1159         tmp = left;
+1160         left = right;
+1161         right = tmp;
+1162     <span class="keyword">end</span>
+1163     
+1164     <span class="comment">% Convert the original image to 8-bit grayscale.</span>
+1165     <span class="keyword">if</span> isfloat(oImg)
+1166         oImg = uint8(round(oImg * 255));
+1167     <span class="keyword">end</span>
+1168     
+1169     <span class="comment">% Show the original image.</span>
+1170     hold on, subplot(2,3,1);
+1171     rgbOImg(:,:,1) = oImg;
+1172     rgbOImg(:,:,2) = oImg;
+1173     rgbOImg(:,:,3) = oImg;
+1174     imshow(rgbOImg), title(<span class="string">'Original Image'</span>);
+1175     <span class="keyword">if</span> ~isempty(frame)
+1176         xlabel([<span class="string">'Frame = '</span> num2str(frame)]);
+1177     <span class="keyword">end</span>
+1178     
+1179     <span class="comment">% Construct a binary image with the contours and skeleton overlayed.</span>
+1180     onesImg = ones(size(img));
+1181     redImg = onesImg;
+1182     greenImg = onesImg;
+1183     blueImg = double(~img);
+1184 
+1185     <span class="comment">% Compute the unique rough and smooth contours and their intersection.</span>
+1186     smoothCI = sub2ind(size(img), cPixels(:,1), cPixels(:,2));
+1187     roughCI = sub2ind(size(img), roughContour(:,1), roughContour(:,2));
+1188     [~, uniqueRoughI, uniqueSmoothI] = setxor(roughCI, smoothCI);
+1189     sameCI = roughCI;
+1190     sameCI(uniqueRoughI) = [];
+1191     roughCI = roughCI(uniqueRoughI);
+1192     smoothCI = smoothCI(uniqueSmoothI);
+1193     
+1194     <span class="comment">% Overlay the contour intersection.</span>
+1195     redImg(sameCI) = 0;
+1196     greenImg(sameCI) = 0;
+1197     blueImg(sameCI) = 0;
+1198     
+1199     <span class="comment">% Overlay the rough contours.</span>
+1200     redImg(roughCI) = 1;
+1201     greenImg(roughCI) = .7;
+1202     blueImg(roughCI) = .3;
+1203     <span class="keyword">if</span> exist(<span class="string">'roughIContour'</span>, <span class="string">'var'</span>)
+1204         <span class="comment">% Ignore for now.</span>
+1205     <span class="keyword">end</span>
+1206     
+1207     <span class="comment">% Overlay the smooth contours and skeleton.</span>
+1208     redImg(smoothCI) = 0;
+1209     greenImg(smoothCI) = 1;
+1210     blueImg(smoothCI) = 0;
+1211     <span class="keyword">if</span> exist(<span class="string">'iContour'</span>, <span class="string">'var'</span>)
+1212         <span class="comment">% Ignore for now.</span>
+1213     <span class="keyword">end</span>
+1214     
+1215     <span class="comment">% Overlay the skeleton.</span>
+1216     <span class="keyword">if</span> ~isempty(sPixels)
+1217         sI = sub2ind(size(img), sPixels(:,1), sPixels(:,2));
+1218         redImg(sI) = 1;
+1219         greenImg(sI) = 0;
+1220         blueImg(sI) = 0;
+1221     <span class="keyword">end</span>
+1222     
+1223     <span class="comment">% Show the binary image with the contours and skeleton overlayed.</span>
+1224     binOImg(:,:,1) = redImg;
+1225     binOImg(:,:,2) = greenImg;
+1226     binOImg(:,:,3) = blueImg;
+1227     hold on, subplot(2,3,2);
+1228     imshow(binOImg), title([<span class="string">'\color{yellow}Thresholded \color{black}+ '</span> <span class="keyword">...</span>
+1229         <span class="string">'(\color{orange}Rough\color{black}/\color{darkgreen}Smoothed) '</span> <span class="keyword">...</span>
+1230         <span class="string">'\color{black}Contour + \color{red}Skeleton'</span>]);
+1231     
+1232     <span class="comment">% Blur the contour's local high-frequency curvature.</span>
+1233     <span class="comment">% Note: on a small scale, noise causes contour imperfections that shift an</span>
+1234     <span class="comment">% angle from its correct location. Therefore, blurring angles by averaging</span>
+1235     <span class="comment">% them with their neighbors can localize them better.</span>
+1236     lfBlurSize = ceil(wormSegSize);
+1237     lfBlurWin(1:lfBlurSize) = 1 / lfBlurSize;
+1238     mcAngles = <a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>(cAngles, lfBlurWin);
+1239 
+1240     <span class="comment">% Determine the min/max contour curvatures.</span>
+1241     [mcMaxP, mcMaxI] = <a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>(mcAngles, lfAngleEdgeLength, <span class="keyword">...</span>
+1242         cCCLengths);
+1243     [mcMinP, mcMinI] = <a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>(mcAngles, lfAngleEdgeLength, <span class="keyword">...</span>
+1244         cCCLengths);
+1245     
+1246     <span class="comment">% Determine the worm's MER (minimum enclosing rectangle).</span>
+1247     <span class="comment">% Note: the skeleton can exit the contour.</span>
+1248     <span class="keyword">if</span> ~isempty(head.bounds.contour) &amp;&amp; <span class="keyword">...</span>
+1249             ~isempty(head.bounds.skeleton) &amp;&amp; <span class="keyword">...</span>
+1250             ~isempty(tail.bounds.contour) &amp;&amp; <span class="keyword">...</span>
+1251             ~isempty(tail.bounds.skeleton) &amp;&amp; <span class="keyword">...</span>
+1252             ~isempty(left.bounds.contour) &amp;&amp; <span class="keyword">...</span>
+1253             ~isempty(left.bounds.skeleton) &amp;&amp; <span class="keyword">...</span>
+1254             ~isempty(right.bounds.contour) &amp;&amp; <span class="keyword">...</span>
+1255             ~isempty(right.bounds.skeleton)
+1256         <span class="keyword">if</span> isempty(sPixels)
+1257             wMinX = min(cPixels(:,2));
+1258             wMaxX = max(cPixels(:,2));
+1259             wMinY = min(cPixels(:,1));
+1260             wMaxY = max(cPixels(:,1));
+1261         <span class="keyword">else</span>
+1262             wMinX = min(min(cPixels(:,2)), min(sPixels(:,2)));
+1263             wMaxX = max(max(cPixels(:,2)), max(sPixels(:,2)));
+1264             wMinY = min(min(cPixels(:,1)), min(sPixels(:,1)));
+1265             wMaxY = max(max(cPixels(:,1)), max(sPixels(:,1)));
+1266         <span class="keyword">end</span>
+1267         
+1268         <span class="comment">% Construct an image showing the head/tail, left/right sides, as well</span>
+1269         <span class="comment">% as the touching/inside/outside points of the contour and skeleton.</span>
+1270         hRGB = [150 150 64];
+1271         tRGB = [64 64 0];
+1272         vRGB = [96 96 255];
+1273         nvRGB = [0 0 224];
+1274         cTouchRGB = [255 255 255];
+1275         cInRGB = [255 0 0];
+1276         cOutRGB = [0 255 0];
+1277         sTouchRGB = [255 255 255];
+1278         sInRGB = [0 255 0];
+1279         sOutRGB = [255 0 0];
+1280         sInOutRGB = [255 150 255];
+1281         bodyImg = <a href="../../../SegWorm/Worms/Video/overlayWormTouch.html" class="code" title="function oImg = overlayWormTouch(img, worm, headRGB, isHeadOpaque,tailRGB, isTailOpaque, vulvaRGB, isVulvaOpaque, nonVulvaRGB, isNonVulvaOpaque,cTouchRGB, isCTouchOpaque, cInRGB, isCInOpaque, cOutRGB, isCOutOpaque,sTouchRGB, isSTouchOpaque, sInRGB, isSInOpaque, sOutRGB, isSOutOpaque,sInOutRGB, isSInOutOpaque)">overlayWormTouch</a>(oImg, worm, hRGB, 1, tRGB, 1, <span class="keyword">...</span>
+1282             vRGB, 1, nvRGB, 1, cTouchRGB, 1, cInRGB, 1, cOutRGB, 1, <span class="keyword">...</span>
+1283             sTouchRGB, 1, sInRGB, 1, sOutRGB, 1, sInOutRGB, 1);
+1284         hold on, subplot(2,3,3);
+1285         imshow(bodyImg((wMinY - 1):(wMaxY + 1),(wMinX - 1):(wMaxX + 1),:));
+1286         <span class="keyword">if</span> ~isempty(head.cdf) &amp;&amp; ~isempty(tail.cdf)
+1287             title({[<span class="string">'Head: area='</span> num2str(head.area) <span class="keyword">...</span>
+1288                 <span class="string">' cdf=['</span> num2str(head.cdf(1), <span class="string">'%.1f'</span>) <span class="keyword">...</span>
+1289                 num2str(head.cdf(2:end), <span class="string">', %.1f'</span>) <span class="keyword">...</span>
+1290                 <span class="string">'] stdev='</span> num2str(head.stdev)], <span class="keyword">...</span>
+1291                 [<span class="string">'Tail: area='</span> num2str(tail.area) <span class="keyword">...</span>
+1292                 <span class="string">' cdf=['</span> num2str(tail.cdf(1), <span class="string">'%.1f'</span>) <span class="keyword">...</span>
+1293                 num2str(tail.cdf(2:end), <span class="string">', %.1f'</span>) <span class="keyword">...</span>
+1294                 <span class="string">'] stdev='</span> num2str(tail.stdev)]});
+1295         <span class="keyword">end</span>
+1296         <span class="keyword">if</span> ~isempty(left.cdf) &amp;&amp; ~isempty(right.cdf)
+1297             xlabel({[<span class="string">'Left: area='</span> num2str(left.area) <span class="keyword">...</span>
+1298                 <span class="string">' cdf=['</span> num2str(left.cdf(1), <span class="string">'%.1f'</span>) <span class="keyword">...</span>
+1299                 num2str(left.cdf(2:end), <span class="string">', %.1f'</span>) <span class="keyword">...</span>
+1300                 <span class="string">'] stdev='</span> num2str(left.stdev)], <span class="keyword">...</span>
+1301                 [<span class="string">'Right: area='</span> num2str(right.area) <span class="keyword">...</span>
+1302                 <span class="string">' cdf=['</span> num2str(right.cdf(1), <span class="string">'%.1f'</span>) <span class="keyword">...</span>
+1303                 num2str(right.cdf(2:end), <span class="string">', %.1f'</span>) <span class="keyword">...</span>
+1304                 <span class="string">'] stdev='</span> num2str(right.stdev)]});
+1305         <span class="keyword">end</span>
+1306         ylabel(<span class="string">'Head/Tail, Left/Right, &amp; Touch/In/Out'</span>);
+1307         
+1308         <span class="comment">% Construct a pattern to identify the head.</span>
+1309         hImg = [1 1 1 1 1; <span class="keyword">...</span>
+1310             1 1 1 1 1; <span class="keyword">...</span>
+1311             1 1 1 1 1; <span class="keyword">...</span>
+1312             1 1 1 1 1; <span class="keyword">...</span>
+1313             1 1 1 1 1];
+1314         [hPattern(:,1) hPattern(:,2)] = find(hImg == 1);
+1315         hPattern(:,1) = hPattern(:,1) - ceil(size(hImg, 1) / 2);
+1316         hPattern(:,2) = hPattern(:,2) - ceil(size(hImg, 2) / 2);
+1317         
+1318         <span class="comment">% Construct a pattern to identify the vulva.</span>
+1319         vImg = [1 1 1 1 1; <span class="keyword">...</span>
+1320             1 1 1 1 1; <span class="keyword">...</span>
+1321             1 1 1 1 1; <span class="keyword">...</span>
+1322             1 1 1 1 1; <span class="keyword">...</span>
+1323             1 1 1 1 1];
+1324         [vPattern(:,1) vPattern(:,2)] = find(vImg == 1);
+1325         vPattern(:,1) = vPattern(:,1) - ceil(size(vImg, 1) / 2);
+1326         vPattern(:,2) = vPattern(:,2) - ceil(size(vImg, 2) / 2);
+1327         
+1328         <span class="comment">% Construct an image showing the contour/skeleton curvature heat map.</span>
+1329         blue = zeros(360, 3);
+1330         blue(:,3) = 255;
+1331         red = zeros(360, 3);
+1332         red(:,1) = 255;
+1333         cRGB = [blue(1:90,:); jet(181) * 255; red(1:90,:)]; <span class="comment">% thermal</span>
+1334         sRGB = [blue(1:90,:); jet(181) * 255; red(1:90,:)]; <span class="comment">% thermal</span>
+1335         sRGBNaN = [255 0 0]; <span class="comment">% red</span>
+1336         hRGB = [0 255 0]; <span class="comment">% green</span>
+1337         vRGB = [255 0 0]; <span class="comment">% red</span>
+1338         angleImg = <a href="../../../SegWorm/Worms/Video/overlayWormAngles.html" class="code" title="function oImg = overlayWormAngles(img, worm, cRGB360, sRGB360, sRGBNaN,headPattern, headRGB, isHeadOpaque, vulvaPattern, vulvaRGB, isVulvaOpaque)">overlayWormAngles</a>(oImg, worm, cRGB, sRGB, sRGBNaN, <span class="keyword">...</span>
+1339             hPattern, hRGB, 1, vPattern, vRGB, 1);
+1340         hold on, subplot(2,3,4);
+1341         imshow(angleImg((wMinY - 1):(wMaxY + 1),(wMinX - 1):(wMaxX + 1),:));
+1342         title({[<span class="string">'\color{darkgreen}Head\color{black} confidence = '</span> <span class="keyword">...</span>
+1343             num2str(hConfidence.head)], <span class="keyword">...</span>
+1344             [<span class="string">'Tail confidence = '</span> num2str(hConfidence.tail)], <span class="keyword">...</span>
+1345             [<span class="string">'Head/tail confidence = '</span> <span class="keyword">...</span>
+1346             num2str(hConfidence.head / hConfidence.tail)]});
+1347         xlabel({[<span class="string">'\color{red}Vulva\color{black} confidence = '</span> <span class="keyword">...</span>
+1348             num2str(vConfidence.vulva)], <span class="keyword">...</span>
+1349             [<span class="string">'Non-vulva confidence = '</span> num2str(vConfidence.nonVulva)], <span class="keyword">...</span>
+1350             [<span class="string">'Vulva/non-vulva confidence = '</span> <span class="keyword">...</span>
+1351             num2str(vConfidence.vulva / vConfidence.nonVulva)]});
+1352         ylabel(<span class="string">'Curvature as Heat'</span>);
+1353         
+1354         <span class="comment">% Show the min/max contour curvatures.</span>
+1355         contour = worm.contour.pixels;
+1356         hold on, text(contour(mcMinI,2) - wMinX + 2, <span class="keyword">...</span>
+1357             contour(mcMinI,1) - wMinY + 2, <span class="string">'*'</span>, <span class="string">'Color'</span>, <span class="string">'m'</span>, <span class="keyword">...</span>
+1358             <span class="string">'HorizontalAlignment'</span>, <span class="string">'center'</span>);
+1359         hold on, text(contour(mcMinI,2) - wMinX + 2, <span class="keyword">...</span>
+1360             contour(mcMinI,1) - wMinY + 2, num2str(mcMinI), <span class="string">'Color'</span>, <span class="string">'m'</span>);
+1361         hold on, text(contour(mcMaxI,2) - wMinX + 2, <span class="keyword">...</span>
+1362             contour(mcMaxI,1) - wMinY + 2, <span class="string">'*'</span>, <span class="string">'Color'</span>, <span class="string">'g'</span>, <span class="keyword">...</span>
+1363             <span class="string">'HorizontalAlignment'</span>, <span class="string">'center'</span>);
+1364         hold on, text(contour(mcMaxI,2) - wMinX + 2, <span class="keyword">...</span>
+1365             contour(mcMaxI,1) - wMinY + 2, num2str(mcMaxI), <span class="string">'Color'</span>, <span class="string">'g'</span>);
+1366     <span class="keyword">end</span>
+1367     
+1368     <span class="comment">% Biplot the contour's curvature and contour's width.</span>
+1369     hold on, subplot(2,3,5:6);
+1370     <span class="keyword">if</span> isempty(cWidths)
+1371         cWidths = 0;
+1372     <span class="keyword">end</span>
+1373     [ax h1 h2] = plotyy(1:length(cAngles), cAngles, 1:length(cWidths), <span class="keyword">...</span>
+1374         cWidths);
+1375     set(h1, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+1376     set(h2, <span class="string">'Color'</span>, [.6 .6 .3]);
+1377     title([<span class="string">'Curvature and Width (Length = '</span> num2str(skeleton.length) <span class="string">')'</span>]);
+1378     xlabel(<span class="string">'Contour/Skeleton Points (Index)'</span>);
+1379     ylabel(ax(1), <span class="string">'Contour/Skeleton Angle (degrees)'</span>);
+1380     ylabel(ax(2), <span class="string">'Contour Width (pixels)'</span>);
+1381     <span class="comment">%xlim(ax(1), [0 length(cAngles)]);</span>
+1382     <span class="comment">%xlim(ax(2), [0 length(cAngles)]);</span>
+1383     ylim(ax(1), [-180 180]);
+1384     <span class="comment">%maxCWidths = max(cWidths);</span>
+1385     <span class="comment">%ylim(ax(2), [0 maxCWidths]);</span>
+1386     <span class="comment">%set(ax(1), 'XTick', linspace(0, length(cAngles), 10));</span>
+1387     set(ax(2), <span class="string">'XTick'</span>, []);
+1388     set(ax(1), <span class="string">'YTick'</span>, linspace(-180, 180, 13));
+1389     <span class="comment">%set(ax(2), 'YTick', linspace(0, maxCWidths, 13));</span>
+1390     grid on;
+1391     
+1392     <span class="comment">% Plot the contour's smoothed (min/max) curvature.</span>
+1393     hold(ax(1), <span class="string">'on'</span>), plot(ax(1), mcAngles, <span class="string">'b'</span>);
+1394     hold(ax(1), <span class="string">'on'</span>), plot(ax(1), mcMinI, mcMinP, <span class="string">'m*'</span>);
+1395     hold(ax(1), <span class="string">'on'</span>), plot(ax(1), mcMaxI, mcMaxP, <span class="string">'g*'</span>);
+1396 
+1397     <span class="comment">% Plot the contour's smoothed width.</span>
+1398     <span class="keyword">if</span> isempty(cWidths) || length(cWidths) &lt;= 1
+1399         mcWidths = 0;
+1400     <span class="keyword">else</span>
+1401         mcWidths = <a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>(cWidths, lfBlurWin);
+1402     <span class="keyword">end</span>
+1403     hold(ax(2), <span class="string">'on'</span>), plot(ax(2), mcWidths, <span class="string">'c'</span>);
+1404     
+1405     <span class="comment">% Plot the skeleton's (smoothed) curvature.</span>
+1406     <span class="comment">% Note: we flip the skeleton angles so they're visible over the</span>
+1407     <span class="comment">% contour's angles.</span>
+1408     sAngles = -sAngles;
+1409     <span class="keyword">if</span> isempty(sAngles)
+1410         sAngles = 0;
+1411     <span class="keyword">end</span>
+1412     hold(ax(1), <span class="string">'on'</span>), plot(ax(1), sAngles, <span class="string">'r'</span>);
+1413     msAngles = conv(sAngles, lfBlurWin, <span class="string">'same'</span>);
+1414     hold(ax(1), <span class="string">'on'</span>), plot(ax(1), msAngles, <span class="string">'m'</span>);
+1415     
+1416     <span class="comment">% Setup the legend.</span>
+1417     legends = { <span class="keyword">...</span>
+1418         <span class="string">'Contour Angles'</span>, <span class="keyword">...</span>
+1419         <span class="string">'Avg Contour Angles'</span>, <span class="keyword">...</span>
+1420         <span class="string">'Min Avg Contour Angles'</span>, <span class="keyword">...</span>
+1421         <span class="string">'Max Avg Contour Angles'</span>, <span class="keyword">...</span>
+1422         <span class="string">'- Skeleton Angles'</span>, <span class="keyword">...</span>
+1423         <span class="string">'- Avg Skeleton Angles'</span>, <span class="keyword">...</span>
+1424         <span class="string">'Contour Widths'</span>, <span class="keyword">...</span>
+1425         <span class="string">'Avg Contour Widths'</span>};
+1426     legend(legends, <span class="string">'Location'</span>, <span class="string">'SouthEast'</span>);
+1427     
+1428     <span class="comment">% The worm failed to segment.</span>
+1429     <span class="keyword">if</span> ~isempty(vWorm)
+1430         worm = [];
+1431     <span class="keyword">end</span>
+1432 <span class="keyword">end</span>
+1433 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

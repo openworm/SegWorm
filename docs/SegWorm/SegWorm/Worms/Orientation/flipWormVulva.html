@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of flipWormVulva</title>
+  <meta name="keywords" content="flipWormVulva">
+  <meta name="description" content="FLIPWORMVULVA Flip the vulval orientation of the worm.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Orientation -->
+<h1>flipWormVulva
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>FLIPWORMVULVA Flip the vulval orientation of the worm.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm = flipWormVulva(worm) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FLIPWORMVULVA Flip the vulval orientation of the worm.
+
+   WORM = FLIPWORMVULVA(WORM)
+
+   Input:
+       worm - the worm to flip
+
+   Output:
+       worm - the flipped worm
+
+   See also <a href="flipWormCellVulva.html" class="code" title="function worm = flipWormCellVulva(worm)">FLIPWORMCELLVULVA</a>, <a href="flipWormHead.html" class="code" title="function worm = flipWormHead(worm)">FLIPWORMHEAD</a>, <a href="flipWormData.html" class="code" title="function worm = flipWormData(worm)">FLIPWORMDATA</a>, WORM2STRUCT,
+   SEGWORM</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="orientWorm.html" class="code" title="function [worm2 confidence flippedConfidence] =orientWorm(worm1, worm2, samples, varargin)">orientWorm</a>	ORIENTWORM Orient worm2 to match worm1's orientation (by setting</li><li><a href="orientWormAtCentroid.html" class="code" title="function [worm2 confidence flippedConfidence] =orientWormAtCentroid(worm1, worm2, samples, varargin)">orientWormAtCentroid</a>	ORIENTWORMATCENTROID Orient worm2 to match worm1's orientation (by setting</li><li><a href="orientWormPostCoil.html" class="code" title="function worm2 = orientWormPostCoil(worm1, worm2, varargin)">orientWormPostCoil</a>	ORIENTWORMPOSTCOIL Orient worm2 to match worm1's orientation (by setting</li><li><a href="../../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li><li><a href="../../../SegWorm/Worms/Video/segWormVideo.html" class="code" title="function failedFrames = segWormVideo(videoFile, anglesVideoFile,touchVideoFile, debugVideoFile, varargin)">segWormVideo</a>	SEGWORMVIDEO Segment a worm video.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm = flipWormVulva(worm)</a>
+0002 <span class="comment">%FLIPWORMVULVA Flip the vulval orientation of the worm.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   WORM = FLIPWORMVULVA(WORM)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Input:</span>
+0007 <span class="comment">%       worm - the worm to flip</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Output:</span>
+0010 <span class="comment">%       worm - the flipped worm</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   See also FLIPWORMCELLVULVA, FLIPWORMHEAD, FLIPWORMDATA, WORM2STRUCT,</span>
+0013 <span class="comment">%   SEGWORM</span>
+0014 
+0015 <span class="comment">% Flip the worm's vulval side.</span>
+0016 worm.orientation.vulva.isClockwiseFromHead = <span class="keyword">...</span>
+0017     ~worm.orientation.vulva.isClockwiseFromHead;
+0018 tmp = worm.orientation.vulva.confidence.vulva;
+0019 worm.orientation.vulva.confidence.vulva = <span class="keyword">...</span>
+0020     worm.orientation.vulva.confidence.nonVulva;
+0021 worm.orientation.vulva.confidence.nonVulva = tmp;
+0022 <span class="keyword">end</span>
+0023</pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

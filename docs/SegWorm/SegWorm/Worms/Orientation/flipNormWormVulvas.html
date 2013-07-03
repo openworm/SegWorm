@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of flipNormWormVulvas</title>
+  <meta name="keywords" content="flipNormWormVulvas">
+  <meta name="description" content="FLIPNORMWORMVULVAS Flip the vulval-side orientation of the normalized">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Orientation -->
+<h1>flipNormWormVulvas
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>FLIPNORMWORMVULVAS Flip the vulval-side orientation of the normalized</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [vulvaContours nonVulvaContours angles vulvaAreas nonVulvaAreas] =flipNormWormVulvas(vulvaContours, nonVulvaContours, angles,vulvaAreas, nonVulvaAreas) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FLIPNORMWORMVULVAS Flip the vulval-side orientation of the normalized
+worms.
+
+   [VULVACONTOURS NONVULVACONTOURS ANGLES VULVAAREAS NONVULVAAREAS] =
+       FLIPNORMWORMVULVAS(VULVACONTOURS, NONVULVACONTOURS, ANGLES,
+       VULVAAREAS, NONVULVAAREAS)
+
+   Inputs/Outputs:
+       Note 1: all outputs are oriented head to tail.
+       Note 2: all coordinates are oriented as (x,y); in contrast,
+       previously in the worm structure, coordinates were oriented as
+       (row,column) = (y,x).
+
+       vulvaContours    - the worms' normalized vulval-side contours
+       nonVulvaContours - the worms' normalized non-vulval-side contours
+       angles           - the worms' normalized skeleton angles
+                          Note: positive skeleton angles now bulge towards
+                          the vulva; in contrast, previously in the worm
+                          structure, positive skeleton angles bulged
+                          towards the side clockwise from the worm's head
+                          (unless the worm was flipped).
+       vulvaAreas       - the worms' vulval-side areas
+                          (excluding the head and tail)
+       nonVulvaAreas    - the worms' non-vulval-side areas
+                          (excluding the head and tail)
+
+ See also NORMWORMS, <a href="flipNormWormHeads.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheswidths headAreas tailAreas vulvaAreas nonVulvaAreas] =flipNormWormHeads(vulvaContours, nonVulvaContours, skeletons,angles, inOutTouches, widths, headAreas, tailAreas,vulvaAreas, nonVulvaAreas)">FLIPNORMWORMHEADS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [vulvaContours nonVulvaContours angles vulvaAreas nonVulvaAreas] = </a><span class="keyword">...</span>
+0002     flipNormWormVulvas(vulvaContours, nonVulvaContours, angles, <span class="keyword">...</span>
+0003     vulvaAreas, nonVulvaAreas)
+0004 <span class="comment">%FLIPNORMWORMVULVAS Flip the vulval-side orientation of the normalized</span>
+0005 <span class="comment">%worms.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   [VULVACONTOURS NONVULVACONTOURS ANGLES VULVAAREAS NONVULVAAREAS] =</span>
+0008 <span class="comment">%       FLIPNORMWORMVULVAS(VULVACONTOURS, NONVULVACONTOURS, ANGLES,</span>
+0009 <span class="comment">%       VULVAAREAS, NONVULVAAREAS)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Inputs/Outputs:</span>
+0012 <span class="comment">%       Note 1: all outputs are oriented head to tail.</span>
+0013 <span class="comment">%       Note 2: all coordinates are oriented as (x,y); in contrast,</span>
+0014 <span class="comment">%       previously in the worm structure, coordinates were oriented as</span>
+0015 <span class="comment">%       (row,column) = (y,x).</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%       vulvaContours    - the worms' normalized vulval-side contours</span>
+0018 <span class="comment">%       nonVulvaContours - the worms' normalized non-vulval-side contours</span>
+0019 <span class="comment">%       angles           - the worms' normalized skeleton angles</span>
+0020 <span class="comment">%                          Note: positive skeleton angles now bulge towards</span>
+0021 <span class="comment">%                          the vulva; in contrast, previously in the worm</span>
+0022 <span class="comment">%                          structure, positive skeleton angles bulged</span>
+0023 <span class="comment">%                          towards the side clockwise from the worm's head</span>
+0024 <span class="comment">%                          (unless the worm was flipped).</span>
+0025 <span class="comment">%       vulvaAreas       - the worms' vulval-side areas</span>
+0026 <span class="comment">%                          (excluding the head and tail)</span>
+0027 <span class="comment">%       nonVulvaAreas    - the worms' non-vulval-side areas</span>
+0028 <span class="comment">%                          (excluding the head and tail)</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% See also NORMWORMS, FLIPNORMWORMHEADS</span>
+0031 
+0032 <span class="comment">% Flip the contour.</span>
+0033 tmp = vulvaContours;
+0034 vulvaContours = nonVulvaContours;
+0035 nonVulvaContours = tmp;
+0036 
+0037 <span class="comment">% Flip the skeleton angles.</span>
+0038 angles = -angles;
+0039 
+0040 <span class="comment">% Flip the areas.</span>
+0041 tmp = vulvaAreas;
+0042 vulvaAreas = nonVulvaAreas;
+0043 nonVulvaAreas = tmp;
+0044 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

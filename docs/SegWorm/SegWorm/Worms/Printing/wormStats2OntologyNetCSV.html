@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormStats2OntologyNetCSV</title>
+  <meta name="keywords" content="wormStats2OntologyNetCSV">
+  <meta name="description" content="WORMSTATS2ONTOLOGYNETCSV Convert a worm's significant features to an">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>wormStats2OntologyNetCSV
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMSTATS2ONTOLOGYNETCSV Convert a worm's significant features to an</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function wormStats2OntologyNetCSV(filename, wormFiles, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMSTATS2ONTOLOGYNETCSV Convert a worm's significant features to an
+ontology network CSV file.
+
+   WORMSTATS2ONTOLOGYNETCSV(FILENAME, WORMFILES)
+
+   WORMSTATS2ONTOLOGYNETCSV(FILENAME, WORMFILES,
+                            USEGENOTYPES, ISSTRICTMATCH,
+                            ISTTEST, FEATUREPALPHA, FEATUREQALPHA,
+                            STRAINPALPHA, STRAINQALPHA,
+                            ISCATEGORIZED, SEPARATOR, ISVERBOSE)
+
+   Inputs:
+       filename      - the CSV filename
+       wormFiles     - the filenames containing the worm statistics
+       useGenotypes  - the genotype(s) to annotate;
+                       if empty, all genotypes are used
+                       the default is all (empty)
+       isStrictMatch - for each of the genotype(s) to annotate, are we
+                       searching for an identical match (as opposed to
+                       searching for a matching substring)?
+                       if empty, we search for an identical match
+                       the default is an identical match (true)
+       isTTest       - are we using the t-test (normally distributed) or
+                       Wilcoxon rank-sum (non parametric) statistics;
+                       the default is non-parametric statistics (false)
+       featurePAlpha - the threshold for feature p-value significance
+                       the default is &lt; 1
+       featureQAlpha - the threshold for feature q-value significance
+                       the default is &lt; 0.05
+       strainPAlpha  - the threshold for strain p-value significance
+                       the default is &lt; 1
+       strainQAlpha  - the threshold for strain q-value significance
+                       the default is &lt; 1
+       separator     - the separator string to use
+                       the default is ','
+       isVerbose     - verbose mode displays the progress;
+                       the default is yes (true)
+
+ See also WORMSTATS2ONTOLOGY, WORM2STATSINFO</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Statistics/wormStats2Ontology.html" class="code" title="function strains = wormStats2Ontology(filenames, varargin)">wormStats2Ontology</a>	WORMSTATS2ONTOLOGY Convert a worm's significant features to ontology.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function wormStats2OntologyNetCSV(filename, wormFiles, varargin)</a>
+0002 <span class="comment">%WORMSTATS2ONTOLOGYNETCSV Convert a worm's significant features to an</span>
+0003 <span class="comment">%ontology network CSV file.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   WORMSTATS2ONTOLOGYNETCSV(FILENAME, WORMFILES)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   WORMSTATS2ONTOLOGYNETCSV(FILENAME, WORMFILES,</span>
+0008 <span class="comment">%                            USEGENOTYPES, ISSTRICTMATCH,</span>
+0009 <span class="comment">%                            ISTTEST, FEATUREPALPHA, FEATUREQALPHA,</span>
+0010 <span class="comment">%                            STRAINPALPHA, STRAINQALPHA,</span>
+0011 <span class="comment">%                            ISCATEGORIZED, SEPARATOR, ISVERBOSE)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Inputs:</span>
+0014 <span class="comment">%       filename      - the CSV filename</span>
+0015 <span class="comment">%       wormFiles     - the filenames containing the worm statistics</span>
+0016 <span class="comment">%       useGenotypes  - the genotype(s) to annotate;</span>
+0017 <span class="comment">%                       if empty, all genotypes are used</span>
+0018 <span class="comment">%                       the default is all (empty)</span>
+0019 <span class="comment">%       isStrictMatch - for each of the genotype(s) to annotate, are we</span>
+0020 <span class="comment">%                       searching for an identical match (as opposed to</span>
+0021 <span class="comment">%                       searching for a matching substring)?</span>
+0022 <span class="comment">%                       if empty, we search for an identical match</span>
+0023 <span class="comment">%                       the default is an identical match (true)</span>
+0024 <span class="comment">%       isTTest       - are we using the t-test (normally distributed) or</span>
+0025 <span class="comment">%                       Wilcoxon rank-sum (non parametric) statistics;</span>
+0026 <span class="comment">%                       the default is non-parametric statistics (false)</span>
+0027 <span class="comment">%       featurePAlpha - the threshold for feature p-value significance</span>
+0028 <span class="comment">%                       the default is &lt; 1</span>
+0029 <span class="comment">%       featureQAlpha - the threshold for feature q-value significance</span>
+0030 <span class="comment">%                       the default is &lt; 0.05</span>
+0031 <span class="comment">%       strainPAlpha  - the threshold for strain p-value significance</span>
+0032 <span class="comment">%                       the default is &lt; 1</span>
+0033 <span class="comment">%       strainQAlpha  - the threshold for strain q-value significance</span>
+0034 <span class="comment">%                       the default is &lt; 1</span>
+0035 <span class="comment">%       separator     - the separator string to use</span>
+0036 <span class="comment">%                       the default is ','</span>
+0037 <span class="comment">%       isVerbose     - verbose mode displays the progress;</span>
+0038 <span class="comment">%                       the default is yes (true)</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% See also WORMSTATS2ONTOLOGY, WORM2STATSINFO</span>
+0041 
+0042 <span class="comment">% Which genotypes should we use?</span>
+0043 useGenotypes = [];
+0044 <span class="keyword">if</span> ~isempty(varargin)
+0045     useGenotypes = varargin{1};
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="comment">% Are we searching for an identical genotype match?</span>
+0049 isStrictMatch = [];
+0050 <span class="keyword">if</span> length(varargin) &gt; 1
+0051     isStrictMatch = varargin{2};
+0052 <span class="keyword">end</span>
+0053 <span class="keyword">if</span> isempty(isStrictMatch)
+0054     isStrictMatch = true;
+0055 <span class="keyword">end</span>
+0056 
+0057 <span class="comment">% Are we using a t-test or Wilcoxon rank-sum?</span>
+0058 isTTest = false;
+0059 <span class="keyword">if</span> length(varargin) &gt; 2
+0060     isTTest = varargin{3};
+0061 <span class="keyword">end</span>
+0062 
+0063 <span class="comment">% What is the threshold for feature p signficance?</span>
+0064 featurePAlpha = 1;
+0065 <span class="keyword">if</span> length(varargin) &gt; 3
+0066     featurePAlpha = varargin{4};
+0067 <span class="keyword">end</span>
+0068 
+0069 <span class="comment">% What is the threshold for feature q signficance?</span>
+0070 featureQAlpha = 0.05;
+0071 <span class="keyword">if</span> length(varargin) &gt; 4
+0072     featureQAlpha = varargin{5};
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="comment">% % What is the threshold for feature power?</span>
+0076 <span class="comment">% featurePower = 0;</span>
+0077 <span class="comment">% if length(varargin) &gt; 5</span>
+0078 <span class="comment">%     featurePower = varargin{6};</span>
+0079 <span class="comment">% end</span>
+0080 
+0081 <span class="comment">% What is the threshold for worm (strain) p significance?</span>
+0082 strainPAlpha = 1;
+0083 <span class="keyword">if</span> length(varargin) &gt; 6
+0084     strainPAlpha = varargin{7};
+0085 <span class="keyword">end</span>
+0086 
+0087 <span class="comment">% What is the threshold for worm (strain) q significance?</span>
+0088 strainQAlpha = 1;
+0089 <span class="keyword">if</span> length(varargin) &gt; 7
+0090     strainQAlpha = varargin{8};
+0091 <span class="keyword">end</span>
+0092 
+0093 <span class="comment">% Are we displaying the progress?</span>
+0094 isVerbose = true;
+0095 <span class="keyword">if</span> length(varargin) &gt; 8
+0096     isVerbose = varargin{9};
+0097 <span class="keyword">end</span>
+0098 
+0099 <span class="comment">% Convert the worms to annotations.</span>
+0100 strains = <a href="../../../SegWorm/Worms/Statistics/wormStats2Ontology.html" class="code" title="function strains = wormStats2Ontology(filenames, varargin)">wormStats2Ontology</a>(wormFiles, useGenotypes, isStrictMatch, <span class="keyword">...</span>
+0101     isTTest, featurePAlpha, featureQAlpha, <span class="keyword">...</span><span class="comment"> %featurePower, ...</span>
+0102     strainPAlpha, strainQAlpha, isVerbose);
+0103 
+0104 <span class="comment">% Open the file.</span>
+0105 file = fopen(filename, <span class="string">'w'</span>);
+0106 
+0107 <span class="comment">% Write the header.</span>
+0108 fprintf(file, [<span class="string">'Strain'</span> sepStr <span class="string">'Genotype'</span> sepStr <span class="string">'Gene'</span> sepStr <span class="keyword">...</span>
+0109     <span class="string">'Category'</span> sepStr <span class="string">'Term'</span> sepStr <span class="string">'Sign'</span> sepStr <span class="keyword">...</span>
+0110     <span class="string">'Min P-value'</span> sepStr <span class="string">'Min Q-Value\n'</span>]); <span class="comment">%sepStr 'Max Power\n']);</span>
+0111 
+0112 <span class="comment">% Write the annotations.</span>
+0113 <span class="keyword">for</span> i = 1:length(strains)
+0114     
+0115     <span class="comment">% Show the progress.</span>
+0116     <span class="keyword">if</span> isVerbose
+0117         disp([<span class="string">'Printing '</span> num2str(i) <span class="string">'/'</span> num2str(length(strains)) <span class="keyword">...</span>
+0118             <span class="string">' &quot;'</span> strains(i).genotype <span class="string">'&quot; ...'</span>]);
+0119     <span class="keyword">end</span>
+0120     
+0121     <span class="comment">% Write the annotation.</span>
+0122     annotation = strains(i).annotation;
+0123     <span class="keyword">for</span> j = 1:length(annotation)
+0124         fprintf(file, <span class="string">'&quot;%s&quot;%s&quot;%s&quot;%s&quot;%s&quot;%s&quot;%s&quot;%s&quot;%s&quot;%s%d%s%d%s%d\n'</span>, <span class="keyword">...</span>
+0125             strains(i).strain, sepStr, <span class="keyword">...</span>
+0126             strains(i).genotype, sepStr, <span class="keyword">...</span>
+0127             strains(i).gene, sepStr, <span class="keyword">...</span>
+0128             annotation(j).category, sepStr, <span class="keyword">...</span>
+0129             annotation(j).term, sepStr, <span class="keyword">...</span>
+0130             annotation(j).sign, sepStr, <span class="keyword">...</span>
+0131             min(annotation(j).pValues), sepStr, <span class="keyword">...</span>
+0132             min(annotation(j).qValues));
+0133 <span class="comment">%             max(annotation(j).powers));</span>
+0134     <span class="keyword">end</span>
+0135 <span class="keyword">end</span>
+0136 
+0137 <span class="comment">% Close the file.</span>
+0138 fclose(file);
+0139 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

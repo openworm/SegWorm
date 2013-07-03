@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of cleanSkeleton</title>
+  <meta name="keywords" content="cleanSkeleton">
+  <meta name="description" content="CLEANSKELETON Clean an 8-connected skeleton by removing any overlap and">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Segmentation -->
+<h1>cleanSkeleton
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>CLEANSKELETON Clean an 8-connected skeleton by removing any overlap and</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [cSkeleton cWidths] = cleanSkeleton(skeleton, widths, wormSegSize) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CLEANSKELETON Clean an 8-connected skeleton by removing any overlap and
+interpolating any missing points.
+
+   [CSKELETON] = CLEANSKELETON(SKELETON)
+
+   Note: the worm's skeleton is still rough. Therefore, index lengths, as
+         opposed to chain-code lengths, are used as the distance metric
+         over the worm's skeleton.
+
+   Input:
+       skeleton    - the 8-connected skeleton to clean
+       widths      - the worm's contour widths at each skeleton point
+       wormSegSize - the size (in contour points) of a worm segment.
+                     Note: the worm is roughly divided into 24 segments
+                     of musculature (i.e., hinges that represent degrees
+                     of freedom) on each side. Therefore, 48 segments
+                     around a 2-D contour.
+                     Note 2: &quot;In C. elegans the 95 rhomboid-shaped body
+                     wall muscle cells are arranged as staggered pairs in
+                     four longitudinal bundles located in four quadrants.
+                     Three of these bundles (DL, DR, VR) contain 24 cells
+                     each, whereas VL bundle contains 23 cells.&quot; -
+                     www.wormatlas.org
+
+   Output:
+       cSkeleton - the cleaned skeleton (no overlap &amp; no missing points)
+       cWidths   - the cleaned contour widths at each skeleton point</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="linearSkeleton.html" class="code" title="function [skeleton cWidths] = linearSkeleton(headI, tailI, minP, minI,maxP, maxI, contour, wormSegSize, varargin)">linearSkeleton</a>	LINEARSKELETON Skeletonize a linear (non-looped) worm. The worm is</li><li><a href="linearSkeleton2.html" class="code" title="function skeleton =linearSkeleton2(headI, tailI, minP, minI, maxP, maxI, contour, wormSegSize)">linearSkeleton2</a>	LINEARSKELETON2 Skeletonize a linear (non-looped) worm. The worm is</li><li><a href="linearSkeleton3.html" class="code" title="function [skeleton cWidths] =linearSkeleton3(headI, tailI, minP, minI, contour, wormSegSize)">linearSkeleton3</a>	LINEARSKELETON3 Skeletonize a linear (non-looped) worm. The worm is</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [cSkeleton cWidths] = cleanSkeleton(skeleton, widths, wormSegSize)</a>
+0002 <span class="comment">%CLEANSKELETON Clean an 8-connected skeleton by removing any overlap and</span>
+0003 <span class="comment">%interpolating any missing points.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   [CSKELETON] = CLEANSKELETON(SKELETON)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Note: the worm's skeleton is still rough. Therefore, index lengths, as</span>
+0008 <span class="comment">%         opposed to chain-code lengths, are used as the distance metric</span>
+0009 <span class="comment">%         over the worm's skeleton.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Input:</span>
+0012 <span class="comment">%       skeleton    - the 8-connected skeleton to clean</span>
+0013 <span class="comment">%       widths      - the worm's contour widths at each skeleton point</span>
+0014 <span class="comment">%       wormSegSize - the size (in contour points) of a worm segment.</span>
+0015 <span class="comment">%                     Note: the worm is roughly divided into 24 segments</span>
+0016 <span class="comment">%                     of musculature (i.e., hinges that represent degrees</span>
+0017 <span class="comment">%                     of freedom) on each side. Therefore, 48 segments</span>
+0018 <span class="comment">%                     around a 2-D contour.</span>
+0019 <span class="comment">%                     Note 2: &quot;In C. elegans the 95 rhomboid-shaped body</span>
+0020 <span class="comment">%                     wall muscle cells are arranged as staggered pairs in</span>
+0021 <span class="comment">%                     four longitudinal bundles located in four quadrants.</span>
+0022 <span class="comment">%                     Three of these bundles (DL, DR, VR) contain 24 cells</span>
+0023 <span class="comment">%                     each, whereas VL bundle contains 23 cells.&quot; -</span>
+0024 <span class="comment">%                     www.wormatlas.org</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   Output:</span>
+0027 <span class="comment">%       cSkeleton - the cleaned skeleton (no overlap &amp; no missing points)</span>
+0028 <span class="comment">%       cWidths   - the cleaned contour widths at each skeleton point</span>
+0029 
+0030 <span class="comment">% If a worm touches itself, the cuticle prevents the worm from folding and</span>
+0031 <span class="comment">% touching adjacent pairs of muscle segments; therefore, the distance</span>
+0032 <span class="comment">% between touching segments must be, at least, the length of 2 muscle</span>
+0033 <span class="comment">% segments.</span>
+0034 maxSkeletonOverlap = 2 * wormSegSize;
+0035 
+0036 <span class="comment">% Remove small loops.</span>
+0037 keep = 1:size(skeleton, 1); <span class="comment">% points to keep</span>
+0038 [~, pSort] = sortrows(skeleton); <span class="comment">% the sorted points</span>
+0039 [~, iSort] = sort(pSort); <span class="comment">% index -&gt; sorted point index</span>
+0040 s1I = 1; <span class="comment">% the first index for the skeleton loop</span>
+0041 <span class="keyword">while</span> s1I &lt; length(pSort)
+0042     
+0043     <span class="comment">% Find small loops.</span>
+0044     <span class="comment">% Note: distal, looped sections are most likely touching;</span>
+0045     <span class="comment">% therefore, we don't remove these.</span>
+0046     <span class="keyword">if</span> ~isnan(keep(s1I))
+0047         minI = s1I; <span class="comment">% the minimum index for the loop</span>
+0048         maxI = s1I; <span class="comment">% the maximum index for the loop</span>
+0049         
+0050         <span class="comment">% Search backwards.</span>
+0051         <span class="keyword">if</span> iSort(s1I) &gt; 1
+0052             pI = iSort(s1I) - 1; <span class="comment">% the index for the sorted points</span>
+0053             s2I = pSort(pI); <span class="comment">% the second index for the skeleton loop</span>
+0054             dSkeleton = abs(skeleton(s1I,:) - skeleton(s2I,:));
+0055             <span class="keyword">while</span> any(dSkeleton &lt;= 1)
+0056                 <span class="keyword">if</span> s2I &gt; s1I &amp;&amp; ~isnan(keep(s2I)) &amp;&amp; <span class="keyword">...</span>
+0057                         all(dSkeleton &lt;= 1) &amp;&amp; <span class="keyword">...</span>
+0058                         abs(s1I - s2I) &lt; maxSkeletonOverlap
+0059                     minI = min(minI, s2I);
+0060                     maxI = max(maxI, s2I);
+0061                 <span class="keyword">end</span>
+0062                 
+0063                 <span class="comment">% Advance the second index for the skeleton loop.</span>
+0064                 pI = pI - 1;
+0065                 <span class="keyword">if</span> pI &lt; 1
+0066                     <span class="keyword">break</span>;
+0067                 <span class="keyword">end</span>
+0068                 s2I = pSort(pI);
+0069                 dSkeleton = abs(skeleton(s1I,:) - skeleton(s2I,:));
+0070             <span class="keyword">end</span>
+0071         <span class="keyword">end</span>
+0072         
+0073         <span class="comment">% Search forwards.</span>
+0074         <span class="keyword">if</span>  iSort(s1I) &lt; length(pSort)
+0075             pI = iSort(s1I) + 1; <span class="comment">% the index for the sorted points</span>
+0076             s2I = pSort(pI); <span class="comment">% the second index for the skeleton loop</span>
+0077             dSkeleton = abs(skeleton(s1I,:) - skeleton(s2I,:));
+0078             <span class="keyword">while</span> any(dSkeleton &lt;= 1)
+0079                 <span class="keyword">if</span> s2I &gt; s1I &amp;&amp; ~isnan(keep(s2I)) &amp;&amp; <span class="keyword">...</span>
+0080                         all(dSkeleton &lt;= 1) &amp;&amp; <span class="keyword">...</span>
+0081                         abs(s1I - s2I) &lt; maxSkeletonOverlap
+0082                     minI = min(minI, s2I);
+0083                     maxI = max(maxI, s2I);
+0084                 <span class="keyword">end</span>
+0085                 
+0086                 <span class="comment">% Advance the second index for the skeleton loop.</span>
+0087                 pI = pI + 1;
+0088                 <span class="keyword">if</span> pI &gt; length(pSort)
+0089                     <span class="keyword">break</span>;
+0090                 <span class="keyword">end</span>
+0091                 s2I = pSort(pI);
+0092                 dSkeleton = abs(skeleton(s1I,:) - skeleton(s2I,:));
+0093             <span class="keyword">end</span>
+0094         <span class="keyword">end</span>
+0095         
+0096         <span class="comment">% Remove small loops.</span>
+0097         <span class="keyword">if</span> minI &lt; maxI
+0098             
+0099             <span class="comment">% Remove the overlap.</span>
+0100             <span class="keyword">if</span> isequal(skeleton(minI,:), skeleton(maxI,:))
+0101                 keep((minI + 1):maxI) = nan;
+0102                 widths(minI) = min(widths(minI:maxI));
+0103                 
+0104             <span class="comment">% Remove the loop.</span>
+0105             <span class="keyword">elseif</span> minI &lt; maxI - 1
+0106                 keep((minI + 1):(maxI - 1)) = nan;
+0107                 widths(minI) = min(widths(minI:(maxI - 1)));
+0108                 widths(maxI) = min(widths((minI + 1):(maxI)));
+0109             <span class="keyword">end</span>
+0110             
+0111         <span class="keyword">end</span>
+0112         
+0113         <span class="comment">% Advance the first index for the skeleton loop.</span>
+0114         <span class="keyword">if</span> s1I &lt; maxI
+0115             s1I = maxI;
+0116         <span class="keyword">else</span>
+0117             s1I = s1I + 1;
+0118         <span class="keyword">end</span>
+0119         
+0120     <span class="comment">% Advance the first index for the skeleton loop.</span>
+0121     <span class="keyword">else</span>
+0122         s1I = s1I + 1;
+0123     <span class="keyword">end</span>
+0124 <span class="keyword">end</span>
+0125 skeleton = skeleton(~isnan(keep),:);
+0126 widths = widths(~isnan(keep));
+0127 
+0128 <span class="comment">% The head and tail have no width.</span>
+0129 widths(1) = 0;
+0130 widths(end) = 0;
+0131 
+0132 <span class="comment">% Heal the skeleton by interpolating missing points.</span>
+0133 cSkeleton = zeros(2 * size(skeleton, 1), 2); <span class="comment">% pre-allocate memory</span>
+0134 cWidths = zeros(2 * size(skeleton, 1), 1); <span class="comment">% pre-allocate memory</span>
+0135 j = 1;
+0136 <span class="keyword">for</span> i = 1:(length(skeleton) - 1)
+0137     
+0138     <span class="comment">% Initialize the point differences.</span>
+0139     y = abs(skeleton(i + 1,1) - skeleton(i,1));
+0140     x = abs(skeleton(i + 1,2) - skeleton(i,2));
+0141     
+0142     <span class="comment">% Add the point.</span>
+0143     <span class="keyword">if</span> (y == 0 || y == 1) &amp;&amp; (x == 0 || x == 1)
+0144         cSkeleton(j,:) = skeleton(i,:);
+0145         cWidths(j) = widths(i);
+0146         j = j + 1;
+0147         
+0148     <span class="comment">% Interpolate the missing points.</span>
+0149     <span class="keyword">else</span>
+0150         points = max(y, x);
+0151         y1 = skeleton(i,1);
+0152         y2 = skeleton(i + 1,1);
+0153         x1 = skeleton(i,2);
+0154         x2 = skeleton(i + 1,2);
+0155         cSkeleton(j:(j + points),1) = round(linspace(y1, y2, points + 1));
+0156         cSkeleton(j:(j + points),2) = round(linspace(x1, x2, points + 1));
+0157         cWidths(j:(j + points)) = round(linspace(widths(i), <span class="keyword">...</span>
+0158             widths(i + 1), points + 1));
+0159         j = j + points;
+0160     <span class="keyword">end</span>
+0161 <span class="keyword">end</span>
+0162 
+0163 <span class="comment">% Add the last point.</span>
+0164 <span class="keyword">if</span> (cSkeleton(1,1) ~= skeleton(<span class="keyword">end</span>,1)) || <span class="keyword">...</span>
+0165         (cSkeleton(1,2) ~= skeleton(<span class="keyword">end</span>,2))
+0166     cSkeleton(j,:) = skeleton(<span class="keyword">end</span>,:);
+0167     cWidths(j) = widths(end);
+0168     j = j + 1;
+0169 <span class="keyword">end</span>
+0170 
+0171 <span class="comment">% Collapse any extra memory.</span>
+0172 cSkeleton(j:<span class="keyword">end</span>,:) = [];
+0173 cWidths(j:end) = [];
+0174 
+0175 <span class="comment">% Anti alias.</span>
+0176 keep = 1:size(cSkeleton, 1); <span class="comment">% points to keep</span>
+0177 i = 1;
+0178 endI = size(cSkeleton, 1) - 1;
+0179 <span class="keyword">while</span> i &lt; endI
+0180     
+0181     <span class="comment">% Smooth any stairs.</span>
+0182     nextI = i + 2;
+0183     <span class="keyword">if</span> abs(cSkeleton(i,1) - cSkeleton(nextI,1)) &lt;= 1 &amp;&amp; <span class="keyword">...</span>
+0184             abs(cSkeleton(i,2) - cSkeleton(nextI,2)) &lt;= 1
+0185         keep(i + 1) = nan;
+0186         
+0187         <span class="comment">% Advance.</span>
+0188         i = nextI;
+0189         
+0190     <span class="comment">% Advance.</span>
+0191     <span class="keyword">else</span>
+0192         i = i + 1;
+0193     <span class="keyword">end</span>
+0194 <span class="keyword">end</span>
+0195 cSkeleton = cSkeleton(~isnan(keep),:);
+0196 cWidths = cWidths(~isnan(keep));
+0197 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

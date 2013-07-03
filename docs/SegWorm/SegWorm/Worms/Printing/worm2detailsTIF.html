@@ -1,0 +1,1845 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of worm2detailsTIF</title>
+  <meta name="keywords" content="worm2detailsTIF">
+  <meta name="description" content="WORM2DETAILSTIF Save worm details to a TIF.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>worm2detailsTIF
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORM2DETAILSTIF Save worm details to a TIF.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORM2DETAILSTIF Save worm details to a TIF.
+
+   [FILENAME PAGES] = WORM2DETAILSTIF(FILENAME, WORM, WORMNAME)
+
+   [FILENAME PAGES] = WORM2DETAILSTIF(FILENAME, WORM, WORMNAME,
+                                      WORMINFOFILTER, WORMFEATFILTER,
+                                      CONTROL, CONTROLNAME,
+                                      CONTROLINFOFILTER, CONTROLFEATFILTER,
+                                      SIGNIFICANCE, ISSHOW, PAGE,
+                                      SAVEQUALITY, ISCLOSE, ISVERBOSE)
+
+   Inputs:
+       filename          - the TIF filename;
+                           if empty, the file is named
+                           &quot;&lt;wormName&gt; [vs &lt;controlName&gt;].tif&quot;
+       worm              - the worm histograms or filename
+       wormName          - the name for the worm;
+                           or, a function handle of the form:
+
+                   LABEL = WORM2LABEL(WORMINFO)
+
+                           wormInfo = the worm information
+                           label    = the worm label
+
+                           if empty, we use WORM2STRAINLABEL
+
+       wormInfoFilter    - the worm information filtering criteria;
+                           a structure with any of the fields:
+
+              minFPS     = the minimum video frame rate (frames/seconds)
+              minTime    = the minimum video time (seconds)
+              maxTime    = the maximum video time (seconds)
+              minSegTime = the minimum time for segmented video (seconds)
+              minRatio   = the minimum ratio for segmented video frames
+              minDate    = the minimum date to use (DATENUM)
+              maxDate    = the maximum date to use (DATENUM)
+              years      = the years to use
+              months     = the months to use (1-12)
+              weeks      = the weeks to use (1-52)
+              days       = the days (of the week) to use (1-7)
+              hours      = the hours to use (1-24)
+              trackers   = the trackers to use (1-8)
+
+       wormFeatFilter    - the worm feature filtering criteria;
+                           a structure with the fields:
+
+               featuresI = the feature indices (see WORMDATAINFO)
+               minThr    = the minimum feature value (optional)
+               maxThr    = the maximum feature value (optional)
+               indices   = the sub indices for the features (optional)
+               subFields = the subFields for the features (optional)
+
+       control           - the control histograms or filename;
+                           if empty; no control is shown
+       controlName       - the name for the control;
+                           or, a function handle of the form:
+
+                   LABEL = WORM2LABEL(WORMINFO)
+
+                           wormInfo = the worm information
+                           label    = the worm label
+
+                           if empty, we use WORM2STRAINLABEL
+
+       controlInfoFilter - the control indices to use;
+                           or, the control filtering criteria
+       controlFeatFilter - the control feature filtering criteria
+       significance      - the feature statistical significance or filename;
+                           if empty; no statistical significance is shown
+                           if a struct, the fields are:
+
+                           p = the p-value, per feature
+                           q = the q-value, per feature
+
+       isShow            - are we showing the figures onscreen?
+                           Note: hiding the figures is faster.
+       page              - the page number;
+                           if empty, the page number is not shown
+       saveQuality       - the quality (magnification) for saving the figures;
+                           if empty, the figures are not saved
+                           the default is none (empty)
+       isClose           - shoud we close the figures after saving them?
+                           when saving the figure, the default is yes (true)
+                           otherwise, the default is no (false)
+       isVerbose         - verbose mode displays the progress;
+                           the default is yes (true)
+   Output:
+       filename - the TIF file containing the saved figures;
+                  if empty, the figures were not saved
+       pages    - the number of pages in the figure file
+
+ See also FILTERWORMINFO, FILTERWORMHIST, WORM2HISTOGRAM, WORM2STATSINFO</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>	DOWNSAMPLEHISTOGRAM Downsample a histogram(s).</li><li><a href="../../../SegWorm/Util/filterHistogram.html" class="code" title="function histogram = filterHistogram(histogram, isUsed)">filterHistogram</a>	FILTERHISTOGRAM Filter a histogram to remove data.</li><li><a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>	GETSTRUCTFIELD Get a field in a structure.</li><li><a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>	PLOTHISTOGRAM Plot a histogram(s) of data.</li><li><a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>	SAVETIF Save a figure to a TIF file.</li><li><a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>	STR2COLORS Convert a string of colors to RGB values.</li><li><a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>	WORMDATAINFO Get information for computing the worm data.</li><li><a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>	WORMDISPLAYINFO Get information for displaying the worm data.</li><li><a href="p2stars.html" class="code" title="function stars = p2stars(p)">p2stars</a>	P2STARS Convert a p-value to a string of stars representing significance.</li><li><a href="../../../SegWorm/Worms/Statistics/filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">filterWormHist</a>	FILTERWORMHIST Filter worm features to meet specific criteria.</li><li><a href="../../../SegWorm/Worms/Statistics/filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>	FILTERWORMINFO Filter worm information to meet specific criteria.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2GenotypeLabel.html" class="code" title="function label = worm2GenotypeLabel(wormInfo)">worm2GenotypeLabel</a>	WORM2GENOTYPELABEL Label the worm genotype.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>	WORM2STRAINLABEL Label the worm strain.</li><li><a href="../../../SegWorm/Worms/Statistics/wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>	WORMFEATUREINFO Get information for computing the worm statistics.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="worm2TIF.html" class="code" title="function [filename pages] = worm2TIF(filename, worm, wormName, varargin)">worm2TIF</a>	WORM2TIF Save worm information to a TIF.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function drawSimpleData(filename, page, featureI, worm, wormName,</a></li><li><a href="#_sub2" class="code">function drawMotionData(filename, page, featureI, index, worm, wormName,</a></li><li><a href="#_sub3" class="code">function drawEventData(filename, page, featureI, worm, wormName,</a></li><li><a href="#_sub4" class="code">function drawSimpleLegend(h)</a></li><li><a href="#_sub5" class="code">function drawMotionLegend(h)</a></li><li><a href="#_sub6" class="code">function drawEventLegend(h)</a></li><li><a href="#_sub7" class="code">function color = p2ForeColor(p)</a></li><li><a href="#_sub8" class="code">function color = p2BackColor(p)</a></li><li><a href="#_sub9" class="code">function [str sigs] = stats2strs(worm, control, sig, sigI)</a></li><li><a href="#_sub10" class="code">function [str sigs] = eventStats2strs(worms, isWormUsed,</a></li><li><a href="#_sub11" class="code">function str = info2pageTitle(wormName, controlName, featureI,</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [filename pages] = worm2detailsTIF(filename, worm, wormName, </a><span class="keyword">...</span>
+0002     varargin)
+0003 <span class="comment">%WORM2DETAILSTIF Save worm details to a TIF.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   [FILENAME PAGES] = WORM2DETAILSTIF(FILENAME, WORM, WORMNAME)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   [FILENAME PAGES] = WORM2DETAILSTIF(FILENAME, WORM, WORMNAME,</span>
+0008 <span class="comment">%                                      WORMINFOFILTER, WORMFEATFILTER,</span>
+0009 <span class="comment">%                                      CONTROL, CONTROLNAME,</span>
+0010 <span class="comment">%                                      CONTROLINFOFILTER, CONTROLFEATFILTER,</span>
+0011 <span class="comment">%                                      SIGNIFICANCE, ISSHOW, PAGE,</span>
+0012 <span class="comment">%                                      SAVEQUALITY, ISCLOSE, ISVERBOSE)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   Inputs:</span>
+0015 <span class="comment">%       filename          - the TIF filename;</span>
+0016 <span class="comment">%                           if empty, the file is named</span>
+0017 <span class="comment">%                           &quot;&lt;wormName&gt; [vs &lt;controlName&gt;].tif&quot;</span>
+0018 <span class="comment">%       worm              - the worm histograms or filename</span>
+0019 <span class="comment">%       wormName          - the name for the worm;</span>
+0020 <span class="comment">%                           or, a function handle of the form:</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%                   LABEL = WORM2LABEL(WORMINFO)</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%                           wormInfo = the worm information</span>
+0025 <span class="comment">%                           label    = the worm label</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%                           if empty, we use WORM2STRAINLABEL</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%       wormInfoFilter    - the worm information filtering criteria;</span>
+0030 <span class="comment">%                           a structure with any of the fields:</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%              minFPS     = the minimum video frame rate (frames/seconds)</span>
+0033 <span class="comment">%              minTime    = the minimum video time (seconds)</span>
+0034 <span class="comment">%              maxTime    = the maximum video time (seconds)</span>
+0035 <span class="comment">%              minSegTime = the minimum time for segmented video (seconds)</span>
+0036 <span class="comment">%              minRatio   = the minimum ratio for segmented video frames</span>
+0037 <span class="comment">%              minDate    = the minimum date to use (DATENUM)</span>
+0038 <span class="comment">%              maxDate    = the maximum date to use (DATENUM)</span>
+0039 <span class="comment">%              years      = the years to use</span>
+0040 <span class="comment">%              months     = the months to use (1-12)</span>
+0041 <span class="comment">%              weeks      = the weeks to use (1-52)</span>
+0042 <span class="comment">%              days       = the days (of the week) to use (1-7)</span>
+0043 <span class="comment">%              hours      = the hours to use (1-24)</span>
+0044 <span class="comment">%              trackers   = the trackers to use (1-8)</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%       wormFeatFilter    - the worm feature filtering criteria;</span>
+0047 <span class="comment">%                           a structure with the fields:</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%               featuresI = the feature indices (see WORMDATAINFO)</span>
+0050 <span class="comment">%               minThr    = the minimum feature value (optional)</span>
+0051 <span class="comment">%               maxThr    = the maximum feature value (optional)</span>
+0052 <span class="comment">%               indices   = the sub indices for the features (optional)</span>
+0053 <span class="comment">%               subFields = the subFields for the features (optional)</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">%       control           - the control histograms or filename;</span>
+0056 <span class="comment">%                           if empty; no control is shown</span>
+0057 <span class="comment">%       controlName       - the name for the control;</span>
+0058 <span class="comment">%                           or, a function handle of the form:</span>
+0059 <span class="comment">%</span>
+0060 <span class="comment">%                   LABEL = WORM2LABEL(WORMINFO)</span>
+0061 <span class="comment">%</span>
+0062 <span class="comment">%                           wormInfo = the worm information</span>
+0063 <span class="comment">%                           label    = the worm label</span>
+0064 <span class="comment">%</span>
+0065 <span class="comment">%                           if empty, we use WORM2STRAINLABEL</span>
+0066 <span class="comment">%</span>
+0067 <span class="comment">%       controlInfoFilter - the control indices to use;</span>
+0068 <span class="comment">%                           or, the control filtering criteria</span>
+0069 <span class="comment">%       controlFeatFilter - the control feature filtering criteria</span>
+0070 <span class="comment">%       significance      - the feature statistical significance or filename;</span>
+0071 <span class="comment">%                           if empty; no statistical significance is shown</span>
+0072 <span class="comment">%                           if a struct, the fields are:</span>
+0073 <span class="comment">%</span>
+0074 <span class="comment">%                           p = the p-value, per feature</span>
+0075 <span class="comment">%                           q = the q-value, per feature</span>
+0076 <span class="comment">%</span>
+0077 <span class="comment">%       isShow            - are we showing the figures onscreen?</span>
+0078 <span class="comment">%                           Note: hiding the figures is faster.</span>
+0079 <span class="comment">%       page              - the page number;</span>
+0080 <span class="comment">%                           if empty, the page number is not shown</span>
+0081 <span class="comment">%       saveQuality       - the quality (magnification) for saving the figures;</span>
+0082 <span class="comment">%                           if empty, the figures are not saved</span>
+0083 <span class="comment">%                           the default is none (empty)</span>
+0084 <span class="comment">%       isClose           - shoud we close the figures after saving them?</span>
+0085 <span class="comment">%                           when saving the figure, the default is yes (true)</span>
+0086 <span class="comment">%                           otherwise, the default is no (false)</span>
+0087 <span class="comment">%       isVerbose         - verbose mode displays the progress;</span>
+0088 <span class="comment">%                           the default is yes (true)</span>
+0089 <span class="comment">%   Output:</span>
+0090 <span class="comment">%       filename - the TIF file containing the saved figures;</span>
+0091 <span class="comment">%                  if empty, the figures were not saved</span>
+0092 <span class="comment">%       pages    - the number of pages in the figure file</span>
+0093 <span class="comment">%</span>
+0094 <span class="comment">% See also FILTERWORMINFO, FILTERWORMHIST, WORM2HISTOGRAM, WORM2STATSINFO</span>
+0095 
+0096 <span class="comment">% Load the worm.</span>
+0097 wormInfo = [];
+0098 <span class="keyword">if</span> ischar(worm)
+0099     load(worm, <span class="string">'worm'</span>, <span class="string">'wormInfo'</span>);
+0100 <span class="keyword">end</span>
+0101 
+0102 <span class="comment">% Determine the worm name.</span>
+0103 <span class="keyword">if</span> isempty(wormName) &amp;&amp; ~isempty(wormInfo)
+0104     wormName = <a href="../../../SegWorm/Worms/Statistics/worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>(wormInfo);
+0105 <span class="keyword">elseif</span> isa(wormName, <span class="string">'function_handle'</span>)
+0106     <span class="keyword">if</span> ~isempty(wormInfo)
+0107         wormName = wormName(wormInfo);
+0108     <span class="keyword">else</span>
+0109         wormName = <span class="string">''</span>;
+0110     <span class="keyword">end</span>
+0111 <span class="keyword">end</span>
+0112 
+0113 <span class="comment">% Filter the worm information.</span>
+0114 isWormUsed = [];
+0115 <span class="keyword">if</span> ~isempty(varargin)
+0116     wormInfoFilter = varargin{1};
+0117     isWormUsed = <a href="../../../SegWorm/Worms/Statistics/filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>(wormInfo, wormInfoFilter);
+0118 <span class="keyword">end</span>
+0119 
+0120 <span class="comment">% Filter the worm features.</span>
+0121 <span class="keyword">if</span> length(varargin) &gt; 1
+0122     
+0123     <span class="comment">% Filter the worm features.</span>
+0124     wormFeatFilter = varargin{2};
+0125     isUsed = <a href="../../../SegWorm/Worms/Statistics/filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">filterWormHist</a>(worm, wormFeatFilter);
+0126     
+0127     <span class="comment">% Combine the filters.</span>
+0128     <span class="keyword">if</span> isempty(isWormUsed)
+0129         isWormUsed = isUsed;
+0130     <span class="keyword">else</span>
+0131         isWormUsed = isWormUsed &amp; isUsed;
+0132     <span class="keyword">end</span>
+0133 <span class="keyword">end</span>
+0134 
+0135 <span class="comment">% Do we have a control?</span>
+0136 control = [];
+0137 controlName = [];
+0138 isControlUsed = [];
+0139 <span class="keyword">if</span> length(varargin) &gt; 2
+0140     
+0141     <span class="comment">% Load the control.</span>
+0142     control = varargin{3};
+0143     controlInfo = [];
+0144     <span class="keyword">if</span> ~isempty(control) &amp;&amp; ischar(control)
+0145         controlData = load(control, <span class="string">'worm'</span>, <span class="string">'wormInfo'</span>);
+0146         control = controlData.worm;
+0147         controlInfo = controlData.wormInfo;
+0148         clear controlData;
+0149     <span class="keyword">end</span>
+0150     
+0151     <span class="comment">% Do we have a control?</span>
+0152     <span class="keyword">if</span> ~isempty(control)
+0153         
+0154         <span class="comment">% Determine the control name.</span>
+0155         <span class="keyword">if</span> length(varargin) &gt; 3
+0156             controlName = varargin{4};
+0157         <span class="keyword">end</span>
+0158         <span class="keyword">if</span> isempty(controlName) &amp;&amp; ~isempty(controlInfo)
+0159             controlName = <a href="../../../SegWorm/Worms/Statistics/worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>(controlInfo);
+0160         <span class="keyword">elseif</span> isa(controlName, <span class="string">'function_handle'</span>)
+0161             <span class="keyword">if</span> ~isempty(controlInfo)
+0162                 controlName = controlName(controlInfo);
+0163             <span class="keyword">else</span>
+0164                 controlName = <span class="string">''</span>;
+0165             <span class="keyword">end</span>
+0166         <span class="keyword">end</span>
+0167         
+0168         <span class="comment">% Filter the control information.</span>
+0169         isControlUsed = [];
+0170         <span class="keyword">if</span> length(varargin) &gt; 4
+0171             controlInfoFilter = varargin{5};
+0172             isControlUsed = <a href="../../../SegWorm/Worms/Statistics/filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>(controlInfo, controlInfoFilter);
+0173         <span class="keyword">end</span>
+0174         
+0175         <span class="comment">% Filter the control features.</span>
+0176         <span class="keyword">if</span> length(varargin) &gt; 5
+0177             
+0178             <span class="comment">% Filter the worm features.</span>
+0179             controlFeatFilter = varargin{6};
+0180             isUsed = <a href="../../../SegWorm/Worms/Statistics/filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">filterWormHist</a>(control, controlFeatFilter);
+0181             
+0182             <span class="comment">% Combine the filters.</span>
+0183             <span class="keyword">if</span> isempty(isControlUsed)
+0184                 isControlUsed = isUsed;
+0185             <span class="keyword">else</span>
+0186                 isControlUsed = isControlUsed &amp; isUsed;
+0187             <span class="keyword">end</span>
+0188         <span class="keyword">end</span>
+0189     <span class="keyword">end</span>
+0190 <span class="keyword">end</span>
+0191 
+0192 <span class="comment">% Do we have the statistical significance?</span>
+0193 sig = [];
+0194 <span class="keyword">if</span> length(varargin) &gt; 6
+0195     significance = varargin{7};
+0196     
+0197     <span class="comment">% Load the significance.</span>
+0198     <span class="keyword">if</span> ~isempty(significance) &amp;&amp; ischar(significance)
+0199         
+0200         <span class="comment">% Load the significance matrix.</span>
+0201         <span class="keyword">if</span> ~isempty(whos(<span class="string">'-FILE'</span>, significance, <span class="string">'worm'</span>))
+0202             sigData = load(significance, <span class="string">'worm'</span>);
+0203             
+0204             <span class="comment">% Find the genotype.</span>
+0205             genotype = <a href="../../../SegWorm/Worms/Statistics/worm2GenotypeLabel.html" class="code" title="function label = worm2GenotypeLabel(wormInfo)">worm2GenotypeLabel</a>(wormInfo);
+0206             strainI = find(cellfun(@(x) strcmp(genotype, x), <span class="keyword">...</span>
+0207                 sigData.worm.info.genotype));
+0208             
+0209             <span class="comment">% Determine the significance.</span>
+0210             <span class="keyword">if</span> length(strainI) == 1
+0211                 sig.p = sigData.worm.sig.pWValue(strainI,:);
+0212                 sig.q = sigData.worm.sig.qWValue.all(strainI,:);
+0213 <span class="comment">%                 sig.power = sigData.worm.sig.power(strainI,:);</span>
+0214             <span class="keyword">end</span>
+0215             
+0216         <span class="comment">% Load the strain matrix.</span>
+0217         <span class="keyword">elseif</span> ~isempty(whos(<span class="string">'-FILE'</span>, significance, <span class="string">'significance'</span>))
+0218             sigData = load(significance, <span class="string">'significance'</span>);
+0219             
+0220             <span class="comment">% Determine the significance.</span>
+0221             sig.p = [sigData.significance.features.pWValue];
+0222             sig.q = [sigData.significance.features.qWValue];
+0223 <span class="comment">%             sig.power = [sigData.significance.features.power];</span>
+0224         <span class="keyword">end</span>
+0225         
+0226     <span class="comment">% Determine the significance.</span>
+0227     <span class="keyword">else</span>
+0228         sig = significance;
+0229     <span class="keyword">end</span>
+0230 <span class="keyword">end</span>
+0231 
+0232 <span class="comment">% Are we showing the figures onscreen?</span>
+0233 <span class="comment">% Note: hiding the figures is faster.</span>
+0234 isShow = true;
+0235 <span class="keyword">if</span> length(varargin) &gt; 7
+0236     isShow = varargin{8};
+0237 <span class="keyword">end</span>
+0238 
+0239 <span class="comment">% Determine the page number.</span>
+0240 pages = 0;
+0241 page = 0;
+0242 <span class="keyword">if</span> length(varargin) &gt; 8
+0243     page = varargin{9};
+0244     pages = page;
+0245 <span class="keyword">end</span>
+0246 
+0247 <span class="comment">% Determine the quality (magnification) for saving the figures.</span>
+0248 saveQuality = []; <span class="comment">% don't save the figures</span>
+0249 <span class="keyword">if</span> length(varargin) &gt; 9
+0250     saveQuality = varargin{10};
+0251 <span class="keyword">end</span>
+0252 
+0253 <span class="comment">% Are we closing the figures after saving them?</span>
+0254 <span class="keyword">if</span> saveQuality &gt; 0
+0255     isClose = true;
+0256 <span class="keyword">else</span>
+0257     isClose = false;
+0258 <span class="keyword">end</span>
+0259 <span class="keyword">if</span> length(varargin) &gt; 10
+0260     isClose = varargin{11};
+0261 <span class="keyword">end</span>
+0262 <span class="keyword">if</span> ~isShow
+0263     isClose = true;
+0264 <span class="keyword">end</span>
+0265 
+0266 <span class="comment">% Are we displaying the progress?</span>
+0267 isVerbose = true;
+0268 <span class="keyword">if</span> length(varargin) &gt; 11
+0269     isVerbose = varargin{12};
+0270 <span class="keyword">end</span>
+0271 
+0272 <span class="comment">% Construct the file name.</span>
+0273 <span class="keyword">if</span> saveQuality &gt; 0
+0274     
+0275     <span class="comment">% Remove the TIF extension.</span>
+0276     tifExt = <span class="string">'.tif'</span>;
+0277     tifName = filename;
+0278     <span class="keyword">if</span> length(tifName) &gt;= length(tifExt) &amp;&amp; <span class="keyword">...</span>
+0279             strcmp(filename((end - length(tifExt) + 1):end), tifExt)
+0280         tifName = filename(1:(end - length(tifExt)));
+0281     <span class="keyword">end</span>
+0282     
+0283     <span class="comment">% Create the filename.</span>
+0284     <span class="keyword">if</span> isempty(tifName)
+0285         <span class="keyword">if</span> isempty(controlName)
+0286             tifName = [wormName <span class="string">' details'</span>];
+0287         <span class="keyword">else</span>
+0288             tifName = [wormName <span class="string">' vs '</span> controlName <span class="string">' details'</span>];
+0289         <span class="keyword">end</span>
+0290     <span class="keyword">end</span>
+0291     
+0292     <span class="comment">% Add the TIF extension.</span>
+0293     filename = [tifName <span class="string">'.tif'</span>];
+0294 
+0295 <span class="comment">% We are not saving a file.</span>
+0296 <span class="keyword">else</span>
+0297     filename = [];
+0298 <span class="keyword">end</span>
+0299 
+0300 <span class="comment">% Initialize the feature information.</span>
+0301 dispInfo = <a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>();
+0302 dataInfo = <a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>();
+0303 statsInfo = <a href="../../../SegWorm/Worms/Statistics/wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>();
+0304 
+0305 <span class="comment">% Draw the features.</span>
+0306 i = 1;
+0307 <span class="keyword">while</span> i &lt;= length(dataInfo)
+0308     
+0309     <span class="comment">% Draw the features.</span>
+0310     <span class="keyword">switch</span> dataInfo(i).type
+0311         
+0312         <span class="comment">% Draw a quadrant of simple features.</span>
+0313         <span class="keyword">case</span> <span class="string">'s'</span>
+0314             
+0315             <span class="comment">% Compute the page.</span>
+0316             page = page + 1;
+0317             
+0318             <span class="comment">% Display the progress.</span>
+0319             <span class="keyword">if</span> isVerbose
+0320                 disp([<span class="string">'Printing details '</span> num2str(i) <span class="string">'/'</span> <span class="keyword">...</span>
+0321                     num2str(length(dataInfo)) <span class="string">' ...'</span>]);
+0322             <span class="keyword">end</span>
+0323     
+0324             <span class="comment">% Add up to 3 more simple features to the page.</span>
+0325             j = i;
+0326             endJ = min(i + 3, length(dataInfo));
+0327             <span class="keyword">while</span> j &lt; endJ
+0328                 j = j + 1;
+0329             <span class="keyword">end</span>
+0330             
+0331             <span class="comment">% Draw the feature.</span>
+0332             <a href="#_sub1" class="code" title="subfunction drawSimpleData(filename, page, featureI, worm, wormName, ">drawSimpleData</a>(filename, page, i:j, worm, wormName, <span class="keyword">...</span>
+0333                 isWormUsed, control, controlName, isControlUsed, <span class="keyword">...</span>
+0334                 sig, dispInfo, dataInfo, statsInfo, <span class="keyword">...</span>
+0335                 isShow, saveQuality, isClose);
+0336             
+0337             <span class="comment">% Advance.</span>
+0338             i = j;
+0339             
+0340         <span class="comment">% Draw the quadrants of the motion features.</span>
+0341         <span class="keyword">case</span> <span class="string">'m'</span>
+0342             
+0343             <span class="comment">% Get the data.</span>
+0344             field = dataInfo(i).field;
+0345             dispData = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(dispInfo, field);
+0346             wormData = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, field);
+0347             controlData = [];
+0348             <span class="keyword">if</span> ~isempty(control)
+0349                 controlData = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(control, field);
+0350             <span class="keyword">end</span>
+0351             
+0352             <span class="comment">% Draw the data.</span>
+0353             <span class="keyword">if</span> isempty(controlData)
+0354                 <span class="keyword">for</span> j = 1:length(wormData)
+0355                     
+0356                     <span class="comment">% Compute the page.</span>
+0357                     page = page + 1;
+0358                     
+0359                     <span class="comment">% Display the progress.</span>
+0360                     <span class="keyword">if</span> isVerbose
+0361                         disp([<span class="string">'Printing details '</span> num2str(i) <span class="string">'/'</span> <span class="keyword">...</span>
+0362                             num2str(length(dataInfo)) <span class="string">' ...'</span>]);
+0363                     <span class="keyword">end</span>
+0364             
+0365                     <span class="comment">% Draw the feature.</span>
+0366                     <a href="#_sub2" class="code" title="subfunction drawMotionData(filename, page, featureI, index, worm, wormName, ">drawMotionData</a>(filename, page, i, j, <span class="keyword">...</span>
+0367                         wormData(j), wormName,  isWormUsed, [], [], [], <span class="keyword">...</span>
+0368                         sig, dispData(j), dataInfo, statsInfo, <span class="keyword">...</span>
+0369                         isShow, saveQuality, isClose);
+0370                 <span class="keyword">end</span>
+0371                 
+0372             <span class="comment">% Draw the controlled data.</span>
+0373             <span class="keyword">else</span>
+0374                 <span class="keyword">for</span> j = 1:length(wormData)
+0375                     
+0376                     <span class="comment">% Compute the page.</span>
+0377                     page = page + 1;
+0378                     
+0379                     <span class="comment">% Display the progress.</span>
+0380                     <span class="keyword">if</span> isVerbose
+0381                         disp([<span class="string">'Printing details '</span> num2str(i) <span class="string">'/'</span> <span class="keyword">...</span>
+0382                             num2str(length(dataInfo)) <span class="string">' ...'</span>]);
+0383                     <span class="keyword">end</span>
+0384             
+0385                     <span class="comment">% Draw the feature.</span>
+0386                     <a href="#_sub2" class="code" title="subfunction drawMotionData(filename, page, featureI, index, worm, wormName, ">drawMotionData</a>(filename, page, i, j, <span class="keyword">...</span>
+0387                         wormData(j), wormName,  isWormUsed, <span class="keyword">...</span>
+0388                         controlData(j), controlName, isControlUsed, <span class="keyword">...</span>
+0389                         sig, dispData(j), dataInfo, statsInfo, <span class="keyword">...</span>
+0390                         isShow, saveQuality, isClose);
+0391                 <span class="keyword">end</span>
+0392             <span class="keyword">end</span>
+0393             
+0394         <span class="comment">% Draw the quadrants of the event.</span>
+0395         <span class="keyword">case</span> <span class="string">'e'</span>
+0396             
+0397             <span class="comment">% Compute the page.</span>
+0398             page = page + 1;
+0399             
+0400             <span class="comment">% Display the progress.</span>
+0401             <span class="keyword">if</span> isVerbose
+0402                 disp([<span class="string">'Printing details '</span> num2str(i) <span class="string">'/'</span> <span class="keyword">...</span>
+0403                     num2str(length(dataInfo)) <span class="string">' ...'</span>]);
+0404             <span class="keyword">end</span>
+0405             
+0406             <span class="comment">% Draw the feature.</span>
+0407             <a href="#_sub3" class="code" title="subfunction drawEventData(filename, page, featureI, worm, wormName, ">drawEventData</a>(filename, page, i, worm, wormName, <span class="keyword">...</span>
+0408                 isWormUsed, control, controlName,  isControlUsed, <span class="keyword">...</span>
+0409                 sig, dispInfo, dataInfo, statsInfo, <span class="keyword">...</span>
+0410                 isShow, saveQuality, isClose);
+0411     <span class="keyword">end</span>
+0412     
+0413     <span class="comment">% Advance.</span>
+0414     i = i + 1;
+0415 <span class="keyword">end</span>
+0416 
+0417 <span class="comment">% Compute the pages.</span>
+0418 pages = page - pages;
+0419 <span class="keyword">end</span>
+0420 
+0421 
+0422 
+0423 <span class="comment">%% Draw a quadrant of simple features.</span>
+0424 <a name="_sub1" href="#_subfunctions" class="code">function drawSimpleData(filename, page, featureI, worm, wormName, </a><span class="keyword">...</span>
+0425     isWormUsed, control, controlName, isControlUsed, sig, <span class="keyword">...</span>
+0426     dispInfo, dataInfo, statsInfo, isShow, saveQuality, isClose)
+0427 
+0428 <span class="comment">% Initialize the fonts.</span>
+0429 smallFontStr = <span class="string">'\rm\fontsize{10}'</span>;
+0430 bigFontStr = <span class="string">'\bf\fontsize{14}'</span>;
+0431 axisFontSize = 12;
+0432 
+0433 <span class="comment">% Initialize the color scheme.</span>
+0434 statColorScale = 0.6;
+0435 wormColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+0436 controlColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+0437 <span class="keyword">if</span> isempty(control)
+0438     histColors = wormColor;
+0439 <span class="keyword">else</span>
+0440     histColors = [controlColor; wormColor];
+0441 <span class="keyword">end</span>
+0442 statColors = histColors * statColorScale;
+0443 
+0444 <span class="comment">% Create a figure.</span>
+0445 h = figure;
+0446 visStr = <span class="string">'off'</span>;
+0447 <span class="keyword">if</span> isShow
+0448     visStr = <span class="string">'on'</span>;
+0449 <span class="keyword">end</span>
+0450 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1], <span class="keyword">...</span>
+0451     <span class="string">'PaperType'</span>, <span class="string">'A2'</span>, <span class="string">'Visible'</span>, visStr);
+0452 hold on;
+0453 
+0454 <span class="comment">% Draw the feature histograms.</span>
+0455 statsInfoTitle1I = [statsInfo.title1I];
+0456 featureNames = cell(length(featureI), 1);
+0457 <span class="keyword">for</span> i = 1:length(featureI)
+0458    
+0459     <span class="comment">% Get the data.</span>
+0460     field = dataInfo(featureI(i)).field;
+0461     wormHist = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, [field <span class="string">'.histogram'</span>]);
+0462     wormHist = <a href="../../../SegWorm/Util/filterHistogram.html" class="code" title="function histogram = filterHistogram(histogram, isUsed)">filterHistogram</a>(wormHist, isWormUsed);
+0463     controlHist = [];
+0464     <span class="keyword">if</span> ~isempty(control)
+0465         controlHist = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(control, [field <span class="string">'.histogram'</span>]);
+0466         controlHist = <a href="../../../SegWorm/Util/filterHistogram.html" class="code" title="function histogram = filterHistogram(histogram, isUsed)">filterHistogram</a>(controlHist, isControlUsed);
+0467     <span class="keyword">end</span>
+0468     
+0469     <span class="comment">% Downsample the data.</span>
+0470     hist = [controlHist, wormHist];
+0471     hist = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>(hist);
+0472     
+0473     <span class="comment">% Get the statistics.</span>
+0474     sigI = find(statsInfoTitle1I == featureI(i), 1);
+0475     disp = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(dispInfo, field);
+0476     featureNames{i} = disp.name;
+0477     [statsStrs sigs] = <a href="#_sub9" class="code" title="subfunction [str sigs] = stats2strs(worm, control, sig, sigI)">stats2strs</a>(wormHist, controlHist, sig, sigI);
+0478     
+0479     <span class="comment">% Create the labels.</span>
+0480 <span class="comment">%     titleLabel{1} = [bigFontStr wormName];</span>
+0481 <span class="comment">%     if ~isempty(controlName)</span>
+0482 <span class="comment">%         titleLabel{1} = [titleLabel{1} '   [' controlName ']'];</span>
+0483 <span class="comment">%     end</span>
+0484     titleLabel{1} = [bigFontStr upper(disp.name) smallFontStr];
+0485     titleLabel(2:(length(statsStrs) + 1)) = statsStrs;
+0486     xLabel = [bigFontStr disp.unit <span class="string">' '</span>];
+0487     
+0488     <span class="comment">% Draw the data.</span>
+0489     subplot(2,2,i);
+0490     hold on;
+0491     <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(hist, titleLabel, xLabel, bigFontStr, [], <span class="keyword">...</span>
+0492         histColors, statColors, 1, 0, 1, 1);
+0493     
+0494     <span class="comment">% Embiggen the x-axis ticks.</span>
+0495     set(gca, <span class="string">'FontSize'</span>, axisFontSize);
+0496         
+0497     <span class="comment">% Color the significance.</span>
+0498     set(gca, <span class="string">'Color'</span>, <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(min(sigs)));
+0499 <span class="keyword">end</span>
+0500 
+0501 <span class="comment">% Draw the legend.</span>
+0502 <a href="#_sub4" class="code" title="subfunction drawSimpleLegend(h)">drawSimpleLegend</a>(h);
+0503 
+0504 <span class="comment">% Save the figure.</span>
+0505 <span class="keyword">if</span> saveQuality &gt; 0
+0506     pageTitle = <a href="#_sub11" class="code" title="subfunction str = info2pageTitle(wormName, controlName, featureI, ">info2pageTitle</a>(wormName, controlName, featureI, <span class="keyword">...</span>
+0507         featureNames, dataInfo);
+0508     <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, pageTitle, page, isClose);
+0509 
+0510 <span class="comment">% Close the figure.</span>
+0511 <span class="keyword">elseif</span> ~isShow || isClose
+0512     close(h);
+0513 <span class="keyword">end</span>
+0514 <span class="keyword">end</span>
+0515 
+0516 
+0517 
+0518 <span class="comment">%% Draw a quadrant of the motion features.</span>
+0519 <a name="_sub2" href="#_subfunctions" class="code">function drawMotionData(filename, page, featureI, index, worm, wormName, </a><span class="keyword">...</span>
+0520     isWormUsed, control, controlName, isControlUsed, sig, <span class="keyword">...</span>
+0521     dispInfo, dataInfo, statsInfo, isShow, saveQuality, isClose)
+0522 
+0523 <span class="comment">% Initialize the fonts.</span>
+0524 smallFontStr = <span class="string">'\rm\fontsize{10}'</span>;
+0525 bigFontStr = <span class="string">'\bf\fontsize{14}'</span>;
+0526 axisFontSize = 12;
+0527 
+0528 <span class="comment">% Initialize the color scheme.</span>
+0529 <span class="comment">% Note: the order for 3 color schemes is forward, backward, paused.</span>
+0530 statColorScale = 0.6;
+0531 wormColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+0532 <span class="comment">%wormColor3 = str2colors('rgb', [0, -0.5, 0]);</span>
+0533 wormColor3 = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'mgb'</span>, [0, -1/3, 0]);
+0534 controlColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+0535 
+0536 <span class="comment">% Initialize the motion fields.</span>
+0537 motionField = {
+0538     <span class="string">'forward'</span>
+0539     <span class="string">'paused'</span>
+0540     <span class="string">'backward'</span>};
+0541 
+0542 <span class="comment">% Get the worm histograms.</span>
+0543 numPlots = 6;
+0544 wormHist = <a href="../../../SegWorm/Util/filterHistogram.html" class="code" title="function histogram = filterHistogram(histogram, isUsed)">filterHistogram</a>(worm.histogram, isWormUsed);
+0545 wormHist3 = [];
+0546 <span class="keyword">for</span> i = 1:length(motionField)
+0547     wormHist3 = cat(1, wormHist3, worm.(motionField{i}).histogram);
+0548 <span class="keyword">end</span>
+0549 wormHist3 = <a href="../../../SegWorm/Util/filterHistogram.html" class="code" title="function histogram = filterHistogram(histogram, isUsed)">filterHistogram</a>(wormHist3, isWormUsed);
+0550 
+0551 <span class="comment">% Group the control histograms.</span>
+0552 <span class="keyword">if</span> ~isempty(control)
+0553     controlHist = <a href="../../../SegWorm/Util/filterHistogram.html" class="code" title="function histogram = filterHistogram(histogram, isUsed)">filterHistogram</a>(control.histogram, isControlUsed);
+0554     controlHist3 = [];
+0555     <span class="keyword">for</span> i = 1:length(motionField)
+0556         controlHist3 = cat(1, controlHist3, <span class="keyword">...</span>
+0557             control.(motionField{i}).histogram);
+0558     <span class="keyword">end</span>
+0559     controlHist3 = <a href="../../../SegWorm/Util/filterHistogram.html" class="code" title="function histogram = filterHistogram(histogram, isUsed)">filterHistogram</a>(controlHist3, isControlUsed);
+0560 <span class="keyword">end</span>
+0561 
+0562 <span class="comment">% Allocate the memory.</span>
+0563 titles = cell(numPlots, 1);
+0564 hists = cell(numPlots, 1);
+0565 histColors = cell(numPlots, 1);
+0566 statColors = cell(numPlots, 1);
+0567 histModes = cell(numPlots, 1);
+0568 logModes = cell(numPlots, 1);
+0569 sigColors = cell(numPlots, 1);
+0570 
+0571 <span class="comment">% Get the feature information.</span>
+0572 numSigns = 1;
+0573 <span class="keyword">if</span> wormHist.isSigned
+0574     numSigns = 4;
+0575 <span class="keyword">end</span>
+0576 <span class="keyword">if</span> index &gt; 1
+0577     sigI = find([statsInfo.title1I] == featureI &amp; <span class="keyword">...</span>
+0578         [statsInfo.index] == index, 1);
+0579 <span class="keyword">else</span>
+0580     sigI = find([statsInfo.title1I] == featureI, 1);
+0581 <span class="keyword">end</span>
+0582 
+0583 <span class="comment">% Create the x-axis label.</span>
+0584 <span class="comment">%xLabel = [bigFontStr dispInfo.name ' (' dispInfo.unit ') '];</span>
+0585 xLabel = [bigFontStr dispInfo.unit <span class="string">' '</span>];
+0586 
+0587 <span class="comment">% Group the worm drawings.</span>
+0588 <span class="keyword">if</span> isempty(control)
+0589     
+0590     <span class="comment">% Draw the worm.</span>
+0591     [statsStrs sigs] = <a href="#_sub9" class="code" title="subfunction [str sigs] = stats2strs(worm, control, sig, sigI)">stats2strs</a>(wormHist, [], sig, sigI);
+0592     titleStrs = [];
+0593 <span class="comment">%     titleStrs{1} = [bigFontStr wormName ' [' controlName ']: ' ...</span>
+0594 <span class="comment">%         upper(dispInfo.name) smallFontStr];</span>
+0595     titleStrs{1} = [bigFontStr upper(dispInfo.name) smallFontStr];
+0596     titleStrs(2:(length(statsStrs) + 1)) = statsStrs;
+0597     titles{1} = titleStrs;
+0598     hists{1} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>(wormHist);
+0599     histColors{1} = wormColor;
+0600     statColors{1} = histColors{1} * statColorScale;
+0601     histModes{1} = 1;
+0602 
+0603     <span class="comment">% Draw the worm motion vs. the worm.</span>
+0604     titles{2} = [bigFontStr wormName <span class="string">': '</span> upper(dispInfo.name)];
+0605     hists{2} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([wormHist3; wormHist]);
+0606     histColors{2} = [wormColor3; controlColor];
+0607     histModes{2} = 2;
+0608     
+0609     <span class="comment">% Draw the worm motion.</span>
+0610     <span class="keyword">for</span> i = 1:3
+0611         
+0612         <span class="comment">% Create the title.</span>
+0613         [statsStrs sigs] = <a href="#_sub9" class="code" title="subfunction [str sigs] = stats2strs(worm, control, sig, sigI)">stats2strs</a>(wormHist3(i), [], <span class="keyword">...</span>
+0614             sig, sigI + i * numSigns);
+0615         titleStrs = [];
+0616 <span class="comment">%         titleStrs{1} = [bigFontStr wormName ' [' controlName ']: ' ...</span>
+0617 <span class="comment">%             upper([motionField{i} ' ' dispInfo.name]) smallFontStr ];</span>
+0618         titleStrs{1} = [bigFontStr <span class="keyword">...</span>
+0619             upper([motionField{i} <span class="string">' '</span> dispInfo.name]) smallFontStr ];
+0620         titleStrs(2:(length(statsStrs) + 1)) = statsStrs;
+0621         titles{i + 3} = titleStrs;
+0622         
+0623         <span class="comment">% Create the histogram.</span>
+0624         hists{i + 3} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>(wormHist3(i));
+0625         histColors{i + 3} = wormColor3(i,:);
+0626         statColors{i + 3} = histColors{i + 3} * statColorScale;
+0627         histModes{i + 3} = 1;
+0628     <span class="keyword">end</span>
+0629     
+0630 <span class="comment">% Group the worm and control drawings.</span>
+0631 <span class="keyword">else</span>
+0632     
+0633     <span class="comment">% Draw the worm vs. the control.</span>
+0634     [statsStrs sigs] = <a href="#_sub9" class="code" title="subfunction [str sigs] = stats2strs(worm, control, sig, sigI)">stats2strs</a>(wormHist, controlHist, sig, sigI);
+0635     titleStrs = [];
+0636 <span class="comment">%     titleStrs{1} = [bigFontStr wormName ' [' controlName ']: ' ...</span>
+0637 <span class="comment">%         upper(dispInfo.name) smallFontStr];</span>
+0638     titleStrs{1} = [bigFontStr upper(dispInfo.name) smallFontStr];
+0639     titleStrs(2:(length(statsStrs) + 1)) = statsStrs;
+0640     titles{1} = titleStrs;
+0641     hists{1} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([controlHist; wormHist]);
+0642     histColors{1} = [controlColor; wormColor];
+0643     statColors{1} = histColors{1} * statColorScale;
+0644     histModes{1} = 1;
+0645     sigColors{1} = <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(min(sigs));
+0646 
+0647     <span class="comment">% Draw the worm motion vs. the worm.</span>
+0648     titles{2} = [bigFontStr wormName <span class="string">': '</span> upper(dispInfo.name)];
+0649     hists{2} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([wormHist3; wormHist]);
+0650     histColors{2} = [wormColor3; controlColor];
+0651     histModes{2} = 2;
+0652 
+0653     <span class="comment">% Draw the control motion vs. the control.</span>
+0654     titles{3} = [bigFontStr controlName <span class="string">': '</span> upper(dispInfo.name)];
+0655     hists{3} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([controlHist3; controlHist]);
+0656     histColors{3} = [wormColor3; controlColor];
+0657     histModes{3} = 2;
+0658     
+0659     <span class="comment">% Draw the worm motion vs. control motion.</span>
+0660     <span class="keyword">for</span> i = 1:3
+0661         
+0662         <span class="comment">% Create the title.</span>
+0663         [statsStrs sigs] = <a href="#_sub9" class="code" title="subfunction [str sigs] = stats2strs(worm, control, sig, sigI)">stats2strs</a>(wormHist3(i), controlHist3(i), <span class="keyword">...</span>
+0664             sig, sigI + i * numSigns);
+0665         titleStrs = [];
+0666 <span class="comment">%         titleStrs{1} = [bigFontStr wormName ' [' controlName ']: ' ...</span>
+0667 <span class="comment">%             upper([motionField{i} ' ' dispInfo.name]) smallFontStr ];</span>
+0668         titleStrs{1} = [bigFontStr <span class="keyword">...</span>
+0669             upper([motionField{i} <span class="string">' '</span> dispInfo.name]) smallFontStr ];
+0670         titleStrs(2:(length(statsStrs) + 1)) = statsStrs;
+0671         titles{i + 3} = titleStrs;
+0672         
+0673         <span class="comment">% Create the histogram.</span>
+0674         hists{i + 3} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([controlHist3(i); wormHist3(i)]);
+0675         histColors{i + 3} = [controlColor; wormColor3(i,:)];
+0676         statColors{i + 3} = histColors{i + 3} * statColorScale;
+0677         histModes{i + 3} = 1;
+0678         sigColors{i + 3} = <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(min(sigs));
+0679     <span class="keyword">end</span>
+0680 <span class="keyword">end</span>
+0681 
+0682 <span class="comment">% Create a figure.</span>
+0683 h = figure;
+0684 visStr = <span class="string">'off'</span>;
+0685 <span class="keyword">if</span> isShow
+0686     visStr = <span class="string">'on'</span>;
+0687 <span class="keyword">end</span>
+0688 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1], <span class="keyword">...</span>
+0689     <span class="string">'PaperType'</span>, <span class="string">'A2'</span>, <span class="string">'Visible'</span>, visStr);
+0690 hold on;
+0691 
+0692 <span class="comment">% Draw the features.</span>
+0693 <span class="keyword">for</span> i = 1:length(hists)
+0694     <span class="keyword">if</span> ~isempty(titles{i})
+0695         
+0696         <span class="comment">% Draw the data.</span>
+0697         subplot(2,3,i);
+0698         hold on;
+0699         <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(hists{i}, titles{i}, xLabel, bigFontStr, [], <span class="keyword">...</span>
+0700             histColors{i}, statColors{i}, histModes{i}, 0, 1, 1, <span class="keyword">...</span>
+0701             logModes{i});
+0702         
+0703         <span class="comment">% Embiggen the x-axis ticks.</span>
+0704         set(gca, <span class="string">'FontSize'</span>, axisFontSize);
+0705         
+0706         <span class="comment">% Color the significance.</span>
+0707         <span class="keyword">if</span> ~isempty(sigColors{i})
+0708             set(gca, <span class="string">'Color'</span>, sigColors{i});
+0709         <span class="keyword">end</span>
+0710     <span class="keyword">end</span>
+0711 <span class="keyword">end</span>
+0712 
+0713 <span class="comment">% Draw the legend.</span>
+0714 <a href="#_sub5" class="code" title="subfunction drawMotionLegend(h)">drawMotionLegend</a>(h);
+0715 
+0716 <span class="comment">% Save the figure.</span>
+0717 <span class="keyword">if</span> saveQuality &gt; 0
+0718     pageTitle = <a href="#_sub11" class="code" title="subfunction str = info2pageTitle(wormName, controlName, featureI, ">info2pageTitle</a>(wormName, controlName, featureI, <span class="keyword">...</span>
+0719         {dispInfo.name}, dataInfo);
+0720     <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, pageTitle, page, isClose);
+0721 
+0722 <span class="comment">% Close the figure.</span>
+0723 <span class="keyword">elseif</span> ~isShow || isClose
+0724     close(h);
+0725 <span class="keyword">end</span>
+0726 <span class="keyword">end</span>
+0727 
+0728 
+0729 
+0730 <span class="comment">%% Draw a quadrant of the event.</span>
+0731 <a name="_sub3" href="#_subfunctions" class="code">function drawEventData(filename, page, featureI, worm, wormName, </a><span class="keyword">...</span>
+0732     isWormUsed, control, controlName, isControlUsed, sig, <span class="keyword">...</span>
+0733     dispInfo, dataInfo, statsInfo, isShow, saveQuality, isClose)
+0734 
+0735 <span class="comment">% Initialize the fonts.</span>
+0736 smallFontStr = <span class="string">'\rm\fontsize{10}'</span>;
+0737 bigFontStr = <span class="string">'\bf\fontsize{14}'</span>;
+0738 axisFontSize = 12;
+0739 
+0740 <span class="comment">% Initialize the color scheme.</span>
+0741 <span class="comment">% Note: the order for 2 color schemes is feature and inter-feature.</span>
+0742 statColorScale = 0.6;
+0743 wormColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+0744 wormColor2 = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'gm'</span>, [-1/3, 0]);
+0745 controlColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+0746 controlColor2 = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'kk'</span>, [0 .6]);
+0747 
+0748 <span class="comment">% Initialize the fields.</span>
+0749 field = dataInfo(featureI).field;
+0750 summaryFields = dataInfo(featureI).subFields.summary;
+0751 dataFields = dataInfo(featureI).subFields.data;
+0752 
+0753 <span class="comment">% Group the worm summary fields.</span>
+0754 worm = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, field);
+0755 wormFields = [];
+0756 <span class="keyword">for</span> i = 1:length(summaryFields)
+0757     subField = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, summaryFields{i});
+0758     wormFields = cat(1, wormFields, subField);
+0759 <span class="keyword">end</span>
+0760 
+0761 <span class="comment">% Group the worm control fields.</span>
+0762 controlFields = [];
+0763 <span class="keyword">if</span> ~isempty(control)
+0764     control = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(control, field);
+0765     <span class="keyword">for</span> i = 1:length(summaryFields)
+0766         subField = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(control, summaryFields{i});
+0767         controlFields = cat(1, controlFields, subField);
+0768     <span class="keyword">end</span>
+0769 <span class="keyword">end</span>
+0770 
+0771 <span class="comment">% Create the summary statistics strings.</span>
+0772 sigI = find([statsInfo.title1I] == featureI, 1);
+0773 [summaryStrs summarySigs] = <a href="#_sub10" class="code" title="subfunction [str sigs] = eventStats2strs(worms, isWormUsed, ">eventStats2strs</a>(wormFields, isWormUsed, <span class="keyword">...</span>
+0774     controlFields, isControlUsed, sig, sigI);
+0775 
+0776 <span class="comment">% Group the worm histograms.</span>
+0777 wormHists = [];
+0778 numSigns = ones(length(dataFields), 1);
+0779 <span class="keyword">for</span> i = 1:length(dataFields)
+0780     wormHists = cat(1, wormHists, worm.(dataFields{i}).histogram);
+0781     <span class="keyword">if</span> ~isnan(wormHists(i).isSigned) &amp;&amp; wormHists(i).isSigned
+0782         numSigns(i) = 4;
+0783     <span class="keyword">end</span>
+0784 <span class="keyword">end</span>
+0785 wormHists = <a href="../../../SegWorm/Util/filterHistogram.html" class="code" title="function histogram = filterHistogram(histogram, isUsed)">filterHistogram</a>(wormHists, isWormUsed);
+0786 
+0787 <span class="comment">% Group the control histograms.</span>
+0788 <span class="keyword">if</span> ~isempty(control)
+0789     controlHists = [];
+0790     <span class="keyword">for</span> i = 1:length(dataFields)
+0791         controlHists = <span class="keyword">...</span>
+0792             cat(1, controlHists, control.(dataFields{i}).histogram);
+0793     <span class="keyword">end</span>
+0794     controlHists = <a href="../../../SegWorm/Util/filterHistogram.html" class="code" title="function histogram = filterHistogram(histogram, isUsed)">filterHistogram</a>(controlHists, isControlUsed);
+0795 <span class="keyword">end</span>
+0796 
+0797 <span class="comment">% Create the data statistics strings.</span>
+0798 dataStrs = cell(length(wormHists), 1);
+0799 dataSigs = cell(length(wormHists), 1);
+0800 sigI = sigI + length(summaryFields);
+0801 <span class="keyword">if</span> isempty(control)
+0802     <span class="keyword">for</span> i = 1:length(wormHists)
+0803         [dataStrs{i} dataSigs{i}] = <a href="#_sub9" class="code" title="subfunction [str sigs] = stats2strs(worm, control, sig, sigI)">stats2strs</a>(wormHists(i), [], <span class="keyword">...</span>
+0804             sig, sigI + (i - 1) * numSigns(i));
+0805     <span class="keyword">end</span>
+0806 <span class="keyword">else</span>
+0807     <span class="keyword">for</span> i = 1:length(wormHists)
+0808         [dataStrs{i} dataSigs{i}] = <a href="#_sub9" class="code" title="subfunction [str sigs] = stats2strs(worm, control, sig, sigI)">stats2strs</a>(wormHists(i), <span class="keyword">...</span>
+0809             controlHists(i), sig, sigI + (i - 1) * numSigns(i));
+0810     <span class="keyword">end</span>
+0811 <span class="keyword">end</span>
+0812 
+0813 <span class="comment">% Get the labels.</span>
+0814 disp = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(dispInfo, field);
+0815 names = cell(length(dataFields), 1);
+0816 units = cell(length(dataFields), 1);
+0817 <span class="keyword">for</span> i = 1:length(dataFields)
+0818     names{i} = disp.(dataFields{i}).name;
+0819     units{i} = disp.(dataFields{i}).unit;
+0820 <span class="keyword">end</span>
+0821 
+0822 <span class="comment">% Group the histograms.</span>
+0823 titles = cell(length(wormHists), 1);
+0824 xLabels = cell(length(wormHists), 1);
+0825 hists = cell(length(wormHists), 1);
+0826 histModes = cell(length(wormHists), 1);
+0827 sigColors = cell(length(wormHists), 1);
+0828 <span class="keyword">for</span> i = 1:length(hists)
+0829     
+0830     <span class="comment">% Create the title.</span>
+0831     titleStrs = [];
+0832 <span class="comment">%     titleStrs{1} = [bigFontStr wormName];</span>
+0833 <span class="comment">%     if ~isempty(control)</span>
+0834 <span class="comment">%         titleStrs{1} = [titleStrs{1} '   [' controlName ']'];</span>
+0835 <span class="comment">%     end</span>
+0836 <span class="comment">%     titleStrs{1} = [titleStrs{1} ': ' upper(names{i}) smallFontStr];</span>
+0837     titleStrs{1} = [bigFontStr upper(names{i}) smallFontStr];
+0838     titleStrs(2:(length(dataStrs{i}) + 1)) = dataStrs{i};
+0839     titles{i} = titleStrs;
+0840     
+0841     <span class="comment">% Create the x-axis label.</span>
+0842 <span class="comment">%     xLabels{i} = [bigFontStr names{i} ' (' units{i} ') '];</span>
+0843     xLabels{i} = [bigFontStr units{i} <span class="string">' '</span>];
+0844     
+0845     <span class="comment">% Create the histogram.</span>
+0846     <span class="keyword">if</span> isempty(control)
+0847         hists{i} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>(wormHists(i));
+0848     <span class="keyword">else</span>
+0849         hists{i} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([controlHists(i); wormHists(i)]);
+0850     <span class="keyword">end</span>
+0851     histModes{i} = 1;
+0852     sigColors{i} = <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(min(dataSigs{i}));
+0853 <span class="keyword">end</span>
+0854 
+0855 <span class="comment">% Group the 4 drawings.</span>
+0856 histColors = cell(length(wormHists), 1);
+0857 statColors = cell(length(wormHists), 1);
+0858 <span class="keyword">if</span> length(hists) == 3
+0859     
+0860     <span class="comment">% Re-order the existing drawings.</span>
+0861     oldI = 3;
+0862     newI = 4;
+0863     titles(newI) = titles(oldI);
+0864     xLabels(newI) = xLabels(oldI);
+0865     hists(newI) = hists(oldI);
+0866     histModes(newI) = histModes(oldI);
+0867     sigColors(newI) = sigColors(oldI);
+0868     logModes = cell(4, 1);
+0869     
+0870     <span class="comment">% Color the existing drawings.</span>
+0871     <span class="keyword">if</span> isempty(control)
+0872         histColors{1} = wormColor2(1,:);
+0873         histColors{2} = wormColor2(2,:);
+0874         histColors{4} = wormColor;
+0875     <span class="keyword">else</span>
+0876         histColors{1} = [controlColor2(1,:); wormColor2(1,:)];
+0877         histColors{2} = [controlColor2(2,:); wormColor2(2,:)];
+0878         histColors{4} = [controlColor; wormColor];
+0879     <span class="keyword">end</span>
+0880     <span class="keyword">for</span> i = 1:length(histColors)
+0881         statColors{i} = histColors{i} * statColorScale;
+0882     <span class="keyword">end</span>
+0883     
+0884     <span class="comment">% Create the comparative titles.</span>
+0885     titleStrs = [];
+0886     titleStrs{1} = [bigFontStr upper([<span class="string">'Inter vs. '</span> names{1}]) smallFontStr];
+0887     titleStrs(2:(length(summaryStrs) + 1)) = summaryStrs;
+0888     titles{3} = titleStrs;
+0889 <span class="comment">%     xLabels{3} = [bigFontStr names{1} ' vs. ' names{2} ' (' units{1} ') '];</span>
+0890     xLabels{3} = [bigFontStr units{1} <span class="string">' '</span>];
+0891     histModes{3} = 2;
+0892     logModes{3} = 1;
+0893     sigColors{3} = <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(min(summarySigs));
+0894 
+0895     <span class="comment">% Create the comparative drawings.</span>
+0896     <span class="keyword">if</span> isempty(control)
+0897         hists{3} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([wormHists(1); wormHists(2)]);
+0898         histColors{3} = wormColor2;
+0899     <span class="keyword">else</span>
+0900         hists{3} = <span class="keyword">...</span>
+0901             <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([controlHists(1); controlHists(2); <span class="keyword">...</span>
+0902             wormHists(1); wormHists(2)]);
+0903         histColors{3} = [controlColor2; wormColor2];
+0904     <span class="keyword">end</span>
+0905     
+0906 <span class="comment">% Group the 6 drawings.</span>
+0907 <span class="keyword">else</span> <span class="comment">% length(dataFields) == 4</span>
+0908 
+0909     <span class="comment">% Re-order the existing drawings.</span>
+0910     oldI = [2 3 4];
+0911     newI = [4 2 5];
+0912     titles(newI) = titles(oldI);
+0913     xLabels(newI) = xLabels(oldI);
+0914     hists(newI) = hists(oldI);
+0915     histModes(newI) = histModes(oldI);
+0916     sigColors(newI) = sigColors(oldI);
+0917     logModes = cell(6, 1);
+0918 
+0919     <span class="comment">% Color the existing drawings.</span>
+0920     <span class="keyword">if</span> isempty(control)
+0921         histColors{1} = wormColor2(1,:);
+0922         histColors{2} = wormColor2(2,:);
+0923         histColors{4} = wormColor2(1,:);
+0924         histColors{5} = wormColor2(2,:);
+0925     <span class="keyword">else</span>
+0926         histColors{1} = [controlColor2(1,:); wormColor2(1,:)];
+0927         histColors{2} = [controlColor2(2,:); wormColor2(2,:)];
+0928         histColors{4} = [controlColor2(1,:); wormColor2(1,:)];
+0929         histColors{5} = [controlColor2(2,:); wormColor2(2,:)];
+0930     <span class="keyword">end</span>
+0931     <span class="keyword">for</span> i = 1:length(histColors)
+0932         statColors{i} = histColors{i} * statColorScale;
+0933     <span class="keyword">end</span>
+0934     statColors{6} = [];
+0935 
+0936     <span class="comment">% Create the comparative titles for the time.</span>
+0937     titleStrs = [];
+0938     titleStrs{1} = [bigFontStr upper([<span class="string">'Inter vs. '</span> names{1}]) smallFontStr];
+0939     titleStrs(2:4) = summaryStrs(1:3);
+0940     titles{3} = titleStrs;
+0941 <span class="comment">%     xLabels{3} = [bigFontStr names{1} ' vs. ' names{3} ' (' units{1} ') '];</span>
+0942     xLabels{3} = [bigFontStr units{1} <span class="string">' '</span>];
+0943     histModes{3} = 2;
+0944     logModes{3} = 1;
+0945     sigColors{3} = <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(min(summarySigs(1:2)));
+0946 
+0947     <span class="comment">% Create the comparative titles for the distance.</span>
+0948     titleStrs = [];
+0949     titleStrs{1} = [bigFontStr upper([<span class="string">'Inter vs. '</span> names{2}]) smallFontStr];
+0950     titleStrs(2:3) = summaryStrs([1,4]);
+0951     titles{6} = titleStrs;
+0952 <span class="comment">%     xLabels{6} = [bigFontStr names{2} ' vs. ' names{4} ' (' units{2} ') '];</span>
+0953     xLabels{6} = [bigFontStr units{2} <span class="string">' '</span>];
+0954     histModes{6} = 2;
+0955     logModes{6} = 1;
+0956     sigColors{6} = <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(summarySigs(3));
+0957 
+0958     <span class="comment">% Create the comparative drawings.</span>
+0959     <span class="keyword">if</span> isempty(control)
+0960         hists{3} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([wormHists(1); wormHists(3)]);
+0961         hists{6} = <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([wormHists(2); wormHists(4)]);
+0962         histColors{3} = wormColor2;
+0963         histColors{6} = wormColor2;
+0964     <span class="keyword">else</span>
+0965         hists{3} = <span class="keyword">...</span>
+0966             <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([controlHists(1); controlHists(3); <span class="keyword">...</span>
+0967             wormHists(1); wormHists(3)]);
+0968         hists{6} = <span class="keyword">...</span>
+0969             <a href="../../../SegWorm/Util/downSampleHistogram.html" class="code" title="function histogram = downSampleHistogram(histogram, varargin)">downSampleHistogram</a>([controlHists(2); controlHists(4); <span class="keyword">...</span>
+0970             wormHists(2); wormHists(4)]);
+0971         histColors{3} = [controlColor2; wormColor2];
+0972         histColors{6} = [controlColor2; wormColor2];
+0973     <span class="keyword">end</span>
+0974 <span class="keyword">end</span>
+0975 
+0976 <span class="comment">% Create a figure.</span>
+0977 h = figure;
+0978 visStr = <span class="string">'off'</span>;
+0979 <span class="keyword">if</span> isShow
+0980     visStr = <span class="string">'on'</span>;
+0981 <span class="keyword">end</span>
+0982 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1], <span class="keyword">...</span>
+0983     <span class="string">'PaperType'</span>, <span class="string">'A2'</span>, <span class="string">'Visible'</span>, visStr);
+0984 hold on;
+0985 
+0986 
+0987 <span class="comment">% Draw the feature histograms.</span>
+0988 <span class="keyword">for</span> i = 1:length(hists)
+0989     
+0990     <span class="comment">% Draw the data.</span>
+0991     subplot(2,3,i);
+0992     hold on;
+0993     <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(hists{i}, titles{i}, xLabels{i}, bigFontStr, [], <span class="keyword">...</span>
+0994         histColors{i}, statColors{i}, histModes{i}, 0, 1, 1, logModes{i});
+0995     
+0996     <span class="comment">% Embiggen the x-axis ticks.</span>
+0997     set(gca, <span class="string">'FontSize'</span>, axisFontSize);
+0998         
+0999     <span class="comment">% Color the significance.</span>
+1000     <span class="keyword">if</span> ~isempty(sigColors{i})
+1001         set(gca, <span class="string">'Color'</span>, sigColors{i});
+1002     <span class="keyword">end</span>
+1003 <span class="keyword">end</span>
+1004 
+1005 <span class="comment">% Draw the legend.</span>
+1006 <a href="#_sub6" class="code" title="subfunction drawEventLegend(h)">drawEventLegend</a>(h);
+1007 
+1008 <span class="comment">% Save the figure.</span>
+1009 <span class="keyword">if</span> saveQuality &gt; 0
+1010     pageTitle = <a href="#_sub11" class="code" title="subfunction str = info2pageTitle(wormName, controlName, featureI, ">info2pageTitle</a>(wormName, controlName, featureI, <span class="keyword">...</span>
+1011         {disp.name}, dataInfo);
+1012     <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, pageTitle, page, isClose);
+1013 
+1014 <span class="comment">% Close the figure.</span>
+1015 <span class="keyword">elseif</span> ~isShow || isClose
+1016     close(h);
+1017 <span class="keyword">end</span>
+1018 <span class="keyword">end</span>
+1019 
+1020 
+1021 
+1022 <span class="comment">%% Show the simple legend.</span>
+1023 <a name="_sub4" href="#_subfunctions" class="code">function drawSimpleLegend(h)</a>
+1024 
+1025 <span class="comment">% Initialize the drawing information.</span>
+1026 fontSize = 20;
+1027 black = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+1028 white = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'w'</span>);
+1029 experimentColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+1030 controlColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+1031 
+1032 <span class="comment">% Setup the label information.</span>
+1033 label = {
+1034     <span class="string">' \bfEXPERIMENT '</span>
+1035     <span class="string">' \bfCONTROL '</span>
+1036     <span class="string">' \bfn.s. '</span>
+1037     <span class="string">' \bf*\rm (\itq \leq 0.05\rm) '</span>
+1038     <span class="string">' \bf**\rm (\itq \leq 0.01\rm) '</span>
+1039     <span class="string">' \bf***\rm (\itq \leq 0.001\rm) '</span>
+1040     <span class="string">' \bf****\rm (\itq \leq 0.0001\rm) '</span>};
+1041 backColor = {
+1042     experimentColor
+1043     controlColor
+1044     white
+1045     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.03)
+1046     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.003)
+1047     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.0003)
+1048     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.00003)};
+1049 foreColor = {
+1050     white
+1051     white
+1052     black
+1053     black
+1054     black
+1055     black
+1056     black};
+1057 
+1058 <span class="comment">% Setup the margin.</span>
+1059 xOff = 10^-3;
+1060 xPosOff = 1 - xOff;
+1061 textPosition = [xPosOff, 0, xOff, 1];
+1062 textAxis = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'Position'</span>, textPosition, <span class="keyword">...</span>
+1063     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+1064 
+1065 <span class="comment">% Draw the labels.</span>
+1066 yStart = 0.99;
+1067 yStart2 = 0.16;
+1068 yOff = 0.03;
+1069 <span class="keyword">for</span> i = 1:length(label)
+1070     
+1071     <span class="comment">% Draw the label.</span>
+1072     text(xOff, yStart - (i - 1) * yOff, label{i}, <span class="keyword">...</span>
+1073         <span class="string">'FontSize'</span>, fontSize, <span class="keyword">...</span>
+1074         <span class="string">'HorizontalAlignment'</span>, <span class="string">'right'</span>, <span class="keyword">...</span>
+1075         <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+1076         <span class="string">'BackgroundColor'</span>, backColor{i}, <span class="keyword">...</span>
+1077         <span class="string">'Color'</span>, foreColor{i}, <span class="keyword">...</span>
+1078         <span class="string">'EdgeColor'</span>, <span class="string">'k'</span>, <span class="keyword">...</span>
+1079         <span class="string">'Parent'</span>, textAxis);
+1080     
+1081     <span class="comment">% Put in a space.</span>
+1082     <span class="keyword">if</span> i == 2
+1083         yStart = yStart2 + i * yOff;
+1084     <span class="keyword">end</span>
+1085 <span class="keyword">end</span>
+1086 <span class="keyword">end</span>
+1087 
+1088 
+1089 
+1090 <span class="comment">%% Show the motion legend.</span>
+1091 <a name="_sub5" href="#_subfunctions" class="code">function drawMotionLegend(h)</a>
+1092 
+1093 <span class="comment">% Initialize the drawing information.</span>
+1094 fontSize = 20;
+1095 black = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+1096 white = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'w'</span>);
+1097 experimentColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+1098 controlColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+1099 forwardColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'m'</span>);
+1100 pausedColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'g'</span>, -1/3);
+1101 backwardColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'b'</span>);
+1102 
+1103 <span class="comment">% Setup the label information.</span>
+1104 label = {
+1105     <span class="string">' \bfEXPERIMENT '</span>
+1106     <span class="string">' \bfCONTROL '</span>
+1107     <span class="string">' \bfBACKWARD '</span>
+1108     <span class="string">' \bfFORWARD '</span>
+1109     <span class="string">' \bfPAUSED '</span>
+1110     <span class="string">' \bfn.s. '</span>
+1111     <span class="string">' \bf*\rm (\itq \leq 0.05\rm) '</span>
+1112     <span class="string">' \bf**\rm (\itq \leq 0.01\rm) '</span>
+1113     <span class="string">' \bf***\rm (\itq \leq 0.001\rm) '</span>
+1114     <span class="string">' \bf****\rm (\itq \leq 0.0001\rm) '</span>};
+1115 backColor = {
+1116     experimentColor
+1117     controlColor
+1118     backwardColor
+1119     forwardColor
+1120     pausedColor
+1121     white
+1122     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.03)
+1123     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.003)
+1124     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.0003)
+1125     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.00003)};
+1126 foreColor = {
+1127     white
+1128     white
+1129     white
+1130     white
+1131     white
+1132     black
+1133     black
+1134     black
+1135     black
+1136     black};
+1137 
+1138 <span class="comment">% Setup the margin.</span>
+1139 xOff = 10^-3;
+1140 xPosOff = 1 - xOff;
+1141 textPosition = [xPosOff, 0, xOff, 1];
+1142 textAxis = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'Position'</span>, textPosition, <span class="keyword">...</span>
+1143     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+1144 
+1145 <span class="comment">% Draw the labels.</span>
+1146 yStart = 0.99;
+1147 yStart2 = 0.55;
+1148 yStart3 = 0.16;
+1149 yOff = 0.03;
+1150 <span class="keyword">for</span> i = 1:length(label)
+1151     
+1152     <span class="comment">% Draw the label.</span>
+1153     text(xOff, yStart - (i - 1) * yOff, label{i}, <span class="keyword">...</span>
+1154         <span class="string">'FontSize'</span>, fontSize, <span class="keyword">...</span>
+1155         <span class="string">'HorizontalAlignment'</span>, <span class="string">'right'</span>, <span class="keyword">...</span>
+1156         <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+1157         <span class="string">'BackgroundColor'</span>, backColor{i}, <span class="keyword">...</span>
+1158         <span class="string">'Color'</span>, foreColor{i}, <span class="keyword">...</span>
+1159         <span class="string">'EdgeColor'</span>, <span class="string">'k'</span>, <span class="keyword">...</span>
+1160         <span class="string">'Parent'</span>, textAxis);
+1161     
+1162     <span class="comment">% Put in a space.</span>
+1163     <span class="keyword">if</span> i == 2
+1164         yStart = yStart2 + i * yOff;
+1165     <span class="keyword">elseif</span> i == 5
+1166         yStart = yStart3 + i * yOff;
+1167     <span class="keyword">end</span>
+1168 <span class="keyword">end</span>
+1169 <span class="keyword">end</span>
+1170 
+1171 
+1172 
+1173 <span class="comment">%% Show the event legend.</span>
+1174 <a name="_sub6" href="#_subfunctions" class="code">function drawEventLegend(h)</a>
+1175 
+1176 <span class="comment">% Initialize the drawing information.</span>
+1177 fontSize = 20;
+1178 black = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+1179 white = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'w'</span>);
+1180 experimentColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'n'</span>);
+1181 controlColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+1182 eventColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'g'</span>, -1/3);
+1183 interEventColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'m'</span>, 0);
+1184 interControlColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0.5);
+1185 
+1186 <span class="comment">% Setup the label information.</span>
+1187 label = {
+1188     <span class="string">' \bfEXPERIMENT '</span>
+1189     <span class="string">' \bfCONTROL '</span>
+1190     <span class="string">' \bfINTER CONTROL'</span>
+1191     <span class="string">' \bfINTER EVENT '</span>
+1192     <span class="string">' \bfEVENT '</span>
+1193     <span class="string">' \bfn.s. '</span>
+1194     <span class="string">' \bf*\rm (\itq \leq 0.05\rm) '</span>
+1195     <span class="string">' \bf**\rm (\itq \leq 0.01\rm) '</span>
+1196     <span class="string">' \bf***\rm (\itq \leq 0.001\rm) '</span>
+1197     <span class="string">' \bf****\rm (\itq \leq 0.0001\rm) '</span>};
+1198 backColor = {
+1199     experimentColor
+1200     controlColor
+1201     interControlColor
+1202     interEventColor
+1203     eventColor
+1204     white
+1205     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.03)
+1206     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.003)
+1207     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.0003)
+1208     <a href="#_sub8" class="code" title="subfunction color = p2BackColor(p)">p2BackColor</a>(0.00003)};
+1209 foreColor = {
+1210     white
+1211     white
+1212     white
+1213     white
+1214     white
+1215     black
+1216     black
+1217     black
+1218     black
+1219     black};
+1220 
+1221 <span class="comment">% Setup the margin.</span>
+1222 xOff = 10^-3;
+1223 xPosOff = 1 - xOff;
+1224 textPosition = [xPosOff, 0, xOff, 1];
+1225 textAxis = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'Position'</span>, textPosition, <span class="keyword">...</span>
+1226     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+1227 
+1228 <span class="comment">% Draw the labels.</span>
+1229 yStart = 0.99;
+1230 yStart2 = 0.55;
+1231 yStart3 = 0.16;
+1232 yOff = 0.03;
+1233 <span class="keyword">for</span> i = 1:length(label)
+1234     
+1235     <span class="comment">% Draw the label.</span>
+1236     text(xOff, yStart - (i - 1) * yOff, label{i}, <span class="keyword">...</span>
+1237         <span class="string">'FontSize'</span>, fontSize, <span class="keyword">...</span>
+1238         <span class="string">'HorizontalAlignment'</span>, <span class="string">'right'</span>, <span class="keyword">...</span>
+1239         <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+1240         <span class="string">'BackgroundColor'</span>, backColor{i}, <span class="keyword">...</span>
+1241         <span class="string">'Color'</span>, foreColor{i}, <span class="keyword">...</span>
+1242         <span class="string">'EdgeColor'</span>, <span class="string">'k'</span>, <span class="keyword">...</span>
+1243         <span class="string">'Parent'</span>, textAxis);
+1244     
+1245     <span class="comment">% Put in a space.</span>
+1246     <span class="keyword">if</span> i == 2
+1247         yStart = yStart2 + i * yOff;
+1248     <span class="keyword">elseif</span> i == 5
+1249         yStart = yStart3 + i * yOff;
+1250     <span class="keyword">end</span>
+1251 <span class="keyword">end</span>
+1252 <span class="keyword">end</span>
+1253 
+1254 
+1255 
+1256 <span class="comment">%% Convert a p-value to a foreground color representing significance.</span>
+1257 <a name="_sub7" href="#_subfunctions" class="code">function color = p2ForeColor(p)</a>
+1258 
+1259 <span class="comment">% The p-value is not significant.</span>
+1260 color = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'c'</span>);
+1261 
+1262 <span class="comment">% Determine the significance of the p-value.</span>
+1263 <span class="keyword">if</span> p &lt;= 0.0001
+1264     color = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'m'</span>);
+1265 <span class="keyword">elseif</span> p &lt;= 0.001
+1266     color = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'r'</span>);
+1267 <span class="keyword">elseif</span> p &lt;= 0.01
+1268     color = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'o'</span>);
+1269 <span class="keyword">elseif</span> p &lt;= 0.05
+1270     color = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'y'</span>);
+1271 <span class="keyword">end</span>
+1272 <span class="keyword">end</span>
+1273 
+1274 
+1275 
+1276 <span class="comment">%% Convert a p-value to a background color representing significance.</span>
+1277 <a name="_sub8" href="#_subfunctions" class="code">function color = p2BackColor(p)</a>
+1278 
+1279 <span class="comment">% The p-value is not significant.</span>
+1280 color = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'w'</span>);
+1281 
+1282 <span class="comment">% Determine the significance of the p-value.</span>
+1283 <span class="keyword">if</span> p &lt;= 0.0001
+1284     color = [.9, .8, 1];
+1285 <span class="keyword">elseif</span> p &lt;= 0.001
+1286     color = [1, .8, .8];
+1287 <span class="keyword">elseif</span> p &lt;= 0.01
+1288     color = [1, .9, .7];
+1289 <span class="keyword">elseif</span> p &lt;= 0.05
+1290     color = [1, 1, .7];
+1291 <span class="keyword">end</span>
+1292 <span class="keyword">end</span>
+1293 
+1294 
+1295 
+1296 <span class="comment">%% Convert the statistics to strings.</span>
+1297 <a name="_sub9" href="#_subfunctions" class="code">function [str sigs] = stats2strs(worm, control, sig, sigI)</a>
+1298 
+1299 <span class="comment">% No data.</span>
+1300 <span class="keyword">if</span> (isempty(worm) || isnan(worm.resolution)) &amp;&amp; <span class="keyword">...</span>
+1301         (isempty(control) || isnan(control.resolution))
+1302     str = {<span class="string">'NO DATA'</span>};
+1303     sigs = NaN;
+1304     <span class="keyword">return</span>;
+1305 <span class="keyword">end</span>
+1306 
+1307 <span class="comment">% Initialize special ascii symbols.</span>
+1308 semChar = <span class="string">'±'</span>;
+1309 sepStr = <span class="string">'   ¤   '</span>;
+1310 
+1311 <span class="comment">% Initialize the fields.</span>
+1312 fields = {
+1313     <span class="string">'all'</span>
+1314     <span class="string">'abs'</span>
+1315     <span class="string">'pos'</span>
+1316     <span class="string">'neg'</span>};
+1317 
+1318 <span class="comment">% Is the feature signed?</span>
+1319 <span class="keyword">if</span> ~isnan(worm.isSigned) &amp;&amp; worm.isSigned
+1320     endI = 4;
+1321 <span class="keyword">else</span>
+1322     endI = 1;
+1323 <span class="keyword">end</span>
+1324 
+1325 <span class="comment">% Allocate memory.</span>
+1326 str = cell(endI + 1, 1);
+1327 sigs = nan(endI, 1);
+1328 
+1329 <span class="comment">% % Show the names.</span>
+1330 <span class="comment">% str{1} = wormName;</span>
+1331 <span class="comment">% if ~isempty(controlName)</span>
+1332 <span class="comment">%     str{1} = [str{1} ' [' controlName ']'];</span>
+1333 <span class="comment">% end</span>
+1334 
+1335 <span class="comment">% Show the worm samples.</span>
+1336 <span class="comment">%str{1} = [str{1} sepStr 'WORMS=' num2str(worm.sets.samples, '%.0G')];</span>
+1337 <span class="keyword">if</span> isnan(worm.sets.samples)
+1338     wormsStr = <span class="string">'0'</span>;
+1339 <span class="keyword">else</span>
+1340     wormsStr = num2str(worm.sets.samples, <span class="string">'%.3G'</span>);
+1341 <span class="keyword">end</span>
+1342 str{1} = [<span class="string">'WORMS = '</span> wormsStr];
+1343 
+1344 <span class="comment">% Show the control samples.</span>
+1345 <span class="keyword">if</span> ~isempty(control)
+1346     <span class="keyword">if</span> isnan(control.sets.samples)
+1347         controlsStr = <span class="string">'0'</span>;
+1348     <span class="keyword">else</span>
+1349         controlsStr = num2str(control.sets.samples, <span class="string">'%.3G'</span>);
+1350     <span class="keyword">end</span>
+1351     str{1} = [str{1} <span class="string">'   ['</span> controlsStr <span class="string">']'</span>];
+1352 <span class="keyword">end</span>
+1353 
+1354 <span class="comment">% Show the total worm samples.</span>
+1355 <span class="keyword">if</span> isnan(worm.allData.samples)
+1356     wormsTotalStr = <span class="string">'0'</span>;
+1357 <span class="keyword">else</span>
+1358     wormsTotalStr = num2str(worm.allData.samples, <span class="string">'%.3G'</span>);
+1359 <span class="keyword">end</span>
+1360 str{1} = [str{1} sepStr <span class="string">'SAMPLES = '</span> wormsTotalStr];
+1361 
+1362 <span class="comment">% Show the total control samples.</span>
+1363 <span class="keyword">if</span> ~isempty(control)
+1364     <span class="keyword">if</span> isnan(control.allData.samples)
+1365         controlsTotalStr = <span class="string">'0'</span>;
+1366     <span class="keyword">else</span>
+1367         controlsTotalStr = num2str(control.allData.samples, <span class="string">'%.3G'</span>);
+1368     <span class="keyword">end</span>
+1369     str{1} = [str{1} <span class="string">'   ['</span> controlsTotalStr <span class="string">']'</span>];
+1370 <span class="keyword">end</span>
+1371 
+1372 <span class="comment">% Determine the square root of the sample sets.</span>
+1373 wormSqrt = sqrt(worm.sets.samples);
+1374 <span class="keyword">if</span> ~isempty(control)
+1375     controlSqrt = sqrt(control.sets.samples);
+1376 <span class="keyword">end</span>
+1377 
+1378 <span class="comment">% Convert the statistics to strings.</span>
+1379 <span class="keyword">for</span> i = 1:endI
+1380     
+1381     <span class="comment">% Determine the inequality between experiment and control.</span>
+1382     wormMean = worm.sets.mean.(fields{i});
+1383     eqStr = <span class="string">'   '</span>;
+1384     <span class="keyword">if</span> ~isempty(control)
+1385         controlMean = control.sets.mean.(fields{i});
+1386         <span class="keyword">if</span> wormMean &gt; controlMean
+1387             <span class="comment">%eqStr = ' &gt; ';</span>
+1388             eqStr = <span class="string">' &gt;&gt;&gt; '</span>;
+1389         <span class="keyword">elseif</span> wormMean &lt; controlMean
+1390             <span class="comment">%eqStr = ' &lt; ';</span>
+1391             eqStr = <span class="string">' &lt;&lt;&lt; '</span>;
+1392         <span class="keyword">end</span>
+1393     <span class="keyword">end</span>
+1394     
+1395     <span class="comment">% Don't show the inequality between experiment and control.</span>
+1396     sigStr = [];
+1397     <span class="keyword">if</span> isempty(sig)
+1398         eqStr = <span class="string">'   '</span>;
+1399         
+1400     <span class="comment">% Determine the significance.</span>
+1401     <span class="keyword">else</span>
+1402         k = sigI + i - 1;
+1403         sigs(i) = sig.q(k);
+1404         
+1405         <span class="comment">% The significance was not measured.</span>
+1406         <span class="keyword">if</span> isnan(sigs(i))
+1407             eqStr = <span class="string">'   '</span>;
+1408             
+1409         <span class="comment">% Show the significance.</span>
+1410         <span class="keyword">else</span>
+1411             
+1412 <span class="comment">%             % Determine the power.</span>
+1413 <span class="comment">%             if isnan(sig.power(k))</span>
+1414 <span class="comment">%                 betaStr = '1';</span>
+1415 <span class="comment">%             else</span>
+1416 <span class="comment">%                 betaStr = num2str(1 - sig.power(k), '%.2G');</span>
+1417 <span class="comment">%             end</span>
+1418             
+1419             <span class="comment">% Show the significance.</span>
+1420             sigStr = [sepStr <span class="string">'(p='</span> num2str(sig.p(k), <span class="string">'%.2G'</span>) <span class="keyword">...</span>
+1421                 <span class="string">', q='</span> num2str(sig.q(k), <span class="string">'%.2G'</span>)];
+1422 <span class="comment">%                 ', \beta=' betaStr];</span>
+1423             sigStr = [sigStr <span class="string">')   '</span> <a href="p2stars.html" class="code" title="function stars = p2stars(p)">p2stars</a>(sigs(i))];
+1424             
+1425             <span class="comment">% Don't show the inequality between experiment and control.</span>
+1426             <span class="keyword">if</span> sigs(i) &gt; 0.05
+1427                 eqStr = <span class="string">'   '</span>;
+1428             <span class="keyword">end</span>
+1429         <span class="keyword">end</span>
+1430     <span class="keyword">end</span>
+1431     
+1432     <span class="comment">% Determine the separator string.</span>
+1433     preStr = [];
+1434 <span class="comment">%     if ~mod(i, 2)</span>
+1435 <span class="comment">%         preStr = sepStr;</span>
+1436 <span class="comment">%     end</span>
+1437     
+1438     <span class="comment">% Show the worm statistics.</span>
+1439     <span class="keyword">if</span> isnan(wormMean)
+1440         dataStr = <span class="string">'NO DATA'</span>;
+1441     <span class="keyword">else</span>
+1442         meanStr = num2str(wormMean, <span class="string">'%.3G'</span>);
+1443         semStr = num2str(worm.sets.stdDev.(fields{i}) / wormSqrt, <span class="string">'%.3G'</span>);
+1444         dataStr = [meanStr semChar semStr];
+1445     <span class="keyword">end</span>
+1446 <span class="comment">%     j = floor((i + 3) / 2);</span>
+1447     j = i + 1;
+1448     str{j} = [str{j} preStr upper(fields{i}) <span class="string">' = '</span> dataStr];
+1449     
+1450     <span class="comment">% Show the control statistics.</span>
+1451     <span class="keyword">if</span> ~isempty(control)
+1452         <span class="keyword">if</span> isnan(controlMean)
+1453             dataStr = <span class="string">'NO DATA'</span>;
+1454         <span class="keyword">else</span>
+1455             meanStr = num2str(controlMean, <span class="string">'%.3G'</span>);
+1456             semStr = num2str(control.sets.stdDev.(fields{i}) / <span class="keyword">...</span>
+1457                 controlSqrt, <span class="string">'%.3G'</span>);
+1458             dataStr = [meanStr semChar semStr];
+1459         <span class="keyword">end</span>
+1460         str{j} = [str{j} eqStr <span class="string">'['</span> dataStr <span class="string">']'</span>];
+1461         
+1462     <span class="keyword">end</span>
+1463     
+1464     <span class="comment">% Show the significance.</span>
+1465     <span class="keyword">if</span> sigs(i) &gt; 0.05
+1466         str{j} = [str{j} sigStr];
+1467     <span class="keyword">else</span>
+1468         str{j} = [<span class="string">'\bf'</span> str{j} sigStr <span class="string">'\rm'</span>];
+1469     <span class="keyword">end</span>
+1470 <span class="keyword">end</span>
+1471 <span class="keyword">end</span>
+1472 
+1473 
+1474 
+1475 <span class="comment">%% Convert the event statistics to strings.</span>
+1476 <a name="_sub10" href="#_subfunctions" class="code">function [str sigs] = eventStats2strs(worms, isWormUsed, </a><span class="keyword">...</span>
+1477     controls, isControlUsed, sig, sigI)
+1478 
+1479 <span class="comment">% Initialize special ascii symbols.</span>
+1480 semChar = <span class="string">'±'</span>;
+1481 sepStr = <span class="string">'   ¤   '</span>;
+1482 
+1483 <span class="comment">% Initialize the names.</span>
+1484 names = {
+1485     <span class="string">'FREQ'</span>
+1486     <span class="string">'TIME'</span>
+1487     <span class="string">'DIST'</span>};
+1488 
+1489 <span class="comment">% Allocate memory.</span>
+1490 str = cell(length(worms) + 1, 1);
+1491 sigs = nan(length(worms), 1);
+1492 
+1493 <span class="comment">% % Show the names.</span>
+1494 <span class="comment">% str{1} = wormName;</span>
+1495 <span class="comment">% if ~isempty(controlName)</span>
+1496 <span class="comment">%     str{1} = [str{1} ' [' controlName ']'];</span>
+1497 <span class="comment">% end</span>
+1498 
+1499 <span class="comment">% Show the worm samples.</span>
+1500 <span class="comment">%str{1} = [str{1} sepStr 'WORMS=' num2str(wormHist.sets.samples, '%.0G')];</span>
+1501 wormSamples = worms(1).samples;
+1502 <span class="keyword">if</span> ~isempty(isWormUsed)
+1503     wormSamples = sum(isWormUsed);
+1504 <span class="keyword">end</span>
+1505 str{1} = [<span class="string">'WORMS = '</span> num2str(wormSamples, <span class="string">'%.3G'</span>)];
+1506 
+1507 <span class="comment">% Show the control samples.</span>
+1508 <span class="keyword">if</span> ~isempty(controls)
+1509     controlSamples = controls(1).samples;
+1510     <span class="keyword">if</span> ~isempty(isControlUsed)
+1511         controlSamples = sum(isControlUsed);
+1512     <span class="keyword">end</span>
+1513     str{1} = [str{1} <span class="string">'   ['</span> num2str(controlSamples, <span class="string">'%.3G'</span>) <span class="string">']'</span>];
+1514 <span class="keyword">end</span>
+1515 
+1516 <span class="comment">% Determine the square root of the sample sets.</span>
+1517 wormSqrt = sqrt(wormSamples);
+1518 <span class="keyword">if</span> ~isempty(controls)
+1519     controlSqrt = sqrt(controlSamples);
+1520 <span class="keyword">end</span>
+1521 
+1522 <span class="comment">% Convert the statistics to strings.</span>
+1523 <span class="keyword">for</span> i = 1:length(worms)
+1524     
+1525     <span class="comment">% Filter the worm data.</span>
+1526     wormData = worms(i).data;
+1527     <span class="keyword">if</span> ~isempty(isWormUsed)
+1528         wormData = wormData(isWormUsed);
+1529     <span class="keyword">end</span>
+1530     
+1531     <span class="comment">% Filter the control data.</span>
+1532     <span class="keyword">if</span> ~isempty(controls)
+1533         controlData = controls(i).data;
+1534         <span class="keyword">if</span> ~isempty(isControlUsed)
+1535             controlData = controlData(isControlUsed);
+1536         <span class="keyword">end</span>
+1537     <span class="keyword">end</span>
+1538     
+1539     <span class="comment">% Determine the inequality between experiment and control.</span>
+1540     wormMean = mean(wormData);
+1541     eqStr = <span class="string">'   '</span>;
+1542     <span class="keyword">if</span> ~isempty(controls)
+1543         controlMean = mean(controlData);
+1544         <span class="keyword">if</span> wormMean &gt; controlMean
+1545             <span class="comment">%eqStr = ' &gt; ';</span>
+1546             eqStr = <span class="string">' &gt;&gt;&gt; '</span>;
+1547         <span class="keyword">elseif</span> wormMean &lt; controlMean
+1548             <span class="comment">%eqStr = ' &lt; ';</span>
+1549             eqStr = <span class="string">' &lt;&lt;&lt; '</span>;
+1550         <span class="keyword">end</span>
+1551     <span class="keyword">end</span>
+1552     
+1553     <span class="comment">% Determine the separator string.</span>
+1554     preStr = [];
+1555 <span class="comment">%     if ~mod(i, 2)</span>
+1556 <span class="comment">%         preStr = sepStr;</span>
+1557 <span class="comment">%     end</span>
+1558 
+1559     <span class="comment">% Show the data name.</span>
+1560     j = i + 1;
+1561     str{j} = [str{j} preStr upper(names{i}) <span class="string">' = '</span> ];
+1562     
+1563     <span class="comment">% No data.</span>
+1564     <span class="keyword">if</span> isnan(wormMean) &amp;&amp; (isempty(controls) || isnan(controlMean))
+1565         str{j} = [str{j} <span class="string">'NO DATA'</span>];
+1566         sigs(i) = NaN;
+1567         <span class="keyword">continue</span>;
+1568     <span class="keyword">end</span>
+1569 
+1570     <span class="comment">% Don't show the inequality between experiment and control.</span>
+1571     sigStr = [];
+1572     <span class="keyword">if</span> isempty(sig)
+1573         eqStr = <span class="string">'   '</span>;
+1574         
+1575     <span class="comment">% Determine the significance.</span>
+1576     <span class="keyword">else</span>
+1577         k = sigI + i - 1;
+1578         sigs(i) = sig.q(k);
+1579         
+1580         <span class="comment">% The significance was not measured.</span>
+1581         <span class="keyword">if</span> isnan(sigs(i))
+1582             eqStr = <span class="string">'   '</span>;
+1583             
+1584         <span class="comment">% Show the significance.</span>
+1585         <span class="keyword">else</span>
+1586 <span class="comment">%             % Determine the power.</span>
+1587 <span class="comment">%             if isnan(sig.power(k))</span>
+1588 <span class="comment">%                 betaStr = '1';</span>
+1589 <span class="comment">%             else</span>
+1590 <span class="comment">%                 betaStr = num2str(1 - sig.power(k), '%.2G');</span>
+1591 <span class="comment">%             end</span>
+1592             
+1593             <span class="comment">% Show the significance.</span>
+1594             sigStr = [sepStr <span class="string">'(p='</span> num2str(sig.p(k), <span class="string">'%.2G'</span>) <span class="keyword">...</span>
+1595                 <span class="string">', q='</span> num2str(sig.q(k), <span class="string">'%.2G'</span>)];
+1596 <span class="comment">%                 ', \beta=' betaStr];</span>
+1597             sigStr = [sigStr <span class="string">')   '</span> <a href="p2stars.html" class="code" title="function stars = p2stars(p)">p2stars</a>(sigs(i))];
+1598             
+1599             <span class="comment">% Don't show the inequality between experiment and control.</span>
+1600             <span class="keyword">if</span> sigs(i) &gt; 0.05
+1601                 eqStr = <span class="string">'   '</span>;
+1602             <span class="keyword">end</span>
+1603         <span class="keyword">end</span>
+1604     <span class="keyword">end</span>
+1605     
+1606     <span class="comment">% Compute the worm statistics.</span>
+1607     sufStr = [];
+1608     wormSEM = std(wormData) / wormSqrt;
+1609     <span class="keyword">if</span> i &gt; 1
+1610         wormMean  = wormMean * 100;
+1611         wormSEM = wormSEM * 100;
+1612         sufStr = <span class="string">'%'</span>;
+1613     <span class="keyword">end</span>
+1614     
+1615     <span class="comment">% Show the worm statistics.</span>
+1616     <span class="keyword">if</span> isnan(wormMean)
+1617         dataStr = <span class="string">'NO DATA'</span>;
+1618     <span class="keyword">else</span>
+1619         meanStr = num2str(wormMean, <span class="string">'%.3G'</span>);
+1620         semStr = num2str(wormSEM, <span class="string">'%.3G'</span>);
+1621         dataStr = [meanStr semChar semStr sufStr];
+1622     <span class="keyword">end</span>
+1623     str{j} = [str{j} dataStr];
+1624     
+1625     <span class="comment">% Show the control statistics.</span>
+1626     <span class="keyword">if</span> ~isempty(controls)
+1627         
+1628         <span class="comment">% Compute the control statistics.</span>
+1629         controlSEM =  std(controlData) / controlSqrt;
+1630         <span class="keyword">if</span> i &gt; 1
+1631             controlMean  = controlMean * 100;
+1632             controlSEM = controlSEM * 100;
+1633         <span class="keyword">end</span>
+1634         
+1635         <span class="comment">% Show the control statistics.</span>
+1636         <span class="keyword">if</span> isnan(controlMean)
+1637             dataStr = <span class="string">'NO DATA'</span>;
+1638         <span class="keyword">else</span>
+1639             meanStr = num2str(controlMean, <span class="string">'%.3G'</span>);
+1640             semStr = num2str(controlSEM, <span class="string">'%.3G'</span>);
+1641             dataStr = [meanStr semChar semStr sufStr];
+1642         <span class="keyword">end</span>
+1643         str{j} = [str{j} eqStr <span class="string">'['</span> dataStr <span class="string">']'</span>];
+1644     <span class="keyword">end</span>
+1645     
+1646     <span class="comment">% Show the significance.</span>
+1647     <span class="keyword">if</span> sigs(i) &gt; 0.05
+1648         str{j} = [str{j} sigStr];
+1649     <span class="keyword">else</span>
+1650         str{j} = [<span class="string">'\bf'</span> str{j} sigStr <span class="string">'\rm'</span>];
+1651     <span class="keyword">end</span>
+1652 <span class="keyword">end</span>
+1653 <span class="keyword">end</span>
+1654 
+1655 
+1656 
+1657 <span class="comment">%% Convert information to a page title.</span>
+1658 <a name="_sub11" href="#_subfunctions" class="code">function str = info2pageTitle(wormName, controlName, featureI, </a><span class="keyword">...</span>
+1659     featureNames, dataInfo)
+1660 
+1661 <span class="comment">% Add the names.</span>
+1662 str = wormName;
+1663 <span class="keyword">if</span> ~isempty(controlName)
+1664     str = [<span class="string">'\it'</span> str <span class="string">' vs. '</span> controlName <span class="string">' \rm'</span>];
+1665 <span class="keyword">end</span>
+1666 <span class="comment">%str = [str ' &amp;bull; '];</span>
+1667 str = [str <span class="string">'   ¤   \bf'</span>];
+1668 
+1669 <span class="comment">% Add the feature categories.</span>
+1670 categories = unique([dataInfo(featureI).category]);
+1671 <span class="keyword">for</span> i = 1:length(categories)
+1672     
+1673     <span class="comment">% Add a separator.</span>
+1674     <span class="keyword">if</span> i &gt; 1
+1675         str = [str <span class="string">', '</span>];
+1676     <span class="keyword">end</span>
+1677     
+1678     <span class="comment">% Add the category.</span>
+1679     <span class="keyword">switch</span> categories(i)
+1680         <span class="keyword">case</span> <span class="string">'m'</span>
+1681             str  = [str <span class="string">'MORPHOLOGY'</span>];
+1682         <span class="keyword">case</span> <span class="string">'s'</span>
+1683             str  = [str <span class="string">'POSTURE'</span>];
+1684         <span class="keyword">case</span> <span class="string">'l'</span>
+1685             str  = [str <span class="string">'MOTION'</span>];
+1686         <span class="keyword">case</span> <span class="string">'p'</span>
+1687             str  = [str <span class="string">'PATH'</span>];
+1688     <span class="keyword">end</span>
+1689 <span class="keyword">end</span>
+1690 str = [str <span class="string">': '</span>];
+1691 
+1692 <span class="comment">% Add the features.</span>
+1693 <span class="keyword">for</span> i = 1:length(featureI)
+1694     
+1695     <span class="comment">% Add a separator.</span>
+1696     <span class="keyword">if</span> i &gt; 1
+1697         str = [str <span class="string">', '</span>];
+1698     <span class="keyword">end</span>
+1699     
+1700     <span class="comment">% Add the feature.</span>
+1701     str = [str featureNames{i}];
+1702 <span class="keyword">end</span>
+1703 
+1704 <span class="comment">% Pad the title.</span>
+1705 str = [str <span class="string">' '</span>];
+1706 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

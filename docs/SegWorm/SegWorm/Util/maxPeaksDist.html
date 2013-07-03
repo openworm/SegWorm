@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of maxPeaksDist</title>
+  <meta name="keywords" content="maxPeaksDist">
+  <meta name="description" content="MAXPEAKSDIST Find the maximum peaks in a vector. The peaks">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>maxPeaksDist
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>MAXPEAKSDIST Find the maximum peaks in a vector. The peaks</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [peaks indices] = maxPeaksDist(x, dist, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">MAXPEAKSDIST Find the maximum peaks in a vector. The peaks
+are separated by, at least, the given distance.
+
+   [PEAKS INDICES] = MAXPEAKSDIST(X, DIST)
+
+   [PEAKS INDICES] = MAXPEAKSDIST(X, DIST, CHAINCODELENGTHS)
+
+   Inputs:
+       x                - the vector of values
+       dist             - the minimum distance between peaks
+       chainCodeLengths - the chain-code length at each index;
+                          if empty, the array indices are used instead
+
+   Outputs:
+       peaks   - the maximum peaks
+       indices - the indices for the peaks
+
+   See also <a href="minPeaksDist.html" class="code" title="function [peaks indices] = minPeaksDist(x, dist, varargin)">MINPEAKSDIST</a>, COMPUTECHAINCODELENGTHS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Features/wormBends.html" class="code" title="function bends = wormBends(wormFile, varargin)">wormBends</a>	WORMBENDS Compute the temporal bending frequency at the nose, head,</li><li><a href="../../SegWorm/Worms/Features/wormKinks2.html" class="code" title="function [numKinks indices] = wormKinks2(worms, distance, varargin)">wormKinks2</a>	WORMKINKS Compute the kinks in a worm.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [peaks indices] = maxPeaksDist(x, dist, varargin)</a>
+0002 <span class="comment">%MAXPEAKSDIST Find the maximum peaks in a vector. The peaks</span>
+0003 <span class="comment">%are separated by, at least, the given distance.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   [PEAKS INDICES] = MAXPEAKSDIST(X, DIST)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   [PEAKS INDICES] = MAXPEAKSDIST(X, DIST, CHAINCODELENGTHS)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Inputs:</span>
+0010 <span class="comment">%       x                - the vector of values</span>
+0011 <span class="comment">%       dist             - the minimum distance between peaks</span>
+0012 <span class="comment">%       chainCodeLengths - the chain-code length at each index;</span>
+0013 <span class="comment">%                          if empty, the array indices are used instead</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Outputs:</span>
+0016 <span class="comment">%       peaks   - the maximum peaks</span>
+0017 <span class="comment">%       indices - the indices for the peaks</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   See also MINPEAKSDIST, COMPUTECHAINCODELENGTHS</span>
+0020 
+0021 <span class="comment">% Are there chain-code lengths?</span>
+0022 <span class="keyword">if</span> length(varargin) == 1
+0023     chainCodeLengths = varargin{1};
+0024 <span class="keyword">else</span>
+0025     chainCodeLengths = [];
+0026 <span class="keyword">end</span>
+0027 
+0028 <span class="comment">% Use the array indices for length.</span>
+0029 <span class="keyword">if</span> isempty(chainCodeLengths)
+0030     chainCodeLengths = 1:length(x);
+0031 <span class="keyword">end</span>
+0032 
+0033 <span class="comment">% Is the vector larger than the search window?</span>
+0034 winSize = 2 * dist + 1;
+0035 <span class="keyword">if</span> chainCodeLengths(end) &lt; winSize
+0036     [peaks indices] = max(x);
+0037     <span class="keyword">return</span>;
+0038 <span class="keyword">end</span>
+0039 
+0040 <span class="comment">% Initialize the peaks and indices.</span>
+0041 wins = ceil(length(x) / winSize);
+0042 peaks = zeros(wins, 1); <span class="comment">% pre-allocate memory</span>
+0043 indices = zeros(wins, 1); <span class="comment">% pre-allocate memory</span>
+0044 
+0045 <span class="comment">% Search for peaks.</span>
+0046 im = 0; <span class="comment">% the last maxima index</span>
+0047 ie = 0; <span class="comment">% the end index for the last maxima's search window</span>
+0048 ip = 1; <span class="comment">% the current, potential, max peak index</span>
+0049 p = x(ip); <span class="comment">% the current, potential, max peak value</span>
+0050 i = 2; <span class="comment">% the vector index</span>
+0051 j = 1; <span class="comment">% the recorded, maximal peaks index</span>
+0052 <span class="keyword">while</span> i &lt;= length(x)
+0053     
+0054     <span class="comment">% Found a potential peak.</span>
+0055     <span class="keyword">if</span> (isnan(p) &amp;&amp; ~isnan(x(i))) || x(i) &gt; p
+0056         ip = i;
+0057         p = x(i);
+0058     <span class="keyword">end</span>
+0059     
+0060     <span class="comment">% Test the potential peak.</span>
+0061     <span class="keyword">if</span> ~isnan(p) &amp;&amp; (chainCodeLengths(i) - chainCodeLengths(ip) &gt;= dist <span class="keyword">...</span>
+0062             || i == length(x))
+0063         
+0064         <span class="comment">% Check the untested values next to the previous maxima.</span>
+0065         <span class="keyword">if</span> im &gt; 0 &amp;&amp; chainCodeLengths(ip) - chainCodeLengths(im) &lt;= 2 * dist
+0066             
+0067             <span class="comment">% Check the untested values next to the previous maxima.</span>
+0068             isMax = true;
+0069             k = ie;
+0070             <span class="keyword">while</span> isMax &amp;&amp; k &gt; 0 &amp;&amp; <span class="keyword">...</span>
+0071                     chainCodeLengths(ip) - chainCodeLengths(k) &lt; dist
+0072                 
+0073                 <span class="comment">% Is the previous peak larger?</span>
+0074                 <span class="keyword">if</span> x(ip) &lt;= x(k)
+0075                     isMax = false;
+0076                 <span class="keyword">end</span>
+0077                 
+0078                 <span class="comment">% Advance.</span>
+0079                 k = k - 1;
+0080             <span class="keyword">end</span>
+0081             
+0082             <span class="comment">% Record the peak.</span>
+0083             <span class="keyword">if</span> isMax
+0084                 indices(j) = ip;
+0085                 peaks(j) = p;
+0086                 j = j + 1;
+0087             <span class="keyword">end</span>
+0088             
+0089             <span class="comment">% Record the maxima.</span>
+0090             im = ip;
+0091             ie = i;
+0092             ip = i;
+0093             p = x(ip);
+0094             
+0095         <span class="comment">% Record the peak.</span>
+0096         <span class="keyword">else</span>
+0097             indices(j) = ip;
+0098             peaks(j) = p;
+0099             j = j + 1;
+0100             im = ip;
+0101             ie = i;
+0102             ip = i;
+0103             p = x(ip);
+0104         <span class="keyword">end</span>
+0105     <span class="keyword">end</span>
+0106         
+0107     <span class="comment">% Advance.</span>
+0108     i = i + 1;
+0109 <span class="keyword">end</span>
+0110 
+0111 <span class="comment">% Collapse any extra memory.</span>
+0112 indices(j:end) = [];
+0113 peaks(j:end) = [];
+0114 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

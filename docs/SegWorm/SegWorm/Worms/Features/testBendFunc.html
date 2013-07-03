@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of testBendFunc</title>
+  <meta name="keywords" content="testBendFunc">
+  <meta name="description" content="TESTBENDFUNC Test worm2func as well as the values used in wormBends.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>testBendFunc
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>TESTBENDFUNC Test worm2func as well as the values used in wormBends.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function bends = testBendFunc(verbose) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">TESTBENDFUNC Test worm2func as well as the values used in wormBends.
+
+   This function serves as an example and a test.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Util/worm2func.html" class="code" title="function data = worm2func(func, state, wormFile, startFrame, endFrame,backScale, frontScale, varargin)">worm2func</a>	WORM2FUNC Apply a function to worm data (normalized within blocks).</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [bends state] = bendFunc(dataInfo, state)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function bends = testBendFunc(verbose)</a>
+0002 <span class="comment">%TESTBENDFUNC Test worm2func as well as the values used in wormBends.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   This function serves as an example and a test.</span>
+0005 
+0006 state = [];
+0007 data = <a href="../../../SegWorm/Worms/Util/worm2func.html" class="code" title="function data = worm2func(func, state, wormFile, startFrame, endFrame,backScale, frontScale, varargin)">worm2func</a>(@<a href="#_sub1" class="code" title="subfunction [bends state] = bendFunc(dataInfo, state)">bendFunc</a>, state, <span class="string">'segNormInfo.mat'</span>, [], [], 0, 0, false);
+0008 
+0009 bendData = [];
+0010 <span class="keyword">for</span> i = 1:length(data)
+0011     bendData = cat(1, bendData, data{i});
+0012 <span class="keyword">end</span>
+0013 
+0014 bends = struct( <span class="keyword">...</span>
+0015     <span class="string">'nose'</span>, [bendData.noseBends], <span class="keyword">...</span>
+0016     <span class="string">'head'</span>, [bendData.headBends], <span class="keyword">...</span>
+0017     <span class="string">'middle'</span>, [bendData.midBends], <span class="keyword">...</span>
+0018     <span class="string">'tail'</span>, [bendData.tailBends]);
+0019 
+0020 <span class="keyword">if</span> (verbose)
+0021     figure;
+0022     hold on;
+0023     plot(bends.nose, <span class="string">'k'</span>);
+0024     figure;
+0025     hold on;
+0026     plot(bends.head, <span class="string">'r'</span>);
+0027     plot(bends.middle, <span class="string">'g'</span>);
+0028     plot(bends.tail, <span class="string">'b'</span>);
+0029 <span class="keyword">end</span>
+0030 <span class="keyword">end</span>
+0031 
+0032 <span class="comment">% Compute the bend angles at the nose, head, midbody, and tail.</span>
+0033 <a name="_sub1" href="#_subfunctions" class="code">function [bends state] = bendFunc(dataInfo, state)</a>
+0034 
+0035 <span class="comment">% Empirically I've found the following values achieve good signal.</span>
+0036 noseSkeletonPoints = fliplr(1:4);
+0037 headSkeletonPoints = fliplr(5:8);
+0038 headBendPoints = 6:10;
+0039 midBendPoints = 23:27;
+0040 tailBendPoints = 40:44;
+0041 
+0042 <span class="comment">% Only use the data we need.</span>
+0043 data = dataInfo.data;
+0044 noseSkeletons = data{4}(noseSkeletonPoints,:,:);
+0045 headSkeletons = data{4}(headSkeletonPoints,:,:);
+0046 headBends = mean(data{5}(headBendPoints,:), 1);
+0047 midBends = mean(data{5}(midBendPoints,:), 1);
+0048 tailBends = mean(data{5}(tailBendPoints,:), 1);
+0049 
+0050 <span class="comment">% Interpolate the missing data.</span>
+0051 <span class="comment">%interpType = 'cubic';</span>
+0052 <span class="comment">%interpType = 'spline';</span>
+0053 interpType = <span class="string">'linear'</span>;
+0054 isData = data{1} == <span class="string">'s'</span>;
+0055 dataI = find(isData);
+0056 interpI = find(~isData);
+0057 <span class="keyword">if</span> ~isempty(interpI) &amp;&amp; length(dataI) &gt; 1
+0058     <span class="keyword">for</span> i = 1:length(noseSkeletonPoints)
+0059         noseSkeletons(i,1,interpI) = <span class="keyword">...</span>
+0060             interp1(dataI, squeeze(noseSkeletons(i,1,dataI)), interpI, <span class="keyword">...</span>
+0061             interpType, NaN);
+0062         noseSkeletons(i,2,interpI) = <span class="keyword">...</span>
+0063             interp1(dataI, squeeze(noseSkeletons(i,2,dataI)), interpI, <span class="keyword">...</span>
+0064             interpType, NaN);
+0065     <span class="keyword">end</span>
+0066     <span class="keyword">for</span> i = 1:length(headSkeletonPoints)
+0067         headSkeletons(i,1,interpI) = <span class="keyword">...</span>
+0068             interp1(dataI, squeeze(headSkeletons(i,1,dataI)), interpI, <span class="keyword">...</span>
+0069             interpType, NaN);
+0070         headSkeletons(i,2,interpI) = <span class="keyword">...</span>
+0071             interp1(dataI, squeeze(headSkeletons(i,2,dataI)), interpI, <span class="keyword">...</span>
+0072             interpType, NaN);
+0073     <span class="keyword">end</span>
+0074     headBends(interpI) = <span class="keyword">...</span>
+0075         interp1(dataI, headBends(dataI), interpI, interpType, NaN);
+0076     midBends(interpI) = <span class="keyword">...</span>
+0077         interp1(dataI, midBends(dataI), interpI, interpType, NaN);
+0078     tailBends(interpI) = <span class="keyword">...</span>
+0079         interp1(dataI, tailBends(dataI), interpI, interpType, NaN);
+0080 <span class="keyword">end</span>
+0081 
+0082 <span class="comment">% Compute the nose bend angles.</span>
+0083 noseDiffs = diff(noseSkeletons, 1, 1);
+0084 <span class="keyword">if</span> size(noseDiffs, 1) &gt; 1
+0085     noseDiffs = mean(noseDiffs, 1);
+0086 <span class="keyword">end</span>
+0087 noseAngles = squeeze(atan2(noseDiffs(:,2,:), noseDiffs(:,1,:)));
+0088 headDiffs = diff(headSkeletons, 1, 1);
+0089 <span class="keyword">if</span> size(headDiffs, 1) &gt; 1
+0090     headDiffs = mean(headDiffs, 1);
+0091 <span class="keyword">end</span>
+0092 headAngles = squeeze(atan2(headDiffs(:,2,:), headDiffs(:,1,:)));
+0093 noseBends = (noseAngles - headAngles)';
+0094 wrap = noseBends &gt; pi;
+0095 noseBends(wrap) = noseBends(wrap) - 2 * pi;
+0096 wrap = noseBends &lt; -pi;
+0097 noseBends(wrap) = noseBends(wrap) + 2 * pi;
+0098 noseBends = noseBends * 180 / pi;
+0099 
+0100 <span class="comment">% Show the data.</span>
+0101 <span class="keyword">if</span> 0
+0102 <span class="keyword">for</span> i = 1:50:size(data{4},3)
+0103     figure;
+0104     hold on;
+0105     plot(squeeze(data{4}(:,1,i)), squeeze(data{4}(:,2,i)), <span class="string">'k.'</span>);
+0106     plot(squeeze(noseSkeletons(:,1,i)), squeeze(noseSkeletons(:,2,i)), <span class="keyword">...</span>
+0107         <span class="string">'r.'</span>);
+0108     plot(squeeze(headSkeletons(:,1,i)), squeeze(headSkeletons(:,2,i)), <span class="keyword">...</span>
+0109         <span class="string">'g.'</span>);
+0110     axis image;
+0111 <span class="keyword">end</span>
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">% Organize the data.</span>
+0115 bends = struct( <span class="keyword">...</span>
+0116     <span class="string">'noseBends'</span>, noseBends, <span class="keyword">...</span>
+0117     <span class="string">'headBends'</span>, headBends, <span class="keyword">...</span>
+0118     <span class="string">'midBends'</span>, midBends, <span class="keyword">...</span>
+0119     <span class="string">'tailBends'</span>, tailBends);
+0120 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

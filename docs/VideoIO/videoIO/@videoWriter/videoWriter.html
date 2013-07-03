@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoWriter</title>
+  <meta name="keywords" content="videoWriter">
+  <meta name="description" content="videoWriter class constructor">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html @videoWriter -->
+<h1>videoWriter
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>videoWriter class constructor</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function vw = videoWriter(url, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> videoWriter class constructor
+   Creates a object that writes video files.  We use a plugin 
+   architecture in the backend to do the actual writing.  For example, 
+   on Windows, DirectShow will typically be used and on Linux, the 
+   ffmpeg library is often used.
+
+   vw = videoWriter(filenameEtc)
+     Opens the given FILENAMEETC file for writing using the default
+     plugin.  We use &quot;filenameEtc&quot; here because some plugins take
+     filenames (e.g. 'DirectShow', 'ffmpegPopen2', 'ffmpegDirect'), and
+     in the future, some may take filename masks and/or in-memory data
+     structure specifications.
+
+     On Windows, the 'DirectShow' plugin is used by default and on
+     Linux, 'ffmpegPopen2' is used by default.  
+
+   vw = videoWriter(filenameEtc, ..., 'plugin',pluginName, ...)
+   vw = videoWriter(filenameEtc,pluginName, ...)
+     Uses the manually-specified plugin instead of the default plugin.
+     Note: plugin names are case-sensitive.
+
+     Available plugins include:
+       'DirectShow': For writing AVI files on Microsoft Windows.  This
+         plugin writes OpenDML or AVI 2.0 files that can be bigger than
+         2GB, it can use VfW, DirectShow, and DMO encoders, but it
+         doesn't configure them quite as nicely as the 'VfW' plugin.
+         Type &quot;help videoWriter_DirectShow&quot; for details.  
+
+       'VfW': For writing AVI files on Microsoft Windows.  This plugin
+         only supports AVI 1.0 files (max size is 2GB), it can only use
+         VfW encoders, and it has good ways of configuring those
+         encoders.  Type &quot;help videoWriter_VfW&quot; for details.
+
+       'ffmpegPopen2': For safely writing video files on GNU/Linux using
+         the ffmpeg libraries (libavcodec, libavformat, etc.).
+         Type &quot;help videoWriter_ffmpegPopen2&quot; for details.
+
+       'ffmpegDirect': A slightly lower-overhead variant of the
+         'ffmpegPopen2' plugin.
+         Type &quot;help videoWriter_ffmpegDirect&quot; for details.
+
+   vr = videoWriter(..., param,arg,...)
+     Allows the user to pass extra configuration arguments to plugin.
+     Parameter names are case-insensitive as a convenience.  The allowed
+     parameter names are plugin-specific and are documented by each
+     plugin.
+
+     For example, to see the list of allowable parameter-value pairs
+     when using the 'DirectShow' plugin, type 
+     &quot;help videoWriter_DirectShow&quot; without quotes at the Matlab prompt.  
+
+  codecs = videoWriter([], 'codecs')
+  codecs = videoWriter([], 'codecs', pluginName)
+  codecs = videoWriter([], 'codecs', 'plugin',pluginName)
+    Queries the backend for a list of the valid codecs that may be used
+    with the 'codec' plugin parameter.  
+ 
+
+ IMPORTANT DETAILS:
+   In our current implementation, frame numbers are 0-indexed.  That
+   means that the first frame is frame 0, not frame 1.  
+
+   Once you are done using the videoWriter object, make sure you call
+   CLOSE so that any system resources allocated by the plugin may be
+   released and so that all data is actually written out.  Here's a
+   simple example of how you might use videoWriter to create a video of
+   continually adding more motion blur to an image...
+
+ EXAMPLE:
+   % Construct a videoWriter object
+   vw = videoWriter('writertest.avi', ...
+                    'width',320, 'height',240, 'codec','xvid');
+   img = imread('peppers.png');
+   h = fspecial('motion',10,5);
+   for i=1:100
+     addframe(vw, img);
+     img = imfilter(img, h);
+   end
+   vw=close(vw);
+
+ SEE ALSO:
+   buildVideoIO
+   videoIODir
+   videoReader
+
+   videoWriter_DirectShow
+   videoWriter_Vfw
+   videoWriter_ffmpegDirect
+   videoWriter_ffmpegPopen2
+
+   videoWriter/addframe
+   videoWriter/close
+   videoWriter/get
+
+   tests/videoWriterDemo
+
+Copyright (c) 2006 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>	pluginName = defaultVideoIOPlugin(ctor)</li><li><a href="../../videoIO/pvtVideoIO_mexName.html" class="code" title="function n = pvtVideoIO_mexName(ctor, plugin)">pvtVideoIO_mexName</a>	n = pvtVideoIO_mexName(ctor, plugin)</li><li><a href="../../videoIO/pvtVideoIO_normalizeFilename.html" class="code" title="function canonical = pvtVideoIO_normalizeFilename(raw)">pvtVideoIO_normalizeFilename</a>	canonical = pvtVideoIO_normalizeFilename(raw)</li><li><a href="../../videoIO/pvtVideoIO_parsePlugin.html" class="code" title="function [plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)">pvtVideoIO_parsePlugin</a>	[plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/tests/addFrameDemo.html" class="code" title="function addFrameDemo">addFrameDemo</a>	addFrameDemo</li><li><a href="../../videoIO/tests/longWriteTest.html" class="code" title="function longWriteTest(plugin, readerPlugin)">longWriteTest</a>	longWriteTests(plugin)</li><li><a href="../../videoIO/tests/resizeTest.html" class="code" title="function resizeTest(plugin)">resizeTest</a>	writeTests(plugin)</li><li><a href="../../videoIO/tests/testAll.html" class="code" title="">testAll</a>	testAll</li><li><a href="../../videoIO/tests/testBitRate.html" class="code" title="function testBitRate(varargin)">testBitRate</a>	testBitRate</li><li><a href="../../videoIO/tests/testGet.html" class="code" title="function testGet(plugin)">testGet</a>	testGet</li><li><a href="../../videoIO/tests/testGopSize.html" class="code" title="function testGopSize(varargin)">testGopSize</a>	testGopSize</li><li><a href="../../videoIO/tests/testQuality.html" class="code" title="function testQuality(varargin)">testQuality</a>	testQuality</li><li><a href="../../videoIO/tests/videoWriterDemo.html" class="code" title="">videoWriterDemo</a>	videoWriterDemo</li><li><a href="../../videoIO/tests/writeTests.html" class="code" title="function writeTests(plugin, readerPlugin)">writeTests</a>	writeTests(plugin)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function vw = videoWriter(url, varargin)</a>
+0002 <span class="comment">% videoWriter class constructor</span>
+0003 <span class="comment">%   Creates a object that writes video files.  We use a plugin</span>
+0004 <span class="comment">%   architecture in the backend to do the actual writing.  For example,</span>
+0005 <span class="comment">%   on Windows, DirectShow will typically be used and on Linux, the</span>
+0006 <span class="comment">%   ffmpeg library is often used.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   vw = videoWriter(filenameEtc)</span>
+0009 <span class="comment">%     Opens the given FILENAMEETC file for writing using the default</span>
+0010 <span class="comment">%     plugin.  We use &quot;filenameEtc&quot; here because some plugins take</span>
+0011 <span class="comment">%     filenames (e.g. 'DirectShow', 'ffmpegPopen2', 'ffmpegDirect'), and</span>
+0012 <span class="comment">%     in the future, some may take filename masks and/or in-memory data</span>
+0013 <span class="comment">%     structure specifications.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%     On Windows, the 'DirectShow' plugin is used by default and on</span>
+0016 <span class="comment">%     Linux, 'ffmpegPopen2' is used by default.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   vw = videoWriter(filenameEtc, ..., 'plugin',pluginName, ...)</span>
+0019 <span class="comment">%   vw = videoWriter(filenameEtc,pluginName, ...)</span>
+0020 <span class="comment">%     Uses the manually-specified plugin instead of the default plugin.</span>
+0021 <span class="comment">%     Note: plugin names are case-sensitive.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%     Available plugins include:</span>
+0024 <span class="comment">%       'DirectShow': For writing AVI files on Microsoft Windows.  This</span>
+0025 <span class="comment">%         plugin writes OpenDML or AVI 2.0 files that can be bigger than</span>
+0026 <span class="comment">%         2GB, it can use VfW, DirectShow, and DMO encoders, but it</span>
+0027 <span class="comment">%         doesn't configure them quite as nicely as the 'VfW' plugin.</span>
+0028 <span class="comment">%         Type &quot;help videoWriter_DirectShow&quot; for details.</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%       'VfW': For writing AVI files on Microsoft Windows.  This plugin</span>
+0031 <span class="comment">%         only supports AVI 1.0 files (max size is 2GB), it can only use</span>
+0032 <span class="comment">%         VfW encoders, and it has good ways of configuring those</span>
+0033 <span class="comment">%         encoders.  Type &quot;help videoWriter_VfW&quot; for details.</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%       'ffmpegPopen2': For safely writing video files on GNU/Linux using</span>
+0036 <span class="comment">%         the ffmpeg libraries (libavcodec, libavformat, etc.).</span>
+0037 <span class="comment">%         Type &quot;help videoWriter_ffmpegPopen2&quot; for details.</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%       'ffmpegDirect': A slightly lower-overhead variant of the</span>
+0040 <span class="comment">%         'ffmpegPopen2' plugin.</span>
+0041 <span class="comment">%         Type &quot;help videoWriter_ffmpegDirect&quot; for details.</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">%   vr = videoWriter(..., param,arg,...)</span>
+0044 <span class="comment">%     Allows the user to pass extra configuration arguments to plugin.</span>
+0045 <span class="comment">%     Parameter names are case-insensitive as a convenience.  The allowed</span>
+0046 <span class="comment">%     parameter names are plugin-specific and are documented by each</span>
+0047 <span class="comment">%     plugin.</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%     For example, to see the list of allowable parameter-value pairs</span>
+0050 <span class="comment">%     when using the 'DirectShow' plugin, type</span>
+0051 <span class="comment">%     &quot;help videoWriter_DirectShow&quot; without quotes at the Matlab prompt.</span>
+0052 <span class="comment">%</span>
+0053 <span class="comment">%  codecs = videoWriter([], 'codecs')</span>
+0054 <span class="comment">%  codecs = videoWriter([], 'codecs', pluginName)</span>
+0055 <span class="comment">%  codecs = videoWriter([], 'codecs', 'plugin',pluginName)</span>
+0056 <span class="comment">%    Queries the backend for a list of the valid codecs that may be used</span>
+0057 <span class="comment">%    with the 'codec' plugin parameter.</span>
+0058 <span class="comment">%</span>
+0059 <span class="comment">%</span>
+0060 <span class="comment">% IMPORTANT DETAILS:</span>
+0061 <span class="comment">%   In our current implementation, frame numbers are 0-indexed.  That</span>
+0062 <span class="comment">%   means that the first frame is frame 0, not frame 1.</span>
+0063 <span class="comment">%</span>
+0064 <span class="comment">%   Once you are done using the videoWriter object, make sure you call</span>
+0065 <span class="comment">%   CLOSE so that any system resources allocated by the plugin may be</span>
+0066 <span class="comment">%   released and so that all data is actually written out.  Here's a</span>
+0067 <span class="comment">%   simple example of how you might use videoWriter to create a video of</span>
+0068 <span class="comment">%   continually adding more motion blur to an image...</span>
+0069 <span class="comment">%</span>
+0070 <span class="comment">% EXAMPLE:</span>
+0071 <span class="comment">%   % Construct a videoWriter object</span>
+0072 <span class="comment">%   vw = videoWriter('writertest.avi', ...</span>
+0073 <span class="comment">%                    'width',320, 'height',240, 'codec','xvid');</span>
+0074 <span class="comment">%   img = imread('peppers.png');</span>
+0075 <span class="comment">%   h = fspecial('motion',10,5);</span>
+0076 <span class="comment">%   for i=1:100</span>
+0077 <span class="comment">%     addframe(vw, img);</span>
+0078 <span class="comment">%     img = imfilter(img, h);</span>
+0079 <span class="comment">%   end</span>
+0080 <span class="comment">%   vw=close(vw);</span>
+0081 <span class="comment">%</span>
+0082 <span class="comment">% SEE ALSO:</span>
+0083 <span class="comment">%   buildVideoIO</span>
+0084 <span class="comment">%   videoIODir</span>
+0085 <span class="comment">%   videoReader</span>
+0086 <span class="comment">%</span>
+0087 <span class="comment">%   videoWriter_DirectShow</span>
+0088 <span class="comment">%   videoWriter_Vfw</span>
+0089 <span class="comment">%   videoWriter_ffmpegDirect</span>
+0090 <span class="comment">%   videoWriter_ffmpegPopen2</span>
+0091 <span class="comment">%</span>
+0092 <span class="comment">%   videoWriter/addframe</span>
+0093 <span class="comment">%   videoWriter/close</span>
+0094 <span class="comment">%   videoWriter/get</span>
+0095 <span class="comment">%</span>
+0096 <span class="comment">%   tests/videoWriterDemo</span>
+0097 <span class="comment">%</span>
+0098 <span class="comment">%Copyright (c) 2006 Gerald Dalley</span>
+0099 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0100 <span class="comment">%when using this library on GNU/Linux).</span>
+0101 
+0102 <span class="keyword">if</span> isempty(url)
+0103   <span class="comment">% static method call</span>
+0104   staticMethod = varargin{1};
+0105   [plugin,methodArgs] = <a href="../../videoIO/pvtVideoIO_parsePlugin.html" class="code" title="function [plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)">pvtVideoIO_parsePlugin</a>(<span class="keyword">...</span>
+0106       {varargin{2:end}}, <a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>(mfilename));
+0107 
+0108   vw = feval(<a href="../../videoIO/pvtVideoIO_mexName.html" class="code" title="function n = pvtVideoIO_mexName(ctor, plugin)">pvtVideoIO_mexName</a>(mfilename, plugin), <span class="keyword">...</span>
+0109                                 staticMethod, int32(-1), methodArgs{:});
+0110 <span class="keyword">else</span>
+0111   <span class="comment">% constructor call</span>
+0112   [plugin,ctorArgs] = <span class="keyword">...</span>
+0113       <a href="../../videoIO/pvtVideoIO_parsePlugin.html" class="code" title="function [plugin,pluginArgs] = pvtVideoIO_parsePlugin(args, defaultPlugin)">pvtVideoIO_parsePlugin</a>(varargin, <a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>(mfilename));
+0114   
+0115   vw = struct(<span class="string">'plugin'</span>,<a href="../../videoIO/pvtVideoIO_mexName.html" class="code" title="function n = pvtVideoIO_mexName(ctor, plugin)">pvtVideoIO_mexName</a>(mfilename, plugin), <span class="keyword">...</span>
+0116               <span class="string">'handle'</span>,int32(-1), <span class="keyword">...</span>
+0117               <span class="string">'w'</span>,int32(-1), <span class="string">'h'</span>,int32(-1));
+0118   vw = class(vw, mfilename);
+0119   
+0120   canonicalUrl = <a href="../../videoIO/pvtVideoIO_normalizeFilename.html" class="code" title="function canonical = pvtVideoIO_normalizeFilename(raw)">pvtVideoIO_normalizeFilename</a>(url);
+0121     
+0122   strArgs = cell(size(ctorArgs));
+0123   <span class="keyword">for</span> i=1:numel(ctorArgs), strArgs{i} = num2str(ctorArgs{i}); <span class="keyword">end</span>
+0124   [vw.handle,vw.w,vw.h] = feval(vw.plugin, <span class="string">'open'</span>, vw.handle, <span class="keyword">...</span>
+0125                                 canonicalUrl, <span class="keyword">...</span>
+0126                                 strArgs{:});
+0127 <span class="keyword">end</span>
+0128</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

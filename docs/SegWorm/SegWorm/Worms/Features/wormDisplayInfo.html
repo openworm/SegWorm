@@ -1,0 +1,688 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormDisplayInfo</title>
+  <meta name="keywords" content="wormDisplayInfo">
+  <meta name="description" content="WORMDISPLAYINFO Get information for displaying the worm data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>wormDisplayInfo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMDISPLAYINFO Get information for displaying the worm data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function info = wormDisplayInfo() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMDISPLAYINFO Get information for displaying the worm data.
+
+   INFO = WORMDISPLAYINFO()
+
+   Output:
+       info - information for displaying the worm data; a structure
+              mirroring the worm features, where each heading has the
+              following subfields:
+
+              name       = a descriptive name
+              shortName  = a shortened name
+
+              And each feature has the following subfields:
+
+              resolution = the resolution for the histogram
+              isZeroBin  = is the histogram centered at zero?
+              isSigned   = is the data signed (+/-)?
+              name       = a descriptive feature name (for titles)
+              shortName  = a shortened feature name (for legends)
+              unit       = the feature's measurement unit (for labels)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>	SETSTRUCTFIELD Set a field in a structure.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Printing/plotWormStats.html" class="code" title="function plotWormStats(wormFile, worm2num, state, titleName, varargin)">plotWormStats</a>	PLOTWORMSTATS Plot the worm statistics.</li><li><a href="../../../SegWorm/Worms/Printing/worm2CSV.html" class="code" title="function filenames = worm2CSV(filename, wormInfo, worm, wormName, varargin)">worm2CSV</a>	WORM2CSV Convert worm features to a CSV file.</li><li><a href="../../../SegWorm/Worms/Printing/worm2TOCOntologyTIF.html" class="code" title="function [filename pages] = worm2TOCOntologyTIF(filename, worm, wormName,varargin)">worm2TOCOntologyTIF</a>	WORM2TOCONTOLOGYTIF Save worm details to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2detailsPDF2.html" class="code" title="function [filename pages] = worm2detailsPDF(filename, worm, wormName,varargin)">worm2detailsPDF2</a>	WORM2DETAILSPDF Save worm details to a PDF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>	WORM2DETAILSTIF Save worm details to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2summaryPDF2.html" class="code" title="function [filename pages] = worm2summaryPDF(filename, worm, wormName,varargin)">worm2summaryPDF2</a>	WORM2SUMMARYPDF Save a worm summary to a PDF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2summaryTIF.html" class="code" title="function [filename pages] = worm2summaryTIF(filename, worm, wormName,varargin)">worm2summaryTIF</a>	WORM2SUMMARYTIF Save a worm summary to a TIF.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2NormTimes.html" class="code" title="function worm2NormTimes(filename, seconds, wormFiles, varargin)">worm2NormTimes</a>	WORM2NORMTIMES Normalize worm feature time series.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2histogram2.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram2</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li><li><a href="../../../SegWorm/Worms/Statistics/wormStats2Matrix2.html" class="code" title="function wormStats2Matrix(filename, wormFiles, varargin)">wormStats2Matrix2</a>	WORMSTATS2MATRIX Construct and save a features x worms matrix.</li><li><a href="../../../SegWorm/Worms/Statistics/wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>	WORMFEATUREINFO Get information for computing the worm statistics.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function info = wormDisplayInfo()</a>
+0002 <span class="comment">%WORMDISPLAYINFO Get information for displaying the worm data.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   INFO = WORMDISPLAYINFO()</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Output:</span>
+0007 <span class="comment">%       info - information for displaying the worm data; a structure</span>
+0008 <span class="comment">%              mirroring the worm features, where each heading has the</span>
+0009 <span class="comment">%              following subfields:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%              name       = a descriptive name</span>
+0012 <span class="comment">%              shortName  = a shortened name</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%              And each feature has the following subfields:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%              resolution = the resolution for the histogram</span>
+0017 <span class="comment">%              isZeroBin  = is the histogram centered at zero?</span>
+0018 <span class="comment">%              isSigned   = is the data signed (+/-)?</span>
+0019 <span class="comment">%              name       = a descriptive feature name (for titles)</span>
+0020 <span class="comment">%              shortName  = a shortened feature name (for legends)</span>
+0021 <span class="comment">%              unit       = the feature's measurement unit (for labels)</span>
+0022 
+0023 
+0024 
+0025 <span class="comment">%% Organize the worm morphology display information.</span>
+0026 
+0027 <span class="comment">% Organize the morphology information.</span>
+0028 info.morphology.name = <span class="string">'Morphology Features'</span>;
+0029 info.morphology.shortName = <span class="string">'Morphology'</span>;
+0030 
+0031 <span class="comment">% Organize the length information.</span>
+0032 info.morphology.length.resolution = 1;
+0033 info.morphology.length.isZeroBin = false;
+0034 info.morphology.length.isSigned = false;
+0035 info.morphology.length.name = <span class="string">'Length'</span>;
+0036 info.morphology.length.shortName = <span class="string">'Length'</span>;
+0037 info.morphology.length.unit = <span class="string">'Microns'</span>;
+0038 
+0039 <span class="comment">% Organize the width information.</span>
+0040 info.morphology.width.name = <span class="string">'Width'</span>;
+0041 info.morphology.width.shortName = <span class="string">'Width'</span>;
+0042 fields = { <span class="keyword">...</span>
+0043     <span class="string">'Head'</span>, <span class="keyword">...</span>
+0044     <span class="string">'Midbody'</span>, <span class="keyword">...</span>
+0045     <span class="string">'Tail'</span>};
+0046 <span class="keyword">for</span> i = 1:length(fields)
+0047     field = lower(fields{i});
+0048     info.morphology.width.(field).resolution = 1;
+0049     info.morphology.width.(field).isZeroBin = false;
+0050     info.morphology.width.(field).isSigned = false;
+0051     info.morphology.width.(field).name = [fields{i} <span class="string">' Width'</span>];
+0052     info.morphology.width.(field).shortName = fields{i};
+0053     info.morphology.width.(field).unit = <span class="string">'Microns'</span>;
+0054 <span class="keyword">end</span>
+0055 
+0056 <span class="comment">% Organize the area information.</span>
+0057 info.morphology.area.resolution = 100;
+0058 info.morphology.area.isZeroBin = false;
+0059 info.morphology.area.isSigned = false;
+0060 info.morphology.area.name = <span class="string">'Area'</span>;
+0061 info.morphology.area.shortName = <span class="string">'Area'</span>;
+0062 info.morphology.area.unit = <span class="string">'Microns²'</span>;
+0063 
+0064 <span class="comment">% Organize the area/length information.</span>
+0065 info.morphology.areaPerLength.resolution = 0.1;
+0066 info.morphology.areaPerLength.isZeroBin = false;
+0067 info.morphology.areaPerLength.isSigned = false;
+0068 info.morphology.areaPerLength.name = <span class="string">'Area/Length'</span>;
+0069 info.morphology.areaPerLength.shortName = <span class="string">'Area/Length'</span>;
+0070 info.morphology.areaPerLength.unit = <span class="string">'Microns'</span>;
+0071 
+0072 <span class="comment">% Organize the width/length information.</span>
+0073 info.morphology.widthPerLength.resolution = 0.0001;
+0074 info.morphology.widthPerLength.isZeroBin = false;
+0075 info.morphology.widthPerLength.isSigned = false;
+0076 info.morphology.widthPerLength.name = <span class="string">'Width/Length'</span>;
+0077 info.morphology.widthPerLength.shortName = <span class="string">'Width/Length'</span>;
+0078 info.morphology.widthPerLength.unit = <span class="string">'No Units'</span>;
+0079 
+0080 
+0081 
+0082 <span class="comment">%% Organize the worm posture display information.</span>
+0083 
+0084 <span class="comment">% Organize the posture information.</span>
+0085 info.posture.name = <span class="string">'Posture Features'</span>;
+0086 info.posture.shortName = <span class="string">'Posture'</span>;
+0087 
+0088 <span class="comment">% Organize the bend mean information.</span>
+0089 info.posture.bends.name = <span class="string">'Bending Posture'</span>;
+0090 info.posture.bends.shortName = <span class="string">'Bends'</span>;
+0091 fields = { <span class="keyword">...</span>
+0092     <span class="string">'Head'</span>, <span class="keyword">...</span>
+0093     <span class="string">'Neck'</span>, <span class="keyword">...</span>
+0094     <span class="string">'Midbody'</span>, <span class="keyword">...</span>
+0095     <span class="string">'Hips'</span>, <span class="keyword">...</span>
+0096     <span class="string">'Tail'</span>};
+0097 <span class="keyword">for</span> i = 1:length(fields)
+0098     
+0099     <span class="comment">% Organize the bend information.</span>
+0100     field = lower(fields{i});
+0101     info.posture.bends.(field).name = <span class="keyword">...</span>
+0102         [fields{i} <span class="string">' '</span> info.posture.bends.name];
+0103     info.posture.bends.(field).shortName = <span class="keyword">...</span>
+0104         [fields{i} <span class="string">' '</span> info.posture.bends.shortName];
+0105     
+0106     <span class="comment">% Organize the bend mean information.</span>
+0107     info.posture.bends.(field).mean.resolution = 1;
+0108     info.posture.bends.(field).mean.isZeroBin = true;
+0109     info.posture.bends.(field).mean.isSigned = true;
+0110     info.posture.bends.(field).mean.name = <span class="keyword">...</span>
+0111         [fields{i} <span class="string">' Bend Mean (+/- = D/V Inside)'</span>];
+0112     info.posture.bends.(field).mean.shortName = fields{i};
+0113     info.posture.bends.(field).mean.unit = <span class="string">'Degrees'</span>;
+0114 
+0115     <span class="comment">% Organize the bend standard deviation information.</span>
+0116     info.posture.bends.(field).stdDev.resolution = 0.5;
+0117     info.posture.bends.(field).stdDev.isZeroBin = true;
+0118     info.posture.bends.(field).stdDev.isSigned = true;
+0119     info.posture.bends.(field).stdDev.name = <span class="keyword">...</span>
+0120         [fields{i} <span class="string">' Bend S.D. (+/- = D/V Inside)'</span>];
+0121     info.posture.bends.(field).stdDev.shortName = fields{i};
+0122     info.posture.bends.(field).stdDev.unit = <span class="string">'Degrees'</span>;
+0123 <span class="keyword">end</span>
+0124 
+0125 <span class="comment">% Organize the amplitude information.</span>
+0126 info.posture.amplitude.name = <span class="string">'Amplitude of the Posture'</span>;
+0127 info.posture.amplitude.shortName = <span class="string">'Amplitude'</span>;
+0128 info.posture.amplitude.max.resolution = 1;
+0129 info.posture.amplitude.max.isZeroBin = false;
+0130 info.posture.amplitude.max.isSigned = false;
+0131 info.posture.amplitude.max.name = <span class="string">'Max Amplitude'</span>;
+0132 info.posture.amplitude.max.shortName = <span class="string">'Amplitude'</span>;
+0133 info.posture.amplitude.max.unit = <span class="string">'Microns'</span>;
+0134 info.posture.amplitude.ratio.resolution = 0.01;
+0135 info.posture.amplitude.ratio.isZeroBin = false;
+0136 info.posture.amplitude.ratio.isSigned = false;
+0137 info.posture.amplitude.ratio.name = <span class="string">'Amplitude Ratio'</span>;
+0138 info.posture.amplitude.ratio.shortName = <span class="string">'Ratio'</span>;
+0139 info.posture.amplitude.ratio.unit = <span class="string">'No Units'</span>;
+0140     
+0141 <span class="comment">% Organize the wavelength information.</span>
+0142 info.posture.wavelength.name = <span class="string">'Wavelength of the Posture'</span>;
+0143 info.posture.wavelength.shortName = <span class="string">'Wavelength'</span>;
+0144 info.posture.wavelength.primary.resolution = 1;
+0145 info.posture.wavelength.primary.isZeroBin = false;
+0146 info.posture.wavelength.primary.isSigned = false;
+0147 info.posture.wavelength.primary.name = <span class="string">'Primary Wavelength'</span>;
+0148 info.posture.wavelength.primary.shortName = <span class="string">'Primary'</span>;
+0149 info.posture.wavelength.primary.unit = <span class="string">'Microns'</span>;
+0150 info.posture.wavelength.secondary.resolution = 1;
+0151 info.posture.wavelength.secondary.isZeroBin = false;
+0152 info.posture.wavelength.secondary.isSigned = false;
+0153 info.posture.wavelength.secondary.name = <span class="string">'Secondary Wavelength'</span>;
+0154 info.posture.wavelength.secondary.shortName = <span class="string">'Secondary'</span>;
+0155 info.posture.wavelength.secondary.unit = <span class="string">'Microns'</span>;
+0156 
+0157 <span class="comment">% Organize the track length information.</span>
+0158 info.posture.tracklength.resolution = 1;
+0159 info.posture.tracklength.isZeroBin = false;
+0160 info.posture.tracklength.isSigned = false;
+0161 info.posture.tracklength.name = <span class="string">'Track Length'</span>;
+0162 info.posture.tracklength.shortName = <span class="string">'Track'</span>;
+0163 info.posture.tracklength.unit = <span class="string">'Microns'</span>;
+0164 
+0165 <span class="comment">% Organize the eccentricity information.</span>
+0166 info.posture.eccentricity.resolution = 0.01;
+0167 info.posture.eccentricity.isZeroBin = false;
+0168 info.posture.eccentricity.isSigned = false;
+0169 info.posture.eccentricity.name = <span class="string">'Eccentricity'</span>;
+0170 info.posture.eccentricity.shortName = <span class="string">'Eccentricity'</span>;
+0171 info.posture.eccentricity.unit = <span class="string">'No Units'</span>;
+0172 
+0173 <span class="comment">% Organize the kink information.</span>
+0174 info.posture.kinks.resolution = 1;
+0175 info.posture.kinks.isZeroBin = true;
+0176 info.posture.kinks.isSigned = false;
+0177 info.posture.kinks.name = <span class="string">'Bend Count'</span>;
+0178 info.posture.kinks.shortName = <span class="string">'Bends'</span>;
+0179 info.posture.kinks.unit = <span class="string">'Counts'</span>;
+0180 
+0181 <span class="comment">% Organize the coil information.</span>
+0182 info.posture.coils.name = <span class="string">'Coiling Events'</span>;
+0183 info.posture.coils.shortName = <span class="string">'Coils'</span>;
+0184 fields = { <span class="keyword">...</span>
+0185     <span class="string">'time'</span>, <span class="keyword">...</span>
+0186     <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0187     <span class="string">'interDistance'</span>};
+0188 names = { <span class="keyword">...</span>
+0189     <span class="string">'Coil Time'</span>, <span class="keyword">...</span>
+0190     <span class="string">'Inter Coil Time'</span>, <span class="keyword">...</span>
+0191     <span class="string">'Inter Coil Distance'</span>};
+0192 shortNames = { <span class="keyword">...</span>
+0193     <span class="string">'Time'</span>, <span class="keyword">...</span>
+0194     <span class="string">'Inter Time'</span>, <span class="keyword">...</span>
+0195     <span class="string">'Inter Distance'</span>};
+0196 units = { <span class="keyword">...</span>
+0197     <span class="string">'Seconds'</span>, <span class="keyword">...</span>
+0198     <span class="string">'Seconds'</span>, <span class="keyword">...</span>
+0199     <span class="string">'Microns'</span>};
+0200 resolutions = { <span class="keyword">...</span>
+0201     0.1, <span class="keyword">...</span>
+0202     5, <span class="keyword">...</span>
+0203     100};
+0204 <span class="keyword">for</span> i = 1:length(fields)
+0205     info.posture.coils.(fields{i}).resolution = resolutions{i};
+0206     info.posture.coils.(fields{i}).isZeroBin = false;
+0207     info.posture.coils.(fields{i}).isSigned = false;
+0208     info.posture.coils.(fields{i}).name = names{i};
+0209     info.posture.coils.(fields{i}).shortName = shortNames{i};
+0210     info.posture.coils.(fields{i}).unit = units{i};
+0211 <span class="keyword">end</span>
+0212 statFields = { <span class="keyword">...</span>
+0213     <span class="string">'frequency'</span>, <span class="keyword">...</span>
+0214     <span class="string">'timeRatio'</span>};
+0215 statNames = { <span class="keyword">...</span>
+0216     <span class="string">'Frequency'</span>, <span class="keyword">...</span>
+0217     <span class="string">'Time Ratio'</span>};
+0218 statUnits = { <span class="keyword">...</span>
+0219     <span class="string">'Hz'</span>, <span class="keyword">...</span>
+0220     <span class="string">'No Units'</span>};
+0221 <span class="keyword">for</span> i = 1:length(statFields)
+0222     info.posture.coils.(statFields{i}).resolution = 0.001;
+0223     info.posture.coils.(statFields{i}).isZeroBin = false;
+0224     info.posture.coils.(statFields{i}).isSigned = false;
+0225     info.posture.coils.(statFields{i}).name = <span class="keyword">...</span>
+0226         [info.posture.coils.shortName <span class="string">' '</span> statNames{i}];
+0227     info.posture.coils.(statFields{i}).shortName = statNames{i};
+0228     info.posture.coils.(statFields{i}).unit = statUnits{i};
+0229 <span class="keyword">end</span>
+0230 
+0231 <span class="comment">% Organize the direction information.</span>
+0232 info.posture.directions.name = <span class="string">'Direction of Orientation'</span>;
+0233 info.posture.directions.shortName = <span class="string">'Orientation'</span>;
+0234 fields = { <span class="keyword">...</span>
+0235     <span class="string">'tail2head'</span>, <span class="keyword">...</span>
+0236     <span class="string">'head'</span>, <span class="keyword">...</span>
+0237     <span class="string">'tail'</span>};
+0238 names = { <span class="keyword">...</span>
+0239     <span class="string">'Tail-To-Head Orientation'</span>, <span class="keyword">...</span>
+0240     <span class="string">'Head Orientation'</span>, <span class="keyword">...</span>
+0241     <span class="string">'Tail Orientation'</span>};
+0242 shortNames = { <span class="keyword">...</span>
+0243     <span class="string">'Tail-To-Head'</span>, <span class="keyword">...</span>
+0244     <span class="string">'Head'</span>, <span class="keyword">...</span>
+0245     <span class="string">'Tail'</span>};
+0246 <span class="keyword">for</span> i = 1:length(fields)
+0247     info.posture.directions.(fields{i}).resolution = 1;
+0248     info.posture.directions.(fields{i}).isZeroBin = true;
+0249     info.posture.directions.(fields{i}).isSigned = true;
+0250     info.posture.directions.(fields{i}).name = names{i};
+0251     info.posture.directions.(fields{i}).shortName = shortNames{i};
+0252     info.posture.directions.(fields{i}).unit = <span class="string">'Degrees'</span>;
+0253 <span class="keyword">end</span>
+0254 
+0255 <span class="comment">% Organize the eigen projection information.</span>
+0256 <span class="keyword">for</span> i = 1:6
+0257     info.posture.eigenProjection(i).resolution = 0.1;
+0258     info.posture.eigenProjection(i).isZeroBin = true;
+0259     info.posture.eigenProjection(i).isSigned = true;
+0260     info.posture.eigenProjection(i).name = [<span class="string">'Eigen Projection '</span> num2str(i)];
+0261     info.posture.eigenProjection(i).shortName = [<span class="string">'Projection '</span> num2str(i)];
+0262     info.posture.eigenProjection(i).unit = <span class="string">'No Units'</span>;
+0263 <span class="keyword">end</span>
+0264 
+0265 <span class="comment">% Organize the skeleton information.</span>
+0266 info.posture.skeleton.resolution = [];
+0267 info.posture.skeleton.isZeroBin = [];
+0268 info.posture.skeleton.isSigned = [];
+0269 info.posture.skeleton.name = <span class="string">'Skeleton Location'</span>;
+0270 info.posture.skeleton.shortName = <span class="string">'Skeleton'</span>;
+0271 info.posture.skeleton.unit = <span class="string">'Microns'</span>;
+0272 
+0273 
+0274 
+0275 <span class="comment">%% Organize the worm locomotion display information.</span>
+0276 
+0277 <span class="comment">% Organize the locomotion information.</span>
+0278 info.locomotion.name = <span class="string">'Locomotion Features'</span>;
+0279 info.locomotion.shortName = <span class="string">'Locomotion'</span>;
+0280 
+0281 <span class="comment">% Organize the motion information.</span>
+0282 info.locomotion.mode.resolution = [];
+0283 info.locomotion.mode.isZeroBin = [];
+0284 info.locomotion.mode.isSigned = [];
+0285 info.locomotion.mode.name = <span class="string">'Motion'</span>;
+0286 info.locomotion.mode.shortName = <span class="string">'Motion'</span>;
+0287 info.locomotion.mode.unit = <span class="string">'No Units'</span>;
+0288 
+0289 <span class="comment">% Organize the forward/paused/backward information.</span>
+0290 info.locomotion.motion.name = <span class="string">'Motion'</span>;
+0291 info.locomotion.motion.shortName = <span class="string">'Motion'</span>;
+0292 fields = { <span class="keyword">...</span>
+0293     <span class="string">'Forward'</span>, <span class="keyword">...</span>
+0294     <span class="string">'Backward'</span>, <span class="keyword">...</span>
+0295     <span class="string">'Paused'</span>};
+0296 subFields = { <span class="keyword">...</span>
+0297     <span class="string">'time'</span>, <span class="keyword">...</span>
+0298     <span class="string">'distance'</span>, <span class="keyword">...</span>
+0299     <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0300     <span class="string">'interDistance'</span>};
+0301 prefix = { <span class="keyword">...</span>
+0302     <span class="string">''</span>, <span class="keyword">...</span>
+0303     <span class="string">''</span>, <span class="keyword">...</span>
+0304     <span class="string">'Inter '</span>, <span class="keyword">...</span>
+0305     <span class="string">'Inter '</span>};
+0306 suffix = { <span class="keyword">...</span>
+0307     <span class="string">'Time'</span>, <span class="keyword">...</span>
+0308     <span class="string">'Distance'</span>, <span class="keyword">...</span>
+0309     <span class="string">'Time'</span>, <span class="keyword">...</span>
+0310     <span class="string">'Distance'</span>};
+0311 units = { <span class="keyword">...</span>
+0312     <span class="string">'Seconds'</span>, <span class="keyword">...</span>
+0313     <span class="string">'Microns'</span>, <span class="keyword">...</span>
+0314     <span class="string">'Seconds'</span>, <span class="keyword">...</span>
+0315     <span class="string">'Microns'</span>};
+0316 resolutions = { <span class="keyword">...</span>
+0317     0.5, <span class="keyword">...</span>
+0318     10, <span class="keyword">...</span>
+0319     5, <span class="keyword">...</span>
+0320     100};
+0321 <span class="keyword">for</span> i = 1:length(fields)
+0322     
+0323     <span class="comment">% Organize the motion information.</span>
+0324     field = lower(fields{i});
+0325     info.locomotion.motion.(field).name = <span class="keyword">...</span>
+0326         [fields{i} <span class="string">' '</span> info.locomotion.motion.name];
+0327     info.locomotion.motion.(field).shortName = fields{i};
+0328     
+0329     <span class="comment">% Organize the motion event information.</span>
+0330     <span class="keyword">for</span> j = 1:length(subFields)
+0331         info.locomotion.motion.(field).(subFields{j}).resolution = <span class="keyword">...</span>
+0332             resolutions{j};
+0333         info.locomotion.motion.(field).(subFields{j}).isZeroBin = false;
+0334         info.locomotion.motion.(field).(subFields{j}).isSigned = false;
+0335         info.locomotion.motion.(field).(subFields{j}).name = <span class="keyword">...</span>
+0336             [prefix{j} fields{i} <span class="string">' '</span> suffix{j}];
+0337         info.locomotion.motion.(field).(subFields{j}).shortName = <span class="keyword">...</span>
+0338             [prefix{j} suffix{j}];
+0339         info.locomotion.motion.(field).(subFields{j}).unit = units{j};
+0340     <span class="keyword">end</span>
+0341 <span class="keyword">end</span>
+0342 statFields = { <span class="keyword">...</span>
+0343     <span class="string">'frequency'</span>, <span class="keyword">...</span>
+0344     <span class="string">'ratio.time'</span>, <span class="keyword">...</span>
+0345     <span class="string">'ratio.distance'</span>};
+0346 statNames = { <span class="keyword">...</span>
+0347     <span class="string">'Frequency'</span>, <span class="keyword">...</span>
+0348     <span class="string">'Time Ratio'</span>, <span class="keyword">...</span>
+0349     <span class="string">'Distance Ratio'</span>};
+0350 statUnits = { <span class="keyword">...</span>
+0351     <span class="string">'Hz'</span>, <span class="keyword">...</span>
+0352     <span class="string">'No Units'</span>, <span class="keyword">...</span>
+0353     <span class="string">'No Units'</span>};
+0354 <span class="keyword">for</span> i = 1:length(fields)
+0355     field = [<span class="string">'locomotion.motion.'</span> lower(fields{i})];
+0356     <span class="keyword">for</span> j = 1:length(statFields)
+0357         statField = [field <span class="string">'.'</span> statFields{j}];
+0358         info = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(info, [statField <span class="string">'.resolution'</span>], 0.001);
+0359         info = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(info, [statField <span class="string">'.isZeroBin'</span>], false);
+0360         info = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(info, [statField <span class="string">'.isSigned'</span>], false);
+0361         info = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(info, [statField <span class="string">'.name'</span>], [fields{i} <span class="string">' '</span> <span class="keyword">...</span>
+0362             info.locomotion.motion.shortName <span class="string">' '</span> statNames{j}]);
+0363         info = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(info, [statField <span class="string">'.shortName'</span>], statNames{j});
+0364         info = <a href="../../../SegWorm/Util/setStructField.html" class="code" title="function data = setStructField(data, field, value)">setStructField</a>(info, [statField <span class="string">'.unit'</span>], statUnits{j});
+0365     <span class="keyword">end</span>
+0366 <span class="keyword">end</span>
+0367 
+0368 <span class="comment">% Organize the speed and direction information.</span>
+0369 info.locomotion.velocity.name = <span class="string">'Velocity'</span>;
+0370 info.locomotion.velocity.shortName = <span class="string">'Velocity'</span>;
+0371 fields = { <span class="keyword">...</span>
+0372     <span class="string">'headTip'</span>, <span class="keyword">...</span>
+0373     <span class="string">'head'</span>, <span class="keyword">...</span>
+0374     <span class="string">'midbody'</span>, <span class="keyword">...</span>
+0375     <span class="string">'tail'</span>, <span class="keyword">...</span>
+0376     <span class="string">'tailTip'</span>};
+0377 shortNames = { <span class="keyword">...</span>
+0378     <span class="string">'Head Tip'</span>, <span class="keyword">...</span>
+0379     <span class="string">'Head'</span>, <span class="keyword">...</span>
+0380     <span class="string">'Midbody'</span>, <span class="keyword">...</span>
+0381     <span class="string">'Tail'</span>, <span class="keyword">...</span>
+0382     <span class="string">'Tail Tip'</span>};
+0383 <span class="keyword">for</span> i = 1:length(fields)
+0384 
+0385     <span class="comment">% Organize the velocity information.</span>
+0386     info.locomotion.velocity.(fields{i}).name = <span class="keyword">...</span>
+0387         [shortNames{i} <span class="string">' '</span> info.locomotion.velocity.name];
+0388     info.locomotion.velocity.(fields{i}).shortName = shortNames{i};
+0389     
+0390     <span class="comment">% Organize the speed information.</span>
+0391     info.locomotion.velocity.(fields{i}).speed.resolution = 1;
+0392     info.locomotion.velocity.(fields{i}).speed.isZeroBin = true;
+0393     info.locomotion.velocity.(fields{i}).speed.isSigned = true;
+0394     info.locomotion.velocity.(fields{i}).speed.name = <span class="keyword">...</span>
+0395         [shortNames{i} <span class="string">' Speed (+/- = Forward/Backward)'</span>];
+0396     info.locomotion.velocity.(fields{i}).speed.shortName = shortNames{i};
+0397     info.locomotion.velocity.(fields{i}).speed.unit = <span class="string">'Microns/Seconds'</span>;
+0398 
+0399     <span class="comment">% Organize the direction information.</span>
+0400     info.locomotion.velocity.(fields{i}).direction.resolution = 0.01;
+0401     info.locomotion.velocity.(fields{i}).direction.isZeroBin = true;
+0402     info.locomotion.velocity.(fields{i}).direction.isSigned = true;
+0403     info.locomotion.velocity.(fields{i}).direction.name = <span class="keyword">...</span>
+0404         [shortNames{i} <span class="string">' Motion Direction (+/- = Toward D/V)'</span>];
+0405     info.locomotion.velocity.(fields{i}).direction.shortName = shortNames{i};
+0406     info.locomotion.velocity.(fields{i}).direction.unit = <span class="string">'Degrees/Seconds'</span>;
+0407 <span class="keyword">end</span>
+0408 
+0409 <span class="comment">% Organize the bend information.</span>
+0410 info.locomotion.bends.name = <span class="string">'Crawling Motion'</span>;
+0411 info.locomotion.bends.shortName = <span class="string">'Crawling'</span>;
+0412 fields = { <span class="keyword">...</span>
+0413     <span class="string">'Head'</span>, <span class="keyword">...</span>
+0414     <span class="string">'Midbody'</span>, <span class="keyword">...</span>
+0415     <span class="string">'Tail'</span>};
+0416 <span class="keyword">for</span> i = 1:length(fields)
+0417     
+0418     <span class="comment">% Organize the bend information.</span>
+0419     field = lower(fields{i});
+0420     info.locomotion.bends.(field).name = <span class="keyword">...</span>
+0421         [fields{i} <span class="string">' '</span> info.locomotion.bends.name];
+0422     info.locomotion.bends.(field).shortName = <span class="keyword">...</span>
+0423         [fields{i} <span class="string">' '</span> info.locomotion.bends.shortName];
+0424     
+0425     <span class="comment">% Organize the bend amplitude information.</span>
+0426     info.locomotion.bends.(field).amplitude.resolution = 1;
+0427     info.locomotion.bends.(field).amplitude.isZeroBin = true;
+0428     info.locomotion.bends.(field).amplitude.isSigned = true;
+0429     info.locomotion.bends.(field).amplitude.name = <span class="keyword">...</span>
+0430         [fields{i} <span class="string">' Crawling Amplitude (+/- = D/V Inside)'</span>];
+0431     info.locomotion.bends.(field).amplitude.shortName = fields{i};
+0432     info.locomotion.bends.(field).amplitude.unit = <span class="string">'Degrees'</span>;
+0433     
+0434     <span class="comment">% Organize the bend frequency information.</span>
+0435     info.locomotion.bends.(field).frequency.resolution = 0.1;
+0436     info.locomotion.bends.(field).frequency.isZeroBin = true;
+0437     info.locomotion.bends.(field).frequency.isSigned = true;
+0438     info.locomotion.bends.(field).frequency.name = <span class="keyword">...</span>
+0439         [fields{i} <span class="string">' Crawling Frequency (+/- = D/V Inside)'</span>];
+0440     info.locomotion.bends.(field).frequency.shortName = fields{i};
+0441     info.locomotion.bends.(field).frequency.unit = <span class="string">'Hz'</span>;
+0442 <span class="keyword">end</span>
+0443 
+0444 <span class="comment">% Organize the foraging information.</span>
+0445 info.locomotion.bends.foraging.name = <span class="string">'Foraging (+/- = Toward D/V)'</span>;
+0446 info.locomotion.bends.foraging.shortName = <span class="string">'Foraging'</span>;
+0447 info.locomotion.bends.foraging.amplitude.resolution = 1;
+0448 info.locomotion.bends.foraging.amplitude.isZeroBin = true;
+0449 info.locomotion.bends.foraging.amplitude.isSigned = true;
+0450 info.locomotion.bends.foraging.amplitude.name = <span class="keyword">...</span>
+0451     <span class="string">'Foraging Amplitude (+/- = Toward D/V)'</span>;
+0452 info.locomotion.bends.foraging.amplitude.shortName = <span class="string">'Amplitude'</span>;
+0453 info.locomotion.bends.foraging.amplitude.unit = <span class="string">'Microns'</span>;
+0454 info.locomotion.bends.foraging.angleSpeed.resolution = 10;
+0455 info.locomotion.bends.foraging.angleSpeed.isZeroBin = true;
+0456 info.locomotion.bends.foraging.angleSpeed.isSigned = true;
+0457 info.locomotion.bends.foraging.angleSpeed.name = <span class="string">'Foraging Speed'</span>;
+0458 info.locomotion.bends.foraging.angleSpeed.shortName = <span class="string">'Speed'</span>;
+0459 info.locomotion.bends.foraging.angleSpeed.unit = <span class="string">'Degrees/Seconds'</span>;
+0460 
+0461 <span class="comment">% Organize the omega turn information.</span>
+0462 info.locomotion.turns.omegas.name = <span class="string">'Omega Turn Events'</span>;
+0463 info.locomotion.turns.omegas.shortName = <span class="string">'Omega Turns'</span>;
+0464 fields = { <span class="keyword">...</span>
+0465     <span class="string">'time'</span>, <span class="keyword">...</span>
+0466     <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0467     <span class="string">'interDistance'</span>};
+0468 names = { <span class="keyword">...</span>
+0469     <span class="string">'Omega Turn Time (+/- = D/V Inside)'</span>, <span class="keyword">...</span>
+0470     <span class="string">'Inter Omega Time (+/- = Previous D/V)'</span>, <span class="keyword">...</span>
+0471     <span class="string">'Inter Omega Distance (+/- = Previous D/V)'</span>};
+0472 shortNames = { <span class="keyword">...</span>
+0473     <span class="string">'Time'</span>, <span class="keyword">...</span>
+0474     <span class="string">'Inter Time'</span>, <span class="keyword">...</span>
+0475     <span class="string">'Inter Distance'</span>};
+0476 units = { <span class="keyword">...</span>
+0477     <span class="string">'Seconds'</span>, <span class="keyword">...</span>
+0478     <span class="string">'Seconds'</span>, <span class="keyword">...</span>
+0479     <span class="string">'Microns'</span>};
+0480 resolutions = { <span class="keyword">...</span>
+0481     0.1, <span class="keyword">...</span>
+0482     5, <span class="keyword">...</span>
+0483     100};
+0484 isSigned = { <span class="keyword">...</span>
+0485     true, <span class="keyword">...</span>
+0486     true, <span class="keyword">...</span>
+0487     true};
+0488 <span class="keyword">for</span> i = 1:length(fields)
+0489     info.locomotion.turns.omegas.(fields{i}).resolution = resolutions{i};
+0490     info.locomotion.turns.omegas.(fields{i}).isZeroBin = false;
+0491     info.locomotion.turns.omegas.(fields{i}).isSigned = isSigned{i};
+0492     info.locomotion.turns.omegas.(fields{i}).name = names{i};
+0493     info.locomotion.turns.omegas.(fields{i}).shortName = shortNames{i};
+0494     info.locomotion.turns.omegas.(fields{i}).unit = units{i};
+0495 <span class="keyword">end</span>
+0496 statFields = { <span class="keyword">...</span>
+0497     <span class="string">'frequency'</span>, <span class="keyword">...</span>
+0498     <span class="string">'timeRatio'</span>};
+0499 statNames = { <span class="keyword">...</span>
+0500     <span class="string">'Frequency'</span>, <span class="keyword">...</span>
+0501     <span class="string">'Time Ratio'</span>};
+0502 statUnits = { <span class="keyword">...</span>
+0503     <span class="string">'Hz'</span>, <span class="keyword">...</span>
+0504     <span class="string">'No Units'</span>};
+0505 <span class="keyword">for</span> i = 1:length(statFields)
+0506     info.locomotion.turns.omegas.(statFields{i}).resolution = 0.001;
+0507     info.locomotion.turns.omegas.(statFields{i}).isZeroBin = false;
+0508     info.locomotion.turns.omegas.(statFields{i}).isSigned = false;
+0509     info.locomotion.turns.omegas.(statFields{i}).name = <span class="keyword">...</span>
+0510         [info.locomotion.turns.omegas.shortName <span class="string">' '</span> statNames{i}];
+0511     info.locomotion.turns.omegas.(statFields{i}).shortName = statNames{i};
+0512     info.locomotion.turns.omegas.(statFields{i}).unit = statUnits{i};
+0513 <span class="keyword">end</span>
+0514 
+0515 <span class="comment">% Organize the upsilon turn information.</span>
+0516 info.locomotion.turns.upsilons.name = <span class="string">'Upsilon Turn Events'</span>;
+0517 info.locomotion.turns.upsilons.shortName = <span class="string">'Upsilon Turns'</span>;
+0518 fields = { <span class="keyword">...</span>
+0519     <span class="string">'time'</span>, <span class="keyword">...</span>
+0520     <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0521     <span class="string">'interDistance'</span>};
+0522 names = { <span class="keyword">...</span>
+0523     <span class="string">'Upsilon Turn Time (+/- = D/V Inside)'</span>, <span class="keyword">...</span>
+0524     <span class="string">'Inter Upsilon Time (+/- = Previous D/V)'</span>, <span class="keyword">...</span>
+0525     <span class="string">'Inter Upsilon Distance (+/- = Previous D/V)'</span>};
+0526 shortNames = { <span class="keyword">...</span>
+0527     <span class="string">'Time'</span>, <span class="keyword">...</span>
+0528     <span class="string">'Inter Time'</span>, <span class="keyword">...</span>
+0529     <span class="string">'Inter Distance'</span>};
+0530 units = { <span class="keyword">...</span>
+0531     <span class="string">'Seconds'</span>, <span class="keyword">...</span>
+0532     <span class="string">'Seconds'</span>, <span class="keyword">...</span>
+0533     <span class="string">'Microns'</span>};
+0534 resolutions = { <span class="keyword">...</span>
+0535     0.1, <span class="keyword">...</span>
+0536     5, <span class="keyword">...</span>
+0537     100};
+0538 isSigned = { <span class="keyword">...</span>
+0539     true, <span class="keyword">...</span>
+0540     true, <span class="keyword">...</span>
+0541     true};
+0542 <span class="keyword">for</span> i = 1:length(fields)
+0543     info.locomotion.turns.upsilons.(fields{i}).resolution = resolutions{i};
+0544     info.locomotion.turns.upsilons.(fields{i}).isZeroBin = false;
+0545     info.locomotion.turns.upsilons.(fields{i}).isSigned = isSigned{i};
+0546     info.locomotion.turns.upsilons.(fields{i}).name = names{i};
+0547     info.locomotion.turns.upsilons.(fields{i}).shortName = shortNames{i};
+0548     info.locomotion.turns.upsilons.(fields{i}).unit = units{i};
+0549 <span class="keyword">end</span>
+0550 statFields = { <span class="keyword">...</span>
+0551     <span class="string">'frequency'</span>, <span class="keyword">...</span>
+0552     <span class="string">'timeRatio'</span>};
+0553 statNames = { <span class="keyword">...</span>
+0554     <span class="string">'Frequency'</span>, <span class="keyword">...</span>
+0555     <span class="string">'Time Ratio'</span>};
+0556 statUnits = { <span class="keyword">...</span>
+0557     <span class="string">'Hz'</span>, <span class="keyword">...</span>
+0558     <span class="string">'No Units'</span>};
+0559 <span class="keyword">for</span> i = 1:length(statFields)
+0560     info.locomotion.turns.upsilons.(statFields{i}).resolution = 0.001;
+0561     info.locomotion.turns.upsilons.(statFields{i}).isZeroBin = false;
+0562     info.locomotion.turns.upsilons.(statFields{i}).isSigned = false;
+0563     info.locomotion.turns.upsilons.(statFields{i}).name = <span class="keyword">...</span>
+0564         [info.locomotion.turns.upsilons.shortName <span class="string">' '</span> statNames{i}];
+0565     info.locomotion.turns.upsilons.(statFields{i}).shortName = statNames{i};
+0566     info.locomotion.turns.upsilons.(statFields{i}).unit = statUnits{i};
+0567 <span class="keyword">end</span>
+0568 
+0569 
+0570 
+0571 <span class="comment">%% Organize the worm path display information.</span>
+0572 
+0573 <span class="comment">% Organize the path information.</span>
+0574 info.path.name = <span class="string">'Path Features'</span>;
+0575 info.path.shortName = <span class="string">'Path'</span>;
+0576 
+0577 <span class="comment">% Organize the curvature information.</span>
+0578 info.path.curvature.resolution = 0.005;
+0579 info.path.curvature.isZeroBin = true;
+0580 info.path.curvature.isSigned = true;
+0581 info.path.curvature.name = <span class="string">'Path Curvature (+/- = D/V Inside)'</span>;
+0582 info.path.curvature.shortName = <span class="string">'Curvature'</span>;
+0583 info.path.curvature.unit = <span class="string">'Radians/Microns'</span>;
+0584 
+0585 <span class="comment">% Organize the range information.</span>
+0586 info.path.range.resolution = 10;
+0587 info.path.range.isZeroBin = false;
+0588 info.path.range.isSigned = false;
+0589 info.path.range.name = <span class="string">'Path Range'</span>;
+0590 info.path.range.shortName = <span class="string">'Range'</span>;
+0591 info.path.range.unit = <span class="string">'Microns'</span>;
+0592 
+0593 <span class="comment">% Organize the duration information.</span>
+0594 info.path.duration.name = <span class="string">'Path Dwelling'</span>;
+0595 info.path.duration.shortName = <span class="string">'Dwelling'</span>;
+0596 fields = { <span class="keyword">...</span>
+0597     <span class="string">'Worm'</span>, <span class="keyword">...</span>
+0598     <span class="string">'Head'</span>, <span class="keyword">...</span>
+0599     <span class="string">'Midbody'</span>, <span class="keyword">...</span>
+0600     <span class="string">'Tail'</span>};
+0601 resolutions = { <span class="keyword">...</span>
+0602     1, <span class="keyword">...</span>
+0603     0.5, <span class="keyword">...</span>
+0604     1, <span class="keyword">...</span>
+0605     0.5};
+0606 <span class="keyword">for</span> i = 1:length(fields)
+0607     field = lower(fields{i});
+0608     info.path.duration.(field).resolution = resolutions{i};
+0609     info.path.duration.(field).isZeroBin = false;
+0610     info.path.duration.(field).isSigned = false;
+0611     info.path.duration.(field).name = [fields{i} <span class="string">' Dwelling'</span>];
+0612     info.path.duration.(field).shortName = fields{i};
+0613     info.path.duration.(field).unit = <span class="string">'Seconds'</span>;
+0614 <span class="keyword">end</span>
+0615 
+0616 <span class="comment">% Organize the centroid information.</span>
+0617 info.path.coordinates.resolution = [];
+0618 info.path.coordinates.isZeroBin = [];
+0619 info.path.coordinates.isSigned = [];
+0620 info.path.coordinates.name = <span class="string">'Centroid Location'</span>;
+0621 info.path.coordinates.shortName = <span class="string">'Centroid'</span>;
+0622 info.path.coordinates.unit = <span class="string">'Microns'</span>;
+0623 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

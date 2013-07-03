@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of testVideoRead</title>
+  <meta name="keywords" content="testVideoRead">
+  <meta name="description" content="testVideoRead">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>testVideoRead
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>testVideoRead</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">testVideoRead
+  Simple tests for the videoread function.  Always uses the default
+  videoReader plugin.
+
+Example:
+  testVideoRead
+
+Copyright (c) 2006 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details
+(especially when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>	IMAGES=DOFULLREAD(...)</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a>	vrassert(testCondition)</li><li><a href="../../videoIO/videoread.html" class="code" title="function mov=videoread(fname,varargin)">videoread</a>	VIDEOREAD Read an video file in a mannter compatible with Matlab's</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="testAll.html" class="code" title="">testAll</a>	testAll</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%testVideoRead</span>
+0002 <span class="comment">%  Simple tests for the videoread function.  Always uses the default</span>
+0003 <span class="comment">%  videoReader plugin.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%Example:</span>
+0006 <span class="comment">%  testVideoRead</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%Copyright (c) 2006 Gerald Dalley</span>
+0009 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details</span>
+0010 <span class="comment">%(especially when using this library on GNU/Linux).</span>
+0011 
+0012 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>
+0013 
+0014 imgs = <a href="doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>(<span class="string">'numbers.uncompressed.avi'</span>);
+0015 mov = <a href="../../videoIO/videoread.html" class="code" title="function mov=videoread(fname,varargin)">videoread</a>(<span class="string">'numbers.uncompressed.avi'</span>);
+0016 
+0017 <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> abs(length(imgs) - length(mov)) &lt; 4;
+0018 <span class="keyword">for</span> i=1:min(length(imgs), length(mov))
+0019   movImg = mov(i).cdata;
+0020   movImg = uint8(sum(double(movImg), 3) / size(movImg,3));
+0021   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> all(movImg == imgs(:,:,i));
+0022 <span class="keyword">end</span>
+0023 
+0024 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

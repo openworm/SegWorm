@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loadStructField</title>
+  <meta name="keywords" content="loadStructField">
+  <meta name="description" content="LOADSTRUCTFIELD Load a struct field from a file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>loadStructField
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>LOADSTRUCTFIELD Load a struct field from a file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function data = loadStructField(fileName, structName, field) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">LOADSTRUCTFIELD Load a struct field from a file.
+
+   DATA = LOADSTRUCTFIELD(FILENAME, DATA, FIELD)
+
+   Inputs:
+       fileName   - the name of the file with the struct
+       structName - the name of the struct to load
+       field      - the field to get (a period delimited string)
+
+   Output:
+       data - the field data</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>	GETSTRUCTFIELD Get a field in a structure.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Statistics/addWormHistograms.html" class="code" title="function addWormHistograms(filename, wormFiles, varargin)">addWormHistograms</a>	ADDWORMHISTOGRAMS Combine worm histograms.</li><li><a href="../../SegWorm/Worms/Statistics/addWormStats.html" class="code" title="function addWormStats(filename, wormFiles, varargin)">addWormStats</a>	WORM2STATS Combine worm statistics.</li><li><a href="../../SegWorm/Worms/Statistics/worm2NormTimes.html" class="code" title="function worm2NormTimes(filename, seconds, wormFiles, varargin)">worm2NormTimes</a>	WORM2NORMTIMES Normalize worm feature time series.</li><li><a href="../../SegWorm/Worms/Statistics/worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li><li><a href="../../SegWorm/Worms/Statistics/worm2histogram2.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram2</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li><li><a href="../../SegWorm/Worms/Statistics/worm2stats.html" class="code" title="function worm2stats(filename, wormFiles, varargin)">worm2stats</a>	WORM2STATS Convert worms to a set of statistics.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function data = loadStructField(fileName, structName, field)</a>
+0002 <span class="comment">%LOADSTRUCTFIELD Load a struct field from a file.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   DATA = LOADSTRUCTFIELD(FILENAME, DATA, FIELD)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       fileName   - the name of the file with the struct</span>
+0008 <span class="comment">%       structName - the name of the struct to load</span>
+0009 <span class="comment">%       field      - the field to get (a period delimited string)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Output:</span>
+0012 <span class="comment">%       data - the field data</span>
+0013 
+0014 <span class="comment">% Load the struct.</span>
+0015 structData = load(fileName, structName);
+0016 
+0017 <span class="comment">% Is the struct empty?</span>
+0018 <span class="keyword">if</span> ~isfield(structData, structName)
+0019     data = [];
+0020     <span class="keyword">return</span>;
+0021 <span class="keyword">end</span>
+0022 
+0023 <span class="comment">% Get the field.</span>
+0024 data = <a href="getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(structData, [structName <span class="string">'.'</span> field]);
+0025 
+0026 <span class="comment">% Free the memory.</span>
+0027 clear structData;
+0028 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

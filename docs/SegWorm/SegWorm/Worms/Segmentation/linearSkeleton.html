@@ -1,0 +1,589 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of linearSkeleton</title>
+  <meta name="keywords" content="linearSkeleton">
+  <meta name="description" content="LINEARSKELETON Skeletonize a linear (non-looped) worm. The worm is">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Segmentation -->
+<h1>linearSkeleton
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>LINEARSKELETON Skeletonize a linear (non-looped) worm. The worm is</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [skeleton cWidths] = linearSkeleton(headI, tailI, minP, minI,maxP, maxI, contour, wormSegSize, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">LINEARSKELETON Skeletonize a linear (non-looped) worm. The worm is
+skeletonized by splitting its contour, from head to tail, into short
+segments. These short segments are bounded by matching pairs of minimal
+angles (&lt; -20 degrees) and their nearest points on the opposite side of
+the worm's contour. We then walk along the opposing sides of these short
+segments and mark the midline as our skeleton. The final step is cleaning
+up this skeleton to remove overlapping points and interpolate missing ones.
+
+   [SKELETON CWIDTHS] = LINEARSKELETON(HEADI, TAILI, CONTOUR, WORMSEGSIZE)
+
+   [SKELETON CWIDTHS] = LINEARSKELETON(HEADI, TAILI, CONTOUR, WORMSEGSIZE,
+                                       CHAINCODELENGTHS)
+
+   Inputs:
+       headI            - the head's contour index
+       tailI            - the tail's contour index
+       minP             - the local minimal peaks
+       minI             - the local minimal peaks' contour indices
+       minP             - the local maximal peaks
+       minI             - the local maximal peaks' contour indices
+       contour          - the worm's contour
+       wormSegSize      - the size (in contour length) of a worm segment.
+                          Note 1: the worm is roughly divided into 24
+                          segments of musculature (i.e., hinges that
+                          represent degrees of freedom) on each side.
+                          Therefore, 48 segments around a 2-D contour.
+                          Note 2: &quot;In C. elegans the 95 rhomboid-shaped
+                          body wall muscle cells are arranged as staggered
+                          pairs in four longitudinal bundles located in
+                          four quadrants. Three of these bundles (DL, DR,
+                          VR) contain 24 cells each, whereas VL bundle
+                          contains 23 cells.&quot; - www.wormatlas.org
+       chainCodeLengths - the chain-code length at each point;
+                          if empty, the array indices are used instead
+
+   Output:
+       skeleton - the worm's skeleton
+       cWidths  - the worm contour's width at each skeleton point
+
+ See also <a href="segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">SEGWORM</a>, CIRCCOMPUTECHAINCODELENGTHS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>	CHAINCODELENGTH2INDEX Translate a length into an index. The index</li><li><a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>	CIRCNEARESTPOINTS For each point, find the nearest corresponding point</li><li><a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>	CIRCOPPOSINGNEARESTPOINTS Find the nearest equivalent point indices on the</li><li><a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>	SKELETONIZE Skeletonize takes the 2 pairs of start and end points on a</li><li><a href="cleanSkeleton.html" class="code" title="function [cSkeleton cWidths] = cleanSkeleton(skeleton, widths, wormSegSize)">cleanSkeleton</a>	CLEANSKELETON Clean an 8-connected skeleton by removing any overlap and</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="coiledSkeleton.html" class="code" title="function worm = coiledSkeleton(oContour, iContour, sWormSegs)">coiledSkeleton</a>	COILEDSKELETON Summary of this function goes here</li><li><a href="loopedSkeleton.html" class="code" title="function worm = loopedSkeleton(oContour, iContour, wormSegSize)">loopedSkeleton</a>	LOOPEDSKELETON Summary of this function goes here</li><li><a href="segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function points = betweenPoints(pointsI, startI, endI)</a></li><li><a href="#_sub2" class="code">function points = maxDistPoints(pointsI, oppPointsI, maxDistI, contour)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [skeleton cWidths] = linearSkeleton(headI, tailI, minP, minI, </a><span class="keyword">...</span>
+0002     maxP, maxI, contour, wormSegSize, varargin)
+0003 <span class="comment">%LINEARSKELETON Skeletonize a linear (non-looped) worm. The worm is</span>
+0004 <span class="comment">%skeletonized by splitting its contour, from head to tail, into short</span>
+0005 <span class="comment">%segments. These short segments are bounded by matching pairs of minimal</span>
+0006 <span class="comment">%angles (&lt; -20 degrees) and their nearest points on the opposite side of</span>
+0007 <span class="comment">%the worm's contour. We then walk along the opposing sides of these short</span>
+0008 <span class="comment">%segments and mark the midline as our skeleton. The final step is cleaning</span>
+0009 <span class="comment">%up this skeleton to remove overlapping points and interpolate missing ones.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   [SKELETON CWIDTHS] = LINEARSKELETON(HEADI, TAILI, CONTOUR, WORMSEGSIZE)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   [SKELETON CWIDTHS] = LINEARSKELETON(HEADI, TAILI, CONTOUR, WORMSEGSIZE,</span>
+0014 <span class="comment">%                                       CHAINCODELENGTHS)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   Inputs:</span>
+0017 <span class="comment">%       headI            - the head's contour index</span>
+0018 <span class="comment">%       tailI            - the tail's contour index</span>
+0019 <span class="comment">%       minP             - the local minimal peaks</span>
+0020 <span class="comment">%       minI             - the local minimal peaks' contour indices</span>
+0021 <span class="comment">%       minP             - the local maximal peaks</span>
+0022 <span class="comment">%       minI             - the local maximal peaks' contour indices</span>
+0023 <span class="comment">%       contour          - the worm's contour</span>
+0024 <span class="comment">%       wormSegSize      - the size (in contour length) of a worm segment.</span>
+0025 <span class="comment">%                          Note 1: the worm is roughly divided into 24</span>
+0026 <span class="comment">%                          segments of musculature (i.e., hinges that</span>
+0027 <span class="comment">%                          represent degrees of freedom) on each side.</span>
+0028 <span class="comment">%                          Therefore, 48 segments around a 2-D contour.</span>
+0029 <span class="comment">%                          Note 2: &quot;In C. elegans the 95 rhomboid-shaped</span>
+0030 <span class="comment">%                          body wall muscle cells are arranged as staggered</span>
+0031 <span class="comment">%                          pairs in four longitudinal bundles located in</span>
+0032 <span class="comment">%                          four quadrants. Three of these bundles (DL, DR,</span>
+0033 <span class="comment">%                          VR) contain 24 cells each, whereas VL bundle</span>
+0034 <span class="comment">%                          contains 23 cells.&quot; - www.wormatlas.org</span>
+0035 <span class="comment">%       chainCodeLengths - the chain-code length at each point;</span>
+0036 <span class="comment">%                          if empty, the array indices are used instead</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%   Output:</span>
+0039 <span class="comment">%       skeleton - the worm's skeleton</span>
+0040 <span class="comment">%       cWidths  - the worm contour's width at each skeleton point</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% See also SEGWORM, CIRCCOMPUTECHAINCODELENGTHS</span>
+0043 
+0044 <span class="comment">% Are there chain-code lengths?</span>
+0045 <span class="keyword">if</span> length(varargin) == 1
+0046     chainCodeLengths = varargin{1};
+0047 <span class="keyword">else</span>
+0048     chainCodeLengths = 1:size(contour,1);
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">% Compute the edge size to use in searching for opposing contour points.</span>
+0052 <span class="comment">% We use 1/4 of a contour side to be safe.</span>
+0053 <span class="comment">% Note: worm curvature can significantly distort the length of a contour</span>
+0054 <span class="comment">% side and, consequently, the locations of identical spots on opposing</span>
+0055 <span class="comment">% sides of the contour. Therefore, in addition to using scaled locations,</span>
+0056 <span class="comment">% we also use a large search window to ensure we correctly identify</span>
+0057 <span class="comment">% opposing contour locations.</span>
+0058 searchEdgeSize = chainCodeLengths(end) / 8;
+0059 
+0060 <span class="comment">% Compute the segment size to use in excluding the head and tail angles.</span>
+0061 <span class="comment">% Due to bends and obscure boundaries at the head and tail, it is difficult</span>
+0062 <span class="comment">% to match opposing contour points near these locations.The worm's head and</span>
+0063 <span class="comment">% tail occupy, approximately, 4 muscle segments each, on the skeleton and</span>
+0064 <span class="comment">% either side of the contour.</span>
+0065 <span class="comment">% Note: &quot;The first two muscle cells in the two ventral and two dorsal rows</span>
+0066 <span class="comment">% [of the head] are smaller than their lateral counterparts, giving a</span>
+0067 <span class="comment">% stagger to the packing of the two rows of cells in a quadrant. The first</span>
+0068 <span class="comment">% four muscles in each quadrant are innervated exclusively by motoneurons</span>
+0069 <span class="comment">% in the nerve ring. The second block of four muscles is dually innervated,</span>
+0070 <span class="comment">% receiving synaptic input from motoneurons in the nerve ring and the</span>
+0071 <span class="comment">% anterior ventral cord. The rest of the muscles in the body are</span>
+0072 <span class="comment">% exclusively innervated by NMJs in the dorsal and ventral cords.&quot; - The</span>
+0073 <span class="comment">% Structure of the Nervous System of the Nematode C. elegans, on</span>
+0074 <span class="comment">% www.wormatlas.org</span>
+0075 htSegSize = wormSegSize * 4;
+0076 
+0077 <span class="comment">% Find small head boundaries.</span>
+0078 sHeadI = chainCodeLengths(headI) - htSegSize;
+0079 <span class="keyword">if</span> sHeadI &lt; chainCodeLengths(1)
+0080     sHeadI = sHeadI + chainCodeLengths(end);
+0081 <span class="keyword">end</span>
+0082 sHeadI = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(sHeadI, chainCodeLengths);
+0083 eHeadI = chainCodeLengths(headI) + htSegSize;
+0084 <span class="keyword">if</span> eHeadI &gt; chainCodeLengths(end)
+0085     eHeadI = eHeadI - chainCodeLengths(end);
+0086 <span class="keyword">end</span>
+0087 eHeadI = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(eHeadI, chainCodeLengths);
+0088 
+0089 <span class="comment">% Find small tail boundaries.</span>
+0090 sTailI = chainCodeLengths(tailI) - htSegSize;
+0091 <span class="keyword">if</span> sTailI &lt; chainCodeLengths(1)
+0092     sTailI = sTailI + chainCodeLengths(end);
+0093 <span class="keyword">end</span>
+0094 sTailI = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(sTailI, chainCodeLengths);
+0095 eTailI = chainCodeLengths(tailI) + htSegSize;
+0096 <span class="keyword">if</span> eTailI &gt; chainCodeLengths(end)
+0097     eTailI = eTailI - chainCodeLengths(end);
+0098 <span class="keyword">end</span>
+0099 eTailI = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(eTailI, chainCodeLengths);
+0100 
+0101 <span class="comment">% Find the large minimal bends away from the head and tail.</span>
+0102 bendI = [minI(minP &lt; -20); maxI(maxP &gt; 20)];
+0103 bendI(<a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(bendI, sHeadI, eHeadI)) = [];
+0104 bendI(<a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(bendI, sTailI, eTailI)) = [];
+0105 
+0106 <span class="comment">% Compute the head, tail, midbody, and bends for both sides.</span>
+0107 <span class="comment">% Skeletonization occurs piecemeal, stitching together segments starting at</span>
+0108 <span class="comment">% the midbody, from bend to bend, and ending with the head/tail.</span>
+0109 <span class="comment">% Side1 always goes from head to tail in positive, index increments.</span>
+0110 <span class="comment">% Side2 always goes from head to tail in negative, index increments.</span>
+0111 cLength = size(contour, 1);
+0112 <span class="keyword">if</span> headI &lt;= tailI
+0113     
+0114     <span class="comment">% Compute the head indices.</span>
+0115     h1 = headI + 1;
+0116     h2 = headI - 1;
+0117     <span class="keyword">if</span> h2 &lt; 1
+0118         h2 = h2 + cLength;
+0119     <span class="keyword">end</span>
+0120     
+0121     <span class="comment">% Compute the tail indices.</span>
+0122     t1 = tailI - 1;
+0123     t2 = tailI + 1;
+0124     <span class="keyword">if</span> t2 &gt; cLength
+0125         t2 = t2 - cLength;
+0126     <span class="keyword">end</span>
+0127     
+0128     <span class="comment">% Compute the midbody indices for side 1.</span>
+0129     m1s1 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>((chainCodeLengths(headI) + <span class="keyword">...</span>
+0130         chainCodeLengths(tailI)) / 2, chainCodeLengths);
+0131     m1s2 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(m1s1, contour, headI, tailI, <span class="keyword">...</span>
+0132         searchEdgeSize, chainCodeLengths);
+0133     
+0134     <span class="comment">% Compute the midbody indices for side 2.</span>
+0135     m2s2 = (chainCodeLengths(headI) + chainCodeLengths(tailI) + <span class="keyword">...</span>
+0136         chainCodeLengths(end)) / 2;
+0137     <span class="keyword">if</span> m2s2 &gt; chainCodeLengths(end)
+0138         m2s2 = m2s2 - chainCodeLengths(end);
+0139     <span class="keyword">end</span>
+0140     m2s2 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(m2s2, chainCodeLengths);
+0141     m2s1 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(m2s2, contour, headI, tailI, <span class="keyword">...</span>
+0142         searchEdgeSize, chainCodeLengths);
+0143     
+0144     <span class="comment">% The closest points are the true midbody indices.</span>
+0145     <span class="keyword">if</span> sum((contour(m1s1,:) - contour(m1s2,:)) .^ 2) &lt;= <span class="keyword">...</span>
+0146             sum((contour(m2s1,:) - contour(m2s2,:)) .^ 2)
+0147         m1 = m1s1;
+0148         m2 = m1s2;
+0149     <span class="keyword">else</span>
+0150         m1 = m2s1;
+0151         m2 = m2s2;
+0152     <span class="keyword">end</span>
+0153     
+0154     <span class="comment">% Compute the minimum distance between the midbody indices.</span>
+0155     <span class="keyword">if</span> m1 &gt; m2
+0156         dM = min(m1 - m2, m2 + size(contour, 1) - m1);
+0157     <span class="keyword">else</span>
+0158         dM = min(m2 - m1, m1 + size(contour, 1) - m2);
+0159     <span class="keyword">end</span>
+0160     
+0161     <span class="comment">% Compute the bend indices for side 1.</span>
+0162     bendI1 = bendI &gt;= headI &amp; bendI &lt;= tailI;
+0163     b1 = bendI(bendI1);
+0164     oppB1 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(b1, contour, headI, tailI, <span class="keyword">...</span>
+0165         searchEdgeSize, chainCodeLengths);
+0166     
+0167     <span class="comment">% Remove any bend indices too close to the head and/or tail.</span>
+0168     headB1 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(oppB1, sHeadI, eHeadI);
+0169     b1(headB1) = [];
+0170     oppB1(headB1) = [];
+0171     tailB1 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(oppB1, sTailI, eTailI);
+0172     b1(tailB1) = [];
+0173     oppB1(tailB1) = [];
+0174     
+0175     <span class="comment">% Remove any bend indices that cross the midline.</span>
+0176     crossed = <a href="#_sub2" class="code" title="subfunction points = maxDistPoints(pointsI, oppPointsI, maxDistI, contour)">maxDistPoints</a>(b1, oppB1, dM, contour);
+0177     b1(crossed) = [];
+0178     oppB1(crossed) = [];
+0179     
+0180     <span class="comment">% Minimize the width at the bend.</span>
+0181     b1 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(oppB1, contour, headI, tailI, <span class="keyword">...</span>
+0182         searchEdgeSize, chainCodeLengths);
+0183     
+0184     <span class="comment">% Remove any bend indices too close to the head and/or tail.</span>
+0185     headB1 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(b1, sHeadI, eHeadI);
+0186     b1(headB1) = [];
+0187     oppB1(headB1) = [];
+0188     tailB1 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(b1, sTailI, eTailI);
+0189     b1(tailB1) = [];
+0190     oppB1(tailB1) = [];
+0191     
+0192     <span class="comment">% Remove any bend indices that cross the midline.</span>
+0193     crossed = <a href="#_sub2" class="code" title="subfunction points = maxDistPoints(pointsI, oppPointsI, maxDistI, contour)">maxDistPoints</a>(b1, oppB1, dM, contour);
+0194     b1(crossed) = [];
+0195     oppB1(crossed) = [];
+0196     
+0197     <span class="comment">% Compute the bend indices for side 2.</span>
+0198     b2 = bendI(~bendI1);
+0199     oppB2 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(b2, contour, headI, tailI, <span class="keyword">...</span>
+0200         searchEdgeSize, chainCodeLengths);
+0201     
+0202     <span class="comment">% Remove any bend indices too close to the head and/or tail.</span>
+0203     headB2 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(oppB2, sHeadI, eHeadI);
+0204     b2(headB2) = [];
+0205     oppB2(headB2) = [];
+0206     tailB2 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(oppB2, sTailI, eTailI);
+0207     b2(tailB2) = [];
+0208     oppB2(tailB2) = [];
+0209     
+0210     <span class="comment">% Remove any bend indices that cross the midline.</span>
+0211     crossed = <a href="#_sub2" class="code" title="subfunction points = maxDistPoints(pointsI, oppPointsI, maxDistI, contour)">maxDistPoints</a>(b2, oppB2, dM, contour);
+0212     b2(crossed) = [];
+0213     oppB2(crossed) = [];
+0214     
+0215     <span class="comment">% Minimize the width at the bend.</span>
+0216     b2 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(oppB2, contour, headI, tailI, <span class="keyword">...</span>
+0217         searchEdgeSize, chainCodeLengths);
+0218     
+0219     <span class="comment">% Remove any bend indices too close to the head and/or tail.</span>
+0220     headB2 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(b2, sHeadI, eHeadI);
+0221     b2(headB2) = [];
+0222     oppB2(headB2) = [];
+0223     tailB2 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(b2, sTailI, eTailI);
+0224     b2(tailB2) = [];
+0225     oppB2(tailB2) = [];
+0226     
+0227     <span class="comment">% Remove any bend indices that cross the midline.</span>
+0228     crossed = <a href="#_sub2" class="code" title="subfunction points = maxDistPoints(pointsI, oppPointsI, maxDistI, contour)">maxDistPoints</a>(b2, oppB2, dM, contour);
+0229     b2(crossed) = [];
+0230     oppB2(crossed) = [];
+0231     
+0232     <span class="comment">% Combine the bend indices from opposing sides and order everything so</span>
+0233     <span class="comment">% that the skeleton segments can never cross.</span>
+0234     [b1 bO] = sort([m1; b1; oppB2]);
+0235     b2 = sort([m2; b2; oppB1], 1, <span class="string">'descend'</span>);
+0236     b2 = [b2(b2 &lt;= headI); b2(b2 &gt;= tailI)];
+0237     mI = find(bO == 1);
+0238 
+0239     <span class="comment">% Compute the inter-bend indices.</span>
+0240     ib1 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>((chainCodeLengths(b1(1:(end - 1))) + <span class="keyword">...</span>
+0241         chainCodeLengths(b1(2:end))) / 2, chainCodeLengths);
+0242     ib2 = zeros(length(ib1), 1);
+0243     <span class="keyword">for</span> i = 1:length(ib2)
+0244         ib2(i) = <a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>(contour(ib1(i),:), b2(i + 1), b2(i), <span class="keyword">...</span>
+0245             contour);
+0246     <span class="keyword">end</span>
+0247 
+0248 <span class="comment">% Side 1 wraps.</span>
+0249 <span class="keyword">else</span> <span class="comment">% headI &gt; tailI</span>
+0250     
+0251     <span class="comment">% Compute the head indices.</span>
+0252     h1 = headI + 1;
+0253     <span class="keyword">if</span> h1 &gt; cLength
+0254         h1 = h1 - cLength;
+0255     <span class="keyword">end</span>
+0256     h2 = headI - 1;
+0257     
+0258     <span class="comment">% Compute the tail indices.</span>
+0259     t1 = tailI - 1;
+0260     <span class="keyword">if</span> t1 &lt; 1
+0261         t1 = t1 + cLength;
+0262     <span class="keyword">end</span>
+0263     t2 = tailI + 1;
+0264     
+0265     <span class="comment">% Compute the midbody indices for side 2.</span>
+0266     m1s2 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>((chainCodeLengths(headI) + <span class="keyword">...</span>
+0267         chainCodeLengths(tailI)) / 2, chainCodeLengths);
+0268     m1s1 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(m1s2, contour, headI, tailI, <span class="keyword">...</span>
+0269         searchEdgeSize, chainCodeLengths);
+0270     
+0271     <span class="comment">% Compute the midbody indices for side 1.</span>
+0272     m2s1 = (chainCodeLengths(headI) + chainCodeLengths(tailI) + <span class="keyword">...</span>
+0273         chainCodeLengths(end)) / 2;
+0274     <span class="keyword">if</span> m2s1 &gt; chainCodeLengths(end)
+0275         m2s1 = m2s1 - chainCodeLengths(end);
+0276     <span class="keyword">end</span>
+0277     m2s1 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(m2s1, chainCodeLengths);
+0278     m2s2 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(m2s1, contour, headI, tailI, <span class="keyword">...</span>
+0279         searchEdgeSize, chainCodeLengths);
+0280     
+0281     <span class="comment">% The closest points are the true midbody indices.</span>
+0282     <span class="keyword">if</span> sum((contour(m1s1,:) - contour(m1s2,:)) .^ 2) &lt;= <span class="keyword">...</span>
+0283             sum((contour(m2s1,:) - contour(m2s2,:)) .^ 2)
+0284         m1 = m1s1;
+0285         m2 = m1s2;
+0286     <span class="keyword">else</span>
+0287         m1 = m2s1;
+0288         m2 = m2s2;
+0289     <span class="keyword">end</span>
+0290         
+0291     <span class="comment">% Compute the minimum distance between the midbody indices.</span>
+0292     <span class="keyword">if</span> m1 &gt; m2
+0293         dM = min(m1 - m2, m2 + size(contour, 1) - m1);
+0294     <span class="keyword">else</span>
+0295         dM = min(m2 - m1, m1 + size(contour, 1) - m2);
+0296     <span class="keyword">end</span>
+0297     
+0298     <span class="comment">% Compute the bend indices for side 2.</span>
+0299     bendI2 = bendI &lt;= headI &amp; bendI &gt;= tailI;
+0300     b2 = bendI(bendI2);
+0301     oppB2 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(b2, contour, headI, tailI, <span class="keyword">...</span>
+0302         searchEdgeSize, chainCodeLengths);
+0303     
+0304     <span class="comment">% Remove any bend indices too close to the head and/or tail.</span>
+0305     headB2 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(oppB2, sHeadI, eHeadI);
+0306     b2(headB2) = [];
+0307     oppB2(headB2) = [];
+0308     tailB2 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(oppB2, sTailI, eTailI);
+0309     b2(tailB2) = [];
+0310     oppB2(tailB2) = [];
+0311     
+0312     <span class="comment">% Remove any bend indices that cross the midline.</span>
+0313     crossed = <a href="#_sub2" class="code" title="subfunction points = maxDistPoints(pointsI, oppPointsI, maxDistI, contour)">maxDistPoints</a>(b2, oppB2, dM, contour);
+0314     b2(crossed) = [];
+0315     oppB2(crossed) = [];
+0316     
+0317     <span class="comment">% Minimize the width at the bend.</span>
+0318     b2 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(oppB2, contour, headI, tailI, <span class="keyword">...</span>
+0319         searchEdgeSize, chainCodeLengths);
+0320     
+0321     <span class="comment">% Remove any bend indices too close to the head and/or tail.</span>
+0322     headB2 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(b2, sHeadI, eHeadI);
+0323     b2(headB2) = [];
+0324     oppB2(headB2) = [];
+0325     tailB2 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(b2, sTailI, eTailI);
+0326     b2(tailB2) = [];
+0327     oppB2(tailB2) = [];
+0328     
+0329     <span class="comment">% Remove any bend indices that cross the midline.</span>
+0330     crossed = <a href="#_sub2" class="code" title="subfunction points = maxDistPoints(pointsI, oppPointsI, maxDistI, contour)">maxDistPoints</a>(b2, oppB2, dM, contour);
+0331     b2(crossed) = [];
+0332     oppB2(crossed) = [];
+0333     
+0334     <span class="comment">% Compute the bend indices for side 1.</span>
+0335     b1 = bendI(~bendI2);
+0336     oppB1 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(b1, contour, headI, tailI, <span class="keyword">...</span>
+0337         searchEdgeSize, chainCodeLengths);
+0338     
+0339     <span class="comment">% Remove any bend indices too close to the head and/or tail.</span>
+0340     headB1 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(oppB1, sHeadI, eHeadI);
+0341     b1(headB1) = [];
+0342     oppB1(headB1) = [];
+0343     tailB1 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(oppB1, sTailI, eTailI);
+0344     b1(tailB1) = [];
+0345     oppB1(tailB1) = [];
+0346     
+0347     <span class="comment">% Remove any bend indices that cross the midline.</span>
+0348     crossed = <a href="#_sub2" class="code" title="subfunction points = maxDistPoints(pointsI, oppPointsI, maxDistI, contour)">maxDistPoints</a>(b1, oppB1, dM, contour);
+0349     b1(crossed) = [];
+0350     oppB1(crossed) = [];
+0351     
+0352     <span class="comment">% Minimize the width at the bend.</span>
+0353     b1 = <a href="../../../SegWorm/ComputerVision/circOpposingNearestPoints.html" class="code" title="function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI,searchLength, varargin)">circOpposingNearestPoints</a>(oppB1, contour, headI, tailI, <span class="keyword">...</span>
+0354         searchEdgeSize, chainCodeLengths);
+0355     
+0356     <span class="comment">% Remove any bend indices too close to the head and/or tail.</span>
+0357     headB1 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(b1, sHeadI, eHeadI);
+0358     b1(headB1) = [];
+0359     oppB1(headB1) = [];
+0360     tailB1 = <a href="#_sub1" class="code" title="subfunction points = betweenPoints(pointsI, startI, endI)">betweenPoints</a>(b1, sTailI, eTailI);
+0361     b1(tailB1) = [];
+0362     oppB1(tailB1) = [];
+0363     
+0364     <span class="comment">% Remove any bend indices that cross the midline.</span>
+0365     crossed = <a href="#_sub2" class="code" title="subfunction points = maxDistPoints(pointsI, oppPointsI, maxDistI, contour)">maxDistPoints</a>(b1, oppB1, dM, contour);
+0366     b1(crossed) = [];
+0367     oppB1(crossed) = [];
+0368     
+0369     <span class="comment">% Combine the bend indices from opposing sides and order everything so</span>
+0370     <span class="comment">% that the skeleton segments can never cross.</span>
+0371     b1 = sort([m1; b1; oppB2]);
+0372     b1 = [b1(b1 &gt;= headI); b1(b1 &lt;= tailI)];
+0373     [b2 bO] = sort([m2; b2; oppB1], 1, <span class="string">'descend'</span>);
+0374     mI = find(bO == 1);
+0375     
+0376     <span class="comment">% Compute the inter-bend indices.</span>
+0377     ib2 = <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>((chainCodeLengths(b2(1:(end - 1))) + <span class="keyword">...</span>
+0378         chainCodeLengths(b2(2:end))) / 2, chainCodeLengths);
+0379     ib1 = zeros(length(ib2), 1);
+0380     <span class="keyword">for</span> i = 1:length(ib2)
+0381         ib1(i) = <a href="../../../SegWorm/ComputerVision/circNearestPoints.html" class="code" title="function nearI = circNearestPoints(points, minI, maxI, x)">circNearestPoints</a>(contour(ib2(i),:), b1(i), b1(i + 1), <span class="keyword">...</span>
+0382             contour);
+0383     <span class="keyword">end</span>
+0384 <span class="keyword">end</span>
+0385 
+0386 <span class="comment">% Skeletonize the worm from its midbody to its head.</span>
+0387 mhSkeleton = zeros(size(contour, 1), 2);
+0388 mhWidths = zeros(size(contour, 1), 1);
+0389 i = mI;
+0390 j = 1;
+0391 <span class="keyword">while</span> i &gt; 1
+0392     
+0393     <span class="comment">% Skeletonize the segment from the bend to the interbend.</span>
+0394     [segment widths] = <a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>(b1(i), ib1(i - 1), -1, <span class="keyword">...</span>
+0395         b2(i), ib2(i - 1), 1, contour, contour, false);
+0396     nextJ = j + size(segment, 1) - 1;
+0397     mhSkeleton(j:nextJ,:) = segment;
+0398     mhWidths(j:nextJ) = widths;
+0399     j = nextJ + 1;
+0400     i = i - 1;
+0401     
+0402     <span class="comment">% Skeletonize the segment from the next bend back to the interbend.</span>
+0403     [segment widths] = <a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>(b1(i), ib1(i), 1, <span class="keyword">...</span>
+0404         b2(i), ib2(i), -1, contour, contour, false);
+0405     nextJ = j + size(segment, 1) - 1;
+0406     mhSkeleton(j:nextJ,:) = flipud(segment);
+0407     mhWidths(j:nextJ) = flipud(widths);
+0408     j = nextJ + 1;
+0409 <span class="keyword">end</span>
+0410 
+0411 <span class="comment">% Skeletonize the segment from the last bend to the head.</span>
+0412 [segment widths] = <a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>(b1(i), h1, -1, b2(i), h2, 1, <span class="keyword">...</span>
+0413     contour, contour, false);
+0414 nextJ = j + size(segment, 1) - 1;
+0415 mhSkeleton(j:nextJ,:) = segment;
+0416 mhWidths(j:nextJ) = widths;
+0417 
+0418 <span class="comment">% Clean up.</span>
+0419 mhSkeleton((nextJ + 1):<span class="keyword">end</span>,:) = [];
+0420 mhWidths((nextJ + 1):end) = [];
+0421 
+0422 <span class="comment">% Skeletonize the worm from its midbody to its tail.</span>
+0423 mtSkeleton = zeros(size(contour, 1), 2);
+0424 mtWidths = zeros(size(contour, 1), 1);
+0425 i = mI;
+0426 j = 1;
+0427 <span class="keyword">while</span> i &lt; length(b1)
+0428     
+0429     <span class="comment">% Skeletonize the segment from the bend to the interbend.</span>
+0430     [segment widths] = <a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>(b1(i), ib1(i), 1, <span class="keyword">...</span>
+0431         b2(i), ib2(i), -1, contour, contour, false);
+0432     nextJ = j + size(segment, 1) - 1;
+0433     mtSkeleton(j:nextJ,:) = segment;
+0434     mtWidths(j:nextJ) = widths;
+0435     j = nextJ + 1;
+0436     i = i + 1;
+0437 
+0438     <span class="comment">% Skeletonize the segment from the next bend back to the interbend.</span>
+0439     [segment widths] = <a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>(b1(i), ib1(i - 1), -1, <span class="keyword">...</span>
+0440         b2(i), ib2(i - 1), 1, contour, contour, false);
+0441     nextJ = j + size(segment, 1) - 1;
+0442     mtSkeleton(j:nextJ,:) = flipud(segment);
+0443     mtWidths(j:nextJ) = flipud(widths);
+0444     j = nextJ + 1;
+0445 <span class="keyword">end</span>
+0446 
+0447 <span class="comment">% Skeletonize the segment from the last bend to the tail.</span>
+0448 [segment widths] = <a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>(b1(i), t1, 1, b2(i), t2, -1, <span class="keyword">...</span>
+0449     contour, contour, false);
+0450 nextJ = j + size(segment, 1) - 1;
+0451 mtSkeleton(j:nextJ,:) = segment;
+0452 mtWidths(j:nextJ) = widths;
+0453 
+0454 <span class="comment">% Clean up.</span>
+0455 mtSkeleton((nextJ + 1):<span class="keyword">end</span>,:) = [];
+0456 mtWidths((nextJ + 1):end) = [];
+0457 
+0458 <span class="comment">% % Skeletonize the worm from its midbody to its head and tail.</span>
+0459 <span class="comment">% [mhSkeleton mhWidths] = skeletonize(m1, h1, -1, m2, h2, 1, ...</span>
+0460 <span class="comment">%     contour, contour, false);</span>
+0461 <span class="comment">% [mtSkeleton mtWidths] = skeletonize(m1, t1, 1, m2, t2, -1, ...</span>
+0462 <span class="comment">%     contour, contour, false);</span>
+0463 
+0464 <span class="comment">% Reconstruct the skeleton.</span>
+0465 skeleton = [contour(headI,:); flipud(mhSkeleton); mtSkeleton; contour(tailI,:)];
+0466 cWidths = [0; flipud(mhWidths); mtWidths; 0];
+0467 
+0468 <span class="comment">% Clean up the rough skeleton.</span>
+0469 skeleton = round(skeleton);
+0470 [skeleton cWidths] = <a href="cleanSkeleton.html" class="code" title="function [cSkeleton cWidths] = cleanSkeleton(skeleton, widths, wormSegSize)">cleanSkeleton</a>(skeleton, cWidths, wormSegSize);
+0471 <span class="keyword">end</span>
+0472 
+0473 <span class="comment">% Find pointsI between startI and endI, inclusive.</span>
+0474 <a name="_sub1" href="#_subfunctions" class="code">function points = betweenPoints(pointsI, startI, endI)</a>
+0475 <span class="keyword">if</span> startI &lt; endI
+0476     points = pointsI &gt;= startI &amp; pointsI &lt;= endI;
+0477 <span class="keyword">else</span>
+0478     points = pointsI &gt;= startI | pointsI &lt;= endI;
+0479 <span class="keyword">end</span>
+0480 <span class="keyword">end</span>
+0481 
+0482 <span class="comment">% Find pointsI whose index distance from oppPointsI exceeds maxDistI.</span>
+0483 <a name="_sub2" href="#_subfunctions" class="code">function points = maxDistPoints(pointsI, oppPointsI, maxDistI, contour)</a>
+0484 
+0485 <span class="comment">% How close are the points?</span>
+0486 points = false(length(pointsI),1);
+0487 <span class="keyword">for</span> i = 1:length(pointsI)
+0488     <span class="keyword">if</span> pointsI(i) &gt; oppPointsI(i)
+0489         
+0490         <span class="comment">% The points exceed the threshold.</span>
+0491         <span class="keyword">if</span> maxDistI &lt;= min(pointsI(i) - oppPointsI(i), <span class="keyword">...</span>
+0492                 oppPointsI(i) + size(contour, 1) - pointsI(i))
+0493             points(i) = true;
+0494         <span class="keyword">end</span>
+0495         
+0496     <span class="comment">% The points exceed the threshold.</span>
+0497     <span class="keyword">elseif</span> maxDistI &lt;= min(oppPointsI(i) - pointsI(i), <span class="keyword">...</span>
+0498             pointsI(i) + size(contour, 1) - oppPointsI(i))
+0499         points(i) = true;
+0500     <span class="keyword">end</span>
+0501 <span class="keyword">end</span>
+0502 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

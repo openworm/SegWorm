@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormTouchFrames</title>
+  <meta name="keywords" content="wormTouchFrames">
+  <meta name="description" content="WORMTOUCHFRAMES Find the frames where the worm touches itself (i.e., coils).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>wormTouchFrames
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMTOUCHFRAMES Find the frames where the worm touches itself (i.e., coils).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function touchFrames = wormTouchFrames(frameCodes, fps) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMTOUCHFRAMES Find the frames where the worm touches itself (i.e., coils).
+
+   TOUCHFRAMES = WORMTOUCHFRAMES(FRAMECODES, FPS)
+
+   Input:
+       frameCodes - the frame codes annotating the worm segmentation per
+                    video frame
+       fps        - the video's frames/second
+
+   Output:
+       touchFrames - a struct containing the frames where the worm
+                     touches itself; the fields are:
+
+                     start = the starting frame wherein the worm
+                             initiates the touch
+                     end   = the ending frame wherein the worm
+                             terminates the touch
+
+ See also SEGWORM, WORMFRAMEANNOTATION</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Util/wormFrameAnnotation.html" class="code" title="function annotation = wormFrameAnnotation()">wormFrameAnnotation</a>	FRAMEANNOTATIONCODES Get the video frame annotation information for worm</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function touchFrames = wormTouchFrames(frameCodes, fps)</a>
+0002 <span class="comment">%WORMTOUCHFRAMES Find the frames where the worm touches itself (i.e., coils).</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   TOUCHFRAMES = WORMTOUCHFRAMES(FRAMECODES, FPS)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Input:</span>
+0007 <span class="comment">%       frameCodes - the frame codes annotating the worm segmentation per</span>
+0008 <span class="comment">%                    video frame</span>
+0009 <span class="comment">%       fps        - the video's frames/second</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Output:</span>
+0012 <span class="comment">%       touchFrames - a struct containing the frames where the worm</span>
+0013 <span class="comment">%                     touches itself; the fields are:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%                     start = the starting frame wherein the worm</span>
+0016 <span class="comment">%                             initiates the touch</span>
+0017 <span class="comment">%                     end   = the ending frame wherein the worm</span>
+0018 <span class="comment">%                             terminates the touch</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% See also SEGWORM, WORMFRAMEANNOTATION</span>
+0021 
+0022 <span class="comment">% Initialize the frame codes.</span>
+0023 codes = <a href="../../../SegWorm/Worms/Util/wormFrameAnnotation.html" class="code" title="function annotation = wormFrameAnnotation()">wormFrameAnnotation</a>();
+0024 segCode = codes(1).id;
+0025 dropCode = codes(2).id;
+0026 stageCode = codes(3).id;
+0027 <span class="comment">%noWormCode = codes(4).id;</span>
+0028 <span class="comment">%boundaryCode = codes(5).id;</span>
+0029 <span class="comment">%smallWormCode = codes(6).id;</span>
+0030 tooFewEndsCode = codes(8).id;
+0031 doubleLengthSideCode = codes(9).id;
+0032 
+0033 <span class="comment">% Compute the touch duration threshold.</span>
+0034 touchThr = round(1/5 * fps);
+0035 
+0036 <span class="comment">% Find the touch frames.</span>
+0037 touchFrames = struct( <span class="keyword">...</span>
+0038     <span class="string">'start'</span>, [], <span class="keyword">...</span>
+0039     <span class="string">'end'</span>, []);
+0040 touchFramesI = 0;
+0041 numTouches = 0;
+0042 numVideoErrs = 0;
+0043 numOtherErrs = 0;
+0044 <span class="keyword">for</span> i = 1:length(frameCodes)
+0045     
+0046     <span class="keyword">switch</span> frameCodes(i)
+0047         
+0048         <span class="comment">% Do we have a potential touch frame?</span>
+0049         <span class="keyword">case</span> {tooFewEndsCode, doubleLengthSideCode}
+0050 
+0051             <span class="comment">% Absorb any intervening frames.</span>
+0052             numTouches = numTouches + numVideoErrs + numOtherErrs;
+0053             numVideoErrs = 0;
+0054             numOtherErrs = 0;
+0055             numTouches = numTouches + 1;
+0056             
+0057         <span class="comment">% Do we have an intervening video issue?</span>
+0058         <span class="keyword">case</span> {dropCode, stageCode}
+0059             <span class="keyword">if</span> numTouches &gt; 0
+0060                 numVideoErrs = numVideoErrs + 1;
+0061             <span class="keyword">end</span>
+0062             
+0063         <span class="comment">% Do we have a potential non-touch frame?</span>
+0064         <span class="keyword">case</span> segCode <span class="comment">%, noWormCode, boundaryCode, smallWormCode}</span>
+0065             
+0066             <span class="comment">% Do we have enough potential touch frames?</span>
+0067             <span class="keyword">if</span> numTouches + numVideoErrs + numOtherErrs &gt;= touchThr
+0068                 numFrames = numTouches + numVideoErrs + numOtherErrs;
+0069                 numTouches = numTouches + numOtherErrs;
+0070                 touchFramesI = touchFramesI + 1;
+0071                 touchFrames(touchFramesI).start = i - numFrames - 1;
+0072                 touchFrames(touchFramesI).end = <span class="keyword">...</span>
+0073                     touchFrames(touchFramesI).start + numTouches - 1;
+0074             <span class="keyword">end</span>
+0075             
+0076             <span class="comment">% Intialize the frame counts.</span>
+0077             numTouches = 0;
+0078             numVideoErrs = 0;
+0079             numOtherErrs = 0;
+0080             
+0081         <span class="comment">% Do we have an intervening segmentation error?</span>
+0082         <span class="keyword">otherwise</span>
+0083             
+0084             <span class="comment">% Absorb any video issues.</span>
+0085             <span class="keyword">if</span> numTouches &gt; 0
+0086                 numOtherErrs = numOtherErrs + numVideoErrs;
+0087                 numVideoErrs = 0;
+0088                 numOtherErrs = numOtherErrs + 1;
+0089             <span class="keyword">end</span>
+0090     <span class="keyword">end</span>
+0091 <span class="keyword">end</span>
+0092 
+0093 <span class="comment">% At the end of the video, do we have enough potential touch frames?</span>
+0094 <span class="keyword">if</span> numTouches + numVideoErrs + numOtherErrs &gt;= touchThr
+0095     numFrames = numTouches + numVideoErrs + numOtherErrs;
+0096     numTouches = numTouches + numOtherErrs;
+0097     touchFramesI = touchFramesI + 1;
+0098     touchFrames(touchFramesI).start = i - numFrames - 1;
+0099     touchFrames(touchFramesI).end = <span class="keyword">...</span>
+0100         touchFrames(touchFramesI).start + numTouches - 1;
+0101 <span class="keyword">end</span>
+0102 
+0103 <span class="comment">% Did we find any touch frames?</span>
+0104 <span class="keyword">if</span> isempty(touchFrames(1).start)
+0105     touchFrames = [];
+0106 <span class="keyword">end</span>
+0107 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

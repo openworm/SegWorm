@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoWriterDemo</title>
+  <meta name="keywords" content="videoWriterDemo">
+  <meta name="description" content="videoWriterDemo">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>videoWriterDemo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>videoWriterDemo</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">videoWriterDemo
+  A script showing an interesting usage of videoWriter.  Shows basic usage
+  of videoWriter objects with extra-safe cleanup.
+
+Example:
+  videoWriterDemo</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>	INFO=GET(VR)</li><li><a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>	ADDFRAME  Add video frame to VIDEOWRITER stream.</li><li><a href="../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="../../videoIO/@videoWriter/get.html" class="code" title="function info = get(vw,varargin)">get</a>	INFO=GET(VW)</li><li><a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>	videoWriter class constructor</li><li><a href="../../videoIO/buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>	buildVideoIO</li><li><a href="genTestFrame.html" class="code" title="function frame = genTestFrame(w,h,i,N)">genTestFrame</a>	frame = genTestFrame(w,h,i,N)</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="iprintf.html" class="code" title="function iprintf(varargin)">iprintf</a>	IPRINTF(...)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%videoWriterDemo</span>
+0002 <span class="comment">%  A script showing an interesting usage of videoWriter.  Shows basic usage</span>
+0003 <span class="comment">%  of videoWriter objects with extra-safe cleanup.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%Example:</span>
+0006 <span class="comment">%  videoWriterDemo</span>
+0007 
+0008 
+0009 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>;
+0010 
+0011 <span class="comment">% be nice and build the plugins if the user for got to (most scripts would</span>
+0012 <span class="comment">% skip this).</span>
+0013 <span class="keyword">if</span> exist(<span class="string">'buildVideoIO'</span>, <span class="string">'file'</span>) == 2, <a href="../../videoIO/buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>; <span class="keyword">end</span>
+0014 
+0015 <span class="comment">% create the videoWriter object using default settings</span>
+0016 fname = [tempname <span class="string">'.avi'</span>];
+0017 <span class="keyword">try</span>
+0018   vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>(fname);
+0019   
+0020   <span class="comment">% get the width and height of the video so we know how big to make the</span>
+0021   <span class="comment">% input frames.  This isn't strictly necessary--we either could have</span>
+0022   <span class="comment">% told the videoWriter constructor what frame size we wanted or we could</span>
+0023   <span class="comment">% let addframe rescale the frames automatically for us.</span>
+0024   info = <a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(vw);
+0025   w = info.width;
+0026   h = info.height;
+0027   
+0028   <span class="comment">% Add 1001 frames to our video</span>
+0029   N = 5000;
+0030   <span class="keyword">for</span> i=0:N
+0031     <span class="keyword">if</span> (mod(i,100)==0), <a href="iprintf.html" class="code" title="function iprintf(varargin)">iprintf</a>(<span class="string">'creating frame %d...'</span>, i); <span class="keyword">end</span>
+0032     
+0033     <span class="comment">% Create some image</span>
+0034     frame = <a href="genTestFrame.html" class="code" title="function frame = genTestFrame(w,h,i,N)">genTestFrame</a>(w,h,i,N);
+0035     
+0036     <span class="comment">% encode the frame</span>
+0037     <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, frame);
+0038   <span class="keyword">end</span>
+0039   
+0040   <span class="comment">% make sure to clean up...otherwise the output file may be corrupted</span>
+0041   vw = <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw);
+0042 
+0043   <a href="iprintf.html" class="code" title="function iprintf(varargin)">iprintf</a>([<span class="string">'The file &quot;%s&quot; has been created.  Default videoWriter args were '</span> <span class="keyword">...</span>
+0044            <span class="string">'used.  You may inspect it to see the results.'</span>], fname);
+0045 <span class="keyword">catch</span>
+0046   <span class="comment">% On error, here we try as hard as possible to clean up any messes.</span>
+0047   e = lasterror;
+0048   <span class="comment">% Often the backend will close the writer object on error, but if it can</span>
+0049   <span class="comment">% avoid closing it, it will.  Thus we try to close it here.  This way we</span>
+0050   <span class="comment">% can free up any resources (memory, threads, file locks, etc.) and if</span>
+0051   <span class="comment">% the video file doesn't have any errors, the backend gets a chance to</span>
+0052   <span class="comment">% write out the footer for the video.</span>
+0053   <span class="keyword">try</span> <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw); <span class="keyword">catch</span> <span class="keyword">end</span>
+0054   <span class="comment">% In this case we just want to delete any problematic files (so writing</span>
+0055   <span class="comment">% the footer wasn't actually important in this special case, but</span>
+0056   <span class="comment">% releasing resources was).</span>
+0057   delete(fname);
+0058   <span class="comment">% Report the *original* problem to the user (not an error that might have</span>
+0059   <span class="comment">% been generated by a failed close attemt).</span>
+0060   rethrow(e);
+0061 <span class="keyword">end</span>
+0062 
+0063 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>;</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

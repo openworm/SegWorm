@@ -1,0 +1,886 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of worm2StatsInfo</title>
+  <meta name="keywords" content="worm2StatsInfo">
+  <meta name="description" content="WORM2STATSINFO Compute worm statistics information and save it to a file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>worm2StatsInfo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORM2STATSINFO Compute worm statistics information and save it to a file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm2StatsInfo(filename, wormFiles, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORM2STATSINFO Compute worm statistics information and save it to a file.
+
+   WORM2STATSINFO(FILENAME, WORMFILES)
+
+   WORM2STATSINFO(FILENAME, WORMFILES, WORMINFOFILTER, WORMFEATFILTER,
+                  CONTROLFILES, CONTROLINFOFILTER, CONTROLFEATFILTER,
+                  ZSCOREMODE, PERMUTATIONS, ISVERBOSE)
+
+   Inputs:
+       filename - the file name for the worm statistics information;
+                  a file containing a structure with fields:
+
+                  wormInfo &amp; controlInfo = the worm information
+
+
+                  dataInfo:
+
+                  name     = the feature's name
+                  units    = the feature's units
+                  title1   = the feature's 1st title
+                  title1I  = the feature's 1st title index
+                  title2   = the feature's 2nd title
+                  title2I  = the feature's 2nd title index
+                  title3   = the feature's 3rd title
+                  title3I   = the feature's 3rd title index
+                  field    = the feature's path; a struct where:
+
+                             histogram  = the histogram data path
+                             statistics = the statistics data path
+
+                  index    = the feature's field index
+                  isMain   = is this a main feature?
+                  category = the feature's category, where:
+
+                             m = morphology
+                             s = posture (shape)
+                             l = locomotion
+                             p = path
+
+                  type     = the feature's type, where:
+
+                             s = simple data
+                             m = motion data
+                             d = event summary data
+                             e = event data
+                             i = inter-event data
+
+                  subType  = the feature's sub-type, where:
+
+                             n = none
+                             f = forward motion data
+                             b = backward motion data
+                             p = paused data
+                             t = time data
+                             d = distance data
+                             h = frequency data (Hz)
+
+                  sign     = the feature's sign, where:
+
+                             s = signed data
+                             u = unsigned data
+                             a = the absolute value of the data
+                             p = the positive data
+                             n = the negative data
+
+
+                  wormData &amp; controlData:
+
+                  zScore      = the z-score per feature
+                                (normalized to the controls)
+                                Note 1: if no controls are present, the
+                                 zScore is left empty
+                                Note 2: if a feature is present in more
+                                 than one worm but absent in the controls,
+                                 the z-score is set to infinite;
+                                 conversely, if a feature is absent from
+                                 the worms but present in more than 1
+                                 control, the z-score is set to -infinite.
+                  dataMeans   = the feature data means
+                  dataStdDevs = the feature data standard deviations
+                  dataSamples = the feature data samples
+                  mean        = the mean per feature
+                  stdDev      = the standard deviation per feature
+                  samples     = the number of samples per feature
+                  pNormal     = the Shapiro-Wilk normality p-values
+                  qNormal     = the Shapiro-Wilk normality q-values
+
+
+                  significance.worm:
+
+                  Note: this field is only present with a control
+
+                  pValue              = the worm p-value
+                  qValue              = the worm q-value
+                  exclusiveFeaturesI  = the indices for exclusive features
+
+
+                  significance.features:
+
+                  Note: this field is only present with a control
+
+                  pTValue = the Student's t-test p-value(s), per feature
+                  qTValue = the Student's t-test q-value(s), per feature
+                  pWValue = the Wilcoxon rank-sum p-value(s), per feature
+                  qWValue = the Wilcoxon rank-sum q-value(s), per feature
+
+       wormFiles         - the worm histogram or statistics files
+       wormInfoFilter    - the worm information filtering criteria;
+                           a structure with any of the fields:
+
+              minFPS     = the minimum video frame rate (frames/seconds)
+              minTime    = the minimum video time (seconds)
+              maxTime    = the maximum video time (seconds)
+              minSegTime = the minimum time for segmented video (seconds)
+              minRatio   = the minimum ratio for segmented video frames
+              minDate    = the minimum date to use (DATENUM)
+              maxDate    = the maximum date to use (DATENUM)
+              years      = the years to use
+              months     = the months to use (1-12)
+              weeks      = the weeks to use (1-52)
+              days       = the days (of the week) to use (1-7)
+              hours      = the hours to use (1-24)
+              trackers   = the trackers to use (1-8)
+
+       wormFeatFilter    - the worm feature filtering criteria;
+                           a structure with the fields:
+
+               featuresI = the feature indices (see WORMDATAINFO)
+               minThr    = the minimum feature value (optional)
+               maxThr    = the maximum feature value (optional)
+               indices   = the sub indices for the features (optional)
+               subFields = the subFields for the features (optional)
+
+       controlFiles      - the control histogram or statistics files
+       controlInfoFilter - the control information filtering criteria
+       controlFeatFilter - the control feature filtering criteria
+       zScoreMode        - the z-score normalization mode; if one mode is
+                           provided, it's applied to both the worm and
+                           control; otherwise, the first mode applies to
+                           the worm and the second mode is applied to the
+                           control;
+                           the default is 'os'.
+
+                       o = normalize the worm to the Opposing group
+                       s = normalize the worm to itself (Same)
+                       p = normalize the worm to both groups (Population)
+
+       permutations     - the number of permutations to run for
+                          significance testing; if zero or empty, no
+                          permutations are run;
+                          the default is none
+       isVerbose        - verbose mode displays the progress;
+                          the default is yes (true)
+
+ See also <a href="worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">WORM2HISTOGRAM</a>, <a href="worm2stats.html" class="code" title="function worm2stats(filename, wormFiles, varargin)">WORM2STATS</a>, <a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">FILTERWORMINFO</a>, <a href="wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">WORMSTATSINFO</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>	GETSTRUCTFIELD Get a field in a structure.</li><li><a href="filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">filterWormHist</a>	FILTERWORMHIST Filter worm features to meet specific criteria.</li><li><a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>	FILTERWORMINFO Filter worm information to meet specific criteria.</li><li><a href="wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>	WORMFEATUREINFO Get information for computing the worm statistics.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function data =</a></li><li><a href="#_sub2" class="code">function wormData = normalizeData(wormData, controlData, zScoreMode)</a></li><li><a href="#_sub3" class="code">function field = field2StdDev(field)</a></li><li><a href="#_sub4" class="code">function field = field2Samples(field)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm2StatsInfo(filename, wormFiles, varargin)</a>
+0002 <span class="comment">%WORM2STATSINFO Compute worm statistics information and save it to a file.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   WORM2STATSINFO(FILENAME, WORMFILES)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   WORM2STATSINFO(FILENAME, WORMFILES, WORMINFOFILTER, WORMFEATFILTER,</span>
+0007 <span class="comment">%                  CONTROLFILES, CONTROLINFOFILTER, CONTROLFEATFILTER,</span>
+0008 <span class="comment">%                  ZSCOREMODE, PERMUTATIONS, ISVERBOSE)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Inputs:</span>
+0011 <span class="comment">%       filename - the file name for the worm statistics information;</span>
+0012 <span class="comment">%                  a file containing a structure with fields:</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%                  wormInfo &amp; controlInfo = the worm information</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%                  dataInfo:</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%                  name     = the feature's name</span>
+0020 <span class="comment">%                  units    = the feature's units</span>
+0021 <span class="comment">%                  title1   = the feature's 1st title</span>
+0022 <span class="comment">%                  title1I  = the feature's 1st title index</span>
+0023 <span class="comment">%                  title2   = the feature's 2nd title</span>
+0024 <span class="comment">%                  title2I  = the feature's 2nd title index</span>
+0025 <span class="comment">%                  title3   = the feature's 3rd title</span>
+0026 <span class="comment">%                  title3I   = the feature's 3rd title index</span>
+0027 <span class="comment">%                  field    = the feature's path; a struct where:</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%                             histogram  = the histogram data path</span>
+0030 <span class="comment">%                             statistics = the statistics data path</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%                  index    = the feature's field index</span>
+0033 <span class="comment">%                  isMain   = is this a main feature?</span>
+0034 <span class="comment">%                  category = the feature's category, where:</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%                             m = morphology</span>
+0037 <span class="comment">%                             s = posture (shape)</span>
+0038 <span class="comment">%                             l = locomotion</span>
+0039 <span class="comment">%                             p = path</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%                  type     = the feature's type, where:</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">%                             s = simple data</span>
+0044 <span class="comment">%                             m = motion data</span>
+0045 <span class="comment">%                             d = event summary data</span>
+0046 <span class="comment">%                             e = event data</span>
+0047 <span class="comment">%                             i = inter-event data</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%                  subType  = the feature's sub-type, where:</span>
+0050 <span class="comment">%</span>
+0051 <span class="comment">%                             n = none</span>
+0052 <span class="comment">%                             f = forward motion data</span>
+0053 <span class="comment">%                             b = backward motion data</span>
+0054 <span class="comment">%                             p = paused data</span>
+0055 <span class="comment">%                             t = time data</span>
+0056 <span class="comment">%                             d = distance data</span>
+0057 <span class="comment">%                             h = frequency data (Hz)</span>
+0058 <span class="comment">%</span>
+0059 <span class="comment">%                  sign     = the feature's sign, where:</span>
+0060 <span class="comment">%</span>
+0061 <span class="comment">%                             s = signed data</span>
+0062 <span class="comment">%                             u = unsigned data</span>
+0063 <span class="comment">%                             a = the absolute value of the data</span>
+0064 <span class="comment">%                             p = the positive data</span>
+0065 <span class="comment">%                             n = the negative data</span>
+0066 <span class="comment">%</span>
+0067 <span class="comment">%</span>
+0068 <span class="comment">%                  wormData &amp; controlData:</span>
+0069 <span class="comment">%</span>
+0070 <span class="comment">%                  zScore      = the z-score per feature</span>
+0071 <span class="comment">%                                (normalized to the controls)</span>
+0072 <span class="comment">%                                Note 1: if no controls are present, the</span>
+0073 <span class="comment">%                                 zScore is left empty</span>
+0074 <span class="comment">%                                Note 2: if a feature is present in more</span>
+0075 <span class="comment">%                                 than one worm but absent in the controls,</span>
+0076 <span class="comment">%                                 the z-score is set to infinite;</span>
+0077 <span class="comment">%                                 conversely, if a feature is absent from</span>
+0078 <span class="comment">%                                 the worms but present in more than 1</span>
+0079 <span class="comment">%                                 control, the z-score is set to -infinite.</span>
+0080 <span class="comment">%                  dataMeans   = the feature data means</span>
+0081 <span class="comment">%                  dataStdDevs = the feature data standard deviations</span>
+0082 <span class="comment">%                  dataSamples = the feature data samples</span>
+0083 <span class="comment">%                  mean        = the mean per feature</span>
+0084 <span class="comment">%                  stdDev      = the standard deviation per feature</span>
+0085 <span class="comment">%                  samples     = the number of samples per feature</span>
+0086 <span class="comment">%                  pNormal     = the Shapiro-Wilk normality p-values</span>
+0087 <span class="comment">%                  qNormal     = the Shapiro-Wilk normality q-values</span>
+0088 <span class="comment">%</span>
+0089 <span class="comment">%</span>
+0090 <span class="comment">%                  significance.worm:</span>
+0091 <span class="comment">%</span>
+0092 <span class="comment">%                  Note: this field is only present with a control</span>
+0093 <span class="comment">%</span>
+0094 <span class="comment">%                  pValue              = the worm p-value</span>
+0095 <span class="comment">%                  qValue              = the worm q-value</span>
+0096 <span class="comment">%                  exclusiveFeaturesI  = the indices for exclusive features</span>
+0097 <span class="comment">%</span>
+0098 <span class="comment">%</span>
+0099 <span class="comment">%                  significance.features:</span>
+0100 <span class="comment">%</span>
+0101 <span class="comment">%                  Note: this field is only present with a control</span>
+0102 <span class="comment">%</span>
+0103 <span class="comment">%                  pTValue = the Student's t-test p-value(s), per feature</span>
+0104 <span class="comment">%                  qTValue = the Student's t-test q-value(s), per feature</span>
+0105 <span class="comment">%                  pWValue = the Wilcoxon rank-sum p-value(s), per feature</span>
+0106 <span class="comment">%                  qWValue = the Wilcoxon rank-sum q-value(s), per feature</span>
+0107 <span class="comment">%</span>
+0108 <span class="comment">%       wormFiles         - the worm histogram or statistics files</span>
+0109 <span class="comment">%       wormInfoFilter    - the worm information filtering criteria;</span>
+0110 <span class="comment">%                           a structure with any of the fields:</span>
+0111 <span class="comment">%</span>
+0112 <span class="comment">%              minFPS     = the minimum video frame rate (frames/seconds)</span>
+0113 <span class="comment">%              minTime    = the minimum video time (seconds)</span>
+0114 <span class="comment">%              maxTime    = the maximum video time (seconds)</span>
+0115 <span class="comment">%              minSegTime = the minimum time for segmented video (seconds)</span>
+0116 <span class="comment">%              minRatio   = the minimum ratio for segmented video frames</span>
+0117 <span class="comment">%              minDate    = the minimum date to use (DATENUM)</span>
+0118 <span class="comment">%              maxDate    = the maximum date to use (DATENUM)</span>
+0119 <span class="comment">%              years      = the years to use</span>
+0120 <span class="comment">%              months     = the months to use (1-12)</span>
+0121 <span class="comment">%              weeks      = the weeks to use (1-52)</span>
+0122 <span class="comment">%              days       = the days (of the week) to use (1-7)</span>
+0123 <span class="comment">%              hours      = the hours to use (1-24)</span>
+0124 <span class="comment">%              trackers   = the trackers to use (1-8)</span>
+0125 <span class="comment">%</span>
+0126 <span class="comment">%       wormFeatFilter    - the worm feature filtering criteria;</span>
+0127 <span class="comment">%                           a structure with the fields:</span>
+0128 <span class="comment">%</span>
+0129 <span class="comment">%               featuresI = the feature indices (see WORMDATAINFO)</span>
+0130 <span class="comment">%               minThr    = the minimum feature value (optional)</span>
+0131 <span class="comment">%               maxThr    = the maximum feature value (optional)</span>
+0132 <span class="comment">%               indices   = the sub indices for the features (optional)</span>
+0133 <span class="comment">%               subFields = the subFields for the features (optional)</span>
+0134 <span class="comment">%</span>
+0135 <span class="comment">%       controlFiles      - the control histogram or statistics files</span>
+0136 <span class="comment">%       controlInfoFilter - the control information filtering criteria</span>
+0137 <span class="comment">%       controlFeatFilter - the control feature filtering criteria</span>
+0138 <span class="comment">%       zScoreMode        - the z-score normalization mode; if one mode is</span>
+0139 <span class="comment">%                           provided, it's applied to both the worm and</span>
+0140 <span class="comment">%                           control; otherwise, the first mode applies to</span>
+0141 <span class="comment">%                           the worm and the second mode is applied to the</span>
+0142 <span class="comment">%                           control;</span>
+0143 <span class="comment">%                           the default is 'os'.</span>
+0144 <span class="comment">%</span>
+0145 <span class="comment">%                       o = normalize the worm to the Opposing group</span>
+0146 <span class="comment">%                       s = normalize the worm to itself (Same)</span>
+0147 <span class="comment">%                       p = normalize the worm to both groups (Population)</span>
+0148 <span class="comment">%</span>
+0149 <span class="comment">%       permutations     - the number of permutations to run for</span>
+0150 <span class="comment">%                          significance testing; if zero or empty, no</span>
+0151 <span class="comment">%                          permutations are run;</span>
+0152 <span class="comment">%                          the default is none</span>
+0153 <span class="comment">%       isVerbose        - verbose mode displays the progress;</span>
+0154 <span class="comment">%                          the default is yes (true)</span>
+0155 <span class="comment">%</span>
+0156 <span class="comment">% See also WORM2HISTOGRAM, WORM2STATS, FILTERWORMINFO, WORMSTATSINFO</span>
+0157 
+0158 <span class="comment">% Determine the worm information filters.</span>
+0159 wormInfoFilter = [];
+0160 <span class="keyword">if</span> ~isempty(varargin)
+0161     wormInfoFilter = varargin{1};
+0162 <span class="keyword">end</span>
+0163 
+0164 <span class="comment">% Determine the worm feature filters.</span>
+0165 wormFeatFilter = [];
+0166 <span class="keyword">if</span> length(varargin) &gt; 1
+0167     wormFeatFilter = varargin{2};
+0168 <span class="keyword">end</span>
+0169 
+0170 <span class="comment">% Determine the control files</span>
+0171 controlFiles = [];
+0172 <span class="keyword">if</span> length(varargin) &gt; 2
+0173     controlFiles = varargin{3};
+0174     
+0175     <span class="comment">% Determine the control information filter.</span>
+0176     controlInfoFilter = [];
+0177     <span class="keyword">if</span> length(varargin) &gt; 3
+0178         controlInfoFilter = varargin{4};
+0179     <span class="keyword">end</span>
+0180     
+0181     <span class="comment">% Determine the control feature filter.</span>
+0182     controlFeatFilter = [];
+0183     <span class="keyword">if</span> length(varargin) &gt; 4
+0184         controlFeatFilter = varargin{5};
+0185     <span class="keyword">end</span>
+0186 <span class="keyword">end</span>
+0187 
+0188 <span class="comment">% Determine the z-score mode.</span>
+0189 zScoreMode = [];
+0190 <span class="keyword">if</span> length(varargin) &gt; 5
+0191     zScoreMode = varargin{6};
+0192 <span class="keyword">end</span>
+0193 <span class="keyword">if</span> isempty(zScoreMode)
+0194     zScoreMode = <span class="string">'os'</span>;
+0195 <span class="keyword">end</span>
+0196 
+0197 <span class="comment">% Are we permuting the data?</span>
+0198 permutations = [];
+0199 <span class="keyword">if</span> length(varargin) &gt; 6
+0200     permutations = varargin{7};
+0201 <span class="keyword">end</span>
+0202 
+0203 <span class="comment">% Are we displaying the progress?</span>
+0204 isVerbose = false;
+0205 <span class="keyword">if</span> length(varargin) &gt; 7
+0206     isVerbose = varargin{8};
+0207 <span class="keyword">end</span>
+0208 
+0209 <span class="comment">% Delete the file if it already exists.</span>
+0210 <span class="keyword">if</span> exist(filename, <span class="string">'file'</span>)
+0211     delete(filename);
+0212 <span class="keyword">end</span>
+0213 
+0214 <span class="comment">% Fix the worm files.</span>
+0215 <span class="keyword">if</span> ~iscell(wormFiles)
+0216     wormFiles =  {wormFiles};
+0217 <span class="keyword">end</span>
+0218 
+0219 <span class="comment">% Fix the control files.</span>
+0220 <span class="keyword">if</span> ~isempty(controlFiles)
+0221     <span class="keyword">if</span> ~iscell(controlFiles)
+0222         controlFiles =  {controlFiles};
+0223     <span class="keyword">end</span>
+0224 <span class="keyword">end</span>
+0225 
+0226 <span class="comment">% Load the worm files.</span>
+0227 useWorm = cell(length(wormFiles), 1);
+0228 wormInfo = [];
+0229 wormData = cell(length(wormFiles), 1);
+0230 <span class="keyword">for</span> i = 1:length(wormFiles)
+0231     
+0232     <span class="comment">% Filter the worms by their information.</span>
+0233     data = load(wormFiles{i});
+0234     <span class="keyword">if</span> isempty(wormInfoFilter)
+0235         useWorm{i} = true(length(data.wormInfo), 1);
+0236     <span class="keyword">else</span>
+0237         [useWorm{i}, ~] = <a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>(data.wormInfo, wormInfoFilter);
+0238     <span class="keyword">end</span>
+0239     
+0240     <span class="comment">% Filter the worms by their features.</span>
+0241     <span class="keyword">if</span> ~isempty(wormFeatFilter)
+0242         useWorm{i} = useWorm{i} &amp; <a href="filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">filterWormHist</a>(data.worm, wormFeatFilter);
+0243     <span class="keyword">end</span>
+0244     
+0245     <span class="comment">% Organize the worms.</span>
+0246     wormInfo = cat(1, wormInfo, data.wormInfo(useWorm{i}));
+0247     wormData{i} = data.worm;
+0248 <span class="keyword">end</span>
+0249 
+0250 <span class="comment">% Is there any worm data?</span>
+0251 <span class="keyword">if</span> length(wormInfo) &lt;= 1
+0252     warning(<span class="string">'worm2StatsInfo:InsufficientWormData'</span>, <span class="keyword">...</span>
+0253         <span class="string">'Insufficient worm data was found'</span>);
+0254     <span class="keyword">return</span>;
+0255 <span class="keyword">end</span>
+0256 
+0257 <span class="comment">% Sort the worm information by date.</span>
+0258 dates = cell2mat(arrayfun(@(x) <span class="keyword">...</span>
+0259     datenum(x.experiment.environment.timestamp), wormInfo, <span class="keyword">...</span>
+0260     <span class="string">'UniformOutput'</span>, false));
+0261 wormSortI = 1:length(wormInfo);
+0262 <span class="keyword">if</span> length(dates) == length(wormInfo)
+0263     [~, wormSortI] = sort(dates);
+0264     wormInfo = wormInfo(wormSortI);
+0265 <span class="keyword">end</span>
+0266 
+0267 <span class="comment">% Load the control files.</span>
+0268 <span class="keyword">if</span> ~isempty(controlFiles)
+0269     useControl = cell(length(controlFiles), 1);
+0270     controlInfo = [];
+0271     controlData = cell(length(controlFiles), 1);
+0272     <span class="keyword">for</span> i = 1:length(controlFiles)
+0273         
+0274         <span class="comment">% Filter the controls by their information.</span>
+0275         data = load(controlFiles{i});
+0276         <span class="keyword">if</span> isempty(controlInfoFilter)
+0277             useControl{i} = true(length(data.wormInfo), 1);
+0278         <span class="keyword">else</span>
+0279             [useControl{i}, ~] = <span class="keyword">...</span>
+0280                 <a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>(data.wormInfo, controlInfoFilter);
+0281         <span class="keyword">end</span>
+0282         
+0283         <span class="comment">% Filter the controls by their features.</span>
+0284         <span class="keyword">if</span> ~isempty(controlFeatFilter)
+0285             useControl{i} = useControl{i} &amp; <span class="keyword">...</span>
+0286                 <a href="filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">filterWormHist</a>(data.worm, controlFeatFilter);
+0287         <span class="keyword">end</span>
+0288         
+0289         <span class="comment">% Organize the controls.</span>
+0290         controlInfo = cat(1, controlInfo, data.wormInfo(useControl{i}));
+0291         controlData{i} = data.worm;
+0292     <span class="keyword">end</span>
+0293     
+0294     <span class="comment">% Is there any control data?</span>
+0295     <span class="keyword">if</span> length(controlInfo) &lt;= 1
+0296         warning(<span class="string">'worm2StatsInfo:InsufficientControlData'</span>, <span class="keyword">...</span>
+0297             <span class="string">'Insufficient control data was found'</span>);
+0298         controlFiles = [];
+0299     <span class="keyword">end</span>
+0300     
+0301     <span class="comment">% Sort the control information by date.</span>
+0302     dates = cell2mat(arrayfun(@(x) <span class="keyword">...</span>
+0303         datenum(x.experiment.environment.timestamp), controlInfo, <span class="keyword">...</span>
+0304         <span class="string">'UniformOutput'</span>, false));
+0305     controlSortI = 1:length(controlInfo);
+0306     <span class="keyword">if</span> length(dates) == length(controlInfo)
+0307         [~, controlSortI] = sort(dates);
+0308         controlInfo = controlInfo(controlSortI);
+0309     <span class="keyword">end</span>
+0310 <span class="keyword">end</span>
+0311 
+0312 <span class="comment">% Initialize the worm file formats.</span>
+0313 histStr = <span class="string">'histogram'</span>;
+0314 statStr = <span class="string">'statistics'</span>;
+0315 isWormHist = <span class="keyword">...</span>
+0316     cellfun(@(x) isfield(x.morphology.length, histStr), wormData);
+0317 wormField = cell(length(isWormHist), 1);
+0318 <span class="keyword">for</span> i = 1:length(isWormHist)
+0319     <span class="keyword">if</span> isWormHist(i)
+0320         wormField{i} = histStr;
+0321     <span class="keyword">else</span>
+0322         wormField{i} = statStr;
+0323     <span class="keyword">end</span>
+0324 <span class="keyword">end</span>
+0325 
+0326 <span class="comment">% Initialize the control file formats.</span>
+0327 <span class="keyword">if</span> ~isempty(controlFiles)
+0328     isControlHist = <span class="keyword">...</span>
+0329         cellfun(@(x) isfield(x.morphology.length, histStr), controlData);
+0330     controlField = cell(length(isControlHist), 1);
+0331     <span class="keyword">for</span> i = 1:length(isWormHist)
+0332         <span class="keyword">if</span> isControlHist(i)
+0333             controlField{i} = histStr;
+0334         <span class="keyword">else</span>
+0335             controlField{i} = statStr;
+0336         <span class="keyword">end</span>
+0337     <span class="keyword">end</span>
+0338 <span class="keyword">end</span>
+0339 
+0340 <span class="comment">% Initialize the feature information.</span>
+0341 dataInfo = <a href="wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>();
+0342 
+0343 <span class="comment">% Organize the worm features.</span>
+0344 wormData = worm2data(dataInfo, useWorm, wormSortI, wormData, wormField, <span class="keyword">...</span>
+0345     isVerbose);
+0346 <span class="keyword">if</span> ~isempty(controlFiles)
+0347     controlData = worm2data(dataInfo, useControl, controlSortI, <span class="keyword">...</span>
+0348         controlData, controlField, isVerbose);
+0349 <span class="keyword">end</span>
+0350 
+0351 <span class="comment">% Normalize the worm features.</span>
+0352 <span class="keyword">if</span> ~isempty(controlFiles)
+0353     wormData = <a href="#_sub2" class="code" title="subfunction wormData = normalizeData(wormData, controlData, zScoreMode)">normalizeData</a>(wormData, controlData, zScoreMode(1));
+0354     <span class="keyword">if</span> length(zScoreMode) &gt; 1
+0355         controlData = <a href="#_sub2" class="code" title="subfunction wormData = normalizeData(wormData, controlData, zScoreMode)">normalizeData</a>(controlData, wormData, zScoreMode(2));
+0356     <span class="keyword">else</span>
+0357         controlData = <a href="#_sub2" class="code" title="subfunction wormData = normalizeData(wormData, controlData, zScoreMode)">normalizeData</a>(controlData, wormData, zScoreMode(1));
+0358     <span class="keyword">end</span>
+0359 <span class="keyword">end</span>
+0360 
+0361 <span class="comment">% Determine the significance of the worm features.</span>
+0362 significance.worm.pValue = [];
+0363 significance.worm.qValue = [];
+0364 significance.features = [];
+0365 <span class="keyword">if</span> ~isempty(controlFiles)
+0366     
+0367     <span class="comment">% Correct the Shapiro-Wilk for multiple testing.</span>
+0368     pNormal = [wormData.pNormal; controlData.pNormal];
+0369     qNormal = nan(size(pNormal));
+0370     nonNaNPNormal = pNormal(~isnan(pNormal));
+0371     <span class="keyword">if</span> ~isempty(nonNaNPNormal)
+0372         qNormal(~isnan(pNormal)) = mafdr(nonNaNPNormal);
+0373     <span class="keyword">end</span>
+0374     <span class="keyword">for</span> i = 1:size(qNormal,2)
+0375         wormData(i).qNormal = qNormal(1,i);
+0376         controlData(i).qNormal = qNormal(2,:);
+0377     <span class="keyword">end</span>
+0378     
+0379     <span class="comment">% Are any of the features present in one strain but not the other?</span>
+0380     isNaNWorm = isnan([wormData.dataMeans]);
+0381     isNaNControl = isnan([controlData.dataMeans]);
+0382     isExclusive = (all(isNaNWorm) &amp; ~any(isNaNControl)) | <span class="keyword">...</span>
+0383         (~any(isNaNWorm) &amp; all(isNaNControl));
+0384     significance.worm.exclusiveFeaturesI = find(isExclusive);
+0385 <span class="comment">%     if ~isempty(significance.worm.exclusiveFeaturesI)</span>
+0386 <span class="comment">%         significance.worm.pValue = 0;</span>
+0387 <span class="comment">%         significance.worm.qValue = 0;</span>
+0388 <span class="comment">%     end</span>
+0389     
+0390     <span class="comment">% Compute the worm feature significance.</span>
+0391     pTValues = mattest([wormData.dataMeans]', [controlData.dataMeans]');
+0392     pWValues = nan(length(dataInfo), 1);
+0393     <span class="keyword">for</span> i = 1:length(pWValues)
+0394         
+0395         <span class="comment">% The features are exclusive, use Fisher's exact test.</span>
+0396         <span class="keyword">if</span> isExclusive(i)
+0397             numWorms = length(isNaNWorm(:,i));
+0398             numTotal = numWorms + length(isNaNControl(:,i));
+0399             p = fexact(numWorms, numTotal, numWorms, numWorms);
+0400             pTValues(i) = p;
+0401             pWValues(i) = p;
+0402             
+0403         <span class="comment">% Use the Wilcoxon rank-sum test.</span>
+0404         <span class="keyword">elseif</span> ~(all(isNaNWorm(:,i)) || all(isNaNControl(:,i)))
+0405             wData = [wormData(i).dataMeans];
+0406             cData = [controlData(i).dataMeans];
+0407             pWValues(i) = ranksum(wData(~isNaNWorm(:,i)), <span class="keyword">...</span>
+0408                 cData(~isNaNControl(:,i)));
+0409         <span class="keyword">end</span>
+0410     <span class="keyword">end</span>
+0411     
+0412     <span class="comment">% Correct for multiple testing.</span>
+0413     [~, qTValues] = mafdr(pTValues);
+0414     [~, qWValues] = mafdr(pWValues);
+0415     
+0416     <span class="comment">% Organize the worm feature significance.</span>
+0417     significance.features(length(dataInfo), 1).pTValue = [];
+0418     significance.features(length(dataInfo), 1).pWValue = [];
+0419     <span class="keyword">for</span> i = 1:length(significance.features)
+0420         
+0421         
+0422         <span class="comment">% The feature exclusively occurs within the worm or its control.</span>
+0423 <span class="comment">%         if isExclusive(i)</span>
+0424 <span class="comment">%             significance.features(i).pTValue = 0;</span>
+0425 <span class="comment">%             significance.features(i).qTValue = 0;</span>
+0426 <span class="comment">%             significance.features(i).pWValue = 0;</span>
+0427 <span class="comment">%             significance.features(i).qWValue = 0;</span>
+0428 <span class="comment">%             significance.features(i).power = 1;</span>
+0429             
+0430 <span class="comment">%         % There is insufficient information to measure significance.</span>
+0431 <span class="comment">%         elseif any(isNaNWorm(:,i)) || any(isNaNControl(:,i))</span>
+0432 <span class="comment">%             significance.features(i).pTValue = NaN;</span>
+0433 <span class="comment">%             significance.features(i).qTValue = NaN;</span>
+0434 <span class="comment">%             significance.features(i).pWValue = NaN;</span>
+0435 <span class="comment">%             significance.features(i).qWValue = NaN;</span>
+0436 <span class="comment">%             significance.features(i).power = NaN;</span>
+0437             
+0438         <span class="comment">% The feature significance was measured.</span>
+0439         significance.features(i).pTValue = pTValues(i);
+0440         significance.features(i).qTValue = qTValues(i);
+0441         significance.features(i).pWValue = pWValues(i);
+0442         significance.features(i).qWValue = qWValues(i);
+0443 <span class="comment">%         if controlData(i).stdDev &gt; 0</span>
+0444 <span class="comment">%             significance.features(i).power = sampsizepwr('t', ...</span>
+0445 <span class="comment">%                 [controlData(i).mean controlData(i).stdDev], ...</span>
+0446 <span class="comment">%                 wormData(i).mean, [], wormData(i).samples);</span>
+0447 <span class="comment">%         elseif isnan(controlData(i).stdDev)</span>
+0448 <span class="comment">%             significance.features(i).power = NaN;</span>
+0449 <span class="comment">%         else</span>
+0450 <span class="comment">%             significance.features(i).power = 1;</span>
+0451 <span class="comment">%         end</span>
+0452     <span class="keyword">end</span>
+0453 <span class="keyword">end</span>
+0454 
+0455 <span class="comment">% Save the features.</span>
+0456 <span class="keyword">if</span> isempty(controlFiles)
+0457     save(filename, <span class="string">'dataInfo'</span>, <span class="string">'wormInfo'</span>, <span class="string">'wormData'</span>, <span class="string">'-v7.3'</span>);
+0458 <span class="keyword">else</span>
+0459     save(filename, <span class="string">'dataInfo'</span>, <span class="string">'wormInfo'</span>, <span class="string">'wormData'</span>, <span class="keyword">...</span>
+0460         <span class="string">'controlInfo'</span>, <span class="string">'controlData'</span>, <span class="string">'significance'</span>, <span class="string">'-v7.3'</span>);
+0461 <span class="keyword">end</span>
+0462 <span class="keyword">end</span>
+0463 
+0464 
+0465 
+0466 <span class="comment">%% Organize the features.</span>
+0467 <a name="_sub1" href="#_subfunctions" class="code">function data = </a><span class="keyword">...</span>
+0468     worm2data(info, useWorm, wormSortI, wormData, wormField, isVerbose)
+0469 
+0470 <span class="comment">% Organize the worm features.</span>
+0471 data(length(info),1).zScore = [];
+0472 data(length(info),1).dataMeans = [];
+0473 data(length(info),1).dataStdDevs = [];
+0474 data(length(info),1).dataSamples = [];
+0475 <span class="keyword">for</span> i = 1:length(info)
+0476     
+0477     <span class="comment">% Are we displaying the progress?</span>
+0478     <span class="keyword">if</span> isVerbose
+0479         disp([<span class="string">'Organizing &quot;'</span> info(i).name <span class="string">'&quot; ...'</span>]);
+0480     <span class="keyword">end</span>
+0481     
+0482     <span class="comment">% The feature is not indexed.</span>
+0483     <span class="keyword">if</span> isnan(info(i).index)
+0484         <span class="keyword">for</span> j = 1:length(wormData)
+0485             
+0486             <span class="comment">% Get the feature data.</span>
+0487             dataMeans = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormData{j}, <span class="keyword">...</span>
+0488                 info(i).field.(wormField{j}), true);
+0489             
+0490             <span class="comment">% Organize the feature data.</span>
+0491             <span class="keyword">if</span> isempty(dataMeans)
+0492                 data(i).dataMeans = <span class="keyword">...</span>
+0493                     cat(1, data(i).dataMeans, nan(sum(useWorm{j}), 1));
+0494             <span class="keyword">else</span>
+0495                 data(i).dataMeans = <span class="keyword">...</span>
+0496                     cat(1, data(i).dataMeans, dataMeans(useWorm{j}));
+0497             <span class="keyword">end</span>
+0498             
+0499             <span class="comment">% Organize the feature data standard deviations and samples.</span>
+0500             <span class="keyword">if</span> isempty(dataMeans) || info(i).type == <span class="string">'d'</span>
+0501                 data(i).dataStdDevs = <span class="keyword">...</span>
+0502                     cat(1, data(i).dataStdDevs, nan(sum(useWorm{j}), 1));
+0503                 data(i).dataSamples = <span class="keyword">...</span>
+0504                     cat(1, data(i).dataSamples, nan(sum(useWorm{j}), 1));
+0505             <span class="keyword">else</span>
+0506                 dataStdDevs = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormData{j}, <span class="keyword">...</span>
+0507                     <a href="#_sub3" class="code" title="subfunction field = field2StdDev(field)">field2StdDev</a>(info(i).field.(wormField{j})), true);
+0508                 dataSamples = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(wormData{j}, <span class="keyword">...</span>
+0509                     <a href="#_sub4" class="code" title="subfunction field = field2Samples(field)">field2Samples</a>(info(i).field.(wormField{j})), true);
+0510                 data(i).dataStdDevs = <span class="keyword">...</span>
+0511                     cat(1, data(i).dataStdDevs, dataStdDevs(useWorm{j}));
+0512                 data(i).dataSamples = <span class="keyword">...</span>
+0513                     cat(1, data(i).dataSamples, dataSamples(useWorm{j}));
+0514             <span class="keyword">end</span>
+0515         <span class="keyword">end</span>
+0516         
+0517         <span class="comment">% Sort the data.</span>
+0518         data(i).dataMeans = data(i).dataMeans(wormSortI);
+0519         data(i).dataStdDevs = data(i).dataStdDevs(wormSortI);
+0520         data(i).dataSamples = data(i).dataSamples(wormSortI);
+0521         
+0522         <span class="comment">% Compute the feature statistics.</span>
+0523         data(i).mean = nanmean(data(i).dataMeans);
+0524         data(i).stdDev = nanstd(data(i).dataMeans);
+0525         data(i).samples = sum(~isnan(data(i).dataMeans));
+0526         <span class="keyword">if</span> data(i).samples &lt; 3
+0527             data(i).pNormal = NaN;
+0528         <span class="keyword">else</span>
+0529             [~, data(i).pNormal, ~] = swtest(data(i).dataMeans, 0.05, 0);
+0530         <span class="keyword">end</span>
+0531         
+0532     <span class="comment">% The feature is indexed.</span>
+0533     <span class="keyword">else</span>
+0534         <span class="keyword">for</span> j = 1:length(wormData)
+0535             
+0536             <span class="comment">% Get the feature data.</span>
+0537             field = info(i).field.(wormField{j});
+0538             indexI = strfind(field, <span class="string">')'</span>);
+0539             subField = [];
+0540             eval([<span class="string">'subField = wormData{j}.'</span> field(1:indexI) <span class="string">';'</span>]);
+0541             dataMeans = <span class="keyword">...</span>
+0542                 <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(subField, field((indexI + 2):end), true);
+0543             
+0544             <span class="comment">% Organize the feature data.</span>
+0545             <span class="keyword">if</span> isempty(dataMeans)
+0546                 data(i).dataMeans = <span class="keyword">...</span>
+0547                     cat(1, data(i).dataMeans, nan(sum(useWorm{j}), 1));
+0548             <span class="keyword">else</span>
+0549                 data(i).dataMeans = <span class="keyword">...</span>
+0550                     cat(1, data(i).dataMeans, dataMeans(useWorm{j}));
+0551             <span class="keyword">end</span>
+0552             
+0553             <span class="comment">% Organize the feature data standard deviations and samples.</span>
+0554             <span class="keyword">if</span> isempty(dataMeans) || info(i).type == <span class="string">'d'</span>
+0555                 data(i).dataStdDevs = <span class="keyword">...</span>
+0556                     cat(1, data(i).dataStdDevs, nan(sum(useWorm{j}), 1));
+0557                 data(i).dataSamples = <span class="keyword">...</span>
+0558                     cat(1, data(i).dataSamples, nan(sum(useWorm{j}), 1));
+0559             <span class="keyword">else</span>
+0560                 dataStdDevs = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(subField, <span class="keyword">...</span>
+0561                     <a href="#_sub3" class="code" title="subfunction field = field2StdDev(field)">field2StdDev</a>(field((indexI + 2):end)), true);
+0562                 dataSamples = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(subField, <span class="keyword">...</span>
+0563                     <a href="#_sub4" class="code" title="subfunction field = field2Samples(field)">field2Samples</a>(field((indexI + 2):end)), true);
+0564                 data(i).dataStdDevs = <span class="keyword">...</span>
+0565                     cat(1, data(i).dataStdDevs, dataStdDevs(useWorm{j}));
+0566                 data(i).dataSamples = <span class="keyword">...</span>
+0567                     cat(1, data(i).dataSamples, dataSamples(useWorm{j}));
+0568             <span class="keyword">end</span>
+0569         <span class="keyword">end</span>
+0570         
+0571         <span class="comment">% Sort the data.</span>
+0572         data(i).dataMeans = data(i).dataMeans(wormSortI);
+0573         data(i).dataStdDevs = data(i).dataStdDevs(wormSortI);
+0574         data(i).dataSamples = data(i).dataSamples(wormSortI);
+0575 
+0576         <span class="comment">% Compute the feature statistics.</span>
+0577         data(i).mean = nanmean(data(i).dataMeans);
+0578         data(i).stdDev = nanstd(data(i).dataMeans);
+0579         data(i).samples = sum(~isnan(data(i).dataMeans));
+0580         <span class="keyword">if</span> data(i).samples &lt; 3
+0581             data(i).pNormal = NaN;
+0582         <span class="keyword">else</span>
+0583             [~, data(i).pNormal, ~] = swtest(data(i).dataMeans, 0.05, 0);
+0584         <span class="keyword">end</span>
+0585     <span class="keyword">end</span>
+0586 <span class="keyword">end</span>
+0587 
+0588 <span class="comment">% Correct for multiple testing.</span>
+0589 pAllValues = [data.pNormal];
+0590 pValues = pAllValues(~isnan(pAllValues));
+0591 qNormal = [];
+0592 <span class="keyword">if</span> ~isempty(pValues)
+0593     [~, qNormal] = mafdr(pValues);
+0594 <span class="keyword">end</span>
+0595 qAllValues = nan(length(data), 1);
+0596 qAllValues(~isnan(pAllValues)) = qNormal;
+0597 <span class="keyword">for</span> i = 1:length(data)
+0598     data(i).qNormal = qAllValues(i);
+0599 <span class="keyword">end</span>
+0600 <span class="keyword">end</span>
+0601 
+0602 
+0603 
+0604 <span class="comment">%% Normalize the data.</span>
+0605 <a name="_sub2" href="#_subfunctions" class="code">function wormData = normalizeData(wormData, controlData, zScoreMode)</a>
+0606 <span class="keyword">switch</span> zScoreMode
+0607     
+0608     <span class="comment">% Normalize the worm to the Opposing group.</span>
+0609     <span class="keyword">case</span> <span class="string">'o'</span>
+0610         <span class="keyword">for</span> i = 1:length(wormData)
+0611             
+0612             <span class="comment">% The worm has a feature not present in its control.</span>
+0613             <span class="keyword">if</span> ~isnan(wormData(i).stdDev) &amp;&amp; isnan(controlData(i).mean)
+0614                 wormData(i).zScore = inf;
+0615                 
+0616             <span class="comment">% The worm lacks a feature present in its control.</span>
+0617             <span class="keyword">elseif</span> isnan(wormData(i).mean) &amp;&amp; ~isnan(controlData(i).stdDev)
+0618                 wormData(i).zScore = -inf;
+0619                 
+0620             <span class="comment">% Normalize the worm to its control.</span>
+0621             <span class="keyword">else</span>
+0622                 wormData(i).zScore = <span class="keyword">...</span>
+0623                     (wormData(i).mean - controlData(i).mean) / <span class="keyword">...</span>
+0624                     controlData(i).stdDev;
+0625             <span class="keyword">end</span>
+0626         <span class="keyword">end</span>
+0627         
+0628     <span class="comment">% Normalize the worm to itself (Same).</span>
+0629     <span class="keyword">case</span> <span class="string">'s'</span>
+0630         <span class="keyword">for</span> i = 1:length(wormData)
+0631             wormData(i).zScore = 0;
+0632         <span class="keyword">end</span>
+0633         
+0634     <span class="comment">% Normalize the worm to both groups (Population).</span>
+0635     <span class="keyword">case</span> <span class="string">'p'</span>
+0636         <span class="keyword">for</span> i = 1:length(wormData)
+0637             allData = <span class="keyword">...</span>
+0638                 cat(1, wormData(i).dataMeans, controlData(i).dataMeans);
+0639             wormData(i).zScore  = <span class="keyword">...</span>
+0640                 (wormData(i).mean - nanmean(allData)) / nanstd(allData);
+0641         <span class="keyword">end</span>
+0642 <span class="keyword">end</span>
+0643 <span class="keyword">end</span>
+0644 
+0645 
+0646 
+0647 <span class="comment">%% Convert a data mean field to its standard deviation equivalent.</span>
+0648 <a name="_sub3" href="#_subfunctions" class="code">function field = field2StdDev(field)</a>
+0649 
+0650 <span class="comment">% Find the last &quot;mean&quot;.</span>
+0651 meanStr = <span class="string">'.mean.'</span>;
+0652 stdDevStr = <span class="string">'.stdDev.'</span>;
+0653 i = strfind(field, meanStr);
+0654 
+0655 <span class="comment">% The &quot;mean&quot; cannot be found.</span>
+0656 <span class="keyword">if</span> isempty(i)
+0657     field = [];
+0658     
+0659 <span class="comment">% Replace the mean with the standard deviation.</span>
+0660 <span class="keyword">else</span>
+0661     field = [field(1:(i(end) - 1)) stdDevStr <span class="keyword">...</span>
+0662         field((i(end) + length(meanStr)):end)];
+0663 <span class="keyword">end</span>
+0664 <span class="keyword">end</span>
+0665 
+0666 
+0667 
+0668 <span class="comment">%% Convert a data mean field to its samples equivalent.</span>
+0669 <a name="_sub4" href="#_subfunctions" class="code">function field = field2Samples(field)</a>
+0670 
+0671 <span class="comment">% Find the last &quot;mean&quot;.</span>
+0672 meanStr = <span class="string">'.mean.'</span>;
+0673 samplesStr = <span class="string">'.samples'</span>;
+0674 i = strfind(field, meanStr);
+0675 
+0676 <span class="comment">% The &quot;mean&quot; cannot be found.</span>
+0677 <span class="keyword">if</span> isempty(i)
+0678     field = [];
+0679     
+0680 <span class="comment">% Replace the mean with the samples.</span>
+0681 <span class="keyword">else</span>
+0682     field = [field(1:(i(end) - 1)) samplesStr];
+0683 <span class="keyword">end</span>
+0684 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

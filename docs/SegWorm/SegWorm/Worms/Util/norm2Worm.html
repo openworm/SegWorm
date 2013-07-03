@@ -1,0 +1,1217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of norm2Worm</title>
+  <meta name="keywords" content="norm2Worm">
+  <meta name="description" content="NORM2WORM Convert normalized worm information into a worm structure.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Util -->
+<h1>norm2Worm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>NORM2WORM Convert normalized worm information into a worm structure.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm = norm2Worm(frame, vulvaContour, nonVulvaContour,skeleton, skeletonAngles, inOutTouch, skeletonLength, widths,headArea, tailArea, vulvaArea, nonVulvaArea,origin, pixel2MicronScale, rotation, worm) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">NORM2WORM Convert normalized worm information into a worm structure.
+
+   WORM = NORM2WORM(FRAME, VULVACONTOUR, NONVULVACONTOUR, SKELETON,
+                    SKELETONANGLES, INOUTTOUCH, SKELETONLENGTH, WIDTHS,
+                    HEADAREA, TAILAREA, VULVAAREA, NONVULVAAREA,
+                    ORIGIN, PIXEL2MICRONSCALE, ROTATION, WORM)
+
+   Inputs:
+
+       Note 1: all inputs must be oriented head to tail.
+       Note 2: all coordinates must be oriented as (x,y); in contrast, in
+       the worm structure, coordinates are oriented as (row,column) = (y,x).
+
+       frame            - the worm's video frame
+       vulvaContour     - the worm's downsampled vulval-side contour
+       nonVulvaContour  - the worm's downsampled non-vulval-side contour
+       skeleton         - the worm's downsampled skeleton
+       angles           - the worm's downsampled skeleton angles
+                          Note: positive skeleton angles bulge towards the
+                          vulva; in contrast, in the worm structure,
+                          positive skeleton angles bulge towards the side
+                          clockwise from the worm's head (unless the worm
+                          is flipped).
+       inOutTouch       - in coiled worms, for each skeleton sample:
+                          -1 = the contours are inside the coil
+                          -2 = the contours are outside the coil
+                          -3 = the contours are both inside and outside
+                               the coil (one half of the contour is inside
+                               the coil, the other half of the contour is
+                               outside it)
+                          1+ = the contour is touching itself to form the
+                               coil; the specific number represents the
+                               contraposed skeleton index being touched
+       skeletonLength    - the worm's skeleton chain-code pixel lengths
+       widths            - the worms' contour downsampled widths
+       headArea          - the worms' head area
+       tailArea          - the worms' tail area
+       vulvaArea         - the worms' vulval-side area
+                           (excluding the head and tail)
+       nonVulvaArea      - the worm's non-vulval-side area
+                           (excluding the head and tail)
+       origin            - the real-world micron origin (stage location)
+                           for the worm (see findStageMovements, locations)
+       pixel2MicronScale - the scale for converting pixels to microns
+                           (see readPixels2Microns, pixel2MicronScale)
+       rotation          - the rotation matrix for onscreen pixels
+                           (see readPixels2Microns, rotation)
+       worm              - the original, pre-normalized, worm information
+                           organized in a structure; if empty, the worm is
+                           re-assembled as best as possible.
+
+   Output:
+       worm - the worm information organized in a structure
+              This structure contains 8 sub-structures,
+              6 sub-sub-structures, and 4 sub-sub-sub-structures:
+
+              * Video *
+              video = {frame}
+
+              * Contour *
+              contour = {pixels, touchI, inI, outI, angles, headI, tailI,
+                         chainCodeLengths}
+
+              * Skeleton *
+              skeleton = {pixels, touchI, inI, outI, inOutI, angles,
+                          length, chainCodeLengths, widths}
+
+              Note: positive skeleton angles bulge towards the side
+              clockwise from the worm's head (unless the worm is flipped).
+
+              * Head *
+              head = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              head.bounds{contour.left (indices for [start end]),
+                          contour.right (indices for [start end]),
+                          skeleton indices for [start end]}
+
+              * Tail *
+              tail = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              tail.bounds{contour.left (indices for [start end]),
+                          contour.right (indices for [start end]),
+                          skeleton indices for [start end]}
+
+              * Left Side (Counter Clockwise from the Head) *
+              left = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              left.bounds{contour (indices for [start end]),
+                          skeleton (indices for [start end])}
+
+              * Right Side (Clockwise from the Head) *
+              right = {bounds, pixels, area,
+                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              right.bounds{contour (indices for [start end]),
+                           skeleton (indices for [start end])}
+
+              * Orientation *
+              orientation = {head, vulva}
+              orientation.head = {isFlipped,
+                                  confidence.head, confidence.tail}
+              orientation.vulva = {isClockwiseFromHead,
+                                  confidence.vulva, confidence.nonVulva}
+
+ See also <a href="normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">NORMWORMS</a>, READPIXELS2MICRONS, <a href="worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">WORM2STRUCT</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>	CHAINCODELENGTH2INDEX Translate a length into an index. The index</li><li><a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>	INTERPDATA Interpolate data values at the requested chain-code lengths.</li><li><a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>	CIRCCURVATURE Compute the curvature for a clockwise, circularly-connected</li><li><a href="../../../SegWorm/Worms/StageMovement/microns2Pixels.html" class="code" title="function pixels = microns2Pixels(origin, microns, pixel2MicronScale,rotation)">microns2Pixels</a>	PIXELS2MICRONS Convert real-world micron locations to onscreen pixel</li><li><a href="cell2worm.html" class="code" title="function worm = cell2worm(worm)">cell2worm</a>	CELL2WORM Convert a cell array to a worm struct.</li><li><a href="worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>	WORM2STRUCT Organize worm information in a structure.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li><li><a href="normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">normWorms</a>	NORMWORMS Normalize the worms' information to a standard, compact set.</li><li><a href="../../../SegWorm/Worms/Video/segWormVideo.html" class="code" title="function failedFrames = segWormVideo(videoFile, anglesVideoFile,touchVideoFile, debugVideoFile, varargin)">segWormVideo</a>	SEGWORMVIDEO Segment a worm video.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function line = drawLine(startPoint, endPoint)</a></li><li><a href="#_sub2" class="code">function line = drawPolyLine(startPoint, endPoint, points, startI,</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm = norm2Worm(frame, vulvaContour, nonVulvaContour, </a><span class="keyword">...</span>
+0002     skeleton, skeletonAngles, inOutTouch, skeletonLength, widths, <span class="keyword">...</span>
+0003     headArea, tailArea, vulvaArea, nonVulvaArea, <span class="keyword">...</span>
+0004     origin, pixel2MicronScale, rotation, worm)
+0005 <span class="comment">%NORM2WORM Convert normalized worm information into a worm structure.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   WORM = NORM2WORM(FRAME, VULVACONTOUR, NONVULVACONTOUR, SKELETON,</span>
+0008 <span class="comment">%                    SKELETONANGLES, INOUTTOUCH, SKELETONLENGTH, WIDTHS,</span>
+0009 <span class="comment">%                    HEADAREA, TAILAREA, VULVAAREA, NONVULVAAREA,</span>
+0010 <span class="comment">%                    ORIGIN, PIXEL2MICRONSCALE, ROTATION, WORM)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   Inputs:</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%       Note 1: all inputs must be oriented head to tail.</span>
+0015 <span class="comment">%       Note 2: all coordinates must be oriented as (x,y); in contrast, in</span>
+0016 <span class="comment">%       the worm structure, coordinates are oriented as (row,column) = (y,x).</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%       frame            - the worm's video frame</span>
+0019 <span class="comment">%       vulvaContour     - the worm's downsampled vulval-side contour</span>
+0020 <span class="comment">%       nonVulvaContour  - the worm's downsampled non-vulval-side contour</span>
+0021 <span class="comment">%       skeleton         - the worm's downsampled skeleton</span>
+0022 <span class="comment">%       angles           - the worm's downsampled skeleton angles</span>
+0023 <span class="comment">%                          Note: positive skeleton angles bulge towards the</span>
+0024 <span class="comment">%                          vulva; in contrast, in the worm structure,</span>
+0025 <span class="comment">%                          positive skeleton angles bulge towards the side</span>
+0026 <span class="comment">%                          clockwise from the worm's head (unless the worm</span>
+0027 <span class="comment">%                          is flipped).</span>
+0028 <span class="comment">%       inOutTouch       - in coiled worms, for each skeleton sample:</span>
+0029 <span class="comment">%                          -1 = the contours are inside the coil</span>
+0030 <span class="comment">%                          -2 = the contours are outside the coil</span>
+0031 <span class="comment">%                          -3 = the contours are both inside and outside</span>
+0032 <span class="comment">%                               the coil (one half of the contour is inside</span>
+0033 <span class="comment">%                               the coil, the other half of the contour is</span>
+0034 <span class="comment">%                               outside it)</span>
+0035 <span class="comment">%                          1+ = the contour is touching itself to form the</span>
+0036 <span class="comment">%                               coil; the specific number represents the</span>
+0037 <span class="comment">%                               contraposed skeleton index being touched</span>
+0038 <span class="comment">%       skeletonLength    - the worm's skeleton chain-code pixel lengths</span>
+0039 <span class="comment">%       widths            - the worms' contour downsampled widths</span>
+0040 <span class="comment">%       headArea          - the worms' head area</span>
+0041 <span class="comment">%       tailArea          - the worms' tail area</span>
+0042 <span class="comment">%       vulvaArea         - the worms' vulval-side area</span>
+0043 <span class="comment">%                           (excluding the head and tail)</span>
+0044 <span class="comment">%       nonVulvaArea      - the worm's non-vulval-side area</span>
+0045 <span class="comment">%                           (excluding the head and tail)</span>
+0046 <span class="comment">%       origin            - the real-world micron origin (stage location)</span>
+0047 <span class="comment">%                           for the worm (see findStageMovements, locations)</span>
+0048 <span class="comment">%       pixel2MicronScale - the scale for converting pixels to microns</span>
+0049 <span class="comment">%                           (see readPixels2Microns, pixel2MicronScale)</span>
+0050 <span class="comment">%       rotation          - the rotation matrix for onscreen pixels</span>
+0051 <span class="comment">%                           (see readPixels2Microns, rotation)</span>
+0052 <span class="comment">%       worm              - the original, pre-normalized, worm information</span>
+0053 <span class="comment">%                           organized in a structure; if empty, the worm is</span>
+0054 <span class="comment">%                           re-assembled as best as possible.</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">%   Output:</span>
+0057 <span class="comment">%       worm - the worm information organized in a structure</span>
+0058 <span class="comment">%              This structure contains 8 sub-structures,</span>
+0059 <span class="comment">%              6 sub-sub-structures, and 4 sub-sub-sub-structures:</span>
+0060 <span class="comment">%</span>
+0061 <span class="comment">%              * Video *</span>
+0062 <span class="comment">%              video = {frame}</span>
+0063 <span class="comment">%</span>
+0064 <span class="comment">%              * Contour *</span>
+0065 <span class="comment">%              contour = {pixels, touchI, inI, outI, angles, headI, tailI,</span>
+0066 <span class="comment">%                         chainCodeLengths}</span>
+0067 <span class="comment">%</span>
+0068 <span class="comment">%              * Skeleton *</span>
+0069 <span class="comment">%              skeleton = {pixels, touchI, inI, outI, inOutI, angles,</span>
+0070 <span class="comment">%                          length, chainCodeLengths, widths}</span>
+0071 <span class="comment">%</span>
+0072 <span class="comment">%              Note: positive skeleton angles bulge towards the side</span>
+0073 <span class="comment">%              clockwise from the worm's head (unless the worm is flipped).</span>
+0074 <span class="comment">%</span>
+0075 <span class="comment">%              * Head *</span>
+0076 <span class="comment">%              head = {bounds, pixels, area,</span>
+0077 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0078 <span class="comment">%              head.bounds{contour.left (indices for [start end]),</span>
+0079 <span class="comment">%                          contour.right (indices for [start end]),</span>
+0080 <span class="comment">%                          skeleton indices for [start end]}</span>
+0081 <span class="comment">%</span>
+0082 <span class="comment">%              * Tail *</span>
+0083 <span class="comment">%              tail = {bounds, pixels, area,</span>
+0084 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0085 <span class="comment">%              tail.bounds{contour.left (indices for [start end]),</span>
+0086 <span class="comment">%                          contour.right (indices for [start end]),</span>
+0087 <span class="comment">%                          skeleton indices for [start end]}</span>
+0088 <span class="comment">%</span>
+0089 <span class="comment">%              * Left Side (Counter Clockwise from the Head) *</span>
+0090 <span class="comment">%              left = {bounds, pixels, area,</span>
+0091 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0092 <span class="comment">%              left.bounds{contour (indices for [start end]),</span>
+0093 <span class="comment">%                          skeleton (indices for [start end])}</span>
+0094 <span class="comment">%</span>
+0095 <span class="comment">%              * Right Side (Clockwise from the Head) *</span>
+0096 <span class="comment">%              right = {bounds, pixels, area,</span>
+0097 <span class="comment">%                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0098 <span class="comment">%              right.bounds{contour (indices for [start end]),</span>
+0099 <span class="comment">%                           skeleton (indices for [start end])}</span>
+0100 <span class="comment">%</span>
+0101 <span class="comment">%              * Orientation *</span>
+0102 <span class="comment">%              orientation = {head, vulva}</span>
+0103 <span class="comment">%              orientation.head = {isFlipped,</span>
+0104 <span class="comment">%                                  confidence.head, confidence.tail}</span>
+0105 <span class="comment">%              orientation.vulva = {isClockwiseFromHead,</span>
+0106 <span class="comment">%                                  confidence.vulva, confidence.nonVulva}</span>
+0107 <span class="comment">%</span>
+0108 <span class="comment">% See also NORMWORMS, READPIXELS2MICRONS, WORM2STRUCT</span>
+0109 
+0110 <span class="comment">% Convert the worm to a structure.</span>
+0111 <span class="comment">% Note: if the original, pre-normalized, worm is unavailable, we</span>
+0112 <span class="comment">% re-assemble the worm with the head and tail not flipped and the vulval</span>
+0113 <span class="comment">% side clockwise from the head.</span>
+0114 <span class="keyword">if</span> ~isempty(worm) &amp;&amp; ~isstruct(worm)
+0115     worm = <a href="cell2worm.html" class="code" title="function worm = cell2worm(worm)">cell2worm</a>(worm);
+0116 <span class="keyword">end</span>
+0117 
+0118 <span class="comment">% The worm is roughly divided into 24 segments of musculature (i.e., hinges</span>
+0119 <span class="comment">% that represent degrees of freedom) on each side. Therefore, 48 segments</span>
+0120 <span class="comment">% around a 2-D contour.</span>
+0121 <span class="comment">% Note: &quot;In C. elegans the 95 rhomboid-shaped body wall muscle cells are</span>
+0122 <span class="comment">% arranged as staggered pairs in four longitudinal bundles located in four</span>
+0123 <span class="comment">% quadrants. Three of these bundles (DL, DR, VR) contain 24 cells each,</span>
+0124 <span class="comment">% whereas VL bundle contains 23 cells.&quot; - www.wormatlas.org</span>
+0125 sWormSegs = 24;
+0126 cWormSegs = 2 * sWormSegs;
+0127 
+0128 <span class="comment">% Pre-compute values.</span>
+0129 pixel2MicronArea = sum(pixel2MicronScale .^ 2) / 2;
+0130 pixel2MicronMagnitude = sqrt(pixel2MicronArea);
+0131 
+0132 <span class="comment">% Convert the contours back to pixel coordinates.</span>
+0133 vulvaContour = round(fliplr(<a href="../../../SegWorm/Worms/StageMovement/microns2Pixels.html" class="code" title="function pixels = microns2Pixels(origin, microns, pixel2MicronScale,rotation)">microns2Pixels</a>(origin, vulvaContour, <span class="keyword">...</span>
+0134     pixel2MicronScale, rotation)));
+0135 nonVulvaContour = round(fliplr(<a href="../../../SegWorm/Worms/StageMovement/microns2Pixels.html" class="code" title="function pixels = microns2Pixels(origin, microns, pixel2MicronScale,rotation)">microns2Pixels</a>(origin, nonVulvaContour, <span class="keyword">...</span>
+0136     pixel2MicronScale, rotation)));
+0137 
+0138 <span class="comment">% Convert the skeleton back to pixel coordinates.</span>
+0139 skeleton = round(fliplr(<a href="../../../SegWorm/Worms/StageMovement/microns2Pixels.html" class="code" title="function pixels = microns2Pixels(origin, microns, pixel2MicronScale,rotation)">microns2Pixels</a>(origin, skeleton, <span class="keyword">...</span>
+0140     pixel2MicronScale, rotation)));
+0141 
+0142 <span class="comment">% Compute the orientation.</span>
+0143 samples = size(skeleton,1);
+0144 <span class="keyword">if</span> isempty(worm)
+0145     isHeadFlipped = false;
+0146     isVulvaClockwiseFromHead = true;
+0147     hConfidence = 0;
+0148     tConfidence = 0;
+0149     vConfidence = 0;
+0150     nvConfidence = 0;
+0151     
+0152     <span class="comment">% Is the vulva clockwise from the head?</span>
+0153     <span class="keyword">if</span> samples &gt; 2
+0154         
+0155         <span class="comment">% The line separating the head and tail is at y = dHT(1).</span>
+0156         <span class="comment">% The distance of the contour sides from this line determines which</span>
+0157         <span class="comment">% side is clockwise from the head.</span>
+0158         dHT = skeleton(1,:) - skeleton(<span class="keyword">end</span>,:);
+0159         <span class="keyword">if</span> dHT(1) == 0
+0160             <span class="keyword">if</span> max(vulvaContour(2:(end - 1),1)) &gt; <span class="keyword">...</span>
+0161                     max(nonVulvaContour(2:(end - 1),1))
+0162                 <span class="keyword">if</span> dHT(2) &lt; 0
+0163                     isVulvaClockwiseFromHead = false;
+0164                 <span class="keyword">end</span>
+0165             <span class="keyword">elseif</span> dHT(2) &gt; 0
+0166                 isVulvaClockwiseFromHead = false;
+0167             <span class="keyword">end</span>
+0168             
+0169         <span class="comment">% The line separating the head and tail is at x = dHT(2).</span>
+0170         <span class="comment">% The distance of the contour sides from this line determines which</span>
+0171         <span class="comment">% side is clockwise from the head.</span>
+0172         <span class="keyword">elseif</span> dHT(2) == 0
+0173             <span class="keyword">if</span> max(vulvaContour(2:(end - 1),2)) &lt; <span class="keyword">...</span>
+0174                     max(nonVulvaContour(2:(end - 1),2))
+0175                 <span class="keyword">if</span> dHT(1) &lt; 0
+0176                     isVulvaClockwiseFromHead = false;
+0177                 <span class="keyword">end</span>
+0178             <span class="keyword">elseif</span> dHT(1) &gt; 0
+0179                 isVulvaClockwiseFromHead = false;
+0180             <span class="keyword">end</span>
+0181         
+0182         <span class="comment">% The line separating the head and tail is at:</span>
+0183         <span class="comment">% y = m * x + b</span>
+0184         <span class="comment">% where m = y / x and b = y - m * x</span>
+0185         <span class="comment">%</span>
+0186         <span class="comment">% The perpendicular line is:</span>
+0187         <span class="comment">% y = -x / m</span>
+0188         <span class="comment">%</span>
+0189         <span class="comment">% The distance of the contour sides from this line determines which</span>
+0190         <span class="comment">% side is clockwise from the head. Therefore, for each contour</span>
+0191         <span class="comment">% point, we need to determine its perpendicular distance from the</span>
+0192         <span class="comment">% line separating the head and tail. The perpendicular line is at:</span>
+0193         <span class="comment">% y = -x / m + b2</span>
+0194         <span class="comment">% where b2 = y + x / m</span>
+0195         <span class="comment">%</span>
+0196         <span class="comment">% For each contour point, its perpendicular matching point on the</span>
+0197         <span class="comment">% line separating the head and tail lies at the intersection of</span>
+0198         <span class="comment">% these two lines (the head-to-tail line and the perpendicular line</span>
+0199         <span class="comment">% passing through the contour point). Therefore, solving both</span>
+0200         <span class="comment">% equations for the perpendicularly matching x and y, we get:</span>
+0201         <span class="comment">% 0 = m * x + x / m + b - b2</span>
+0202         <span class="comment">% x * (m + 1 / m) = b2 - b</span>
+0203         <span class="comment">% x = (b2 - b) / (m + 1 / m)</span>
+0204         <span class="comment">% and, y =  m * x + b</span>
+0205         <span class="keyword">else</span>
+0206             
+0207             <span class="comment">% Compute the line from head to tail.</span>
+0208             m = dHT(1) / dHT(2);
+0209             b = skeleton(1,1) - m * skeleton(1,2);
+0210             
+0211             <span class="comment">% Compute the perpendicular lines for the contour points.</span>
+0212             <span class="comment">% Note: we ignore the head and tail.</span>
+0213             bVulva = vulvaContour(2:(end - 1),1) + <span class="keyword">...</span>
+0214                 vulvaContour(2:(end - 1),2) / m;
+0215             bNonVulva = nonVulvaContour(2:(end - 1),1) + <span class="keyword">...</span>
+0216                 nonVulvaContour(2:(end - 1),2) / m;
+0217             
+0218             <span class="comment">% Compute the perpendicular points for the contour points.</span>
+0219             pVulva(:,2) = (bVulva - b) / (m + 1 / m);
+0220             pVulva(:,1) = m * pVulva(:,2) + b;
+0221             pNonVulva(:,2) = (bNonVulva - b) / (m + 1 / m);
+0222             pNonVulva(:,1) = m * pNonVulva(:,2) + b;
+0223             
+0224             <span class="comment">% Compute the perpendicular distances for the contour points</span>
+0225             <span class="comment">% from the head-to-tail line.</span>
+0226             dVulva = sum((vulvaContour(2:(end - 1),:) - pVulva) .^ 2, 2);
+0227             dNonVulva = sum((nonVulvaContour(2:(end - 1),:) - <span class="keyword">...</span>
+0228                 pNonVulva) .^ 2, 2);
+0229             
+0230             <span class="comment">% Which contour side has the furthest point from the</span>
+0231             <span class="comment">% head-to-tail line?</span>
+0232             dHTSign = sign(dHT);
+0233             [mVulva mVulvaI] = max(dVulva);
+0234             [mNonVulva mNonVulvaI] = max(dNonVulva);
+0235             <span class="keyword">if</span> mVulva &gt; mNonVulva
+0236                 dPSign = sign(vulvaContour(mVulvaI + 1,:) - <span class="keyword">...</span>
+0237                     pVulva(mVulvaI,:));
+0238             <span class="keyword">else</span>
+0239                 dPSign = sign(pNonVulva(mNonVulvaI,:) - <span class="keyword">...</span>
+0240                     nonVulvaContour(mNonVulvaI + 1,:));
+0241             <span class="keyword">end</span>
+0242             
+0243             <span class="comment">% The head-to-tail line runs northeast to southwest.</span>
+0244             <span class="keyword">if</span> dHTSign(1) == dHTSign(2)
+0245                 <span class="keyword">if</span> dHTSign(2) == dPSign(2)
+0246                     isVulvaClockwiseFromHead = false;
+0247                 <span class="keyword">end</span>
+0248                 
+0249             <span class="comment">% The head-to-tail line runs southeast to northwest.</span>
+0250             <span class="keyword">elseif</span> dHTSign(1) == dPSign(1)
+0251                 isVulvaClockwiseFromHead = false;
+0252             <span class="keyword">end</span>
+0253         <span class="keyword">end</span>
+0254     <span class="keyword">end</span>
+0255     
+0256 <span class="comment">% Determine the orientation.</span>
+0257 <span class="keyword">else</span> <span class="comment">% ~isempty(worm)</span>
+0258     isHeadFlipped = worm.orientation.head.isFlipped;
+0259     isVulvaClockwiseFromHead = worm.orientation.vulva.isClockwiseFromHead;
+0260     hConfidence = worm.orientation.head.confidence.head;
+0261     tConfidence = worm.orientation.head.confidence.tail;
+0262     vConfidence = worm.orientation.vulva.confidence.vulva;
+0263     nvConfidence = worm.orientation.vulva.confidence.nonVulva;
+0264 <span class="keyword">end</span>
+0265 
+0266 <span class="comment">% Interpolate the contours' total chain-code length.</span>
+0267 <span class="keyword">if</span> isempty(worm)
+0268     
+0269     <span class="comment">% The samples are at the midpoints.</span>
+0270     <span class="keyword">if</span> samples == 1
+0271         vLength = sqrt(sum((vulvaContour - nonVulvaContour) .^ 2, 2));
+0272         nvLength = vLength;
+0273         
+0274     <span class="comment">% The samples are at the head and tail.</span>
+0275     <span class="keyword">elseif</span> samples == 2
+0276         vLength = sqrt(sum(diff(vulvaContour) .^ 2, 2));
+0277         nvLength = vLength;
+0278         
+0279     <span class="comment">% The samples divide the worm evenly between its head and tail.</span>
+0280     <span class="keyword">else</span>
+0281         vLength = sqrt(max(sum(diff(vulvaContour) .^ 2, 2))) * <span class="keyword">...</span>
+0282             (samples - 1);
+0283         nvLength = sqrt(max(sum(diff(nonVulvaContour) .^ 2, 2))) * <span class="keyword">...</span>
+0284             (samples - 1);
+0285     <span class="keyword">end</span>
+0286     
+0287 <span class="comment">% Compute the contours' total chain-code length.</span>
+0288 <span class="keyword">else</span> <span class="comment">% ~isempty(worm)</span>
+0289     
+0290     <span class="comment">% Compute each side of the contour's total chain-code length.</span>
+0291     <span class="comment">% Side1 always goes from head to tail in positive, index increments.</span>
+0292     <span class="comment">% Side2 always goes from head to tail in negative, index increments.</span>
+0293     <span class="keyword">if</span> worm.contour.headI &lt;= worm.contour.tailI
+0294         side1Length = <span class="keyword">...</span>
+0295             worm.contour.chainCodeLengths(worm.contour.tailI) - <span class="keyword">...</span>
+0296             worm.contour.chainCodeLengths(worm.contour.headI);
+0297         side2Length = <span class="keyword">...</span>
+0298             worm.contour.chainCodeLengths(worm.contour.headI) - <span class="keyword">...</span>
+0299             worm.contour.chainCodeLengths(1) + <span class="keyword">...</span>
+0300             worm.contour.chainCodeLengths(end) - <span class="keyword">...</span>
+0301             worm.contour.chainCodeLengths(worm.contour.tailI) + <span class="keyword">...</span>
+0302             worm.contour.chainCodeLengths(1);
+0303         
+0304     <span class="keyword">else</span> <span class="comment">% worm.contour.headI &gt; worm.contour.tailI</span>
+0305         side2Length = <span class="keyword">...</span>
+0306             worm.contour.chainCodeLengths(worm.contour.headI) - <span class="keyword">...</span>
+0307             worm.contour.chainCodeLengths(worm.contour.tailI);
+0308         side1Length = <span class="keyword">...</span>
+0309             worm.contour.chainCodeLengths(worm.contour.tailI) - <span class="keyword">...</span>
+0310             worm.contour.chainCodeLengths(1) + <span class="keyword">...</span>
+0311             worm.contour.chainCodeLengths(end) - <span class="keyword">...</span>
+0312             worm.contour.chainCodeLengths(worm.contour.headI) + <span class="keyword">...</span>
+0313             worm.contour.chainCodeLengths(1);
+0314     <span class="keyword">end</span>
+0315     
+0316     <span class="comment">% Determine the vulval and non-vulval contours' total chain-code lengths.</span>
+0317     <span class="keyword">if</span> isVulvaClockwiseFromHead == isHeadFlipped
+0318         vLength = side2Length;
+0319         nvLength = side1Length;
+0320     <span class="keyword">else</span>
+0321         vLength = side1Length;
+0322         nvLength = side2Length;
+0323     <span class="keyword">end</span>
+0324 <span class="keyword">end</span>
+0325 
+0326 <span class="comment">% Compute the chain-code lengths.</span>
+0327 <span class="keyword">if</span> samples == 1 <span class="comment">% The samples are at the midpoints.</span>
+0328     sCCLengths = skeletonLength;
+0329     vCCLengths = vLength / 2;
+0330     nvCCLengths = nvLength / 2;
+0331 <span class="keyword">elseif</span> samples == 2  <span class="comment">% The samples are the head and tail.</span>
+0332     sCCLengths = [0; skeletonLength];
+0333     vCCLengths = [0; vLength];
+0334     nvCCLengths = [0; nvLength];
+0335 <span class="keyword">else</span> <span class="comment">% The samples divide the worm evenly between its head and tail.</span>
+0336     sCCLengths = ((0:(samples - 1))' * skeletonLength) / (samples - 1);
+0337     vCCLengths = ((0:(samples - 1))' * vLength) / (samples - 1);
+0338     nvCCLengths = ((0:(samples - 1))' * nvLength) / (samples - 1);
+0339 <span class="keyword">end</span>
+0340 
+0341 <span class="comment">% Compute the clockwise and anti-clockwise sides from the head.</span>
+0342 <span class="keyword">if</span> isVulvaClockwiseFromHead
+0343     clockPixels = vulvaContour;
+0344     clockLengths = vCCLengths;
+0345     antiPixels = flipud(nonVulvaContour);
+0346     antiLengths = nvCCLengths;
+0347 <span class="keyword">else</span>
+0348     clockPixels = nonVulvaContour;
+0349     clockLengths = nvCCLengths;
+0350     antiPixels = flipud(vulvaContour);
+0351     antiLengths = vCCLengths;
+0352 <span class="keyword">end</span>
+0353 
+0354 <span class="comment">% Split the contour into sides.</span>
+0355 <span class="comment">% Side1 always goes from head to tail in positive, index increments.</span>
+0356 <span class="comment">% Side2 always goes from head to tail in negative, index increments.</span>
+0357 <span class="keyword">if</span> isHeadFlipped
+0358     pixels1 = antiPixels;
+0359     lengths1 = antiLengths;
+0360     length1 = antiLengths(end);
+0361     pixels2 = clockPixels;
+0362     lengths2 = clockLengths;
+0363     length2 = clockLengths(end);
+0364 <span class="keyword">else</span>
+0365     pixels1 = clockPixels;
+0366     lengths1 = clockLengths;
+0367     length1 = clockLengths(end);
+0368     pixels2 = antiPixels;
+0369     lengths2 = antiLengths;
+0370     length2 = antiLengths(end);
+0371 <span class="keyword">end</span>
+0372 
+0373 <span class="comment">% Compute the contour's pixels, chain-code lengths, and angles.</span>
+0374 <span class="keyword">if</span> isempty(worm) || worm.contour.headI &lt;= worm.contour.tailI
+0375     
+0376     <span class="comment">% The samples are at the midpoints.</span>
+0377     <span class="keyword">if</span> samples == 1
+0378         contour = [pixels1; pixels2];
+0379         lengths12 = (lengths1 + lengths2) * 2 / 3;
+0380         cCCLengths = [lengths12; 2 * lengths12];
+0381         
+0382     <span class="comment">% The samples are at the head and tail.</span>
+0383     <span class="keyword">elseif</span> samples == 2
+0384         contour = pixels1;
+0385         cCCLengths = [length1 / 3; (2 * length1) / 3];
+0386         
+0387     <span class="comment">% The samples include, at least the head and tail.</span>
+0388     <span class="keyword">else</span>
+0389         contour = [pixels1; pixels2(2:(end - 1),:)];
+0390         lengths1 = lengths1 + lengths2(end) - lengths2(end - 1);
+0391         lengths2 = lengths1(end) + lengths2(2:(end - 1));
+0392         cCCLengths = [lengths1; lengths2];
+0393     <span class="keyword">end</span>
+0394     
+0395     <span class="comment">% Compute the contour's head and tail indices.</span>
+0396     cHeadI = 1;
+0397     cTailI = samples;
+0398     
+0399     <span class="comment">% Compute the contour angles.</span>
+0400     <span class="keyword">if</span> isempty(worm)
+0401         
+0402         <span class="comment">% The samples are at the midpoints.</span>
+0403         <span class="keyword">if</span> samples == 1
+0404             cAngles = [0; 0];
+0405             
+0406         <span class="comment">% The samples are the head and tail.</span>
+0407         <span class="keyword">elseif</span> samples == 2
+0408             cAngles = [90; 90];
+0409             
+0410         <span class="comment">% The samples divide the worm evenly between its head and tail.</span>
+0411         <span class="keyword">else</span>
+0412             cAngles = <a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>(contour, <span class="keyword">...</span>
+0413                 (cCCLengths(1) + cCCLengths(end)) * (2 / cWormSegs), <span class="keyword">...</span>
+0414                 cCCLengths);
+0415         <span class="keyword">end</span>
+0416         
+0417     <span class="comment">% Determine the contour angles.</span>
+0418     <span class="comment">% The samples are at the midpoints.</span>
+0419     <span class="keyword">elseif</span> samples == 1
+0420         hLength = worm.contour.chainCodeLengths(worm.contour.headI);
+0421         tLength = worm.contour.chainCodeLengths(worm.contour.tailI);
+0422         eLength = worm.contour.chainCodeLengths(end);
+0423         caLengths = [(hLength + tLength) / 2; <span class="keyword">...</span>
+0424             (hLength + tLength + eLength) / 2];
+0425         <span class="keyword">if</span> caLengths(2) &gt; eLength
+0426             caLengths(2)  = caLengths(2) - eLength;
+0427         <span class="keyword">end</span>
+0428         cAngles = <a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(worm.contour.angles, caLengths, <span class="keyword">...</span>
+0429             worm.contour.chainCodeLengths);
+0430         
+0431     <span class="comment">% The samples are the head and tail.</span>
+0432     <span class="keyword">elseif</span> samples == 2
+0433         cAngles = [worm.contour.angles(worm.contour.headI); <span class="keyword">...</span>
+0434             worm.contour.angles(worm.contour.tailI)];
+0435         
+0436     <span class="comment">% The samples divide the worm evenly between its head and tail.</span>
+0437     <span class="keyword">else</span>
+0438         caLengths = cCCLengths - cCCLengths(1) + <span class="keyword">...</span>
+0439             worm.contour.chainCodeLengths(worm.contour.headI);
+0440         wrap = caLengths &gt; worm.contour.chainCodeLengths(end);
+0441         caLengths(wrap) = caLengths(wrap) - <span class="keyword">...</span>
+0442             worm.contour.chainCodeLengths(end);
+0443         cAngles = <a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(worm.contour.angles, caLengths, <span class="keyword">...</span>
+0444             worm.contour.chainCodeLengths);
+0445     <span class="keyword">end</span>
+0446     
+0447 <span class="keyword">else</span> <span class="comment">% worm.contour.headI &gt; worm.contour.tailI</span>
+0448     
+0449     <span class="comment">% The samples are the midpoint.</span>
+0450     <span class="keyword">if</span> samples == 1
+0451         contour = [pixels2; pixels1];
+0452         lengths12 = (lengths1 + lengths2) * 2 / 3;
+0453         cCCLengths = [lengths12; 2 * lengths12];
+0454         
+0455     <span class="comment">% The samples include, at least the head and tail.</span>
+0456     <span class="keyword">else</span>
+0457         contour = [pixels2; pixels1(2:(end - 1),:)];
+0458         lengths2 = lengths2 + lengths1(end) - lengths1(end - 1);
+0459         lengths1 = lengths2(end) + lengths1(2:(end - 1));
+0460         cCCLengths = [lengths2; lengths1];
+0461     <span class="keyword">end</span>
+0462     
+0463     <span class="comment">% Compute the contour's head and tail indices.</span>
+0464     cHeadI = samples;
+0465     cTailI = 1;
+0466     
+0467     <span class="comment">% Determine the contour angles.</span>
+0468     <span class="comment">% The samples are at the midpoints.</span>
+0469     <span class="keyword">if</span> samples == 1
+0470         hLength = worm.contour.chainCodeLengths(worm.contour.headI);
+0471         tLength = worm.contour.chainCodeLengths(worm.contour.tailI);
+0472         eLength = worm.contour.chainCodeLengths(end);
+0473         caLengths = [(hLength + tLength) / 2; <span class="keyword">...</span>
+0474             (hLength + tLength + eLength) / 2];
+0475         <span class="keyword">if</span> caLengths(2) &gt; eLength
+0476             caLengths(2)  = caLengths(2) - eLength;
+0477         <span class="keyword">end</span>
+0478         cAngles = <a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(worm.contour.angles, <span class="keyword">...</span>
+0479             caLengths, worm.contour.chainCodeLengths);
+0480         
+0481     <span class="comment">% The samples are the head and tail.</span>
+0482     <span class="keyword">elseif</span> samples == 2
+0483         cAngles = [worm.contour.angles(worm.contour.tailI); <span class="keyword">...</span>
+0484             worm.contour.angles(worm.contour.headI)];
+0485         
+0486     <span class="comment">% The samples divide the worm evenly between its head and tail.</span>
+0487     <span class="keyword">else</span>
+0488         caLengths = cCCLengths - cCCLengths(1) + <span class="keyword">...</span>
+0489             worm.contour.chainCodeLengths(worm.contour.tailI);
+0490         wrap = caLengths &gt; worm.contour.chainCodeLengths(end);
+0491         caLengths(wrap) = caLengths(wrap) - <span class="keyword">...</span>
+0492             worm.contour.chainCodeLengths(end);
+0493         cAngles = <a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(worm.contour.angles, <span class="keyword">...</span>
+0494             caLengths, worm.contour.chainCodeLengths);
+0495     <span class="keyword">end</span>
+0496 <span class="keyword">end</span>
+0497 
+0498 <span class="comment">% Compute the skeleton's pixels, angles, and widths.</span>
+0499 widths = widths / pixel2MicronMagnitude;
+0500 <span class="keyword">if</span> isHeadFlipped
+0501     skeleton = flipud(skeleton);
+0502     skeletonAngles = flipud(skeletonAngles);
+0503     widths = flipud(widths);
+0504 <span class="keyword">end</span>
+0505 <span class="keyword">if</span> isVulvaClockwiseFromHead == isHeadFlipped
+0506     skeletonAngles = -skeletonAngles;
+0507 <span class="keyword">end</span>
+0508 
+0509 <span class="comment">% Compute the worm boundaries.</span>
+0510 <span class="keyword">if</span> samples == 1 <span class="comment">% The samples are the midpoint.</span>
+0511     
+0512     <span class="comment">% Compute the head bounds.</span>
+0513     hsBounds = [1; 1];
+0514     hlcBounds = [2; 2];
+0515     hrcBounds = [1; 1];
+0516     
+0517     <span class="comment">% Compute the tail bounds.</span>
+0518     tsBounds = [1; 1];
+0519     tlcBounds = [2; 2];
+0520     trcBounds = [1; 1];
+0521     
+0522     <span class="comment">% Compute the left-side bounds.</span>
+0523     lsBounds = [1; 1];
+0524     lcBounds = [2; 2];
+0525     
+0526     <span class="comment">% Compute the right-side bounds.</span>
+0527     rsBounds = [1; 1];
+0528     rcBounds = [1; 1];
+0529     
+0530 <span class="keyword">elseif</span> samples == 2 <span class="comment">% The samples are the head and tail.</span>
+0531     
+0532     <span class="comment">% Compute the head bounds.</span>
+0533     hsBounds = [1; 1];
+0534     hlcBounds = [1; 1];
+0535     hrcBounds = [1; 1];
+0536     
+0537     <span class="comment">% Compute the tail bounds.</span>
+0538     tsBounds = [2; 2];
+0539     tlcBounds = [2; 2];
+0540     trcBounds = [2; 2];
+0541     
+0542     <span class="comment">% Compute the left-side bounds.</span>
+0543     lsBounds = [1; 1];
+0544     lcBounds = [2; 2];
+0545     
+0546     <span class="comment">% Compute the right-side bounds.</span>
+0547     rsBounds = [1; 1];
+0548     rcBounds = [2; 2];
+0549     
+0550 <span class="keyword">else</span> <span class="comment">% The samples divide the worm evenly between its head and tail.</span>
+0551     
+0552     <span class="comment">% Compute the head and tail segment lengths.</span>
+0553     <span class="comment">% Side1 always goes from head to tail in positive, index increments.</span>
+0554     <span class="comment">% Side2 always goes from head to tail in negative, index increments.</span>
+0555     htSLength = sCCLengths(end) * (4 / sWormSegs);
+0556     htCLength1 = length1 * (8 / cWormSegs);
+0557     htCLength2 = length2 * (8 / cWormSegs);
+0558     
+0559     <span class="comment">% Interpolate the head's skeleton bounds.</span>
+0560     <span class="comment">% Note: head/tail flipping is handled later.</span>
+0561     hsBoundLengths = [sCCLengths(1); sCCLengths(1) +  htSLength];
+0562     hsBounds = [1; <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(hsBoundLengths(2), sCCLengths)];
+0563     hsBoundPixels = [skeleton(1,:); <span class="keyword">...</span>
+0564         round(<a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(skeleton, hsBoundLengths(2), <span class="keyword">...</span>
+0565         sCCLengths, hsBounds(2)))];
+0566     
+0567     <span class="comment">% Interpolate the head's left-side (anti-clockwise) contour bounds.</span>
+0568     <span class="comment">% Note: head/tail flipping is handled later.</span>
+0569     hlcBoundLengths = [cCCLengths(cHeadI) - htCLength2; cCCLengths(cHeadI)];
+0570     <span class="keyword">if</span> hlcBoundLengths(1) &lt; 0
+0571         hlcBoundLengths(1) = hlcBoundLengths(1) + cCCLengths(end);
+0572     <span class="keyword">end</span>
+0573     hlcBounds = [<a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(hlcBoundLengths(1), cCCLengths); <span class="keyword">...</span>
+0574         cHeadI];
+0575     hlcBoundPixels = [round(<a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(contour, <span class="keyword">...</span>
+0576         hlcBoundLengths(1), cCCLengths, hlcBounds(1))); <span class="keyword">...</span>
+0577         contour(cHeadI, :)];
+0578     
+0579     <span class="comment">% The head's left-side (anti-clockwise) inner bound wraps.</span>
+0580     <span class="keyword">if</span> hlcBoundLengths(1) &lt; cCCLengths(1) || <span class="keyword">...</span>
+0581             hlcBoundLengths(1) &gt; cCCLengths(end)
+0582         <span class="keyword">if</span> hlcBounds(2) == 1
+0583             hlcInBounds = [];
+0584         <span class="keyword">else</span>
+0585             hlcInBounds = [1; hlcBounds(2) - 1];
+0586         <span class="keyword">end</span>
+0587         
+0588     <span class="comment">% The head's left-side (anti-clockwise) bound is an inner bound.</span>
+0589     <span class="keyword">elseif</span>  hlcBoundLengths(1) &lt; cCCLengths(hlcBounds(1))
+0590         <span class="keyword">if</span> hlcBounds(1) ==  hlcBounds(2)
+0591             hlcInBounds = [];
+0592         <span class="keyword">elseif</span> hlcBounds(2) &gt; 1
+0593             hlcInBounds = [hlcBounds(1); hlcBounds(2) - 1];
+0594         <span class="keyword">else</span> <span class="comment">% wrap</span>
+0595             hlcInBounds = [hlcBounds(1); length(cCCLengths)];
+0596         <span class="keyword">end</span>
+0597         
+0598     <span class="comment">% The head's left-side (anti-clockwise) bound is an outer bound.</span>
+0599     <span class="keyword">else</span>
+0600         <span class="keyword">if</span> (hlcBounds(1) == length(cCCLengths) &amp;&amp; hlcBounds(2) == 1) <span class="keyword">...</span>
+0601                 || (hlcBounds(2) - hlcBounds(1) == 1)
+0602             hlcInBounds = [];
+0603         <span class="keyword">else</span>
+0604             <span class="keyword">if</span> hlcBounds(1) &lt; length(cCCLengths)
+0605                 hlcInBounds(1,1) = hlcBounds(1) + 1;
+0606             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0607                 hlcInBounds(1,1) = 1;
+0608             <span class="keyword">end</span>
+0609             <span class="keyword">if</span> hlcBounds(2) &gt; 1
+0610                 hlcInBounds(2,1) = hlcBounds(2) - 1;
+0611             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0612                 hlcInBounds(2,1) = length(cCCLengths);
+0613             <span class="keyword">end</span>
+0614         <span class="keyword">end</span>
+0615     <span class="keyword">end</span>
+0616     
+0617     <span class="comment">% Interpolate the head's right-side (clockwise) contour bounds.</span>
+0618     <span class="comment">% Note: head/tail flipping is handled later.</span>
+0619     hrcBoundLengths = [cCCLengths(cHeadI); cCCLengths(cHeadI) + htCLength1];
+0620     <span class="keyword">if</span> hrcBoundLengths(2) &gt; cCCLengths(end)
+0621         hrcBoundLengths(2) = hrcBoundLengths(2) - cCCLengths(end);
+0622     <span class="keyword">end</span>
+0623     hrcBounds = [cHeadI; <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(hrcBoundLengths(2), <span class="keyword">...</span>
+0624         cCCLengths)];
+0625     hrcBoundPixels = [contour(cHeadI,:); <span class="keyword">...</span>
+0626         round(<a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(contour, hrcBoundLengths(2), <span class="keyword">...</span>
+0627         cCCLengths, hrcBounds(2)))];
+0628     
+0629     <span class="comment">% The head's right-side (clockwise) inner bound wraps.</span>
+0630     <span class="keyword">if</span> hrcBoundLengths(2) &lt; cCCLengths(1) || <span class="keyword">...</span>
+0631             hrcBoundLengths(2) &gt; cCCLengths(end)
+0632         <span class="keyword">if</span> hrcBounds(1) == length(cCCLengths)
+0633             hrcInBounds = [];
+0634         <span class="keyword">else</span>
+0635             hrcInBounds = [hrcBounds(1) + 1;  length(cCCLengths)];
+0636         <span class="keyword">end</span>
+0637         
+0638     <span class="comment">% The head's right-side (clockwise) bound is an inner bound.</span>
+0639     <span class="keyword">elseif</span>  hrcBoundLengths(2) &gt; cCCLengths(hrcBounds(2))
+0640         <span class="keyword">if</span> hrcBounds(1) ==  hrcBounds(2)
+0641             hrcInBounds = [];
+0642         <span class="keyword">elseif</span> hrcBounds(1) &lt; length(cCCLengths)
+0643             hrcInBounds = [hrcBounds(1) + 1; hrcBounds(2)];
+0644         <span class="keyword">else</span> <span class="comment">% wrap</span>
+0645             hrcInBounds = [length(cCCLengths); hrcBounds(2)];
+0646         <span class="keyword">end</span>
+0647         
+0648     <span class="comment">% The head's right-side (anti-clockwise) bound is an outer bound.</span>
+0649     <span class="keyword">else</span>
+0650         <span class="keyword">if</span> (hrcBounds(1) == length(cCCLengths) &amp;&amp; hrcBounds(2) == 1) <span class="keyword">...</span>
+0651                 || (hrcBounds(2) - hrcBounds(1) == 1)
+0652             hrcInBounds = [];
+0653         <span class="keyword">else</span>
+0654             <span class="keyword">if</span> hrcBounds(1) &lt; length(cCCLengths)
+0655                 hrcInBounds(1,1) = hrcBounds(1) + 1;
+0656             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0657                 hrcInBounds(1,1) = 1;
+0658             <span class="keyword">end</span>
+0659             <span class="keyword">if</span> hrcBounds(2) &gt; 1
+0660                 hrcInBounds(2,1) = hrcBounds(2) - 1;
+0661             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0662                 hrcInBounds(2,1) = length(cCCLengths);
+0663             <span class="keyword">end</span>
+0664         <span class="keyword">end</span>
+0665     <span class="keyword">end</span>
+0666     
+0667     <span class="comment">% Interpolate the tail's skeleton bounds.</span>
+0668     <span class="comment">% Note: head/tail flipping is handled later.</span>
+0669     tsBoundLengths = [sCCLengths(end) - htSLength; sCCLengths(end)];
+0670     tsBounds = [<a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(tsBoundLengths(1), sCCLengths); <span class="keyword">...</span>
+0671         length(sCCLengths)];
+0672     tsBoundPixels = [round(<a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(skeleton, <span class="keyword">...</span>
+0673         tsBoundLengths(1), sCCLengths, tsBounds(1))); skeleton(<span class="keyword">end</span>,:)];
+0674     
+0675     <span class="comment">% Interpolate the tail's left-side (anti-clockwise) contour bounds.</span>
+0676     <span class="comment">% Note: head/tail flipping is handled later.</span>
+0677     tlcBoundLengths = [cCCLengths(cTailI); cCCLengths(cTailI) + htCLength2];
+0678     <span class="keyword">if</span> tlcBoundLengths(2) &gt; cCCLengths(end)
+0679         tlcBoundLengths(2) = tlcBoundLengths(2) - cCCLengths(end);
+0680     <span class="keyword">end</span>
+0681     tlcBounds = [cTailI; <a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(tlcBoundLengths(2), <span class="keyword">...</span>
+0682         cCCLengths)];
+0683     tlcBoundPixels = [contour(cTailI,:); <span class="keyword">...</span>
+0684         round(<a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(contour, tlcBoundLengths(2), <span class="keyword">...</span>
+0685         cCCLengths, tlcBounds(2)))];
+0686     
+0687     <span class="comment">% The tail's left-side (clockwise) inner bound wraps.</span>
+0688     <span class="keyword">if</span> tlcBoundLengths(2) &lt; cCCLengths(1) || <span class="keyword">...</span>
+0689             tlcBoundLengths(2) &gt; cCCLengths(end)
+0690         <span class="keyword">if</span> tlcBounds(1) == length(cCCLengths)
+0691             tlcInBounds = [];
+0692         <span class="keyword">else</span>
+0693             tlcInBounds = [tlcBounds(1) + 1;  length(cCCLengths)];
+0694         <span class="keyword">end</span>
+0695         
+0696     <span class="comment">% The tail's left-side (clockwise) bound is an inner bound.</span>
+0697     <span class="keyword">elseif</span>  tlcBoundLengths(2) &gt; cCCLengths(tlcBounds(2))
+0698         <span class="keyword">if</span> tlcBounds(1) ==  tlcBounds(2)
+0699             tlcInBounds = [];
+0700         <span class="keyword">elseif</span> tlcBounds(1) &lt; length(cCCLengths)
+0701             tlcInBounds = [tlcBounds(1) + 1; tlcBounds(2)];
+0702         <span class="keyword">else</span> <span class="comment">% wrap</span>
+0703             tlcInBounds = [length(cCCLengths); tlcBounds(2)];
+0704         <span class="keyword">end</span>
+0705         
+0706     <span class="comment">% The tail's left-side (anti-clockwise) bound is an outer bound.</span>
+0707     <span class="keyword">else</span>
+0708         <span class="keyword">if</span> (tlcBounds(1) == length(cCCLengths) &amp;&amp; tlcBounds(2) == 1) <span class="keyword">...</span>
+0709                 || (tlcBounds(2) - tlcBounds(1) == 1)
+0710             tlcInBounds = [];
+0711         <span class="keyword">else</span>
+0712             <span class="keyword">if</span> tlcBounds(1) &lt; length(cCCLengths)
+0713                 tlcInBounds(1,1) = tlcBounds(1) + 1;
+0714             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0715                 tlcInBounds(1,1) = 1;
+0716             <span class="keyword">end</span>
+0717             <span class="keyword">if</span> tlcBounds(2) &gt; 1
+0718                 tlcInBounds(2,1) = tlcBounds(2) - 1;
+0719             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0720                 tlcInBounds(2,1) = length(cCCLengths);
+0721             <span class="keyword">end</span>
+0722         <span class="keyword">end</span>
+0723     <span class="keyword">end</span>
+0724     
+0725     <span class="comment">% Interpolate the tail's right-side (clockwise) contour bounds.</span>
+0726     <span class="comment">% Note: head/tail flipping is handled later.</span>
+0727     trcBoundLengths = [cCCLengths(cTailI) - htCLength1; cCCLengths(cTailI)];
+0728     <span class="keyword">if</span> trcBoundLengths(1) &lt; 0
+0729         trcBoundLengths(1) = trcBoundLengths(1) + cCCLengths(end);
+0730     <span class="keyword">end</span>
+0731     trcBounds = [<a href="../../../SegWorm/ComputerVision/chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(trcBoundLengths(1), cCCLengths); <span class="keyword">...</span>
+0732         cTailI];
+0733     trcBoundPixels = [round(<a href="../../../SegWorm/ComputerVision/chainCodeLengthInterp.html" class="code" title="function [interpData indices] = chainCodeLengthInterp(data, lengths,chainCodeLengths, varargin)">chainCodeLengthInterp</a>(contour, <span class="keyword">...</span>
+0734         trcBoundLengths(1), cCCLengths, trcBounds(1))); contour(cTailI,:)];
+0735     
+0736     <span class="comment">% The tail's right-side (anti-clockwise) inner bound wraps.</span>
+0737     <span class="keyword">if</span> trcBoundLengths(1) &lt; cCCLengths(1) || <span class="keyword">...</span>
+0738             trcBoundLengths(1) &gt; cCCLengths(end)
+0739         <span class="keyword">if</span> trcBounds(2) == 1
+0740             trcInBounds = [];
+0741         <span class="keyword">else</span>
+0742             trcInBounds = [1; trcBounds(2) - 1];
+0743         <span class="keyword">end</span>
+0744         
+0745     <span class="comment">% The tail's right-side (anti-clockwise) bound is an inner bound.</span>
+0746     <span class="keyword">elseif</span>  trcBoundLengths(1) &lt; cCCLengths(trcBounds(1))
+0747         <span class="keyword">if</span> trcBounds(1) ==  trcBounds(2)
+0748             trcInBounds = [];
+0749         <span class="keyword">elseif</span> trcBounds(2) &gt; 1
+0750             trcInBounds = [trcBounds(1); trcBounds(2) - 1];
+0751         <span class="keyword">else</span> <span class="comment">% wrap</span>
+0752             trcInBounds = [trcBounds(1); length(cCCLengths)];
+0753         <span class="keyword">end</span>
+0754         
+0755     <span class="comment">% The tail's right-side (anti-clockwise) bound is an outer bound.</span>
+0756     <span class="keyword">else</span>
+0757         <span class="keyword">if</span> (trcBounds(1) == length(cCCLengths) &amp;&amp; trcBounds(2) == 1) <span class="keyword">...</span>
+0758                 || (trcBounds(2) - trcBounds(1) == 1)
+0759             trcInBounds = [];
+0760         <span class="keyword">else</span>
+0761             <span class="keyword">if</span> trcBounds(1) &lt; length(cCCLengths)
+0762                 trcInBounds(1,1) = trcBounds(1) + 1;
+0763             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0764                 trcInBounds(1,1) = 1;
+0765             <span class="keyword">end</span>
+0766             <span class="keyword">if</span> trcBounds(2) &gt; 1
+0767                 trcInBounds(2,1) = trcBounds(2) - 1;
+0768             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0769                 trcInBounds(2,1) = length(cCCLengths);
+0770             <span class="keyword">end</span>
+0771         <span class="keyword">end</span>
+0772     <span class="keyword">end</span>
+0773     
+0774     <span class="comment">% Interpolate the left-side (anti-clockwise) skeleton bounds.</span>
+0775     lsBoundLengths = [hsBoundLengths(2); tsBoundLengths(1)];
+0776     lsBounds = [hsBounds(2); tsBounds(1)];
+0777     lsBoundPixels = [hsBoundPixels(2,:); tsBoundPixels(1,:)];
+0778     
+0779     <span class="comment">% Interpolate the left-side (anti-clockwise) skeleton inner bounds.</span>
+0780     <span class="keyword">if</span> lsBoundLengths(1) &lt; sCCLengths(lsBounds(1))
+0781         lsInBounds(1,1) = lsBounds(1);
+0782     <span class="keyword">else</span>
+0783         lsInBounds(1,1) = lsBounds(1) + 1;
+0784     <span class="keyword">end</span>
+0785     <span class="keyword">if</span> lsBoundLengths(2) &gt; sCCLengths(lsBounds(2))
+0786         lsInBounds(2,1) = lsBounds(2);
+0787     <span class="keyword">else</span>
+0788         lsInBounds(2,1) = lsBounds(2) - 1;
+0789     <span class="keyword">end</span>
+0790     <span class="keyword">if</span> lsInBounds(1) &gt; lsInBounds(2)
+0791         lsInBounds = [];
+0792     <span class="keyword">end</span>
+0793     
+0794     <span class="comment">% Interpolate the left-side (anti-clockwise) contour bounds.</span>
+0795     lcBoundLengths = [tlcBoundLengths(2); hlcBoundLengths(1)];
+0796     lcBounds = [tlcBounds(2); hlcBounds(1)];
+0797     lcBoundPixels = [tlcBoundPixels(2,:); hlcBoundPixels(1,:)];
+0798     
+0799     <span class="comment">% Interpolate the left-side (anti-clockwise) contour inner bounds.</span>
+0800     <span class="keyword">if</span> lcBoundLengths(1) &lt; cCCLengths(1) || <span class="keyword">...</span>
+0801             lcBoundLengths(1) &gt; cCCLengths(end) <span class="comment">% wrap</span>
+0802         lcInBounds(1,1) = 1;
+0803     <span class="keyword">elseif</span>  lcBoundLengths(1) &lt; cCCLengths(lcBounds(1))
+0804         lcInBounds(1,1) = lcBounds(1);
+0805     <span class="keyword">else</span>
+0806         lcInBounds(1,1) = lcBounds(1) + 1;
+0807     <span class="keyword">end</span>
+0808     <span class="keyword">if</span> lcBoundLengths(2) &lt; cCCLengths(1) || <span class="keyword">...</span>
+0809             lcBoundLengths(2) &gt; cCCLengths(end) <span class="comment">% wrap</span>
+0810         lcInBounds(2,1) = length(cCCLengths);
+0811     <span class="keyword">elseif</span>  lcBoundLengths(2) &gt; cCCLengths(lcBounds(2))
+0812         lcInBounds(2,1) = lcBounds(2);
+0813     <span class="keyword">else</span>
+0814         lcInBounds(2,1) = lcBounds(2) - 1;
+0815     <span class="keyword">end</span>
+0816     
+0817     <span class="comment">% Interpolate the right-side (clockwise) skeleton (inner) bounds.</span>
+0818     <span class="comment">%rsBoundLengths = lsBoundLengths;</span>
+0819     rsBounds = lsBounds;
+0820     rsInBounds = lsInBounds;
+0821     rsBoundPixels = lsBoundPixels;
+0822     
+0823     <span class="comment">% Interpolate the right-side (clockwise) contour bounds.</span>
+0824     rcBoundLengths = [hrcBoundLengths(2); trcBoundLengths(1)];
+0825     rcBounds = [hrcBounds(2); trcBounds(1)];
+0826     rcBoundPixels = [hrcBoundPixels(2,:); trcBoundPixels(1,:)];
+0827     
+0828     <span class="comment">% Interpolate the right-side (clockwise) contour inner bounds.</span>
+0829     <span class="keyword">if</span> rcBoundLengths(1) &lt; cCCLengths(1) || <span class="keyword">...</span>
+0830             rcBoundLengths(1) &gt; cCCLengths(end) <span class="comment">% wrap</span>
+0831         rcInBounds(1,1) = 1;
+0832     <span class="keyword">elseif</span>  rcBoundLengths(1) &lt; cCCLengths(lcBounds(1))
+0833         rcInBounds(1,1) = rcBounds(1);
+0834     <span class="keyword">else</span>
+0835         rcInBounds(1,1) = rcBounds(1) + 1;
+0836     <span class="keyword">end</span>
+0837     <span class="keyword">if</span> rcBoundLengths(2) &lt; cCCLengths(1) || <span class="keyword">...</span>
+0838             rcBoundLengths(2) &gt; cCCLengths(end) <span class="comment">% wrap</span>
+0839         rcInBounds(2,1) = length(cCCLengths);
+0840     <span class="keyword">elseif</span>  rcBoundLengths(2) &gt; cCCLengths(rcBounds(2))
+0841         rcInBounds(2,1) = rcBounds(2);
+0842     <span class="keyword">else</span>
+0843         rcInBounds(2,1) = rcBounds(2) - 1;
+0844     <span class="keyword">end</span>
+0845 <span class="keyword">end</span>
+0846 
+0847 <span class="comment">% Compute the head, tail, left, and right pixels.</span>
+0848 hPixels = [];
+0849 tPixels = [];
+0850 lPixels = [];
+0851 rPixels = [];
+0852 <span class="keyword">if</span> isempty(worm)
+0853     <span class="keyword">if</span> samples &gt; 2
+0854 
+0855         <span class="comment">% Compute the head's right (clockwise) side.</span>
+0856         hPixels = [];
+0857         <span class="keyword">if</span> isempty(hrcInBounds)
+0858             hPixels = [hPixels; <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(hrcBoundPixels(1,:), <span class="keyword">...</span>
+0859                 hrcBoundPixels(2,:))];
+0860         <span class="keyword">else</span>
+0861             hPixels = [hPixels; <a href="#_sub2" class="code" title="subfunction line = drawPolyLine(startPoint, endPoint, points, startI, ">drawPolyLine</a>(hrcBoundPixels(1,:), <span class="keyword">...</span>
+0862                 hrcBoundPixels(2,:), contour, hrcInBounds(1), <span class="keyword">...</span>
+0863                 hrcInBounds(2), 1)];
+0864         <span class="keyword">end</span>
+0865         
+0866         <span class="comment">% Compute the head's right (clockwise) bottom.</span>
+0867         hPixels = [hPixels; <span class="keyword">...</span>
+0868             <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(hrcBoundPixels(2,:), hsBoundPixels(2,:))];
+0869         
+0870         <span class="comment">% Compute the head's left (anti-clockwise) bottom.</span>
+0871         hPixels = [hPixels; <span class="keyword">...</span>
+0872             <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(hsBoundPixels(2,:), hlcBoundPixels(1,:))];
+0873         
+0874         <span class="comment">% Compute the head's left (anti-clockwise) side.</span>
+0875         <span class="keyword">if</span> isempty(hlcInBounds)
+0876             hPixels = [hPixels; <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(hlcBoundPixels(1,:), <span class="keyword">...</span>
+0877                 hlcBoundPixels(2,:))];
+0878         <span class="keyword">else</span>
+0879             hPixels = [hPixels; <a href="#_sub2" class="code" title="subfunction line = drawPolyLine(startPoint, endPoint, points, startI, ">drawPolyLine</a>(hlcBoundPixels(1,:), <span class="keyword">...</span>
+0880                 hlcBoundPixels(2,:), contour, hlcInBounds(1), <span class="keyword">...</span>
+0881                 hlcInBounds(2), 1)];
+0882         <span class="keyword">end</span>
+0883         
+0884         <span class="comment">% Compute the tail's left (anti-clockwise) side.</span>
+0885         tPixels = [];
+0886         <span class="keyword">if</span> isempty(tlcInBounds)
+0887             tPixels = [tPixels; <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(tlcBoundPixels(1,:), <span class="keyword">...</span>
+0888                 tlcBoundPixels(2,:))];
+0889         <span class="keyword">else</span>
+0890             tPixels = [tPixels; <a href="#_sub2" class="code" title="subfunction line = drawPolyLine(startPoint, endPoint, points, startI, ">drawPolyLine</a>(tlcBoundPixels(1,:), <span class="keyword">...</span>
+0891                 tlcBoundPixels(2,:), contour, tlcInBounds(1), <span class="keyword">...</span>
+0892                 tlcInBounds(2), 1)];
+0893         <span class="keyword">end</span>
+0894         
+0895         <span class="comment">% Compute the tail's left (anti-clockwise) bottom.</span>
+0896         tPixels = [tPixels; <span class="keyword">...</span>
+0897             <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(tlcBoundPixels(2,:), tsBoundPixels(1,:))];
+0898         
+0899         <span class="comment">% Compute the tail's right (clockwise) bottom.</span>
+0900         tPixels = [tPixels; <span class="keyword">...</span>
+0901             <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(tsBoundPixels(1,:), trcBoundPixels(1,:))];
+0902         
+0903         <span class="comment">% Compute the tail's right (clockwise) side.</span>
+0904         <span class="keyword">if</span> isempty(trcInBounds)
+0905             tPixels = [tPixels; <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(trcBoundPixels(1,:), <span class="keyword">...</span>
+0906                 trcBoundPixels(2,:))];
+0907         <span class="keyword">else</span>
+0908             tPixels = [tPixels; <a href="#_sub2" class="code" title="subfunction line = drawPolyLine(startPoint, endPoint, points, startI, ">drawPolyLine</a>(trcBoundPixels(1,:), <span class="keyword">...</span>
+0909                 trcBoundPixels(2,:), contour, trcInBounds(1), <span class="keyword">...</span>
+0910                 trcInBounds(2), 1)];
+0911         <span class="keyword">end</span>
+0912         
+0913         <span class="comment">% Compute the left-side's (anti-clockwise) contour side.</span>
+0914         lPixels = [];
+0915         <span class="keyword">if</span> isempty(lcInBounds)
+0916             lPixels = [lPixels; <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(lcBoundPixels(1,:), <span class="keyword">...</span>
+0917                 lcBoundPixels(2,:))];
+0918         <span class="keyword">else</span>
+0919             lPixels = [lPixels; <a href="#_sub2" class="code" title="subfunction line = drawPolyLine(startPoint, endPoint, points, startI, ">drawPolyLine</a>(lcBoundPixels(1,:), <span class="keyword">...</span>
+0920                 lcBoundPixels(2,:), contour, lcInBounds(1), <span class="keyword">...</span>
+0921                 lcInBounds(2), 1)];
+0922         <span class="keyword">end</span>
+0923         
+0924         <span class="comment">% Compute the left-side's (anti-clockwise) head side.</span>
+0925         lPixels = [lPixels; <span class="keyword">...</span>
+0926             <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(lcBoundPixels(2,:), lsBoundPixels(1,:))];
+0927         
+0928         <span class="comment">% Compute the left-side's (anti-clockwise) skeleton side.</span>
+0929         <span class="keyword">if</span> isempty(lsInBounds)
+0930             lPixels = [lPixels; <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(lsBoundPixels(1,:), <span class="keyword">...</span>
+0931                 lsBoundPixels(2,:))];
+0932         <span class="keyword">else</span>
+0933             lPixels = [lPixels; <a href="#_sub2" class="code" title="subfunction line = drawPolyLine(startPoint, endPoint, points, startI, ">drawPolyLine</a>(lsBoundPixels(1,:), <span class="keyword">...</span>
+0934                 lsBoundPixels(2,:), skeleton, lsInBounds(1), <span class="keyword">...</span>
+0935                 lsInBounds(2), 1)];
+0936         <span class="keyword">end</span>
+0937         
+0938         <span class="comment">% Compute the left-side's (anti-clockwise) tail side.</span>
+0939         lPixels = [lPixels; <span class="keyword">...</span>
+0940             <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(lsBoundPixels(2,:), lcBoundPixels(1,:))];
+0941         
+0942         <span class="comment">% Compute the right-side's (clockwise) contour side.</span>
+0943         rPixels = [];
+0944         <span class="keyword">if</span> isempty(rcInBounds)
+0945             rPixels = [rPixels; <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(rcBoundPixels(1,:), <span class="keyword">...</span>
+0946                 rcBoundPixels(2,:))];
+0947         <span class="keyword">else</span>
+0948             rPixels = [rPixels; <a href="#_sub2" class="code" title="subfunction line = drawPolyLine(startPoint, endPoint, points, startI, ">drawPolyLine</a>(rcBoundPixels(1,:), <span class="keyword">...</span>
+0949                 rcBoundPixels(2,:), contour, rcInBounds(1), <span class="keyword">...</span>
+0950                 rcInBounds(2), 1)];
+0951         <span class="keyword">end</span>
+0952         
+0953         <span class="comment">% Compute the right-side's (clockwise) tail side.</span>
+0954         rPixels = [rPixels; <span class="keyword">...</span>
+0955             <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(rcBoundPixels(2,:), rsBoundPixels(2,:))];
+0956         
+0957         <span class="comment">% Compute the right-side's (clockwise) skeleton side.</span>
+0958         <span class="keyword">if</span> isempty(rsInBounds)
+0959             rPixels = [rPixels; <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(rsBoundPixels(2,:), <span class="keyword">...</span>
+0960                 rsBoundPixels(1,:))];
+0961         <span class="keyword">else</span>
+0962             rPixels = [rPixels; <a href="#_sub2" class="code" title="subfunction line = drawPolyLine(startPoint, endPoint, points, startI, ">drawPolyLine</a>(rsBoundPixels(2,:), <span class="keyword">...</span>
+0963                 rsBoundPixels(1,:), skeleton, rsInBounds(2), <span class="keyword">...</span>
+0964                 rsInBounds(1), -1)];
+0965         <span class="keyword">end</span>
+0966         
+0967         <span class="comment">% Compute the right-side's (clockwise) head side.</span>
+0968         rPixels = [rPixels; <span class="keyword">...</span>
+0969             <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(rsBoundPixels(1,:), rcBoundPixels(1,:))];
+0970     <span class="keyword">end</span>
+0971     
+0972 <span class="comment">% Determine the head, tail, left, and right pixels.</span>
+0973 <span class="keyword">else</span>
+0974     hPixels = worm.head.pixels;
+0975     tPixels = worm.tail.pixels;
+0976     lPixels = worm.left.pixels;
+0977     rPixels = worm.right.pixels;
+0978 <span class="keyword">end</span>
+0979 
+0980 <span class="comment">% Update the areas.</span>
+0981 <span class="keyword">if</span> ~isempty(worm) &amp;&amp; isHeadFlipped
+0982     headArea = tailArea / pixel2MicronArea;
+0983     tailArea = headArea / pixel2MicronArea;
+0984 <span class="keyword">else</span>
+0985     headArea = headArea / pixel2MicronArea;
+0986     tailArea = tailArea / pixel2MicronArea;
+0987 <span class="keyword">end</span>
+0988 <span class="keyword">if</span> ~isempty(worm) &amp;&amp; worm.orientation.vulva.isClockwiseFromHead == <span class="keyword">...</span>
+0989         worm.orientation.head.isFlipped
+0990     leftArea = vulvaArea / pixel2MicronArea;
+0991     rightArea = nonVulvaArea / pixel2MicronArea;
+0992 <span class="keyword">else</span>
+0993     leftArea = nonVulvaArea / pixel2MicronArea;
+0994     rightArea = vulvaArea / pixel2MicronArea;
+0995 <span class="keyword">end</span>
+0996 
+0997 <span class="comment">% Determine the head and tail statistics.</span>
+0998 <span class="keyword">if</span> isempty(worm)
+0999     hCDF = [];
+1000     hStdev = 0;
+1001     tCDF = [];
+1002     tStdev = 0;
+1003     lCDF = [];
+1004     lStdev = 0;
+1005     rCDF = [];
+1006     rStdev = 0;
+1007 <span class="keyword">else</span>
+1008     hCDF = worm.head.cdf;
+1009     hStdev = worm.head.stdev;
+1010     tCDF = worm.tail.cdf;
+1011     tStdev = worm.tail.stdev;
+1012     lCDF = worm.left.cdf;
+1013     lStdev = worm.left.stdev;
+1014     rCDF = worm.right.cdf;
+1015     rStdev = worm.right.stdev;
+1016 <span class="keyword">end</span>
+1017 
+1018 <span class="comment">% Construct the normalized worm.</span>
+1019 <span class="comment">% Note: the bounds where interpolated and, therefore, need to be rounded.</span>
+1020 worm = <a href="worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">worm2struct</a>(frame, contour, [], [], [], <span class="keyword">...</span>
+1021     cAngles, cHeadI, cTailI, cCCLengths, <span class="keyword">...</span>
+1022     skeleton, [], [], [], [], skeletonAngles, <span class="keyword">...</span>
+1023     sCCLengths(end), sCCLengths, widths, <span class="keyword">...</span>
+1024     hlcBounds, hrcBounds, hsBounds, hPixels, headArea, hCDF, hStdev, <span class="keyword">...</span>
+1025     tlcBounds, trcBounds, tsBounds, tPixels, tailArea, tCDF, tStdev, <span class="keyword">...</span>
+1026     lcBounds, lsBounds, lPixels, leftArea, lCDF, lStdev, <span class="keyword">...</span>
+1027     rcBounds, rsBounds, rPixels, rightArea, rCDF, rStdev, <span class="keyword">...</span>
+1028     isHeadFlipped, hConfidence, tConfidence, <span class="keyword">...</span>
+1029     isVulvaClockwiseFromHead, vConfidence, nvConfidence);
+1030 <span class="keyword">end</span>
+1031 
+1032 <span class="comment">% Draw a line between two points.</span>
+1033 <span class="comment">% Note: the start point is included in the line; but, the end point is</span>
+1034 <span class="comment">% excluded from the line. This avoids overlap when constructing shapes.</span>
+1035 <a name="_sub1" href="#_subfunctions" class="code">function line = drawLine(startPoint, endPoint)</a>
+1036 points =  1 + max(abs(round(startPoint - endPoint)));
+1037 line = [linspace(startPoint(1), endPoint(1), points); <span class="keyword">...</span>
+1038     linspace(startPoint(2), endPoint(2), points)]';
+1039 line = round(line(1:(end - 1),:));
+1040 <span class="keyword">end</span>
+1041 
+1042 <span class="comment">% Draw a polygonal line between two points and a set of indices that</span>
+1043 <span class="comment">% connect them.</span>
+1044 <span class="comment">% Note: the start point is included in the line; but, the end point is</span>
+1045 <span class="comment">% excluded from the line. This avoids overlap when constructing shapes.</span>
+1046 <a name="_sub2" href="#_subfunctions" class="code">function line = drawPolyLine(startPoint, endPoint, points, startI, </a><span class="keyword">...</span>
+1047     endI, increment)
+1048 
+1049 <span class="comment">% Draw the start segment.</span>
+1050 line = <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(startPoint, points(startI,:));
+1051 
+1052 <span class="comment">% Draw the inter-connecting segments.</span>
+1053 <span class="keyword">while</span> startI ~= endI
+1054     nextI = startI + increment;
+1055     <span class="keyword">if</span> nextI &lt; 1 <span class="comment">% wrap</span>
+1056         nextI = size(points,1);
+1057     <span class="keyword">elseif</span> nextI &gt; size(points,1) <span class="comment">% wrap</span>
+1058         nextI = 1;
+1059     <span class="keyword">end</span>
+1060     line = [line; <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(points(startI,:), points(nextI,:))];
+1061     startI = nextI;
+1062 <span class="keyword">end</span>
+1063 
+1064 <span class="comment">% Draw the end segment.</span>
+1065 line = [line; <a href="#_sub1" class="code" title="subfunction line = drawLine(startPoint, endPoint)">drawLine</a>(points(endI,:), endPoint)];
+1066 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

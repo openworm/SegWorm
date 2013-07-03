@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of circPolyCenter</title>
+  <meta name="keywords" content="circPolyCenter">
+  <meta name="description" content="CIRCPOLYCENTER Find the center of a polygon between two circularly">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>circPolyCenter
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CIRCPOLYCENTER Find the center of a polygon between two circularly</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function center = circPolyCenter(s1, e1, side1, s2, e2, side2, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CIRCPOLYCENTER Find the center of a polygon between two circularly
+   continuous segments of its sides.
+
+   CENTER = CIRCPOLYCENTER(S1, E1, SIDE1, S2, E2, SIDE2)
+
+   CENTER = CIRCPOLYCENTER(S1, E1, SIDE1, S2, E2, SIDE2,
+                           CHAINCODELENGTHS1, CHAINCODELENGTHS2)
+
+   Note: the segments are circularly continuous; therefore, if the start
+   index is greater then the end index, the segment wraps around.
+
+   Inputs:
+       s1                - the start index for the segment on side 1
+       e1                - the end index for the segment on side 1
+       side1             - side 1's pixels
+       s2                - the start index for the segment on side 2
+       e2                - the end index for the segment on side 2
+       side2             - side 2's pixels
+       chainCodeLengths1 - the chain-code length at each point for side 1;
+                           if empty, the array indices are used instead
+       chainCodeLengths2 - the chain-code length at each point for side 2;
+                           if empty, the array indices are used instead
+
+   Output:
+       center - the center pixels between both circularly continuous
+                segments of the polygon's sides</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>	CHAINCODELENGTH2INDEX Translate a length into an index. The index</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Video/overlayWormAngles.html" class="code" title="function oImg = overlayWormAngles(img, worm, cRGB360, sRGB360, sRGBNaN,headPattern, headRGB, isHeadOpaque, vulvaPattern, vulvaRGB, isVulvaOpaque)">overlayWormAngles</a>	OVERLAYWORMANGLES Overlay the worm's contour/skeleton angles (curvature)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function center = circPolyCenter(s1, e1, side1, s2, e2, side2, varargin)</a>
+0002 <span class="comment">%CIRCPOLYCENTER Find the center of a polygon between two circularly</span>
+0003 <span class="comment">%   continuous segments of its sides.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   CENTER = CIRCPOLYCENTER(S1, E1, SIDE1, S2, E2, SIDE2)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   CENTER = CIRCPOLYCENTER(S1, E1, SIDE1, S2, E2, SIDE2,</span>
+0008 <span class="comment">%                           CHAINCODELENGTHS1, CHAINCODELENGTHS2)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Note: the segments are circularly continuous; therefore, if the start</span>
+0011 <span class="comment">%   index is greater then the end index, the segment wraps around.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Inputs:</span>
+0014 <span class="comment">%       s1                - the start index for the segment on side 1</span>
+0015 <span class="comment">%       e1                - the end index for the segment on side 1</span>
+0016 <span class="comment">%       side1             - side 1's pixels</span>
+0017 <span class="comment">%       s2                - the start index for the segment on side 2</span>
+0018 <span class="comment">%       e2                - the end index for the segment on side 2</span>
+0019 <span class="comment">%       side2             - side 2's pixels</span>
+0020 <span class="comment">%       chainCodeLengths1 - the chain-code length at each point for side 1;</span>
+0021 <span class="comment">%                           if empty, the array indices are used instead</span>
+0022 <span class="comment">%       chainCodeLengths2 - the chain-code length at each point for side 2;</span>
+0023 <span class="comment">%                           if empty, the array indices are used instead</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   Output:</span>
+0026 <span class="comment">%       center - the center pixels between both circularly continuous</span>
+0027 <span class="comment">%                segments of the polygon's sides</span>
+0028 
+0029 <span class="comment">% Are there chain-code lengths?</span>
+0030 <span class="keyword">if</span> length(varargin) == 2
+0031     chainCodeLengths1 = varargin{1};
+0032     chainCodeLengths2 = varargin{2};
+0033 <span class="keyword">else</span>
+0034     chainCodeLengths1 = [];
+0035     chainCodeLengths2 = [];
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="comment">% Compute the center for side 1 using the array indices.</span>
+0039 <span class="keyword">if</span> isempty(chainCodeLengths1)
+0040     <span class="keyword">if</span> s1 &lt;= e1
+0041         center1I = ceil((s1 + e1) / 2);
+0042     <span class="keyword">else</span>
+0043         length1 = size(side1, 1);
+0044         center1I = ceil((s1 + e1 + length1) / 2);
+0045         <span class="keyword">if</span> center1I &gt; length1
+0046             center1I = center1I - length1;
+0047         <span class="keyword">end</span>
+0048     <span class="keyword">end</span>
+0049     
+0050 <span class="comment">% Compute the center for side 1 using the chain code lengths.</span>
+0051 <span class="keyword">else</span>
+0052     <span class="keyword">if</span> s1 &lt;= e1
+0053         centerCCL1 = (chainCodeLengths1(s1) + chainCodeLengths1(e1)) / 2;
+0054     <span class="keyword">else</span>
+0055         centerCCL1 = (chainCodeLengths1(s1) + chainCodeLengths1(e1) + <span class="keyword">...</span>
+0056             chainCodeLengths1(end)) / 2;
+0057         <span class="keyword">if</span> centerCCL1 &gt; chainCodeLengths1(end)
+0058             centerCCL1 = centerCCL1 - chainCodeLengths1(end);
+0059         <span class="keyword">end</span>
+0060     <span class="keyword">end</span>
+0061     center1I = <a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(centerCCL1, chainCodeLengths1);
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="comment">% Compute the center for side 2 using the array indices.</span>
+0065 <span class="keyword">if</span> isempty(chainCodeLengths2)
+0066     <span class="keyword">if</span> s2 &lt;= e2
+0067         center2I = ceil((s2 + e2) / 2);
+0068     <span class="keyword">else</span>
+0069         length2 = size(side2, 1);
+0070         center2I = ceil((s2 + e2 + length2) / 2);
+0071         <span class="keyword">if</span> center2I &gt; length2
+0072             center2I = center2I - length2;
+0073         <span class="keyword">end</span>
+0074     <span class="keyword">end</span>
+0075     
+0076 <span class="comment">% Compute the center for side 2 using the chain code lengths.</span>
+0077 <span class="keyword">else</span>
+0078     <span class="keyword">if</span> s2 &lt;= e2
+0079         centerCCL2 = (chainCodeLengths2(s2) + chainCodeLengths2(e2)) / 2;
+0080     <span class="keyword">else</span>
+0081         centerCCL2 = (chainCodeLengths2(s2) + chainCodeLengths2(e2) + <span class="keyword">...</span>
+0082             chainCodeLengths2(end)) / 2;
+0083         <span class="keyword">if</span> centerCCL2 &gt; chainCodeLengths2(end)
+0084             centerCCL2 = centerCCL2 - chainCodeLengths2(end);
+0085         <span class="keyword">end</span>
+0086     <span class="keyword">end</span>
+0087     center2I = <a href="chainCodeLength2Index.html" class="code" title="function indices = chainCodeLength2Index(lengths, chainCodeLengths)">chainCodeLength2Index</a>(centerCCL2, chainCodeLengths2);
+0088 <span class="keyword">end</span>
+0089 
+0090 <span class="comment">% Compute the center between both sides.</span>
+0091 center = round((side1(center1I,:) + side2(center2I,:)) / 2);
+0092 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

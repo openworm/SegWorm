@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of experimentDisplayInfo</title>
+  <meta name="keywords" content="experimentDisplayInfo">
+  <meta name="description" content="EXPERIMENTDISPLAYINFO Get information for displaying the experiment data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>experimentDisplayInfo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>EXPERIMENTDISPLAYINFO Get information for displaying the experiment data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function info = experimentDisplayInfo() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">EXPERIMENTDISPLAYINFO Get information for displaying the experiment data.
+
+   INFO = EXPERIMENTDISPLAYINFO()
+
+   Output:
+       info - information for displaying the experiment data; a structure
+              mirroring the experiment data, where each data value has the
+              following subfield:
+
+              name = a descriptive name</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Printing/worm2CSV.html" class="code" title="function filenames = worm2CSV(filename, wormInfo, worm, wormName, varargin)">worm2CSV</a>	WORM2CSV Convert worm features to a CSV file.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function info = experimentDisplayInfo()</a>
+0002 <span class="comment">%EXPERIMENTDISPLAYINFO Get information for displaying the experiment data.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   INFO = EXPERIMENTDISPLAYINFO()</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Output:</span>
+0007 <span class="comment">%       info - information for displaying the experiment data; a structure</span>
+0008 <span class="comment">%              mirroring the experiment data, where each data value has the</span>
+0009 <span class="comment">%              following subfield:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%              name = a descriptive name</span>
+0012 
+0013 
+0014 
+0015 <span class="comment">%% Organize the experiment information.</span>
+0016 
+0017 <span class="comment">% Organize the worm information.</span>
+0018 info.experiment.worm.strain.name = <span class="string">'Worm (Strain)'</span>;
+0019 info.experiment.worm.genotype.name = <span class="string">'Worm (Genotype)'</span>;
+0020 info.experiment.worm.gene.name = <span class="string">'Worm Genotype (Genes)'</span>;
+0021 info.experiment.worm.allele.name = <span class="string">'Worm Genotype (Alleles)'</span>;
+0022 info.experiment.worm.chromosome.name = <span class="string">'Worm Genotype (Chromosomes)'</span>;
+0023 info.experiment.worm.sex.name = <span class="string">'Worm (Sex Chromosomes)'</span>;
+0024 info.experiment.worm.age.name = <span class="string">'Worm (Age)'</span>;
+0025 info.experiment.worm.habituation.name =  <span class="string">'Worm (Habituation Time)'</span>;
+0026 info.experiment.worm.ventralSide.name = <span class="keyword">...</span>
+0027     <span class="string">'Worm (Ventral Side, Orientation From Head)'</span>;
+0028 info.experiment.worm.agarSide.name =  <span class="keyword">...</span>
+0029     <span class="string">'Worm (Agar/Surface Touching Side)'</span>;
+0030 info.experiment.worm.annotations.name = <span class="string">'Worm (Annotations)'</span>;
+0031 
+0032 <span class="comment">% Organize the environment information.</span>
+0033 info.experiment.environment.timestamp.name = <span class="string">'Environment (Start Time)'</span>;
+0034 info.experiment.environment.food.name = <span class="string">'Environment (Food)'</span>;
+0035 info.experiment.environment.illumination.name = <span class="keyword">...</span>
+0036     <span class="string">'Environment (Illumination)'</span>;
+0037 info.experiment.environment.temperature.name = <span class="keyword">...</span>
+0038     <span class="string">'Environment (Temperatures)'</span>;
+0039 info.experiment.environment.chemicals.name = <span class="string">'Environment (Chemicals)'</span>;
+0040 info.experiment.environment.arena.name = <span class="string">'Environment (Arena)'</span>;
+0041 info.experiment.environment.tracker.name = <span class="string">'Environment (Tracker)'</span>;
+0042 info.experiment.environment.annotations.name = <span class="string">'Environment (Annotations)'</span>;
+0043 
+0044 
+0045 
+0046 <span class="comment">%% Organize the video information.</span>
+0047 
+0048 <span class="comment">% Organize the video length information.</span>
+0049 info.video.length.frames.name = <span class="string">'Video Length (Frames)'</span>;
+0050 info.video.length.time.name = <span class="string">'Video Length (Seconds)'</span>;
+0051 
+0052 <span class="comment">% Organize the video resolution information.</span>
+0053 info.video.resolution.fps.name = <span class="keyword">...</span>
+0054     <span class="string">'Video Temporal Resolution (Frames/Second)'</span>;
+0055 info.video.resolution.height.name = <span class="string">'Video Height (Pixels)'</span>;
+0056 info.video.resolution.width.name = <span class="string">'Video Width (Pixels)'</span>;
+0057 info.video.resolution.micronsPerPixels.x.name = <span class="keyword">...</span>
+0058     <span class="string">'Video Spatial Resolution (X-Axis Microns/Pixels)'</span>;
+0059 info.video.resolution.micronsPerPixels.y.name = <span class="keyword">...</span>
+0060     <span class="string">'Video Spatial Resolution (Y-Axis Microns/Pixels)'</span>;
+0061 info.video.resolution.fourcc.name = <span class="string">'Video Codec (FourCC)'</span>;
+0062 
+0063 <span class="comment">% Organize the video annotation information.</span>
+0064 info.video.annotations.frames.name = <span class="keyword">...</span>
+0065     <span class="string">'Video Frame Annotations (IDs -- See The Reference)'</span>;
+0066 info.video.annotations.reference.id.name = <span class="keyword">...</span>
+0067     <span class="string">'Video Frame Annotation Reference (ID)'</span>;
+0068 info.video.annotations.reference.function.name = <span class="keyword">...</span>
+0069     <span class="string">'Video Frame Annotation Reference (Function Of Origin)'</span>;
+0070 info.video.annotations.reference.message.name = <span class="keyword">...</span>
+0071     <span class="string">'Video Frame Annotation Reference (Description)'</span>;
+0072 
+0073 
+0074 
+0075 <span class="comment">%% Organize the file information.</span>
+0076 
+0077 <span class="comment">% Organize the file information.</span>
+0078 info.files.video.name = <span class="string">'Video File (Path)'</span>;
+0079 info.files.vignette.name = <span class="string">'Vignette File (Path)'</span>;
+0080 info.files.info.name = <span class="string">'Information File (Path)'</span>;
+0081 info.files.stage.name = <span class="string">'Stage Movement File (Path)'</span>;
+0082 info.files.directory.name = <span class="string">'Experiment Directory (Path)'</span>;
+0083 info.files.computer.name = <span class="string">'Experiment Computer (Name/IP)'</span>;
+0084 
+0085 
+0086 
+0087 <span class="comment">%% Organize the worm tracker information.</span>
+0088 
+0089 <span class="comment">% Organize the Worm Tracker 2.0 information.</span>
+0090 info.wt2.tracker.name = <span class="string">'Tracker (Version)'</span>;
+0091 info.wt2.hardware.name = <span class="string">'Hardware (Version)'</span>;
+0092 info.wt2.analysis.name = <span class="string">'Analysis (Version)'</span>;
+0093 info.wt2.annotations.name = <span class="string">'WT2 Hardware/Software (Annotations)'</span>;
+0094 
+0095 
+0096 
+0097 <span class="comment">%% Organize the lab information.</span>
+0098 
+0099 <span class="comment">% Organize the lab information.</span>
+0100 info.lab.experimenter.name = <span class="string">'Lab (Experimenter)'</span>;
+0101 info.lab.name.name = <span class="string">'Lab (Name)'</span>;
+0102 info.lab.address.name = <span class="string">'Lab (Address)'</span>;
+0103 info.lab.annotations.name = <span class="string">'Lab (Annotations)'</span>;
+0104 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of iprintf</title>
+  <meta name="keywords" content="iprintf">
+  <meta name="description" content="IPRINTF(...)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>iprintf
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>IPRINTF(...)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function iprintf(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">IPRINTF(...)
+  Same as FPRINTF, but the current indentation level (as regulated by
+  IENTER and IEXIT) is used to prepend whitespace to the beginning of each
+  line.  A newline is always added to the end.
+
+Example:
+  ienter('foo...');
+  iprintf('2+2=%d', 4);
+  iexit('...foo');</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="addFrameDemo.html" class="code" title="function addFrameDemo">addFrameDemo</a>	addFrameDemo</li><li><a href="doMultiFullReadTestOnAllLoadables.html" class="code" title="function doMultiFullReadTestOnAllLoadables(varargin)">doMultiFullReadTestOnAllLoadables</a>	DOMULTIFULLREADTESTONALLLOADABLES(...)</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="readTests.html" class="code" title="function readTests(plugin)">readTests</a>	readTests(plugin)</li><li><a href="testBitRate.html" class="code" title="function testBitRate(varargin)">testBitRate</a>	testBitRate</li><li><a href="testDirectShow.html" class="code" title="">testDirectShow</a>	testDirectShow</li><li><a href="testEcho.html" class="code" title="function testEcho">testEcho</a>	testEcho</li><li><a href="testFfmpeg.html" class="code" title="function testFfmpeg">testFfmpeg</a>	testFfmpeg</li><li><a href="testGet.html" class="code" title="function testGet(plugin)">testGet</a>	testGet</li><li><a href="testGopSize.html" class="code" title="function testGopSize(varargin)">testGopSize</a>	testGopSize</li><li><a href="testQuality.html" class="code" title="function testQuality(varargin)">testQuality</a>	testQuality</li><li><a href="videoWriterDemo.html" class="code" title="">videoWriterDemo</a>	videoWriterDemo</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function iprintf(varargin)</a>
+0002 <span class="comment">%IPRINTF(...)</span>
+0003 <span class="comment">%  Same as FPRINTF, but the current indentation level (as regulated by</span>
+0004 <span class="comment">%  IENTER and IEXIT) is used to prepend whitespace to the beginning of each</span>
+0005 <span class="comment">%  line.  A newline is always added to the end.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%Example:</span>
+0008 <span class="comment">%  ienter('foo...');</span>
+0009 <span class="comment">%  iprintf('2+2=%d', 4);</span>
+0010 <span class="comment">%  iexit('...foo');</span>
+0011 
+0012 <span class="keyword">global</span> videoIO_test_indentLevel;
+0013 <span class="keyword">if</span> (isempty(videoIO_test_indentLevel))
+0014   videoIO_test_indentLevel = 0;
+0015 <span class="keyword">end</span>
+0016 
+0017 <span class="keyword">if</span> nargin &lt; 1
+0018   <span class="keyword">return</span>
+0019 <span class="keyword">end</span>
+0020 
+0021 <span class="keyword">if</span> (isnumeric(varargin{1}))
+0022   fid = varargin{1};
+0023   varargin = {varargin{2:end}};
+0024 <span class="keyword">else</span>
+0025   fid = 1; <span class="comment">%stdout</span>
+0026 <span class="keyword">end</span>
+0027 
+0028 indentationString = char(ones(1,videoIO_test_indentLevel*2)*<span class="string">' '</span>);
+0029 
+0030 preindented = sprintf(varargin{:});
+0031 newlinesIndented = strrep(preindented, sprintf(<span class="string">'\n'</span>), <span class="keyword">...</span>
+0032   [sprintf(<span class="string">'\n'</span>), indentationString]);
+0033 
+0034 fprintf(fid, <span class="string">'%s%s\n'</span>, indentationString, newlinesIndented);
+0035</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormHistogram2PDF_GUI</title>
+  <meta name="keywords" content="wormHistogram2PDF_GUI">
+  <meta name="description" content="WORMHISTOGRAM2PDF_GUI A wrapper to convert an experiment (and optional">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>wormHistogram2PDF_GUI
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMHISTOGRAM2PDF_GUI A wrapper to convert an experiment (and optional</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function errorMSG = wormHistogram2PDF_GUI(pdfFile, expHistFile,controlHistFile, progFunc, funcState) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMHISTOGRAM2PDF_GUI A wrapper to convert an experiment (and optional
+control) histogram to a visual PDF file.
+
+   ERRORMSG = WORMHISTOGRAM2PDF_GUI(CSVFILE, EXPHISTFILE, CONTROLHISTFILE,
+                                    PROGFUNC, FUNCSTATE)
+
+   Inputs:
+       pdfFile         - the name for the PDF file
+       expHistFile     - the experiment histogram file
+       controlHistFile - the control histogram file
+       progFunc        - a function to update on the progress
+       progState       - a state for the progress function
+
+       Note: the progress function signature should be
+
+       FUNCSTATE = PROGFUNC(PERCENT, MSG, FUNCSTATE)
+
+       Arguments:
+          funcState = a progress function state
+          percent   = the progress percent (0 to 100%)
+          msg       = a message on our progress (to display)
+
+   Output:
+       errorMSG - an error message if an error occurred;
+                  if empty, the PDF file was created successfully</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function errorMSG = wormHistogram2PDF_GUI(pdfFile, expHistFile, </a><span class="keyword">...</span>
+0002     controlHistFile, progFunc, funcState)
+0003 <span class="comment">%WORMHISTOGRAM2PDF_GUI A wrapper to convert an experiment (and optional</span>
+0004 <span class="comment">%control) histogram to a visual PDF file.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   ERRORMSG = WORMHISTOGRAM2PDF_GUI(CSVFILE, EXPHISTFILE, CONTROLHISTFILE,</span>
+0007 <span class="comment">%                                    PROGFUNC, FUNCSTATE)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Inputs:</span>
+0010 <span class="comment">%       pdfFile         - the name for the PDF file</span>
+0011 <span class="comment">%       expHistFile     - the experiment histogram file</span>
+0012 <span class="comment">%       controlHistFile - the control histogram file</span>
+0013 <span class="comment">%       progFunc        - a function to update on the progress</span>
+0014 <span class="comment">%       progState       - a state for the progress function</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%       Note: the progress function signature should be</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%       FUNCSTATE = PROGFUNC(PERCENT, MSG, FUNCSTATE)</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%       Arguments:</span>
+0021 <span class="comment">%          funcState = a progress function state</span>
+0022 <span class="comment">%          percent   = the progress percent (0 to 100%)</span>
+0023 <span class="comment">%          msg       = a message on our progress (to display)</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   Output:</span>
+0026 <span class="comment">%       errorMSG - an error message if an error occurred;</span>
+0027 <span class="comment">%                  if empty, the PDF file was created successfully</span>
+0028 
+0029 errorMSG = [];
+0030 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

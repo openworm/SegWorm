@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of addFrameDemo</title>
+  <meta name="keywords" content="addFrameDemo">
+  <meta name="description" content="addFrameDemo">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>addFrameDemo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>addFrameDemo</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function addFrameDemo </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">addFrameDemo
+  A script demonstrating various ways of using the videoWriter/addframe
+  method.  For a simpler example with extensive comments, see
+  videoWriterDemo.
+
+Example:
+  addFrameDemo</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>	FRAME=GETFRAME(VR)</li><li><a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>	ADDFRAME  Add video frame to VIDEOWRITER stream.</li><li><a href="../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>	videoWriter class constructor</li><li><a href="../../videoIO/buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>	buildVideoIO</li><li><a href="genTestFrame.html" class="code" title="function frame = genTestFrame(w,h,i,N)">genTestFrame</a>	frame = genTestFrame(w,h,i,N)</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="iprintf.html" class="code" title="function iprintf(varargin)">iprintf</a>	IPRINTF(...)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function vw = openVid(name,W,H,desc)</a></li><li><a href="#_sub2" class="code">function vw = closeVid(vw)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function addFrameDemo</a>
+0002 <span class="comment">%addFrameDemo</span>
+0003 <span class="comment">%  A script demonstrating various ways of using the videoWriter/addframe</span>
+0004 <span class="comment">%  method.  For a simpler example with extensive comments, see</span>
+0005 <span class="comment">%  videoWriterDemo.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%Example:</span>
+0008 <span class="comment">%  addFrameDemo</span>
+0009 
+0010 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>;
+0011 
+0012 <span class="keyword">if</span> exist(<span class="string">'buildVideoIO'</span>, <span class="string">'file'</span>) == 2, <a href="../../videoIO/buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>; <span class="keyword">end</span>
+0013 
+0014 N = 10;       <span class="comment">% number of frames in each video</span>
+0015 W=320; H=240; <span class="comment">% size of all our videos</span>
+0016 
+0017 <span class="comment">%==========================================================================</span>
+0018 <span class="comment">% Standard approach: individual RGB frames</span>
+0019 vw = <a href="#_sub1" class="code" title="subfunction vw = openVid(name,W,H,desc)">openVid</a>(<span class="string">'rgb'</span>,W,H, <span class="string">'It should have swirling ellipses and the frame number printed in pixelated numerals in the lower right.'</span>);
+0020 <span class="keyword">for</span> i=0:N
+0021   frame = <a href="genTestFrame.html" class="code" title="function frame = genTestFrame(w,h,i,N)">genTestFrame</a>(W,H,i,N*2);
+0022   <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, frame);
+0023 <span class="keyword">end</span>
+0024 vw = <a href="#_sub2" class="code" title="subfunction vw = closeVid(vw)">closeVid</a>(vw); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0025 
+0026 <span class="comment">%==========================================================================</span>
+0027 <span class="comment">% individual grayscale frames</span>
+0028 vw = <a href="#_sub1" class="code" title="subfunction vw = openVid(name,W,H,desc)">openVid</a>(<span class="string">'gray'</span>,W,H, <span class="string">'It should look like the RGB example, except the output will be grayscale.'</span>);
+0029 <span class="keyword">for</span> i=0:N
+0030   frame = rgb2gray(<a href="genTestFrame.html" class="code" title="function frame = genTestFrame(w,h,i,N)">genTestFrame</a>(W,H,i,N*2)); <span class="comment">% NOTE: rgb2gray</span>
+0031   <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, frame);
+0032 <span class="keyword">end</span>
+0033 vw = <a href="#_sub2" class="code" title="subfunction vw = closeVid(vw)">closeVid</a>(vw); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0034 
+0035 <span class="comment">%==========================================================================</span>
+0036 <span class="comment">% auto-resizing</span>
+0037 vw = <a href="#_sub1" class="code" title="subfunction vw = openVid(name,W,H,desc)">openVid</a>(<span class="string">'resize'</span>,W,H, <span class="string">'The pixelated numbers should be twice as wide as usual.'</span>);
+0038 <span class="keyword">for</span> i=0:N
+0039   frame = <a href="genTestFrame.html" class="code" title="function frame = genTestFrame(w,h,i,N)">genTestFrame</a>(W/2,H,i,N*2); <span class="comment">% NOTE: W/2</span>
+0040   <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, frame);
+0041 <span class="keyword">end</span>
+0042 vw = <a href="#_sub2" class="code" title="subfunction vw = closeVid(vw)">closeVid</a>(vw); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0043 
+0044 <span class="comment">%==========================================================================</span>
+0045 <span class="comment">% multiple frames all at once</span>
+0046 vw = <a href="#_sub1" class="code" title="subfunction vw = openVid(name,W,H,desc)">openVid</a>(<span class="string">'multiframe'</span>,W,H, <span class="string">'This should be identical to the RGB example.'</span>);
+0047 frames = cell(1,N);
+0048 <span class="keyword">for</span> i=0:N
+0049   frames{i+1} = <a href="genTestFrame.html" class="code" title="function frame = genTestFrame(w,h,i,N)">genTestFrame</a>(W,H,i,N*2);
+0050 <span class="keyword">end</span>
+0051 <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, frames{:}); <span class="comment">% NOTE: adding all at once</span>
+0052 vw = <a href="#_sub2" class="code" title="subfunction vw = closeVid(vw)">closeVid</a>(vw); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0053 
+0054 <span class="comment">%==========================================================================</span>
+0055 <span class="comment">% offscreen rendering of a multi-plot figure</span>
+0056 vw = <a href="#_sub1" class="code" title="subfunction vw = openVid(name,W,H,desc)">openVid</a>(<span class="string">'figure'</span>,W,H, <span class="string">'The frames are extracted from a figure with subplots.  The video will probably have a warped aspect ratio.'</span>);
+0057 fig = figure;
+0058 <span class="keyword">for</span> i=0:N
+0059   frame = <a href="genTestFrame.html" class="code" title="function frame = genTestFrame(w,h,i,N)">genTestFrame</a>(W,H,i,N*2);
+0060   subplot(121); 
+0061   imagesc(frame);
+0062   title(sprintf(<span class="string">'frame %d'</span>, i));
+0063   
+0064   subplot(122);
+0065   plot(rand(5));
+0066   title(<span class="string">'some random lines'</span>);
+0067   xlabel(<span class="string">'x axis'</span>);
+0068   ylabel(<span class="string">'y axis'</span>);
+0069   
+0070   drawnow; <span class="comment">% just so the user can see the animation</span>
+0071     
+0072   <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, gcf); <span class="comment">% NOTE: figure handle</span>
+0073 <span class="keyword">end</span>
+0074 vw = <a href="#_sub2" class="code" title="subfunction vw = closeVid(vw)">closeVid</a>(vw); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0075 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(fig);
+0076 
+0077 <span class="comment">%==========================================================================</span>
+0078 <span class="comment">% hidden offscreen rendering</span>
+0079 vw = <a href="#_sub1" class="code" title="subfunction vw = openVid(name,W,H,desc)">openVid</a>(<span class="string">'fancyFig'</span>,W,H, <span class="string">'Offscreen rendering with no border, and some vector drawings added.'</span>);
+0080 fig = figure; 
+0081 clf;
+0082 <span class="comment">% NOTE: keep the window hidden so it doesn't bother the user and they can't</span>
+0083 <span class="comment">%       accidentally change focus to a new figure window.</span>
+0084 set(fig, <span class="string">'Visible'</span>,<span class="string">'off'</span>);     
+0085 <span class="comment">% NOTE: lock down the figure size so there will be no IMRESIZE call needed</span>
+0086 <span class="comment">%       in ADDFRAME.</span>
+0087 set(fig,<span class="string">'Units'</span>,<span class="string">'pixels'</span>, <span class="string">'Position'</span>,[0 0 W H]); 
+0088 <span class="comment">% NOTE: Eliminates the padding around the axis client are used for the</span>
+0089 <span class="comment">%       title, xlabel, ylabel, etc.</span>
+0090 subplot(<span class="string">'Position'</span>,[0 0 1 1]); 
+0091 houseX = [ 0  0  2  2  1  0  2 nan  0.75  0.75  1.25  1.25] / 3 * H/4;
+0092 houseY = [-2  0  0 -2 -3 -2 -2 nan  0    -1.25 -1.25  0   ] / 3 * H/4 + H/2;
+0093 <span class="keyword">for</span> i=0:N
+0094   frame = <a href="genTestFrame.html" class="code" title="function frame = genTestFrame(w,h,i,N)">genTestFrame</a>(W,H,i,N*2);
+0095   imshow(frame);
+0096   <span class="comment">% NOTE: adding drawing elements</span>
+0097   line(houseX+(i+1)*(W-max(houseX))/(N+1), houseY, <span class="keyword">...</span>
+0098     <span class="string">'LineWidth'</span>,5, <span class="string">'Marker'</span>,<span class="string">'.'</span>); 
+0099   text(10,25, <span class="string">'a flying house!'</span>, <span class="string">'FontSize'</span>,16);
+0100   <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, gcf); <span class="comment">% NOTE: figure handle</span>
+0101 <span class="keyword">end</span>
+0102 vw = <a href="#_sub2" class="code" title="subfunction vw = closeVid(vw)">closeVid</a>(vw); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0103 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(fig);
+0104 
+0105 <span class="comment">%==========================================================================</span>
+0106 vw = <a href="#_sub1" class="code" title="subfunction vw = openVid(name,W,H,desc)">openVid</a>(<span class="string">'getframe'</span>,W,H, <span class="string">'Same as fancyFig, but GETFRAME is used.  Note that depending on a number of factors, GETFRAME may use screen capturing instead of off-screen rendering, so anything sitting atop the window may be captured.'</span>);
+0107 fig = figure; 
+0108 clf;
+0109 set(fig, <span class="string">'Visible'</span>,<span class="string">'off'</span>);     
+0110 set(fig,<span class="string">'Units'</span>,<span class="string">'pixels'</span>, <span class="string">'Position'</span>,[0 0 W H]); 
+0111 subplot(<span class="string">'Position'</span>,[0 0 1 1]); 
+0112 houseX = [ 0  0  2  2  1  0  2 nan  0.75  0.75  1.25  1.25] / 3 * H/4;
+0113 houseY = [-2  0  0 -2 -3 -2 -2 nan  0    -1.25 -1.25  0   ] / 3 * H/4 + H/2;
+0114 <span class="keyword">for</span> i=0:N
+0115   frame = <a href="genTestFrame.html" class="code" title="function frame = genTestFrame(w,h,i,N)">genTestFrame</a>(W,H,i,N*2);
+0116   imshow(frame);
+0117   line(houseX+(i+1)*(W-max(houseX))/(N+1), houseY, <span class="keyword">...</span>
+0118     <span class="string">'LineWidth'</span>,5, <span class="string">'Marker'</span>,<span class="string">'.'</span>); 
+0119   text(10,25, <span class="string">'a flying house!'</span>, <span class="string">'FontSize'</span>,16);
+0120   movFrame = <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(gcf); <span class="comment">% NOTE: as of R2007a, this causes the frame to be displayed even though 'visible' is 'off'...a feature request has been submitted to MathWorks.</span>
+0121   <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, movFrame); <span class="comment">% NOTE: getframe used here to obtain a mov structure</span>
+0122 <span class="keyword">end</span>
+0123 vw = <a href="#_sub2" class="code" title="subfunction vw = closeVid(vw)">closeVid</a>(vw); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0124 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(fig);
+0125 
+0126 <span class="comment">%==========================================================================</span>
+0127 <a href="iprintf.html" class="code" title="function iprintf(varargin)">iprintf</a>([<span class="string">'View '</span> mfilename <span class="string">'_*.avi in your favorite image viewer, '</span> <span class="keyword">...</span>
+0128          <span class="string">'then delete them if you do not want to keep them.'</span>]);
+0129 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>;
+0130 <span class="keyword">return</span>
+0131 
+0132 <span class="comment">%==========================================================================</span>
+0133 <span class="comment">%==========================================================================</span>
+0134 <span class="comment">%==========================================================================</span>
+0135 <span class="comment">%==========================================================================</span>
+0136 
+0137 <span class="comment">%-----------------------------</span>
+0138 <a name="_sub1" href="#_subfunctions" class="code">function vw = openVid(name,W,H,desc)</a>
+0139 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>([<span class="string">'Creating &quot;'</span> mfilename <span class="string">'_'</span> name <span class="string">'.avi&quot;.  '</span> desc]);
+0140 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a> all;
+0141 vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>([mfilename <span class="string">'_'</span> name <span class="string">'.avi'</span>], <span class="string">'width'</span>,W, <span class="string">'height'</span>,H);
+0142 
+0143 <span class="comment">%-----------------------------</span>
+0144 <a name="_sub2" href="#_subfunctions" class="code">function vw = closeVid(vw)</a>
+0145 vw = <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw);
+0146 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>(<span class="string">''</span>);</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,1643 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of methodsTIF</title>
+  <meta name="keywords" content="methodsTIF">
+  <meta name="description" content="METHODSTIF Save worm details to a TIF.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>methodsTIF
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>METHODSTIF Save worm details to a TIF.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [filename pages] = methodsTIF(filename, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">METHODSTIF Save worm details to a TIF.
+
+   [FILENAME PAGES] = METHODSTIF(FILENAME)
+
+   [FILENAME PAGES] = METHODSTIF(FILENAME, ISSHOW, PAGE, SAVEQUALITY,
+                                 ISCLOSE, ISVERBOSE)
+
+   Inputs:
+       filename    - the TIF filename
+       isShow      - are we showing the figures onscreen?
+                     Note: hiding the figures is faster.
+       page        - the page number;
+                     if empty, the page number is not shown
+       saveQuality - the quality (magnification) for saving the figures;
+                     if empty, the figures are not saved
+                     the default is none (empty)
+       isClose     - shoud we close the figures after saving them?
+                     when saving the figure, the default is yes (true)
+                     otherwise, the default is no (false)
+       isVerbose   - verbose mode displays the progress;
+                     the default is yes (true)
+   Output:
+       filename - the TIF file containing the saved figures;
+                  if empty, the figures were not saved
+       pages    - the number of pages in the figure file
+
+ See also FILTERWORMINFO, FILTERWORMHIST, WORM2HISTOGRAM, WORM2STATSINFO</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/color2TeX.html" class="code" title="function str = color2TeX(color)">color2TeX</a>	COLOR2TEX Convert a color to a TeX string.</li><li><a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>	SAVETIF Save a figure to a TIF file.</li><li><a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>	STR2COLORS Convert a string of colors to RGB values.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="worm2TIF.html" class="code" title="function [filename pages] = worm2TIF(filename, worm, wormName, varargin)">worm2TIF</a>	WORM2TIF Save worm information to a TIF.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function str = formatTextStr(str)</a></li><li><a href="#_sub2" class="code">function strs = WT2OverviewText()</a></li><li><a href="#_sub3" class="code">function strs = WormSegmentationText()</a></li><li><a href="#_sub4" class="code">function strs = VentralHeadAnnotationText()</a></li><li><a href="#_sub5" class="code">function strs = AbsoluteCoordinatesText()</a></li><li><a href="#_sub6" class="code">function strs = FeatureOverviewText()</a></li><li><a href="#_sub7" class="code">function strs = MorphologyFeaturesText()</a></li><li><a href="#_sub8" class="code">function strs = PostureFeaturesText()</a></li><li><a href="#_sub9" class="code">function strs = MotionFeaturesText()</a></li><li><a href="#_sub10" class="code">function strs = PathFeaturesText()</a></li><li><a href="#_sub11" class="code">function strs = PhenotypicOntologyText()</a></li><li><a href="#_sub12" class="code">function strs = FeatureFileOverviewText()</a></li><li><a href="#_sub13" class="code">function strs = PDFFilesText()</a></li><li><a href="#_sub14" class="code">function strs = CSVFilesText()</a></li><li><a href="#_sub15" class="code">function strs = MATFilesText()</a></li><li><a href="#_sub16" class="code">function strs = SignificanceMATFilesText()</a></li><li><a href="#_sub17" class="code">function strs = AcknowledgementsText()</a></li><li><a href="#_sub18" class="code">function strs = ReferencesText()</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [filename pages] = methodsTIF(filename, varargin)</a>
+0002 <span class="comment">%METHODSTIF Save worm details to a TIF.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [FILENAME PAGES] = METHODSTIF(FILENAME)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [FILENAME PAGES] = METHODSTIF(FILENAME, ISSHOW, PAGE, SAVEQUALITY,</span>
+0007 <span class="comment">%                                 ISCLOSE, ISVERBOSE)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Inputs:</span>
+0010 <span class="comment">%       filename    - the TIF filename</span>
+0011 <span class="comment">%       isShow      - are we showing the figures onscreen?</span>
+0012 <span class="comment">%                     Note: hiding the figures is faster.</span>
+0013 <span class="comment">%       page        - the page number;</span>
+0014 <span class="comment">%                     if empty, the page number is not shown</span>
+0015 <span class="comment">%       saveQuality - the quality (magnification) for saving the figures;</span>
+0016 <span class="comment">%                     if empty, the figures are not saved</span>
+0017 <span class="comment">%                     the default is none (empty)</span>
+0018 <span class="comment">%       isClose     - shoud we close the figures after saving them?</span>
+0019 <span class="comment">%                     when saving the figure, the default is yes (true)</span>
+0020 <span class="comment">%                     otherwise, the default is no (false)</span>
+0021 <span class="comment">%       isVerbose   - verbose mode displays the progress;</span>
+0022 <span class="comment">%                     the default is yes (true)</span>
+0023 <span class="comment">%   Output:</span>
+0024 <span class="comment">%       filename - the TIF file containing the saved figures;</span>
+0025 <span class="comment">%                  if empty, the figures were not saved</span>
+0026 <span class="comment">%       pages    - the number of pages in the figure file</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">% See also FILTERWORMINFO, FILTERWORMHIST, WORM2HISTOGRAM, WORM2STATSINFO</span>
+0029 
+0030 <span class="comment">% Are we showing the figures onscreen?</span>
+0031 <span class="comment">% Note: hiding the figures is faster.</span>
+0032 isShow = true;
+0033 <span class="keyword">if</span> ~isempty(varargin)
+0034     isShow = varargin{1};
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="comment">% Determine the page number.</span>
+0038 pages = 0;
+0039 page = 0;
+0040 <span class="keyword">if</span> length(varargin) &gt; 1
+0041     page = varargin{2};
+0042     pages = page;
+0043 <span class="keyword">end</span>
+0044 
+0045 <span class="comment">% Determine the quality (magnification) for saving the figures.</span>
+0046 saveQuality = []; <span class="comment">% don't save the figures</span>
+0047 <span class="keyword">if</span> length(varargin) &gt; 2
+0048     saveQuality = varargin{3};
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">% Are we closing the figures after saving them?</span>
+0052 <span class="keyword">if</span> saveQuality &gt; 0
+0053     isClose = true;
+0054 <span class="keyword">else</span>
+0055     isClose = false;
+0056 <span class="keyword">end</span>
+0057 <span class="keyword">if</span> length(varargin) &gt; 3
+0058     isClose = varargin{4};
+0059 <span class="keyword">end</span>
+0060 <span class="keyword">if</span> ~isShow
+0061     isClose = true;
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="comment">% Are we displaying the progress?</span>
+0065 isVerbose = true;
+0066 <span class="keyword">if</span> length(varargin) &gt; 4
+0067     isVerbose = varargin{5};
+0068 <span class="keyword">end</span>
+0069 
+0070 
+0071 
+0072 <span class="comment">%% Draw the methods.</span>
+0073 
+0074 <span class="comment">% Initialize the page information.</span>
+0075 
+0076 <span class="comment">% Initialize the texts.</span>
+0077 texts = {
+0078     <a href="#_sub2" class="code" title="subfunction strs = WT2OverviewText()">WT2OverviewText</a>()
+0079     <a href="#_sub3" class="code" title="subfunction strs = WormSegmentationText()">WormSegmentationText</a>()
+0080     <a href="#_sub4" class="code" title="subfunction strs = VentralHeadAnnotationText()">VentralHeadAnnotationText</a>()
+0081     <a href="#_sub5" class="code" title="subfunction strs = AbsoluteCoordinatesText()">AbsoluteCoordinatesText</a>()
+0082     <a href="#_sub6" class="code" title="subfunction strs = FeatureOverviewText()">FeatureOverviewText</a>()
+0083     <a href="#_sub7" class="code" title="subfunction strs = MorphologyFeaturesText()">MorphologyFeaturesText</a>()
+0084     <a href="#_sub8" class="code" title="subfunction strs = PostureFeaturesText()">PostureFeaturesText</a>()
+0085     <a href="#_sub9" class="code" title="subfunction strs = MotionFeaturesText()">MotionFeaturesText</a>()
+0086     <a href="#_sub10" class="code" title="subfunction strs = PathFeaturesText()">PathFeaturesText</a>()
+0087     <a href="#_sub11" class="code" title="subfunction strs = PhenotypicOntologyText()">PhenotypicOntologyText</a>()
+0088     <a href="#_sub12" class="code" title="subfunction strs = FeatureFileOverviewText()">FeatureFileOverviewText</a>()
+0089     <a href="#_sub13" class="code" title="subfunction strs = PDFFilesText()">PDFFilesText</a>()
+0090     <a href="#_sub14" class="code" title="subfunction strs = CSVFilesText()">CSVFilesText</a>()
+0091     <a href="#_sub15" class="code" title="subfunction strs = MATFilesText()">MATFilesText</a>()
+0092     <a href="#_sub16" class="code" title="subfunction strs = SignificanceMATFilesText()">SignificanceMATFilesText</a>()
+0093     <a href="#_sub17" class="code" title="subfunction strs = AcknowledgementsText()">AcknowledgementsText</a>()
+0094     <a href="#_sub18" class="code" title="subfunction strs = ReferencesText()">ReferencesText</a>()};
+0095 
+0096 <span class="comment">% Initialize the titles and remove them from the text.</span>
+0097 titleLines = 2;
+0098 titles = cell(length(texts), 1);
+0099 <span class="keyword">for</span> i = 1:length(texts)
+0100     titles{i} = [<span class="string">' '</span> texts{i}{1} <span class="string">' '</span>];
+0101     texts{i} = texts{i}((titleLines + 1):end);
+0102 <span class="keyword">end</span>
+0103 
+0104 <span class="comment">% Initialize the text pages.</span>
+0105 linesPerPage = 35;
+0106 textPageOff = page + 2;
+0107 textPages = nan(length(texts), 1);
+0108 <span class="keyword">for</span> i = 1:length(texts)
+0109     textPages(i) = floor(textPageOff);
+0110     numPages = ceil(length(texts{i}) / linesPerPage);
+0111     textPageOff = textPageOff + numPages * 0.5;
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">% Display the progress.</span>
+0115 <span class="keyword">if</span> isVerbose
+0116     disp(<span class="string">'Printing the methods table of contents ...'</span>);
+0117 <span class="keyword">end</span>
+0118 
+0119 <span class="comment">% Create a figure.</span>
+0120 page = page + 1;
+0121 h = figure;
+0122 visStr = <span class="string">'off'</span>;
+0123 <span class="keyword">if</span> isShow
+0124     visStr = <span class="string">'on'</span>;
+0125 <span class="keyword">end</span>
+0126 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1], <span class="keyword">...</span>
+0127     <span class="string">'PaperType'</span>, <span class="string">'A2'</span>, <span class="string">'Visible'</span>, visStr);
+0128 hold on;
+0129 
+0130 <span class="comment">% Initialize the drawing information.</span>
+0131 fontSize1 = 32;
+0132 fontSize2 = 24;
+0133 tocTitleColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+0134 tocSectionNumColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0.5);
+0135 tocSectionColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0.25);
+0136 tocPageColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+0137 yStart = 0.9;
+0138 xOff1 = 0;
+0139 xOff2 = 0.02;
+0140 xOff3 = 0.1;
+0141 xOff4 = 0.98;
+0142 yOff = 0.05;
+0143 
+0144 <span class="comment">% Draw the methods.</span>
+0145 position1 = [0, 0, 0.5, 1];
+0146 axis1 = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'Position'</span>, position1, <span class="keyword">...</span>
+0147     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+0148 position2 = [0.5, 0, 0.5, 1];
+0149 axis2 = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'Position'</span>, position2, <span class="keyword">...</span>
+0150     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+0151 
+0152 <span class="comment">% Draw the methods table of contents header.</span>
+0153 text(xOff1, 1, <span class="keyword">...</span>
+0154     [<span class="string">' \bf'</span> upper(<span class="string">'Methods Table of Contents'</span>) <span class="string">' '</span>], <span class="keyword">...</span>
+0155     <span class="string">'Color'</span>, tocTitleColor, <span class="keyword">...</span>
+0156     <span class="string">'FontSize'</span>, fontSize1, <span class="keyword">...</span>
+0157     <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0158     <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+0159     <span class="string">'Parent'</span>, axis1);
+0160 
+0161 <span class="comment">% Draw the methods table of contents.</span>
+0162 <span class="keyword">for</span> i = 1:length(titles)
+0163     
+0164     <span class="comment">% Draw the section number.</span>
+0165     text(xOff2, yStart - yOff * (i - 1), <span class="keyword">...</span>
+0166         [<span class="string">'   '</span> num2str(i) <span class="string">'. '</span>], <span class="keyword">...</span>
+0167         <span class="string">'Color'</span>, tocSectionNumColor, <span class="keyword">...</span>
+0168         <span class="string">'FontSize'</span>, fontSize2, <span class="keyword">...</span>
+0169         <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0170         <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+0171         <span class="string">'Parent'</span>, axis1);
+0172     
+0173     <span class="comment">% Draw the section title.</span>
+0174     text(xOff3, yStart - yOff * (i - 1), <span class="keyword">...</span>
+0175         [<span class="string">' \bf'</span> upper(titles{i}) <span class="string">' '</span>], <span class="keyword">...</span>
+0176         <span class="string">'Color'</span>, tocSectionColor, <span class="keyword">...</span>
+0177         <span class="string">'FontSize'</span>, fontSize2, <span class="keyword">...</span>
+0178         <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0179         <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+0180         <span class="string">'Parent'</span>, axis1);
+0181     
+0182     <span class="comment">% Draw the section page number.</span>
+0183     text(xOff4, yStart - yOff * (i - 1), <span class="keyword">...</span>
+0184         [<span class="string">' \it'</span> num2str(textPages(i)) <span class="string">' '</span>], <span class="keyword">...</span>
+0185         <span class="string">'Color'</span>, tocPageColor, <span class="keyword">...</span>
+0186         <span class="string">'FontSize'</span>, fontSize2, <span class="keyword">...</span>
+0187         <span class="string">'HorizontalAlignment'</span>, <span class="string">'right'</span>, <span class="keyword">...</span>
+0188         <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+0189         <span class="string">'Parent'</span>, axis1);
+0190 <span class="keyword">end</span>
+0191 
+0192 
+0193 
+0194 <span class="comment">%% Draw the contact information.</span>
+0195 
+0196 <span class="comment">% Initialize the drawing information.</span>
+0197 headColorStr = <a href="../../../SegWorm/Util/color2TeX.html" class="code" title="function str = color2TeX(color)">color2TeX</a>(<a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0.5));
+0198 infoColorStr = <a href="../../../SegWorm/Util/color2TeX.html" class="code" title="function str = color2TeX(color)">color2TeX</a>(<a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>));
+0199 fontSize1 = 20;
+0200 fontSize2 = 16;
+0201 contactWidth = 0.5;
+0202 contactHeight = 0.2;
+0203 xStart = 0.5;
+0204 xOff = 0.01;
+0205 yOff = 0.15;
+0206 emailYOff = .95;
+0207 paperYOff = 0.05;
+0208 
+0209 <span class="comment">% Initialize the contact information.</span>
+0210 emailStr = {[headColorStr <span class="string">'For questions, please contact '</span> infoColorStr <span class="keyword">...</span>
+0211     <span class="string">'\bfEviatar Yemini\rm'</span> headColorStr <span class="string">' at '</span> infoColorStr <span class="keyword">...</span>
+0212     <span class="string">'\it\bfEv.Yemini.WT2@gmail.com'</span>]};
+0213 paperStr = {[headColorStr <span class="string">'\itPlease cite our publication: '</span> infoColorStr]
+0214     <span class="string">'\bfYemini EI, Grundy LJ, Jucikas T, Brown AEX, Schafer WR'</span>
+0215     <span class="string">'\bfTitle ???'</span>
+0216     <span class="string">'\bfJournal ???'</span>};
+0217 
+0218 <span class="comment">% Prepare the contact information.</span>
+0219 contactPosition = [xStart, 1 - contactHeight, contactWidth, contactHeight];
+0220 contactAxis = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'Position'</span>, contactPosition, <span class="keyword">...</span>
+0221     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+0222 
+0223 <span class="comment">% Draw the contact information.</span>
+0224 <span class="keyword">for</span> i = 1:length(emailStr)
+0225     text(xOff, emailYOff - (i - 1) * yOff, <span class="keyword">...</span>
+0226         [<span class="string">' '</span> emailStr{i} <span class="string">' '</span>], <span class="keyword">...</span>
+0227         <span class="string">'FontSize'</span>, fontSize1, <span class="keyword">...</span>
+0228         <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0229         <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+0230         <span class="string">'Parent'</span>, contactAxis);
+0231 <span class="keyword">end</span>
+0232 
+0233 <span class="comment">% Draw the paper information.</span>
+0234 <span class="keyword">for</span> i = 1:length(paperStr)
+0235     text(xOff, paperYOff + (i - 1) * yOff, <span class="keyword">...</span>
+0236         [<span class="string">' '</span> paperStr{length(paperStr) - i + 1} <span class="string">' '</span>], <span class="keyword">...</span>
+0237         <span class="string">'FontSize'</span>, fontSize2, <span class="keyword">...</span>
+0238         <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0239         <span class="string">'VerticalAlignment'</span>, <span class="string">'bottom'</span>, <span class="keyword">...</span>
+0240         <span class="string">'Parent'</span>, contactAxis);
+0241 <span class="keyword">end</span>
+0242 
+0243 
+0244 
+0245 <span class="comment">%% Draw the methods texts.</span>
+0246 
+0247 <span class="comment">% Initialize the drawing information.</span>
+0248 sepStr = <span class="string">'   ¤   '</span>;
+0249 fontSize = 16;
+0250 textColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+0251 yStart1 = 0.98;
+0252 yStart2 = 0.94;
+0253 xOff = 0.03;
+0254 yOff = 0.025;
+0255 
+0256 <span class="comment">% Draw the methods texts.</span>
+0257 textAxis = axis2;
+0258 <span class="keyword">for</span> i = 1:length(texts)
+0259     
+0260     <span class="comment">% Display the progress.</span>
+0261     <span class="keyword">if</span> isVerbose
+0262         disp([<span class="string">'Printing methods '</span> num2str(i) <span class="string">'/'</span> num2str(length(texts)) <span class="keyword">...</span>
+0263             <span class="string">' ...'</span>]);
+0264     <span class="keyword">end</span>
+0265     
+0266     <span class="comment">% Draw the methods text.</span>
+0267     <span class="keyword">for</span> j = 1:length(texts{i})
+0268         
+0269         <span class="comment">% Are we starting a new page?</span>
+0270         textOff = mod(j - 1, linesPerPage);
+0271         <span class="keyword">if</span> textOff == 0
+0272             
+0273             <span class="comment">% Switch to the other half of the page.</span>
+0274             <span class="keyword">if</span> textAxis == axis1
+0275                 textAxis = axis2;
+0276             
+0277             <span class="comment">% Create a new page.</span>
+0278             <span class="keyword">else</span>
+0279                 
+0280                 <span class="comment">% Construct the title for table of contents.</span>
+0281                 titleStr = [];
+0282                 <span class="keyword">if</span> i == 1 &amp;&amp; j == 1
+0283                     titleStr = <span class="string">'Methods Table of Contents'</span>;
+0284                     
+0285                 <span class="comment">% Construct the title for the previous figure.</span>
+0286                 <span class="keyword">else</span>
+0287                     
+0288                     <span class="comment">% Use the previous title(s).</span>
+0289                     <span class="keyword">if</span> j - 1 &lt;= linesPerPage
+0290                         <span class="keyword">if</span> i &gt; 2 &amp;&amp; j == 1 &amp;&amp; <span class="keyword">...</span>
+0291                                 length(texts{i - 1}) &lt;= linesPerPage
+0292                             titleStr = [titles{i - 2} sepStr];
+0293                         <span class="keyword">end</span>
+0294                         titleStr = [titleStr titles{i - 1}];
+0295                     <span class="keyword">end</span>
+0296                     
+0297                     <span class="comment">% Use the current title.</span>
+0298                     <span class="keyword">if</span> j &gt; 1
+0299                         <span class="keyword">if</span> ~isempty(titleStr)
+0300                             titleStr = [titleStr sepStr];
+0301                         <span class="keyword">end</span>
+0302                         titleStr = [titleStr titles{i}];
+0303                     <span class="keyword">end</span>
+0304                 <span class="keyword">end</span>
+0305                 
+0306                 <span class="comment">% Save the previous figure.</span>
+0307                 <span class="keyword">if</span> saveQuality &gt; 0
+0308                     <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, <span class="keyword">...</span>
+0309                         titleStr, page, isClose);
+0310                     
+0311                 <span class="comment">% Close the figure.</span>
+0312                 <span class="keyword">elseif</span> ~isShow || isClose
+0313                     close(h);
+0314                 <span class="keyword">end</span>
+0315                 
+0316                 <span class="comment">% Create a new figure.</span>
+0317                 page = page + 1;
+0318                 h = figure;
+0319                 visStr = <span class="string">'off'</span>;
+0320                 <span class="keyword">if</span> isShow
+0321                     visStr = <span class="string">'on'</span>;
+0322                 <span class="keyword">end</span>
+0323                 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1], <span class="keyword">...</span>
+0324                     <span class="string">'PaperType'</span>, <span class="string">'A2'</span>, <span class="string">'Visible'</span>, visStr);
+0325                 hold on;
+0326                 
+0327                 <span class="comment">% Draw the methods.</span>
+0328                 axis1 = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="keyword">...</span>
+0329                     <span class="string">'Position'</span>, position1, <span class="keyword">...</span>
+0330                     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+0331                 axis2 = axes(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="keyword">...</span>
+0332                     <span class="string">'Position'</span>, position2, <span class="keyword">...</span>
+0333                     <span class="string">'XTick'</span>, [], <span class="string">'YTick'</span>, [], <span class="string">'Parent'</span>, h);
+0334                 textAxis = axis1;
+0335             <span class="keyword">end</span>
+0336         <span class="keyword">end</span>
+0337             
+0338         <span class="comment">% Draw the title.</span>
+0339         <span class="keyword">if</span> j == 1
+0340             text(xOff, yStart1, <span class="keyword">...</span>
+0341                 [<span class="string">'\bf'</span> titles{i}], <span class="keyword">...</span>
+0342                 <span class="string">'Color'</span>, textColor, <span class="keyword">...</span>
+0343                 <span class="string">'FontSize'</span>, fontSize, <span class="keyword">...</span>
+0344                 <span class="string">'FontName'</span>, <span class="string">'Courier'</span>, <span class="keyword">...</span>
+0345                 <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0346                 <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+0347                 <span class="string">'Parent'</span>, textAxis);
+0348         <span class="keyword">end</span>
+0349         
+0350         <span class="comment">% Draw the line of text.</span>
+0351         text(xOff, yStart2 - yOff * textOff, <span class="keyword">...</span>
+0352             [<span class="string">' '</span> <a href="#_sub1" class="code" title="subfunction str = formatTextStr(str)">formatTextStr</a>(texts{i}{j}) <span class="string">' '</span>], <span class="keyword">...</span>
+0353             <span class="string">'Color'</span>, textColor, <span class="keyword">...</span>
+0354             <span class="string">'FontSize'</span>, fontSize, <span class="keyword">...</span>
+0355             <span class="string">'FontName'</span>, <span class="string">'Courier'</span>, <span class="keyword">...</span>
+0356             <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+0357             <span class="string">'VerticalAlignment'</span>, <span class="string">'top'</span>, <span class="keyword">...</span>
+0358             <span class="string">'Parent'</span>, textAxis);
+0359     <span class="keyword">end</span>
+0360 <span class="keyword">end</span>
+0361 
+0362 <span class="comment">% Save the last figure.</span>
+0363 <span class="keyword">if</span> saveQuality &gt; 0
+0364     <a href="../../../SegWorm/Util/saveTIF.html" class="code" title="function saveTIF(figureHandle, filename, varargin)">saveTIF</a>(h, filename, saveQuality, true, titles{end}, page, isClose);
+0365     
+0366 <span class="comment">% Close the figure.</span>
+0367 <span class="keyword">elseif</span> ~isShow || isClose
+0368     close(h);
+0369 <span class="keyword">end</span>
+0370 
+0371 <span class="comment">% Compute the pages.</span>
+0372 pages = page - pages;
+0373 <span class="keyword">end</span>
+0374 
+0375 
+0376 
+0377 <span class="comment">%% Format a text string.</span>
+0378 <a name="_sub1" href="#_subfunctions" class="code">function str = formatTextStr(str)</a>
+0379 
+0380 <span class="comment">% Initialize the formatting information.</span>
+0381 textColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>);
+0382 textColorStr = <a href="../../../SegWorm/Util/color2TeX.html" class="code" title="function str = color2TeX(color)">color2TeX</a>(textColor);
+0383 httpColor = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'b'</span>);
+0384 httpColorStr = <a href="../../../SegWorm/Util/color2TeX.html" class="code" title="function str = color2TeX(color)">color2TeX</a>(httpColor);
+0385 
+0386 <span class="comment">% Format hyperlinks.</span>
+0387 httpStr = <span class="string">'http://'</span>;
+0388 httpI = strfind(str, httpStr);
+0389 httpIOff = 0;
+0390 <span class="keyword">for</span> i = 1:length(httpI)
+0391     
+0392     <span class="comment">% Color the text after the hyperlink.</span>
+0393     j = httpI(i) + length(httpStr) + httpIOff;
+0394     <span class="keyword">while</span> j &lt; length(str) &amp;&amp; str(j + 1) ~= <span class="string">' '</span> &amp;&amp; str(j + 1) ~= <span class="string">')'</span>
+0395         j = j + 1;
+0396     <span class="keyword">end</span>
+0397     str = [str(1:j) textColorStr str((j + 1):end)];
+0398     
+0399     <span class="comment">% Color the hyperlink.</span>
+0400     j = httpI(i) + httpIOff;
+0401     str = [str(1:(j - 1)) httpColorStr str(j:end)];
+0402     
+0403     <span class="comment">% Advance.</span>
+0404     httpIOff = httpIOff + length(httpColorStr) + length(textColorStr);
+0405 <span class="keyword">end</span>
+0406 <span class="keyword">end</span>
+0407 
+0408 
+0409 
+0410 <span class="comment">%% Construct the &quot;WT2 Overview&quot; text.</span>
+0411 <a name="_sub2" href="#_subfunctions" class="code">function strs = WT2OverviewText()</a>
+0412 strs = {
+0413 <span class="string">'WT2 Overview'</span>
+0414 <span class="string">''</span>
+0415 <span class="string">'The Worm Tracker 2.0 (WT2) hardware guide and free software are available at:'</span>
+0416 <span class="string">''</span>
+0417 <span class="string">'http://www.mrc-lmb.cam.ac.uk/wormtracker/'</span>
+0418 <span class="string">''</span>
+0419 <span class="string">'In summary, a camera, illumination, and motorized stage are combined to follow a'</span>
+0420 <span class="string">'single worm, navigating a thin bacterial food lawn, on an agar petri dish. The'</span>
+0421 <span class="string">'software uses a closed loop wherein live video is used to guide the stage and'</span>
+0422 <span class="string">'keep the worm centered within the camera''s field of view (FOV). The petri dish'</span>
+0423 <span class="string">'housing the worm is immobile, while the camera, stage, and illumination move as'</span>
+0424 <span class="string">'one. Therefore, the worm is isolated from external forces such as stage'</span>
+0425 <span class="string">'movement.'</span>
+0426 <span class="string">''</span>
+0427 <span class="string">'The camera is a DinoLite AM413T with zoom magnification. We use 640x480'</span>
+0428 <span class="string">'resolution, 30fps, with a magnification that results in 3.5-4.5 microns/pixels'</span>
+0429 <span class="string">'and an FOV of roughly 2.5x2mm at a focal distance of nearly 1cm. Older videos'</span>
+0430 <span class="string">'have a frame rate of 20-30fps. New videos maintain 30fps. The illumination is a'</span>
+0431 <span class="string">'red, Philips Lumileds, side-emitting, Luxeon III Star (LXHL-FD3C). An opal'</span>
+0432 <span class="string">'diffuser provides roughly uniform lighting over the FOV. The wavelength is 627nm'</span>
+0433 <span class="string">'to avoid exciting a short-wavelength avoidance response through the C. elegans'</span>
+0434 <span class="string">'LITE-1 receptor. Finally, the motorized stage uses Zaber T-NA0850 linear'</span>
+0435 <span class="string">'actuators. The stage travels 5cm at up to 8mm/s in orthogonal x and y axes with'</span>
+0436 <span class="string">'a resolution of just under 0.05\mum.'</span>
+0437 <span class="string">''</span>
+0438 <span class="string">'Worms were maintained as previously described in &quot;Preparation of samples for'</span>
+0439 <span class="string">'single-worm tracking&quot; (Yemini et al. 2011).  The protocol is also available'</span>
+0440 <span class="string">'online:'</span>
+0441 <span class="string">''</span>
+0442 <span class="string">'http://www.mrc-lmb.cam.ac.uk/wormtracker/webcontent/trackingProtocol.pdf'</span>
+0443 <span class="string">''</span>
+0444 <span class="string">'Briefly, worms are maintained at room temperature, approximately 22\circC. All'</span>
+0445 <span class="string">'plates are fresh, having been poured within 1 week of use and kept at 4\circC'</span>
+0446 <span class="string">'until roughly 24 hours before use. Strains are maintained on standard NGM plates'</span>
+0447 <span class="string">'(Brenner 1974) seeded with 3 drops of OP50. 6 worms per plate are used to'</span>
+0448 <span class="string">'maintain stocks. At least two generations are passaged, in these conditions,'</span>
+0449 <span class="string">'prior to tracking. The evening before tracking, at roughly 5pm, L4'</span>
+0450 <span class="string">'hermaphrodites are picked to a fresh plate, 10 worms per plate. The next'</span>
+0451 <span class="string">'morning, 3.5cm low-peptone NGM plates are seeded with 20\mul of OP50, in the'</span>
+0452 <span class="string">'center of the plate, and allowed to dry. This 20\mul drop of OP50 is nearly'</span>
+0453 <span class="string">'circular and roughly 8mm in diameter. The L4 worms from the evening before, now'</span>
+0454 <span class="string">'young adults, are then transferred to the center of the food on the 3.5cm'</span>
+0455 <span class="string">'plates, 1 worm to a plate. The worms are given 30 minutes to habituate, and are'</span>
+0456 <span class="string">'then tracked for 15 minutes. A wild-type N2 is always tracked, at the same time,'</span>
+0457 <span class="string">'on one of the 8 nearby trackers, serving as a control. Strains are tracked'</span>
+0458 <span class="string">'between 8am and 6pm, across several hours and days, and randomly assigned to any'</span>
+0459 <span class="string">'of 8 available trackers. In total approximately 25 worms are tracked, per'</span>
+0460 <span class="string">'experimental strain, controlled by 65 N2s tracked within the 1 week of the'</span>
+0461 <span class="string">'experiments.'</span>
+0462 };
+0463 <span class="keyword">end</span>
+0464 
+0465 
+0466 
+0467 <span class="comment">%% Construct the &quot;Worm Segmentation&quot; text.</span>
+0468 <a name="_sub3" href="#_subfunctions" class="code">function strs = WormSegmentationText()</a>
+0469 strs = {
+0470 <span class="string">'Worm Segmentation'</span>
+0471 <span class="string">''</span>
+0472 <span class="string">'Video frames are extracted using the Matlab videoIO toolbox by Gerald Dalley.'</span>
+0473 <span class="string">'There is a sharp contrast between the worm and background in our video images.'</span>
+0474 <span class="string">'Worm pixels are segmented from the background using the Otsu method (Otsu 1975)'</span>
+0475 <span class="string">'to find a threshold. The largest 8-connected component in the thresholded image'</span>
+0476 <span class="string">'is assumed to be the worm. Frames in which the worm touches the image'</span>
+0477 <span class="string">'boundaries, is too small, lacks a clear head and tail, or has unrealistic body'</span>
+0478 <span class="string">'proportions are not analyzed further.  Frames containing stage movement are also'</span>
+0479 <span class="string">'removed to eliminate bad segmentations wherein the worm image may be blurred'</span>
+0480 <span class="string">'(see the section titled &quot;Absolute Coordinates&quot;). Given our desire for accurate'</span>
+0481 <span class="string">'and precise measures as well as the large data volume (due to a high video frame'</span>
+0482 <span class="string">'rate), we err on the side of caution and attempt to reject ambiguous'</span>
+0483 <span class="string">'segmentations rather than include them.'</span>
+0484 <span class="string">''</span>
+0485 <span class="string">'Once the worm has been thresholded, its contour is extracted by tracing the'</span>
+0486 <span class="string">'worm''s perimeter. The head and tail are located as sharp, convex angles on'</span>
+0487 <span class="string">'either side of the contour. The skeleton is extracted by tracing the midline of'</span>
+0488 <span class="string">'the contour from head to tail. During this process, widths and angles are'</span>
+0489 <span class="string">'measured at each skeleton point to be used later for feature computation. At'</span>
+0490 <span class="string">'each skeleton point, the width is measured as the distance between opposing'</span>
+0491 <span class="string">'contour points that determine the skeleton midline.  Similarly, each skeleton'</span>
+0492 <span class="string">'point serves as a vertex to a bend and is assigned the supplementary angle to'</span>
+0493 <span class="string">'this bend. The supplementary angle can also be expressed as the difference in'</span>
+0494 <span class="string">'tangent angles at the skeleton point. This angle provides an intuitive'</span>
+0495 <span class="string">'measurement. Straight, unbent worms have an angle of 0\circ. Right angles are'</span>
+0496 <span class="string">'90\circ. And the largest angle theoretically possible, a worm bending back on'</span>
+0497 <span class="string">'itself, would measure 180\circ. The angle is signed to provide the bend''s'</span>
+0498 <span class="string">'dorsal-ventral orientation. When the worm has its ventral side internal to the'</span>
+0499 <span class="string">'bend (i.e., the vectors forming the angle point towards the ventral side), the'</span>
+0500 <span class="string">'bending angle is signed negatively.'</span>
+0501 <span class="string">''</span>
+0502 <span class="string">'Pixel count is a poor measure of skeleton and contour lengths. For this reason,'</span>
+0503 <span class="string">'we use chain-code lengths (Freeman 1961). Each laterally-connected pixel is'</span>
+0504 <span class="string">'counted as 1. Each diagonally-connected pixel is counted as \surd2. The'</span>
+0505 <span class="string">'supplementary angle is determined, per skeleton point, using edges 1/12 the'</span>
+0506 <span class="string">'skeleton''s chain-code length, in opposing directions, along the skeleton. When'</span>
+0507 <span class="string">'insufficient skeleton points are present, the angle remains undefined (i.e., the'</span>
+0508 <span class="string">'first and last 1/12 of the skeleton have no bending angle defined). 1/12 of the'</span>
+0509 <span class="string">'skeleton has been shown to effectively measure worm bending in previous trackers'</span>
+0510 <span class="string">'and likely reflects constraints of the bodywall muscles, their innervation, and'</span>
+0511 <span class="string">'cuticular rigidity (Cronin et al. 2005).'</span>
+0512 };
+0513 <span class="keyword">end</span>
+0514 
+0515 
+0516 
+0517 <span class="comment">%% Construct the &quot;Ventral Side Annotation and Head Detection&quot; text.</span>
+0518 <a name="_sub4" href="#_subfunctions" class="code">function strs = VentralHeadAnnotationText()</a>
+0519 strs = {
+0520 <span class="string">'Ventral Side Annotation and Head Detection'</span>
+0521 <span class="string">''</span>
+0522 <span class="string">'Our worm features necessitate dorsal-ventral and head-tail distinctions.  The'</span>
+0523 <span class="string">'worm''s ventral side was annotated for each video by eye. We did not profile'</span>
+0524 <span class="string">'rolling mutants and therefore expected worms to maintain their dorsal-ventral'</span>
+0525 <span class="string">'orientation. Nevertheless, 126 random videos were examined and the worms therein'</span>
+0526 <span class="string">'found never to flip sides. Head-tail orientation was annotated automatically by'</span>
+0527 <span class="string">'software. We examined 133 random videos (roughly 1% of our data, 2.25 million'</span>
+0528 <span class="string">'segmented frames), a collection of 100 from a quality-filtered set and 33'</span>
+0529 <span class="string">'rejected by this filter (see the section titled &quot;Feature File Overview&quot;),'</span>
+0530 <span class="string">'representing a broad range of mutants (including several nearly motionless'</span>
+0531 <span class="string">'UNCs). Many of these include early videos which suffered multiple dropped frames'</span>
+0532 <span class="string">'and poor imaging conditions that were later improved. We found that the head was'</span>
+0533 <span class="string">'correctly labeled with a mean and standard deviation of 94.39 \pm 17.54% across'</span>
+0534 <span class="string">'individual videos and 95.6% of the frames collectively.'</span>
+0535 <span class="string">''</span>
+0536 <span class="string">'Before assigning the head and tail, videos are split into chunks in which worm'</span>
+0537 <span class="string">'skeletons can be confidently oriented with respect to each other. Chunk'</span>
+0538 <span class="string">'boundaries are set whenever there is a gap in skeletonized frames of 0.25'</span>
+0539 <span class="string">'seconds or more.  During these gaps, worm motion could make skeleton orientation'</span>
+0540 <span class="string">'unreliable. The skeletons within each chunk are aligned by determining which of'</span>
+0541 <span class="string">'the 2 possible head-tail orientations minimizes the distance between'</span>
+0542 <span class="string">'corresponding skeleton points in subsequent frames. When possible, we unify'</span>
+0543 <span class="string">'chunks and heal up to 1/2 second interruptions by determining whether the worm'</span>
+0544 <span class="string">'was bent enough to achieve an omega turn and flip its orientation. If so, we'</span>
+0545 <span class="string">'trace the worm''s path through its large bend to determine the new orientation.'</span>
+0546 <span class="string">'If the path cannot be confidently traced, we avoid healing and maintain separate'</span>
+0547 <span class="string">'chunks.'</span>
+0548 <span class="string">''</span>
+0549 <span class="string">'The head is detected in each chunk of oriented frames. The head and neck perform'</span>
+0550 <span class="string">'more lateral motion (e.g., foraging) even in uncoordinated mutants. Therefore,'</span>
+0551 <span class="string">'we measure lateral motion at both worm endpoints, across each chunk - unless the'</span>
+0552 <span class="string">'chunk is shorter than 1/6 of a second which is too short to reliably measure'</span>
+0553 <span class="string">'such motion. In our setup, the head is lighter than the tail. Therefore, we also'</span>
+0554 <span class="string">'measure the grayscale intensity at both worm endpoints, across each chunk.'</span>
+0555 <span class="string">'Linear discriminant analysis (LDA) was used on a combination of lateral motion'</span>
+0556 <span class="string">'and intensity at the worm endpoints for a training set of 68 randomly-chosen'</span>
+0557 <span class="string">'videos. This classifier was then used for the entire data set to automatically'</span>
+0558 <span class="string">'detect and label the worm''s head.'</span>
+0559 };
+0560 <span class="keyword">end</span>
+0561 
+0562 
+0563 
+0564 <span class="comment">%% Construct the &quot;Absolute Coordinates&quot; text.</span>
+0565 <a name="_sub5" href="#_subfunctions" class="code">function strs = AbsoluteCoordinatesText()</a>
+0566 strs = {
+0567 <span class="string">'Absolute Coordinates'</span>
+0568 <span class="string">''</span>
+0569 <span class="string">'Many features require plate (or absolute) coordinates rather than pixel'</span>
+0570 <span class="string">'coordinates defined with respect to the camera field of view. Prior to'</span>
+0571 <span class="string">'recording, all trackers are regularly calibrated to determine the conversion'</span>
+0572 <span class="string">'from pixels to absolute coordinates. When recording is complete, stage movements'</span>
+0573 <span class="string">'are matched to their video signature in order to convert segmented worms to'</span>
+0574 <span class="string">'absolute coordinates (offset by the stage''s location).'</span>
+0575 <span class="string">''</span>
+0576 <span class="string">'During recording, every stage movement is logged. When recording has completed,'</span>
+0577 <span class="string">'the video is scanned to locate motion frames. Because re-centering the worm'</span>
+0578 <span class="string">'causes an abrupt change in both the image background and the worm''s location,'</span>
+0579 <span class="string">'these changes are simply measured as the pixel variance in the difference'</span>
+0580 <span class="string">'between subsequent frames. The Otsu method is used to find an appropriate'</span>
+0581 <span class="string">'threshold for delineating stage-movement frames.  The number of stage movements'</span>
+0582 <span class="string">'and the intervals between them are matched against the log of software-issued'</span>
+0583 <span class="string">'stage movement commands. If the match fails (an infrequent event usually caused'</span>
+0584 <span class="string">'by worms reaching the boundary of their plate or external factors damaging the'</span>
+0585 <span class="string">'recording), the worm and its video are discarded and not used. In our data set,'</span>
+0586 <span class="string">'roughly 4% of the videos were discarded due to stage-movement failures.'</span>
+0587 <span class="string">''</span>
+0588 <span class="string">'With the stage movements matched to their video signature, the Otsu threshold is'</span>
+0589 <span class="string">'employed once again to compute a local threshold that delineates a more accurate'</span>
+0590 <span class="string">'start and end for each individual stage movement. The same algorithm is also'</span>
+0591 <span class="string">'employed for the interval at the start of the video until the first stage'</span>
+0592 <span class="string">'movement and, similarly, from the last stage movement until the end of the'</span>
+0593 <span class="string">'video. With this in place, stage movement frames are discarded and each interval'</span>
+0594 <span class="string">'between stage movements is assigned a stage location. Thereafter, each segmented'</span>
+0595 <span class="string">'worm is converted to its absolute coordinates on the plate.'</span>
+0596 };
+0597 <span class="keyword">end</span>
+0598 
+0599 
+0600 
+0601 <span class="comment">%% Construct the &quot;Feature Overview&quot; text.</span>
+0602 <a name="_sub6" href="#_subfunctions" class="code">function strs = FeatureOverviewText()</a>
+0603 strs = {
+0604 <span class="string">'Feature Overview'</span>
+0605 <span class="string">''</span>
+0606 <span class="string">'All feature formulas are computed from the worm''s segmented contour and'</span>
+0607 <span class="string">'skeleton. The skeleton and each side of the contour are scaled down to 49 points'</span>
+0608 <span class="string">'for feature computation. Wild-type worms have 4 quadrants of longitudinal,'</span>
+0609 <span class="string">'staggered bodywall muscles (Sulston &amp; Horvitz 1977). Each quadrant contains 24'</span>
+0610 <span class="string">'such muscles with the exception of the ventral-left quadrant, which has 23. With'</span>
+0611 <span class="string">'a sampling of 49 points, the skeleton and contour sides have a well-defined'</span>
+0612 <span class="string">'midpoint. Moreover, since the worm is confined to 2 dimensions, its bodywall'</span>
+0613 <span class="string">'muscles present roughly 24 degrees of freedom (although in practice it seems to'</span>
+0614 <span class="string">'be far less (Stephens et al. 2008)). With 49 points we have 2 samples per degree'</span>
+0615 <span class="string">'of freedom and, therefore, expect to be sampling above the Nyquist rate for '</span>
+0616 <span class="string">'worm posture.'</span>
+0617 <span class="string">''</span>
+0618 <span class="string">'A common notation is used to define the body parts. The head is controlled by'</span>
+0619 <span class="string">'the first 4 bodywall muscles, per quadrant -- approximately 1/6 the length of'</span>
+0620 <span class="string">'the worm (White et al. 1986). Similarly, the neck is controlled by the next 4'</span>
+0621 <span class="string">'bodywall muscles, per quadrant -- also approximately 1/6 the length of the worm.'</span>
+0622 <span class="string">'For this reason, we define the head as the first 1/6 of the worm and the neck as'</span>
+0623 <span class="string">'the next 1/6 of the worm (skeleton points 1-8 and 9-16, respectively). For'</span>
+0624 <span class="string">'symmetry, we define the tail and &quot;hips&quot;, in a similar manner, on the opposite'</span>
+0625 <span class="string">'end of the worm. The tail is the last 1/6 of the worm and the hips are defined'</span>
+0626 <span class="string">'as the next 1/6 (skeleton points 42-49 and 34-41, respectively). The midbody is'</span>
+0627 <span class="string">'defined as the remaining middle 1/3 of the worm (skeleton points 17-33). For'</span>
+0628 <span class="string">'some features, the head and tail are further subdivided to extract their tips,'</span>
+0629 <span class="string">'the first and last 1/12 of the worm (skeleton points 1-4 and 46-49),'</span>
+0630 <span class="string">'respectively.'</span>
+0631 <span class="string">''</span>
+0632 <span class="string">'Frame-by-frame features are represented by top-level histograms and statistics'</span>
+0633 <span class="string">'as well as subdivisions exploring their values during forward, backward, and'</span>
+0634 <span class="string">'paused states. This is to measure behaviors that depend on the state of motion'</span>
+0635 <span class="string">'such as foraging amplitude, which is reduced during reversals in wild-type worms'</span>
+0636 <span class="string">'(Alkema et al. 2005). Many features are signed to reflect dorsal-ventral'</span>
+0637 <span class="string">'orientation, forward-backward trajectory, and other special cases (e.g.,'</span>
+0638 <span class="string">'eigenworm projection) to capture any asymmetry. Finally, event-style features'</span>
+0639 <span class="string">'(coiling, turning, and motion states) are summarized using global and local'</span>
+0640 <span class="string">'measures. Gobal measures include the event frequency, the ratio of time spent'</span>
+0641 <span class="string">'within the event to the total experiment time, and a similar measure for the'</span>
+0642 <span class="string">'ratio of the distance covered within the event to the total distance traveled by'</span>
+0643 <span class="string">'the worm (when available). Local measures include the time spent in every'</span>
+0644 <span class="string">'individual event, the distance covered in each event (when available), and both'</span>
+0645 <span class="string">'the time and distance covered between each pair of successive events.'</span>
+0646 };
+0647 <span class="keyword">end</span>
+0648 
+0649 
+0650 
+0651 <span class="comment">%% Construct the &quot;Morphology Features&quot; text.</span>
+0652 <a name="_sub7" href="#_subfunctions" class="code">function strs = MorphologyFeaturesText()</a>
+0653 strs = {
+0654 <span class="string">'Morphology Features'</span>
+0655 <span class="string">''</span>
+0656 <span class="string">'1. Length. Worm length is computed from the segmented skeleton by converting the'</span>
+0657 <span class="string">'chain-code pixel length to microns.'</span>
+0658 <span class="string">''</span>
+0659 <span class="string">'2. Widths. Worm width is computed from the segmented skeleton. The head,'</span>
+0660 <span class="string">'midbody, and tail widths are measured as the mean of the widths associated with'</span>
+0661 <span class="string">'the skeleton points covering their respective sections. These widths are'</span>
+0662 <span class="string">'converted to microns.'</span>
+0663 <span class="string">''</span>
+0664 <span class="string">'3. Area. The worm area is computed from the number of pixels within the'</span>
+0665 <span class="string">'segmented contour. The sum of the pixels is converted to microns^{2}.'</span>
+0666 <span class="string">''</span>
+0667 <span class="string">'4. Area/Length.'</span>
+0668 <span class="string">''</span>
+0669 <span class="string">'5. Midbody Width/Length.'</span>
+0670 };
+0671 <span class="keyword">end</span>
+0672 
+0673 
+0674 
+0675 <span class="comment">%% Construct the &quot;Posture Features&quot; text.</span>
+0676 <a name="_sub8" href="#_subfunctions" class="code">function strs = PostureFeaturesText()</a>
+0677 strs = {
+0678 <span class="string">'Posture Features'</span>
+0679 <span class="string">''</span>
+0680 <span class="string">'1. Bends. Worm bending is measured using the supplementary angles to the bends'</span>
+0681 <span class="string">'formed along the skeleton, with each skeleton point serving as the vertex to its'</span>
+0682 <span class="string">'respective bend. The supplementary angle can also be expressed as the difference'</span>
+0683 <span class="string">'in tangent angles at the skeleton point. The supplementary angle provides an'</span>
+0684 <span class="string">'intuitive measurement. Straight, unbent worms have an angle of 0\circ. Right'</span>
+0685 <span class="string">'angles are 90\circ. And the largest angle theoretically possible, a worm bending'</span>
+0686 <span class="string">'back on itself, would measure 180\circ. The supplementary angle is determined,'</span>
+0687 <span class="string">'per skeleton point, using edges 1/12 the skeleton''s chain-code length, in'</span>
+0688 <span class="string">'opposing directions, along the skeleton. When insufficient skeleton points are'</span>
+0689 <span class="string">'present, the angle remains undefined (i.e., the first and last 1/12 of the'</span>
+0690 <span class="string">'skeleton have no bending angle defined). The mean and standard deviation are'</span>
+0691 <span class="string">'measured for each body segment. The angle is signed to provide the bend''s'</span>
+0692 <span class="string">'dorsal-ventral orientation. When the worm has its ventral side internal to the'</span>
+0693 <span class="string">'bend, the bending angle is signed negatively.'</span>
+0694 <span class="string">''</span>
+0695 <span class="string">'2. Bend Count. The bend count is a rough measure of the number of bends along'</span>
+0696 <span class="string">'the worm. The supplementary skeleton angles are measured during segmentation and'</span>
+0697 <span class="string">'signed to reflect their dorsal-ventral orientation. These angles are convolved'</span>
+0698 <span class="string">'with a Gaussian filter, 1/12 the length of the skeleton, with a width defined by'</span>
+0699 <span class="string">'the Matlab &quot;gausswin&quot; function''s default \alpha of 2.5 and normalized such that'</span>
+0700 <span class="string">'the filter integrates to 1, to smooth out any high-frequency changes. The angles'</span>
+0701 <span class="string">'are then sequentially checked from head to tail. Every time the angle changes'</span>
+0702 <span class="string">'sign or hits 0\circ, the end of a bend has been found and the count is'</span>
+0703 <span class="string">'incremented. Bends found at the start and end of the worm must reflect a segment'</span>
+0704 <span class="string">'at least 1/12 the skeleton length in order to be counted. This ignores small'</span>
+0705 <span class="string">'bends at the tip of the head and tail.'</span>
+0706 <span class="string">''</span>
+0707 <span class="string">'3. Eccentricity. The eccentricity of the worm''s posture is measured using the'</span>
+0708 <span class="string">'eccentricity of an equivalent ellipse to the worm''s filled contour. The'</span>
+0709 <span class="string">'orientation of the major axis for the equivalent ellipse is used in computing'</span>
+0710 <span class="string">'the amplitude, wavelength, and track length (described below).'</span>
+0711 <span class="string">''</span>
+0712 <span class="string">'4. Amplitude. Worm amplitude is expressed in two forms: a) the maximum amplitude'</span>
+0713 <span class="string">'found along the worm body and, b) the ratio of the maximum amplitudes found on'</span>
+0714 <span class="string">'opposing sides of the worm body (wherein the smaller of these two amplitudes is'</span>
+0715 <span class="string">'used as the numerator). The formula and code originate from the publication &quot;An'</span>
+0716 <span class="string">'automated system for measuring parameters of nematode sinusoidal movement&quot;'</span>
+0717 <span class="string">'(Cronin et al. 2005).'</span>
+0718 <span class="string">''</span>
+0719 <span class="string">'The worm skeleton is rotated to the horizontal axis using the orientation of the'</span>
+0720 <span class="string">'equivalent ellipse and the skeleton''s centroid is positioned at the origin. The'</span>
+0721 <span class="string">'maximum amplitude is defined as maximum y coordinate minus the minimum y'</span>
+0722 <span class="string">'coordinate. The amplitude ratio is defined as the maximum positive y coordinate'</span>
+0723 <span class="string">'divided by the absolute value of the minimum negative y coordinate. If the'</span>
+0724 <span class="string">'amplitude ratio is greater than 1, we use its reciprocal.'</span>
+0725 <span class="string">''</span>
+0726 <span class="string">'5. Wavelength. The worm''s primary and secondary wavelength are computed by'</span>
+0727 <span class="string">'treating the worm''s skeleton as a periodic signal. The formula and code'</span>
+0728 <span class="string">'originate from the publication &quot;An automated system for measuring parameters of'</span>
+0729 <span class="string">'nematode sinusoidal movement&quot; (Cronin et al. 2005).'</span>
+0730 <span class="string">''</span>
+0731 <span class="string">'The worm''s skeleton is rotated as described above for the amplitude. If there'</span>
+0732 <span class="string">'are any overlapping skeleton points (the skeleton''s x coordinates are not'</span>
+0733 <span class="string">'monotonically increasing or decreasing in sequence -- e.g., the worm is in an S'</span>
+0734 <span class="string">'shape) then the shape is rejected, otherwise the Fourier transform computed. The'</span>
+0735 <span class="string">'primary wavelength is the wavelength associated with the largest peak in the'</span>
+0736 <span class="string">'transformed data. The secondary wavelength is computed as the wavelength'</span>
+0737 <span class="string">'associated with the second largest amplitude (as long as it exceeds half the'</span>
+0738 <span class="string">'amplitude of the primary wavelength). The wavelength is capped at twice the'</span>
+0739 <span class="string">'value of the worm''s length. In other words, a worm can never achieve a'</span>
+0740 <span class="string">'wavelength more than double its size.'</span>
+0741 <span class="string">''</span>
+0742 <span class="string">'6. Track Length. The worm''s track length is the range of the skeleton''s'</span>
+0743 <span class="string">'horizontal projection (as opposed to the skeleton''s arc length) after rotating'</span>
+0744 <span class="string">'the worm to align it with the horizontal axis. The formula and code originate'</span>
+0745 <span class="string">'from the publication &quot;An automated system for measuring parameters of nematode'</span>
+0746 <span class="string">'sinusoidal movement&quot; (Cronin et al. 2005).'</span>
+0747 <span class="string">''</span>
+0748 <span class="string">'7. Coils. Worm coiling (touching) events are found by scanning the video frame'</span>
+0749 <span class="string">'annotations. During segmentation, every frame that cannot be segmented is'</span>
+0750 <span class="string">'annotated with a cause for failure. Two of these annotations reflect coiling'</span>
+0751 <span class="string">'events. First, if we find fewer than 2 sharp ends on the contour (reflecting the'</span>
+0752 <span class="string">'head and tail) then the head and/or tail are obscured in a coiling event.'</span>
+0753 <span class="string">'Second, if the length between the head and tail on one side of the contour is'</span>
+0754 <span class="string">'more than double that of the other side, the worm has either assumed an omega'</span>
+0755 <span class="string">'bend or is crossed like a wreath. Empirically, less than 1/5 of a second is a'</span>
+0756 <span class="string">'very fast touch and not usually reflective of coiling. Therefore, when a period'</span>
+0757 <span class="string">'of unsegmented video frames exceeds 1/5 of a second, and either of the coiling'</span>
+0758 <span class="string">'annotations are found, we label the event coiling.'</span>
+0759 <span class="string">''</span>
+0760 <span class="string">'8. Eigen Projections. The eigenworm amplitudes are a measure of worm posture.'</span>
+0761 <span class="string">'They are the projections onto the first six eigenworms which together account'</span>
+0762 <span class="string">'for 97% of the variance in posture. The eigenworms were computed from 15 N2'</span>
+0763 <span class="string">'videos (roughly 3 hours of video, 1/3 of a million frames) as previously'</span>
+0764 <span class="string">'described (Stephens et al. 2008).'</span>
+0765 <span class="string">''</span>
+0766 <span class="string">'Briefly, 48 tangent angles are calculated along the skeleton and rotated to have'</span>
+0767 <span class="string">'a mean angle of zero. Principal components analysis is performed on the pooled'</span>
+0768 <span class="string">'angle data and we keep the 6 principal components (or eigenworms) that capture'</span>
+0769 <span class="string">'the most variance. The first eigenworm roughly corresponds to body curvature.'</span>
+0770 <span class="string">'The next two eigenworms are akin to sine and cosine waves encoding the'</span>
+0771 <span class="string">'travelling wave during crawling. The fourth eigenworm captures most of the'</span>
+0772 <span class="string">'remaining variance at the head and tail. Projected amplitudes are calculated'</span>
+0773 <span class="string">'from the posture in each frame. Even for the mutants, the data is always'</span>
+0774 <span class="string">'projected onto the N2-derived eigenworms.'</span>
+0775 <span class="string">''</span>
+0776 <span class="string">'9. Orientation. The worm''s orientation is measured overall (from tail to head)'</span>
+0777 <span class="string">'as well as for the head and tail individually. The overall orientation is'</span>
+0778 <span class="string">'measured as the angular direction from the tail to the head centroid. The head'</span>
+0779 <span class="string">'and tail centroids are computed as the mean of their respective skeleton points.'</span>
+0780 <span class="string">''</span>
+0781 <span class="string">'The head and tail direction are computed by splitting these regions in two, then'</span>
+0782 <span class="string">'computing the centroid of each half. The head direction is measured as the'</span>
+0783 <span class="string">'angular direction from the its second half (the centroid of points 5-8) to its'</span>
+0784 <span class="string">'first half (the centroid of points 1-4). The tail direction is measured as the'</span>
+0785 <span class="string">'angular direction from the its second half (the centroid of points 42-45) to its'</span>
+0786 <span class="string">'first half (the centroid of points 46-49).'</span>
+0787 };
+0788 <span class="keyword">end</span>
+0789 
+0790 
+0791 
+0792 <span class="comment">%% Construct the &quot;Motion Features&quot; text.</span>
+0793 <a name="_sub9" href="#_subfunctions" class="code">function strs = MotionFeaturesText()</a>
+0794 strs = {
+0795 <span class="string">'Motion Features'</span>
+0796 <span class="string">''</span>
+0797 <span class="string">'1. Velocity. The worm''s velocity is measured at the tip of the head and tail, at'</span>
+0798 <span class="string">'the head and tail themselves, and at the midbody. The velocity is composed of'</span>
+0799 <span class="string">'two parts, speed and direction (expressed as an angular speed). The velocity is'</span>
+0800 <span class="string">'signed negatively whenever the respective body part moves towards the tail (as'</span>
+0801 <span class="string">'opposed to the head).'</span>
+0802 <span class="string">''</span>
+0803 <span class="string">'The head and tail tips'' instantaneous velocity is measured at each frame using a'</span>
+0804 <span class="string">'1/4 second up to a 1/2 second window. For each frame, we search for a start'</span>
+0805 <span class="string">'frame 1/4 of a second before and an end frame 1/4 second after to delineate the'</span>
+0806 <span class="string">'worm''s instantaneous path. If the worm''s location is not known within either the'</span>
+0807 <span class="string">'start or end frame, we extend the search for a known location up to 1/2 second'</span>
+0808 <span class="string">'in either direction. If the worm''s location is still missing at either the start'</span>
+0809 <span class="string">'or end, the velocity is marked unknown at this point. The speed is defined as'</span>
+0810 <span class="string">'the distance between the centroids of the start and end frames (for the'</span>
+0811 <span class="string">'respective body parts) divided by the time between both frames. The direction is'</span>
+0812 <span class="string">'defined as the angle (between centroids) from the start to the end frame,'</span>
+0813 <span class="string">'relative to the worm''s overall body angle, divided by the time between both'</span>
+0814 <span class="string">'frames. The worm''s overall body angle is defined as the mean orientation of the'</span>
+0815 <span class="string">'angles, in the tail-to-head direction, between subsequent midbody skeleton'</span>
+0816 <span class="string">'points. The body angle is used to sign the velocity. If the head or tail tip''s'</span>
+0817 <span class="string">'start-to-end angle exceeds 90\circ, clockwise or anti-clockwise, relative to the'</span>
+0818 <span class="string">'overall worm body angle, the motion is towards the tail. In this case both the'</span>
+0819 <span class="string">'speed and direction are negatively signed. The head, midbody, and tail velocity'</span>
+0820 <span class="string">'are computed identically except they use a 1/2 second up to a 1 second window'</span>
+0821 <span class="string">'for choosing their start and end frames.'</span>
+0822 <span class="string">''</span>
+0823 <span class="string">'2. Motion States. The worm''s forward, backward, and paused motion states attempt'</span>
+0824 <span class="string">'to differentiate these event states unambiguously. Therefore, ambiguous motion'</span>
+0825 <span class="string">'has no associated state.'</span>
+0826 <span class="string">''</span>
+0827 <span class="string">'The motion states are computed from the worm''s velocity and length (described in'</span>
+0828 <span class="string">'the section on &quot;Morphology&quot;). Missing lengths are linearly interpolated between'</span>
+0829 <span class="string">'segmented frames. The following filtering criteria were chosen based on human'</span>
+0830 <span class="string">'labeling of events within a variety of N2 and mutant videos. The worm is defined'</span>
+0831 <span class="string">'in a state of forward motion when a period, more than half a second long, is'</span>
+0832 <span class="string">'observed wherein: a) the worm travels at least 5% of its mean length over the'</span>
+0833 <span class="string">'entire period; and, b) the worm''s speed is at least 5% of its length, per'</span>
+0834 <span class="string">'second, in each frame. The worm must maintain this speed almost continuously'</span>
+0835 <span class="string">'with permissible interruptions of, at most, a quarter second (this permits quick'</span>
+0836 <span class="string">'contradictory movements such as head withdrawal, body contractions, and'</span>
+0837 <span class="string">'segmentation noise). The criteria for backward motion is identical except the'</span>
+0838 <span class="string">'worm must be moving backwards (the midbody speed must be negatively signed). The'</span>
+0839 <span class="string">'worm is defined in a paused state when a period, more than half a second long,'</span>
+0840 <span class="string">'is observed wherein the worm''s forward and backward speed do not exceed 2.5% of'</span>
+0841 <span class="string">'its length, per second, in each frame. The worm must observe these speed limits'</span>
+0842 <span class="string">'almost continuously with permissible interruptions of, at most, a quarter second'</span>
+0843 <span class="string">'(once again, this permits quick contradictory movements).'</span>
+0844 <span class="string">''</span>
+0845 <span class="string">'3. Crawling. Worm crawling is expressed as both an amplitude and frequency. We'</span>
+0846 <span class="string">'measure these features instantaneously at the head, midbody, and tail. The'</span>
+0847 <span class="string">'amplitude and frequency are signed negatively whenever the worm''s ventral side'</span>
+0848 <span class="string">'is contained within the concave portion of its instantaneous bend.'</span>
+0849 <span class="string">''</span>
+0850 <span class="string">'Crawling is only measured during forward and backward motion states. The worm'</span>
+0851 <span class="string">'bend mean angles (described in the section on &quot;Posture&quot;) show a roughly periodic'</span>
+0852 <span class="string">'signal as the crawling wave travels along the worm''s body. This wave can be'</span>
+0853 <span class="string">'asymmetric due to differences in dorsal-ventral flexibility or simply because'</span>
+0854 <span class="string">'the worm is executing a turn. Moreover the wave dynamics can change abruptly to'</span>
+0855 <span class="string">'speed up or slow down. Therefore, the signal is only roughly periodic and we'</span>
+0856 <span class="string">'measure its instantaneous properties.'</span>
+0857 <span class="string">''</span>
+0858 <span class="string">'Worm bends are linearly interpolated across unsegmented frames. The motion'</span>
+0859 <span class="string">'states criteria (described earlier in this section) guarantee that interpolation'</span>
+0860 <span class="string">'is no more than 1/4 of a second long. For each frame, we search both backwards'</span>
+0861 <span class="string">'and forwards for a zero crossing in the bend angle mean - the location where the'</span>
+0862 <span class="string">'measured body part (head, midbody, or tail) must have hit a flat posture (a'</span>
+0863 <span class="string">'supplementary bend angle of 0\circ). This guarantees that we are observing half'</span>
+0864 <span class="string">'a cycle for the waveform. Crawling is bounded between 1/30Hz (a very slow wave'</span>
+0865 <span class="string">'that would not resemble crawling) and 1Hz (an impossibly fast wave on agar). If'</span>
+0866 <span class="string">'the window between zero crossings is too small, the nearest zero crossing is'</span>
+0867 <span class="string">'assumed to be noise and we search for the next available zero crossing in its'</span>
+0868 <span class="string">'respective direction. If the window is too big, crawling is marked undefined at'</span>
+0869 <span class="string">'the frame. Once an appropriate window has been found, the window is extended in'</span>
+0870 <span class="string">'order to center the frame and measure instantaneous crawling by ensuring that'</span>
+0871 <span class="string">'the distance on either side to respective zero crossings is identical. If the'</span>
+0872 <span class="string">'distances are not identical, the distance of the larger side is used in place of'</span>
+0873 <span class="string">'the zero-crossing distance of the smaller side in order to expand the small side'</span>
+0874 <span class="string">'and achieve a symmetric window, centered at the frame of interest.'</span>
+0875 <span class="string">''</span>
+0876 <span class="string">'We use a Fourier transform to measure the amplitude and frequency within the'</span>
+0877 <span class="string">'window described above. The largest peak within the transform is chosen for the'</span>
+0878 <span class="string">'crawling amplitude and frequency. If the troughs on either side of the peak'</span>
+0879 <span class="string">'exceed 1/2 its height, the peak is rejected for being unclear and crawling is'</span>
+0880 <span class="string">'marked as undefined at the frame. Similarly, if the integral between the troughs'</span>
+0881 <span class="string">'is less than half the total integral, the peak is rejected for being weak.'</span>
+0882 <span class="string">''</span>
+0883 <span class="string">'4. Foraging. Worm foraging is expressed as both an amplitude and an angular'</span>
+0884 <span class="string">'speed. Foraging is signed negatively whenever it is oriented towards the ventral'</span>
+0885 <span class="string">'side. In other words, if the nose is bent ventrally, the amplitude is signed'</span>
+0886 <span class="string">'negatively. Similarly, if the nose is moving ventrally, the angular speed is'</span>
+0887 <span class="string">'signed negatively. As a result, the amplitude and angular speed share the same'</span>
+0888 <span class="string">'sign roughly only half the time. Foraging is an ambiguous term in previous'</span>
+0889 <span class="string">'literature, encompassing both fine movements of the nose as well as larger'</span>
+0890 <span class="string">'swings associated with the head. Empirically we have observed that the nose'</span>
+0891 <span class="string">'movements are aperiodic while the head swings have periodicity. Therefore, we'</span>
+0892 <span class="string">'measure the aperiodic nose movements and term these foraging whereas the head'</span>
+0893 <span class="string">'swings are referred to as measures of head crawling (described earlier in this'</span>
+0894 <span class="string">'section).'</span>
+0895 <span class="string">''</span>
+0896 <span class="string">'Foraging movements can exceed 6Hz (Huang et al. 2008) and, at 20-30fps, our'</span>
+0897 <span class="string">'video frame rates are just high enough to resolve the fastest movements. By'</span>
+0898 <span class="string">'contrast, the slowest foraging movements are simply a continuation of the'</span>
+0899 <span class="string">'crawling wave and present similar bounds on their dynamics. Therefore, we bound'</span>
+0900 <span class="string">'foraging between 1/30Hz (the lower bound used for crawling) and 10Hz.'</span>
+0901 <span class="string">''</span>
+0902 <span class="string">'To measure foraging, we split the head in two (skeleton points 1-4 and 5-8) and'</span>
+0903 <span class="string">'measure the angle between these sections. To do so, we measure the mean of the'</span>
+0904 <span class="string">'angle between subsequent skeleton points along each section, in the tail-to-head'</span>
+0905 <span class="string">'direction. The foraging angle is the difference between the mean of the angles'</span>
+0906 <span class="string">'of both sections. In other words, the foraging angle is simply the bend at the'</span>
+0907 <span class="string">'head. Missing frames are linearly interpolated, per each skeleton point, for'</span>
+0908 <span class="string">'fragments up to 0.2 seconds long (4-6 frames at 20-30fps -- twice the upper'</span>
+0909 <span class="string">'foraging bound). When larger fragments are missing, foraging is marked'</span>
+0910 <span class="string">'undefined. Segmentation of the head at very small time scales can be noisy.'</span>
+0911 <span class="string">'Therefore, we smooth the foraging angles by convolving with a Gaussian filter'</span>
+0912 <span class="string">'1/5 of a second long (for similar reasons to those mentioned in frame'</span>
+0913 <span class="string">'interpolation), with a width defined by the Matlab &quot;gausswin&quot; function''s default'</span>
+0914 <span class="string">'\alpha of 2.5 and normalized such that the filter integrates to 1.'</span>
+0915 <span class="string">''</span>
+0916 <span class="string">'The foraging amplitude is defined as the largest foraging angle measured, prior'</span>
+0917 <span class="string">'to crossing 0\circ. In other words, the largest nose bend prior to returning to'</span>
+0918 <span class="string">'a straight, unbent position. Therefore, the foraging amplitude time series'</span>
+0919 <span class="string">'follows a discrete, stair-step pattern. The amplitude is signed negatively'</span>
+0920 <span class="string">'whenever the nose points towards the worm''s ventral side. The foraging angular'</span>
+0921 <span class="string">'speed is measured as the foraging angle difference between subsequent frames'</span>
+0922 <span class="string">'divided by the time between these frames. To center the foraging angular speed'</span>
+0923 <span class="string">'at the frame of interest and eliminate noise, each frame is assigned the mean of'</span>
+0924 <span class="string">'the angular speed computed between the previous frame and itself and between'</span>
+0925 <span class="string">'itself and the next frame. The angular speed is signed negatively whenever its'</span>
+0926 <span class="string">'vector points towards the worm''s ventral side.'</span>
+0927 <span class="string">''</span>
+0928 <span class="string">'5. Turns. Omega and upsilon turn events are computed similarly to a previously'</span>
+0929 <span class="string">'described method (Huang et al. 2006) but using skeleton bends instead of a'</span>
+0930 <span class="string">'single head-midbody-tail angle. Omega and upsilon turns are signed negatively'</span>
+0931 <span class="string">'whenever the worm''s ventral side is sheltered within the concavity of its'</span>
+0932 <span class="string">'midbody bend.'</span>
+0933 <span class="string">''</span>
+0934 <span class="string">'The worm bends (described in the section on &quot;Posture&quot;) are used to find a'</span>
+0935 <span class="string">'contiguous sequence of frames (interruptible by coiling and other segmentation'</span>
+0936 <span class="string">'failures) wherein a large bend travels from the worm''s head, through its'</span>
+0937 <span class="string">'midbody, to its tail. The worm''s body is separated into 3 equal parts from its'</span>
+0938 <span class="string">'head to its tail. The mean supplementary angle is measured along each 3rd. For'</span>
+0939 <span class="string">'omega turns, this angle must initially exceed 30\circ at the first but not the'</span>
+0940 <span class="string">'last 3rd of the body (the head but not the tail). The middle 3rd must then'</span>
+0941 <span class="string">'exceed 30\circ. And finally, the last but not the first 3rd of the body must'</span>
+0942 <span class="string">'exceed 30\circ (the tail but not the head). This sequence of a 30\circ mean'</span>
+0943 <span class="string">'supplementary angle, passing continuously along the worm from head to tail, is'</span>
+0944 <span class="string">'labeled an omega turn event. Upsilon turns are computed nearly identically but'</span>
+0945 <span class="string">'they capture all events that escaped being labeled omega turns, wherein the mean'</span>
+0946 <span class="string">'supplementary angle exceeded 15\circ on one side of the worm (the first or last'</span>
+0947 <span class="string">'3rd of the body) while not exceeding 30\circ on the opposite end.'</span>
+0948 };
+0949 <span class="keyword">end</span>
+0950 
+0951 
+0952 
+0953 <span class="comment">%% Construct the &quot;Path Features&quot; text.</span>
+0954 <a name="_sub10" href="#_subfunctions" class="code">function strs = PathFeaturesText()</a>
+0955 strs = {
+0956 <span class="string">'Path Features'</span>
+0957 <span class="string">''</span>
+0958 <span class="string">'1. Range. The centroid of the worm''s entire path is computed. The range is'</span>
+0959 <span class="string">'defined as the distance of the worm''s midbody from this overall centroid, in'</span>
+0960 <span class="string">'each frame.'</span>
+0961 <span class="string">''</span>
+0962 <span class="string">'2. Dwelling. The worm dwelling is computed for the head, midbody, tail, and the'</span>
+0963 <span class="string">'entire worm. The worm''s width is assumed to be the mean of its head, midbody,'</span>
+0964 <span class="string">'and tail widths across all frames. The skeleton''s minimum and maximum location,'</span>
+0965 <span class="string">'for the x and y axes, is used to create a rectangular boundary. This boundary is'</span>
+0966 <span class="string">'subdivided into a grid wherein each grid square has a diagonal the same length'</span>
+0967 <span class="string">'as the worm''s width. When skeleton points are present on a grid square, their'</span>
+0968 <span class="string">'corresponding body part is computed as dwelling within that square. The dwelling'</span>
+0969 <span class="string">'for each grid square is integrated to define the dwelling distribution for each'</span>
+0970 <span class="string">'body part. For each body part, untouched grid squares are ignored.'</span>
+0971 <span class="string">''</span>
+0972 <span class="string">'3. Curvature. The path curvature is defined as the angle, in radians, of the'</span>
+0973 <span class="string">'worm''s path divided by the distance it traveled in microns. The curvature is'</span>
+0974 <span class="string">'signed to provide the path''s dorsal-ventral orientation. When the worm''s path'</span>
+0975 <span class="string">'curves in the direction of its ventral side, the curvature is signed negatively.'</span>
+0976 <span class="string">''</span>
+0977 <span class="string">'The worm''s location is defined as the centroid of its body, with the head and'</span>
+0978 <span class="string">'tail removed (points 9-41). We remove the head and tail because their movement'</span>
+0979 <span class="string">'can cause large displacements in the worm''s centroid. For each frame wherein the'</span>
+0980 <span class="string">'worm''s location is known, we search for a start frame 1/4 of a second before and'</span>
+0981 <span class="string">'an end frame 1/4 second after to delineate the worm''s instantaneous path. If the'</span>
+0982 <span class="string">'worm''s location is not known within either the start or end frame, we extend the'</span>
+0983 <span class="string">'search for a known location up to 1/2 second in either direction. If the worm''s'</span>
+0984 <span class="string">'location is still missing at either the start or end, the path curvature is'</span>
+0985 <span class="string">'marked unknown at this point.'</span>
+0986 <span class="string">''</span>
+0987 <span class="string">'With 3 usable frames, we have an approximation of the start, middle, and end for'</span>
+0988 <span class="string">'the worm''s instantaneous path curvature. We use the difference in tangent angles'</span>
+0989 <span class="string">'between the middle to the end and between the start to the middle. The distance'</span>
+0990 <span class="string">'is measured as the integral of the distance traveled, per frame, between the'</span>
+0991 <span class="string">'start and end frames. When a frame is missing, the distance is interpolated'</span>
+0992 <span class="string">'using the next available segmented frame. The instantaneous path curvature is'</span>
+0993 <span class="string">'then computed as the angle divided by the distance. This path curvature is'</span>
+0994 <span class="string">'signed negatively if the angle curves in the direction of the worm''s ventral'</span>
+0995 <span class="string">'side.'</span>
+0996 };
+0997 <span class="keyword">end</span>
+0998 
+0999 
+1000 
+1001 <span class="comment">%% Construct the &quot;Phenotypic Ontology&quot; text.</span>
+1002 <a name="_sub11" href="#_subfunctions" class="code">function strs = PhenotypicOntologyText()</a>
+1003 strs = {
+1004 <span class="string">'Phenotypic Ontology'</span>
+1005 <span class="string">''</span>
+1006 <span class="string">'The phenotypic ontology attempts to find significant features and reduce our'</span>
+1007 <span class="string">'large set of statistical measures to several simple terms. Each ontological term'</span>
+1008 <span class="string">'has a prefix indicating whether all significant features agree that the measure'</span>
+1009 <span class="string">'is greater (+), less (-), or different (\Delta) than the control. A feature is'</span>
+1010 <span class="string">'said to be different than its control whenever the magnitude has no direct'</span>
+1011 <span class="string">'meaning (e.g., asymmetry does not translate to a clear description of the'</span>
+1012 <span class="string">'feature being less nor greater than the control) or its measures do not express'</span>
+1013 <span class="string">'a simple magnitude (e.g., the strain pauses with greater frequency but spends'</span>
+1014 <span class="string">'less time in each paused event). Each term also has a suffix indicating the'</span>
+1015 <span class="string">'minimum q value (significance) found for the term''s defining features (* when'</span>
+1016 <span class="string">'q \leq 0.05; ** when q \leq 0.01; *** when q \leq 0.001; and, **** when q \leq 0.0001).'</span>
+1017 <span class="string">'The q-value is a p-value replacement that corrects for multiple testing'</span>
+1018 <span class="string">'(Storey 2002). The ontology terms are as follows:'</span>
+1019 <span class="string">''</span>
+1020 <span class="string">'1. Length. The worm''s length.'</span>
+1021 <span class="string">''</span>
+1022 <span class="string">'2. Width. The worm''s head, midbody, and/or tail width.'</span>
+1023 <span class="string">''</span>
+1024 <span class="string">'3. Area. The worm''s area if neither the &quot;Length&quot; nor &quot;Width&quot; were found'</span>
+1025 <span class="string">'significant.'</span>
+1026 <span class="string">''</span>
+1027 <span class="string">'4. Proportion. The worm''s area/length and/or width/length if neither the'</span>
+1028 <span class="string">'&quot;Length&quot;, &quot;Width&quot;, nor &quot;Area&quot; were found significant.'</span>
+1029 <span class="string">''</span>
+1030 <span class="string">'5. Head Bends. The worm''s head bend mean and/or standard deviation.'</span>
+1031 <span class="string">''</span>
+1032 <span class="string">'6. Tail Bends. The worm''s tail bend mean and/or standard deviation.'</span>
+1033 <span class="string">''</span>
+1034 <span class="string">'7. Posture Amplitude. The worm''s maximum amplitude and/or amplitude ratio.'</span>
+1035 <span class="string">''</span>
+1036 <span class="string">'8. Posture Wavelength. The worm''s primary and/or secondary wavelength.'</span>
+1037 <span class="string">''</span>
+1038 <span class="string">'9. Posture Wave. The worm''s track length if neither the &quot;Posture Amplitude&quot; nor'</span>
+1039 <span class="string">'the &quot;Posture Wavelength&quot; were found significant.'</span>
+1040 <span class="string">''</span>
+1041 <span class="string">'10. Body Bends. The worm''s eccentricity, its number of bends, and/or its'</span>
+1042 <span class="string">'neck/midbody/hips bend mean and/or standard deviation; only if neither the'</span>
+1043 <span class="string">'&quot;Posture Amplitude&quot;, &quot;Posture Wavelength&quot;, nor &quot;Posture Wave&quot; were found'</span>
+1044 <span class="string">'significant.'</span>
+1045 <span class="string">''</span>
+1046 <span class="string">'11. Pose. The worm''s eigenworm projections if neither the &quot;Head Bends&quot;, &quot;Body'</span>
+1047 <span class="string">'Bends&quot;, &quot;Tail Bends&quot;, &quot;Posture Amplitude&quot;, &quot;Posture Wavelength&quot;, nor &quot;Posture'</span>
+1048 <span class="string">'Wave&quot; were found significant.'</span>
+1049 <span class="string">''</span>
+1050 <span class="string">'12. Coils. The worm''s coiling event details.'</span>
+1051 <span class="string">''</span>
+1052 <span class="string">'13. Foraging. The worm''s foraging amplitude and/or angular speed.'</span>
+1053 <span class="string">''</span>
+1054 <span class="string">'14. Forward Velocity. The worm''s forward (positive) velocity vector.'</span>
+1055 <span class="string">''</span>
+1056 <span class="string">'15. Backward Velocity. The worm''s backward (negative) velocity vector.'</span>
+1057 <span class="string">''</span>
+1058 <span class="string">'16. Velocity. The worm''s velocity vector magnitude and/or asymmetry if neither'</span>
+1059 <span class="string">'the &quot;Forward Velocity&quot; nor &quot;Backward Velocity&quot; were found significant.'</span>
+1060 <span class="string">''</span>
+1061 <span class="string">'17. Head Motion. The worm''s head-tip and/or head velocity vectors if neither the'</span>
+1062 <span class="string">'&quot;Foraging&quot;, &quot;Forward Velocity&quot;, nor &quot;Backward Velocity&quot; were found significant.'</span>
+1063 <span class="string">''</span>
+1064 <span class="string">'18. Tail Motion. The worm''s tail-tip and/or tail velocity vectors if neither the'</span>
+1065 <span class="string">'&quot;Forward Velocity&quot; nor &quot;Backward Velocity&quot; were found significant.'</span>
+1066 <span class="string">''</span>
+1067 <span class="string">'19. Forward Motion. The worm''s forward motion event details.'</span>
+1068 <span class="string">''</span>
+1069 <span class="string">'20. Pausing. The worm''s pausing event details.'</span>
+1070 <span class="string">''</span>
+1071 <span class="string">'21. Backward Motion. The worm''s backward motion event details.'</span>
+1072 <span class="string">''</span>
+1073 <span class="string">'22. Crawling Amplitude. The worm''s crawling amplitude.'</span>
+1074 <span class="string">''</span>
+1075 <span class="string">'23. Crawling Frequency. The worm''s crawling frequency.'</span>
+1076 <span class="string">'24. Turns. The worm''s omega and/or upsilon event details.'</span>
+1077 <span class="string">''</span>
+1078 <span class="string">'25. Path Range. The worm''s path range.'</span>
+1079 <span class="string">''</span>
+1080 <span class="string">'26. Path Curvature. The worm''s path curvature.'</span>
+1081 <span class="string">''</span>
+1082 <span class="string">'27. Dwelling. The worm''s dwelling if its &quot;Pausing&quot; was not found significant.'</span>
+1083 };
+1084 <span class="keyword">end</span>
+1085 
+1086 
+1087 
+1088 <span class="comment">%% Construct the &quot;Feature File Overview&quot; text.</span>
+1089 <a name="_sub12" href="#_subfunctions" class="code">function strs = FeatureFileOverviewText()</a>
+1090 strs = {
+1091 <span class="string">'Feature File Overview'</span>
+1092 <span class="string">''</span>
+1093 <span class="string">'The features are presented within 4 types of files available online at:'</span>
+1094 <span class="string">''</span>
+1095 <span class="string">'http://wormbehavior.mrc-lmb.cam.ac.uk/'</span>
+1096 <span class="string">''</span>
+1097 <span class="string">'PDF files provide a visual summary of the data, per strain. CSV files provide a'</span>
+1098 <span class="string">'spreadsheet of the data, per strain. And, 3 types of MAT files are provided to'</span>
+1099 <span class="string">'access the strain data and statistics as well as the skeleton, contour, and'</span>
+1100 <span class="string">'feature data for each individual experiment, per frame.'</span>
+1101 <span class="string">''</span>
+1102 <span class="string">'The MAT files, per worm, are available for every experiment. To ensure'</span>
+1103 <span class="string">'high-quality experimental data, strain collections of experiments and controls'</span>
+1104 <span class="string">'were filtered and only include worm videos of at least 20fps, 14-15 minutes'</span>
+1105 <span class="string">'long, wherein at least 20% of the frames were segmented. We only include data'</span>
+1106 <span class="string">'collected Monday through Saturday, from 8am to 6pm. This resulted in a mean of'</span>
+1107 <span class="string">'25 worms per strain with a minimum of 12 worms. Controls were chosen from the'</span>
+1108 <span class="string">'filtered N2 data collection by matching the strain collections to controls'</span>
+1109 <span class="string">'performed within the same week. This resulted in a mean of 63 controls, per'</span>
+1110 <span class="string">'strain collection, with a minimum of 18 worms. We examined 100 videos (roughly 2'</span>
+1111 <span class="string">'million frames) from our filtered collection and found that the head was'</span>
+1112 <span class="string">'correctly labeled with a mean and standard deviation of 95.17 \pm 17.5% across'</span>
+1113 <span class="string">'individual videos and 95.69% of the frames collectively.'</span>
+1114 <span class="string">''</span>
+1115 <span class="string">'Outliers can compress visual details in their corresponding histograms. For this'</span>
+1116 <span class="string">'reason, the strain collections underwent one more filtering step prior to'</span>
+1117 <span class="string">'inclusion in the PDF files. Experiments were discarded wherein any of the worm'</span>
+1118 <span class="string">'data exceeded reasonable bounds of 250 to 2000 microns for length, 25 to 250'</span>
+1119 <span class="string">'microns for width, and/or -1000 to 1000 microns/seconds for the midbody speed.'</span>
+1120 <span class="string">'Outliers were seldom found. Overall, 49 non-control worms were lost from a'</span>
+1121 <span class="string">'collection of 7,529 experiments. No strain collection lost more than 2 worms.'</span>
+1122 <span class="string">'The N2 collection of controls lost 5 worms from its total of 1,218 experiments.'</span>
+1123 <span class="string">'The CSV files and MAT statistical-significance files are available for both the'</span>
+1124 <span class="string">'primary quality-filtered data sets and the secondary, outlier-filtered data'</span>
+1125 <span class="string">'sets.'</span>
+1126 <span class="string">''</span>
+1127 <span class="string">'Shapiro-Wilk testing (performed using the &quot;swtest&quot; function by Ahmed Ben Saïda)'</span>
+1128 <span class="string">'of each feature (with corrections for multiple comparisons) showed a maximum q'</span>
+1129 <span class="string">'value of 0.0095 over our collective N2 data set, indicating that, in aggregate,'</span>
+1130 <span class="string">'none of the features are normally distributed. Further testing across all strain'</span>
+1131 <span class="string">'collections (which have far lower sampling than the N2 collective) and their'</span>
+1132 <span class="string">'controls, indicated a roughly 2:1 ratio of normal to non-normal feature'</span>
+1133 <span class="string">'distributions, rejecting the null hypothesis of normality at a q value of 0.05.'</span>
+1134 <span class="string">'Therefore, we chose to test strain features against their controls by using the'</span>
+1135 <span class="string">'non-parametric Wilcoxon rank-sum test (with the null hypothesis that both sets'</span>
+1136 <span class="string">'of mean values were drawn from the same distribution). Some features were'</span>
+1137 <span class="string">'measured for all worms of the experimental strain and never in their controls,'</span>
+1138 <span class="string">'or vice versa (e.g., some strains never perform reversals). When this occurred,'</span>
+1139 <span class="string">'we simply set the feature''s p value to 0. Occasionally, features had'</span>
+1140 <span class="string">'insufficient values for testing due to low sampling (e.g., omega-turn events),'</span>
+1141 <span class="string">'these features were ignored and their p value marked as undefined. In total, our'</span>
+1142 <span class="string">'702 features were measured for 305 strains in addition to collections of our N2'</span>
+1143 <span class="string">'worms by hour (9am-4pm, with 8am and 5pm discarded due to very low sampling),'</span>
+1144 <span class="string">'weekday (Tuesday-Friday, with Monday and Saturday discarded due to very low'</span>
+1145 <span class="string">'sampling), and month (January-December). We used False-Discovery Rate (FDR) to'</span>
+1146 <span class="string">'correct for nearly 702 features by 329 groups and transform the p values to'</span>
+1147 <span class="string">'their q-value equivalents (Storey 2002).'</span>
+1148 <span class="string">''</span>
+1149 <span class="string">'Our unfiltered histograms, presented within individual MAT files, were'</span>
+1150 <span class="string">'constructed by choosing standard bin resolutions (widths and centers) that'</span>
+1151 <span class="string">'resulted in roughly 103 bins, per feature, for our N2 data. When plotting'</span>
+1152 <span class="string">'histograms, we use a common formula to downsample the bins. We measure the'</span>
+1153 <span class="string">'square root of the total number of data samples contributing to the collective'</span>
+1154 <span class="string">'histogram. If this value is less than the number of bins available, the'</span>
+1155 <span class="string">'histogram is downsampled to reduce the number of bins to the nearest integer at'</span>
+1156 <span class="string">'or below the computed square root. When multiple histograms are plotted'</span>
+1157 <span class="string">'together, the smallest common bin size is used to downsample all the histograms'</span>
+1158 <span class="string">'to the same bin width and centers.'</span>
+1159 };
+1160 <span class="keyword">end</span>
+1161 
+1162 
+1163 
+1164 <span class="comment">%% Construct the &quot;PDF Files&quot; text.</span>
+1165 <a name="_sub13" href="#_subfunctions" class="code">function strs = PDFFilesText()</a>
+1166 strs = {
+1167 <span class="string">'PDF Files'</span>
+1168 <span class="string">''</span>
+1169 <span class="string">'The PDF (portable document format) files include 5 sections: a) a table of'</span>
+1170 <span class="string">'contents and overview of the results, b) a short summary of the most important'</span>
+1171 <span class="string">'features, c) the details for every feature, d) traces of the worm paths, and e)'</span>
+1172 <span class="string">'a reference with the experimental methods. Each page uses a color scheme to'</span>
+1173 <span class="string">'provide quick visual summaries of its results. All pages display tabs, on the'</span>
+1174 <span class="string">'right side, that explain their color scheme. The initial summary page of'</span>
+1175 <span class="string">'histograms (page 2) displays an example histogram that acts as a guide to'</span>
+1176 <span class="string">'understanding histogram plots and the statistics displayed in their titles. The'</span>
+1177 <span class="string">'page formats are as follows:'</span>
+1178 <span class="string">''</span>
+1179 <span class="string">'1. The table of contents details the layout of the PDF file. All features are'</span>
+1180 <span class="string">'shown alongside their minimum q-value significance and a page number for'</span>
+1181 <span class="string">'details. The table of contents page also shows an overview with the experiment'</span>
+1182 <span class="string">'annotation and its phenotypic ontology (see the section titled &quot;Phenotypic'</span>
+1183 <span class="string">'Ontology&quot;).'</span>
+1184 <span class="string">''</span>
+1185 <span class="string">'2. There are 3 summary pages. These pages show important feature histograms,'</span>
+1186 <span class="string">'with the collective experiments in color and their controls in gray. The'</span>
+1187 <span class="string">'background color, for the histogram plots, indicates the minimum q-value'</span>
+1188 <span class="string">'significance for the plotted feature. The title of each plot provides several'</span>
+1189 <span class="string">'statistical measures for the experiment and control collections. An example'</span>
+1190 <span class="string">'histogram, at the beginning of the first summary page, provides a reference to'</span>
+1191 <span class="string">'interpret the aforementioned statistical measures. Significant measures, with q'</span>
+1192 <span class="string">'\leq 0.05, are marked in bold font within the plot title.'</span>
+1193 <span class="string">''</span>
+1194 <span class="string">'The crawling frequency, worm velocity, foraging speed, all event features, path'</span>
+1195 <span class="string">'range, and dwelling are shown on a pseudo log-value scale to improve readability'</span>
+1196 <span class="string">'within their small summary histograms. This pseudo log-value scale is achieved'</span>
+1197 <span class="string">'by taking the magnitude of the data values (to avoid complex numbers resulting'</span>
+1198 <span class="string">'from the logarithms of any negative numbers), translating the magnitude by 1 (to'</span>
+1199 <span class="string">'avoid the logarithms of any values less than 1, which would invert the sign of'</span>
+1200 <span class="string">'the data), taking the logarithm, then re-signing the formerly negative data'</span>
+1201 <span class="string">'values.'</span>
+1202 <span class="string">''</span>
+1203 <span class="string">'3. The detail pages present a detailed view of the histograms for every feature.'</span>
+1204 <span class="string">'They follow a similar format to the summary pages except that they never use a'</span>
+1205 <span class="string">'log scale for feature values. The title of each plot provides a large set of'</span>
+1206 <span class="string">'statistical measures. The control values are shown between square brackets.  The'</span>
+1207 <span class="string">'statistical values include: a) the number of worms providing measurements'</span>
+1208 <span class="string">'(&quot;WORMS&quot;); b) the number of measurements sampled for the collection of worms'</span>
+1209 <span class="string">'(&quot;SAMPLES&quot;) ; c) the mean of the data (&quot;ALL&quot;) alongside the SEM and, when the'</span>
+1210 <span class="string">'data is signed, the means for the absolute data values (ABS), positive data'</span>
+1211 <span class="string">'values only (&quot;POS&quot;), and negative data values only (&quot;NEG&quot;) alongside their SEMs'</span>
+1212 <span class="string">'as well; d) the p-value results using Wilcoxon rank-sum testing, q-value results'</span>
+1213 <span class="string">'using False Discovery Rate correction (for multiple tests across 329 strain'</span>
+1214 <span class="string">'collections by 702 features), and the \beta (a measure associated with'</span>
+1215 <span class="string">'statistical power), each labeled accordingly (respectively &quot;p&quot;, &quot;q&quot;, and'</span>
+1216 <span class="string">'&quot;\beta&quot;); e) event features also display their mean frequency (&quot;FREQ&quot;), the mean'</span>
+1217 <span class="string">'percentage of time spent in the event relative to the total experiment time'</span>
+1218 <span class="string">'(&quot;TIME&quot;), and, when available, the mean percentage of distance traveled during'</span>
+1219 <span class="string">'the event relative to the total distance covered during the experiment (&quot;DIST&quot;).'</span>
+1220 <span class="string">''</span>
+1221 <span class="string">'Features that have motion-state subdivisions are shown with an additional view'</span>
+1222 <span class="string">'wherein all motion-state histograms, and their integral histogram, are shown on'</span>
+1223 <span class="string">'the same plot. This allows one to quickly distinguish behaviors dependent on the'</span>
+1224 <span class="string">'motion state. Event features have an additional view wherein event and'</span>
+1225 <span class="string">'inter-event measures are plotted on a log-probability scale to make outlying'</span>
+1226 <span class="string">'events more visible.'</span>
+1227 <span class="string">''</span>
+1228 <span class="string">'4. The path trace pages display the paths for the worms'' head, midbody, and tail'</span>
+1229 <span class="string">'and heatmaps for the midbody speed and foraging amplitude. Pages with the head,'</span>
+1230 <span class="string">'midbody, and tail include a tab, on the right side, to interpret the color'</span>
+1231 <span class="string">'associated with each body part. Pages with heatmaps include a tab, on the right'</span>
+1232 <span class="string">'side, to interpret the color gradient. On the path trace plots, the start and'</span>
+1233 <span class="string">'end of each path is denoted by a gray and black worm, respectively. Moreover, on'</span>
+1234 <span class="string">'each plot, the locations for coiling events are marked by a &quot;+&quot; and those for'</span>
+1235 <span class="string">'omega turns are marked by an &quot;x&quot;. Body part plots use transparency to roughly'</span>
+1236 <span class="string">'indicate dwelling through color opacity.'</span>
+1237 <span class="string">''</span>
+1238 <span class="string">'The first page of each path trace shows a collection of up to 24 worms (when'</span>
+1239 <span class="string">'available) overlayed for both the experiment and control collections, at the'</span>
+1240 <span class="string">'same scale. These overlays provide a quick view of features such as relative'</span>
+1241 <span class="string">'path sizes, food leaving behaviors, and the relative locations for coiling'</span>
+1242 <span class="string">'events and omega turns. When more than 24 worms are available we sort the worms'</span>
+1243 <span class="string">'by date, then choose 24 from the first to the last experiment at regular'</span>
+1244 <span class="string">'intervals. The paths are rotated to align their longest axis vertically, and'</span>
+1245 <span class="string">'then centered using the minimum and maximum x and y path values, per worm.'</span>
+1246 <span class="string">''</span>
+1247 <span class="string">'The next page of the path traces shows each collection of 24 paths on the same'</span>
+1248 <span class="string">'plot, ordered roughly from largest to smallest, spaced out to avoid any overlay.'</span>
+1249 <span class="string">'The experiments and their controls use independent scales. This ordered plot'</span>
+1250 <span class="string">'provides a quick view to distinguish salient characteristics of experiment'</span>
+1251 <span class="string">'versus control paths (e.g., bordering at the edge of the food lawn).'</span>
+1252 <span class="string">''</span>
+1253 <span class="string">'The subsequent pages for each path trace show the 24 individual worm paths, for'</span>
+1254 <span class="string">'the experiments and their controls, without rotation, sorted by date.'</span>
+1255 <span class="string">''</span>
+1256 <span class="string">'5. The method pages provide a reference for the details of our methodology.'</span>
+1257 };
+1258 <span class="keyword">end</span>
+1259 
+1260 
+1261 
+1262 <span class="comment">%% Construct the &quot;CSV Files&quot; text.</span>
+1263 <a name="_sub14" href="#_subfunctions" class="code">function strs = CSVFilesText()</a>
+1264 strs = {
+1265 <span class="string">'CSV Files'</span>
+1266 <span class="string">''</span>
+1267 <span class="string">'The CSV (comma separated value) files are compatible with popular spreadsheet'</span>
+1268 <span class="string">'programs (e.g., Microsoft Excel, Apple iWork Numbers, OpenOffice, etc.). Each'</span>
+1269 <span class="string">'experimental collection is accompanied by 4 CSV files presenting the data and'</span>
+1270 <span class="string">'statistics for all morphology (&lt;filename&gt;.morphology.csv), posture'</span>
+1271 <span class="string">'(&lt;filename&gt;.posture.csv), motion (&lt;filename&gt;.motion.csv), and path features'</span>
+1272 <span class="string">'(&lt;filename&gt;.path.csv). The CSV files present the strain, genotype, and date for'</span>
+1273 <span class="string">'the experimental strain and control worms. The mean and standard deviation are'</span>
+1274 <span class="string">'presented for each feature, per worm and for the collection of experiments and'</span>
+1275 <span class="string">'controls. The p and q values are presented for the strain as a whole (the null'</span>
+1276 <span class="string">'hypothesis is that experiment and control worms are drawn from the same'</span>
+1277 <span class="string">'distribution) and for each feature individually. These p and q values are shown'</span>
+1278 <span class="string">'for both the non-parametric Wilcoxon rank-sum test and the normal-distribution'</span>
+1279 <span class="string">'Student''s t-test (unpaired samples with unequal variance). The statistical power'</span>
+1280 <span class="string">'is shown for each feature. Moreover, the Shapiro-Wilk test for normality (with'</span>
+1281 <span class="string">'associated p and q values) is also shown for each feature. Correction for'</span>
+1282 <span class="string">'multiple testing (the q values) was performed over our entire set of 329 groups'</span>
+1283 <span class="string">'of strain collections by 702 features. For the Shapiro-Wilk normality test,'</span>
+1284 <span class="string">'correction for multiple comparisons included an additional 329 group-specific'</span>
+1285 <span class="string">'controls by 702 features.'</span>
+1286 };
+1287 <span class="keyword">end</span>
+1288 
+1289 
+1290 
+1291 <span class="comment">%% Construct the &quot;MAT Files&quot; text.</span>
+1292 <a name="_sub15" href="#_subfunctions" class="code">function strs = MATFilesText()</a>
+1293 strs = {
+1294 <span class="string">'MAT Files'</span>
+1295 <span class="string">''</span>
+1296 <span class="string">'Each experiment is represented in a MAT, HDF5-formatted file (Hierarchical Data'</span>
+1297 <span class="string">'Format Version 5 - an open, portable, file format with significant software'</span>
+1298 <span class="string">'support). HDF5 files are supported by most popular programming languages'</span>
+1299 <span class="string">'including Matlab, Octave (a free alternative to Matlab), R, Java, C/C++, Python,'</span>
+1300 <span class="string">'and many other environments. These experiment files contain the time-series'</span>
+1301 <span class="string">'feature data for an individual worm. Additionally, each strain collection of'</span>
+1302 <span class="string">'experiments and their collection of controls are also represented in a single'</span>
+1303 <span class="string">'HDF5, MAT file. These strain files contain histogram representations and summary'</span>
+1304 <span class="string">'statistics (but not significance) for the collective experiments. Finally, the'</span>
+1305 <span class="string">'statistical significance, for our entire collection of mutants, is presented in'</span>
+1306 <span class="string">'a single HDF5, MAT file.'</span>
+1307 <span class="string">''</span>
+1308 <span class="string">'The first 2 MAT file types, individual experiments and strain collections, share'</span>
+1309 <span class="string">'a similar format. The individual experiment files present the feature data as a'</span>
+1310 <span class="string">'time series. They also include the full skeleton and the centroid of the'</span>
+1311 <span class="string">'contour, per frame, permitting novel feature computations. The strain'</span>
+1312 <span class="string">'collections present the data in summary and in histograms. The format for both'</span>
+1313 <span class="string">'file types is 2 top-level structs, &quot;info&quot; (&quot;wormInfo&quot; for the strain'</span>
+1314 <span class="string">'collections) and &quot;worm&quot;, which contain the experimental annotation and data,'</span>
+1315 <span class="string">'respectively.'</span>
+1316 <span class="string">''</span>
+1317 <span class="string">'The &quot;info&quot; struct contains the experimental annotation. For the strain'</span>
+1318 <span class="string">'collections, the &quot;info&quot; from each experiment is collected into an array of'</span>
+1319 <span class="string">'structs called &quot;wormInfo&quot;. Both variables share the same format with the'</span>
+1320 <span class="string">'following subfields:'</span>
+1321 <span class="string">''</span>
+1322 <span class="string">'1. wt2. The Worm Tracker 2.0 version information.'</span>
+1323 <span class="string">''</span>
+1324 <span class="string">' video. The video information. The video &quot;length&quot; is presented as both &quot;frames&quot;'</span>
+1325 <span class="string">'and &quot;time&quot;. The video &quot;resolution&quot; is in &quot;fps&quot; (frames/seconds), pixel &quot;height&quot;'</span>
+1326 <span class="string">'and &quot;width&quot;, the ratio of &quot;micronsPerPixel&quot;, and the codec''s &quot;fourcc&quot;'</span>
+1327 <span class="string">'identifier. The video frame &quot;annotations&quot; are presented for all &quot;frames&quot; with a'</span>
+1328 <span class="string">'&quot;reference&quot; specifying the annotation''s numerical &quot;id&quot;, the &quot;function&quot; it'</span>
+1329 <span class="string">'originated from, and a &quot;message&quot; describing the meaning of the annotation.'</span>
+1330 <span class="string">''</span>
+1331 <span class="string">'2. experiment. The experiment information. The &quot;worm&quot; information is presented'</span>
+1332 <span class="string">'for its &quot;genotype&quot;, &quot;gene&quot;, &quot;allele&quot;, &quot;strain&quot;, &quot;chromosome&quot;, &quot;sex&quot;, &quot;age&quot;, the'</span>
+1333 <span class="string">'&quot;habituation&quot; time prior to recording, the location of its &quot;ventralSide&quot; in the'</span>
+1334 <span class="string">'video (clockwise or anti-clockwise from the head), the &quot;agarSide&quot; of its body'</span>
+1335 <span class="string">'(the body side touching the agar), and any other worm &quot;annotations&quot;. The'</span>
+1336 <span class="string">'&quot;environment&quot; information is presented for the experiment conditions including'</span>
+1337 <span class="string">'the &quot;timestamp&quot; when the experiment was performed, the &quot;arena&quot; used to contain'</span>
+1338 <span class="string">'the worm (always a low-peptone NGM plate for the data presented here), the'</span>
+1339 <span class="string">'&quot;food&quot; used (e.g., OP50 E. coli), the &quot;temperature&quot;, the peak wavelength of the'</span>
+1340 <span class="string">'&quot;illumination&quot;, any &quot;chemicals&quot; used, the &quot;tracker&quot; on which the experiment was'</span>
+1341 <span class="string">'performed (a numerical ID from 1 to 8), and any other environmental'</span>
+1342 <span class="string">'&quot;annotations&quot;.'</span>
+1343 <span class="string">''</span>
+1344 <span class="string">'3. files. The name and location for the analyzed files. Each experiment is'</span>
+1345 <span class="string">'represented in a &quot;video&quot; file, &quot;vignette&quot; file (a correction for video'</span>
+1346 <span class="string">'vignetting), &quot;info&quot; file (with tracking information, e.g., the microns/pixels),'</span>
+1347 <span class="string">'a file with the log of &quot;stage&quot; movements, and the &quot;computer&quot; and &quot;directory&quot;'</span>
+1348 <span class="string">'where these files can be found.'</span>
+1349 <span class="string">''</span>
+1350 <span class="string">'4. lab. The lab information where the experiment was performed. The lab is'</span>
+1351 <span class="string">'represented by its &quot;name&quot;, the &quot;address&quot; of the lab, the &quot;experimenter&quot; who'</span>
+1352 <span class="string">'performed the experiment, and any other lab-related &quot;annotations&quot;.'</span>
+1353 <span class="string">''</span>
+1354 <span class="string">'The &quot;worm&quot; struct contains experimental data. The individual experiments contain'</span>
+1355 <span class="string">'the full time series of data along with the worm''s skeleton and the centroid of'</span>
+1356 <span class="string">'its contour, per frame. The strain collections contain summary data and'</span>
+1357 <span class="string">'histograms in place of the time-series data. Both files share a similar initial'</span>
+1358 <span class="string">'format with the following subfields:'</span>
+1359 <span class="string">''</span>
+1360 <span class="string">'1. morphology. The morphology features. The morphology is represented by the'</span>
+1361 <span class="string">'worm''s &quot;length&quot;, its &quot;width&quot; at various body locations, the &quot;area&quot; within its'</span>
+1362 <span class="string">'contour, the &quot;widthPerLength&quot;, and the &quot;areaPerLength&quot;.'</span>
+1363 <span class="string">''</span>
+1364 <span class="string">'2. posture. The posture features. The worm''s posture is represented by its bend'</span>
+1365 <span class="string">'count in &quot;kinks&quot;, measures of the &quot;bends&quot; at various body locations (computed as'</span>
+1366 <span class="string">'both a &quot;mean&quot; and standard deviation, &quot;stdDev&quot;), its &quot;max&quot; &quot;amplitude&quot; and its'</span>
+1367 <span class="string">'&quot;ratio&quot; on either side, its &quot;primary&quot; and &quot;secondary&quot; &quot;wavelength&quot;, its'</span>
+1368 <span class="string">'&quot;trackLength&quot;, its &quot;eccentricity&quot;, its &quot;coils&quot;, the orientation &quot;directions&quot; of'</span>
+1369 <span class="string">'various body parts, and its 6 &quot;eigenProjections&quot;. Individual experiment files'</span>
+1370 <span class="string">'also contain the &quot;skeleton&quot; &quot;x&quot; and &quot;y&quot; coordinates, per frame.'</span>
+1371 <span class="string">''</span>
+1372 <span class="string">'3. locomotion. The motion features. Worm motion states are represented by'</span>
+1373 <span class="string">'&quot;forward&quot;, &quot;backward&quot;, and &quot;paused&quot; events, the &quot;speed&quot; and angular &quot;direction&quot;'</span>
+1374 <span class="string">'of the &quot;velocity&quot; for various body parts, the &quot;amplitude&quot; and &quot;frequency&quot; of the'</span>
+1375 <span class="string">'crawling &quot;bends&quot; for various body parts, as well as the &quot;foraging&quot; &quot;bends&quot; which'</span>
+1376 <span class="string">'are measured in an &quot;amplitude&quot; and &quot;angleSpeed&quot;, and the &quot;turns&quot; associated with'</span>
+1377 <span class="string">'&quot;omega&quot; and &quot;upsilon&quot; events. Individual experiment files also contain a'</span>
+1378 <span class="string">'&quot;motion&quot; state &quot;mode&quot; with values distinguishing forward (1), backward (-1), and'</span>
+1379 <span class="string">'paused (0) states, per frame.'</span>
+1380 <span class="string">''</span>
+1381 <span class="string">'4. path. The path features. The path is represented by its &quot;range&quot;, &quot;curvature&quot;,'</span>
+1382 <span class="string">'and the dwelling &quot;duration&quot; for various body parts. Individual experiment files'</span>
+1383 <span class="string">'also contain the &quot;x&quot; and &quot;y&quot; &quot;coordinates&quot; of the contour''s centroid. Moreover,'</span>
+1384 <span class="string">'the individual experiment files present the &quot;duration&quot; as an &quot;arena&quot; with a'</span>
+1385 <span class="string">'&quot;height&quot;, &quot;width&quot;, and the &quot;min&quot; and &quot;max&quot; values for the &quot;x&quot; and &quot;y&quot; axes of'</span>
+1386 <span class="string">'the arena. The arena can be transformed to a matrix using the given height and'</span>
+1387 <span class="string">'width. The duration of the worm and body parts are represented as an array of'</span>
+1388 <span class="string">'&quot;times&quot; spent at the &quot;indices&quot; of the arena matrix.'</span>
+1389 <span class="string">''</span>
+1390 <span class="string">'All events are represented by their &quot;frequency&quot; and either their &quot;timeRatio&quot;'</span>
+1391 <span class="string">'(the ratio of time in the event type to the total experiment time) or, if the'</span>
+1392 <span class="string">'worm can travel during the event, the &quot;ratio.time&quot; (equivalent to &quot;timeRatio&quot;)'</span>
+1393 <span class="string">'and &quot;ratio.distance&quot; (the ratio of the distance covered in the event type to the'</span>
+1394 <span class="string">'total distance traveled during the experiment). The individual experiment files'</span>
+1395 <span class="string">'represent each event as &quot;frames&quot; with a &quot;start&quot; frame, &quot;end&quot; frame, the &quot;time&quot;'</span>
+1396 <span class="string">'spent in this event instance, the &quot;distance&quot; traveled during this event instance'</span>
+1397 <span class="string">'(when available), the &quot;interTime&quot; till the next event, and the &quot;interDistance&quot;'</span>
+1398 <span class="string">'traveled till the next event. The strain collection files summarize these'</span>
+1399 <span class="string">'fields, excluding the individual &quot;frames&quot; and their &quot;start&quot; and &quot;end&quot;.'</span>
+1400 <span class="string">''</span>
+1401 <span class="string">'The strain collection files present the data for each feature within a'</span>
+1402 <span class="string">'&quot;histogram&quot; (as opposed to the individual experiment files which simply use a'</span>
+1403 <span class="string">'time-series array of values). Furthermore, when a feature can be subdivided by'</span>
+1404 <span class="string">'motion state, sub histograms are included for the &quot;forward&quot;, &quot;backward&quot;, and'</span>
+1405 <span class="string">'&quot;paused&quot; states. All histograms contain the &quot;PDF&quot; (probability distribution'</span>
+1406 <span class="string">'function) for each of their &quot;bins&quot; (centered at the associated feature''s'</span>
+1407 <span class="string">'values). All histograms also contain the &quot;resolution&quot; (width) of their bins,'</span>
+1408 <span class="string">'whether or not there &quot;isZeroBin&quot; (would one of the bins be centered at 0?), and'</span>
+1409 <span class="string">'whether or not the feature &quot;isSigned&quot; (can the feature values be negative?).'</span>
+1410 <span class="string">''</span>
+1411 <span class="string">'Finally, the strain collection files present their data in 3 types of fields: a)'</span>
+1412 <span class="string">'individually as the &quot;data&quot; per experiment, b) summarized over the &quot;sets&quot; of'</span>
+1413 <span class="string">'experiments and, c) aggregated in &quot;allData&quot; as if we ran one giant experiment'</span>
+1414 <span class="string">'instead of our sets. In other words, &quot;sets&quot; weights each experiment identically'</span>
+1415 <span class="string">'whereas &quot;allData&quot; weights every frame, across all experiments, identically. The'</span>
+1416 <span class="string">'data is always represented as both a &quot;mean&quot; and &quot;stdDev&quot; (standard deviation).'</span>
+1417 <span class="string">'The mean and standard deviation are always computed for &quot;all&quot; the data. When the'</span>
+1418 <span class="string">'data is signed, the mean and standard deviation are also computed for the data''s'</span>
+1419 <span class="string">'&quot;abs&quot; (absolute value), &quot;pos&quot; (only the positive values), and &quot;neg&quot; (only the'</span>
+1420 <span class="string">'negative values). The format for the 3 types of data is as follows:'</span>
+1421 <span class="string">''</span>
+1422 <span class="string">'1. data. The individual data for every experiment is presented in arrays (in the'</span>
+1423 <span class="string">'same order as the &quot;wormInfo&quot; experiment annotations). The array data presents'</span>
+1424 <span class="string">'each experiment''s individual &quot;mean&quot;, &quot;stdDev&quot;, the number of &quot;samples&quot; measured,'</span>
+1425 <span class="string">'and the experiment''s data &quot;counts&quot; for each one of the histogram''s &quot;bins&quot;.'</span>
+1426 <span class="string">''</span>
+1427 <span class="string">'2. sets. The data for the set of experiments is presented as the &quot;mean&quot;,'</span>
+1428 <span class="string">'&quot;stdDev&quot;, and &quot;samples&quot; (the number of experiments) of the collected set.'</span>
+1429 <span class="string">''</span>
+1430 <span class="string">'3. allData. The aggregate of all data measurements, as if the collection of'</span>
+1431 <span class="string">'videos were instead one long, giant video, is presented as a &quot;mean&quot;, &quot;stdDev&quot;,'</span>
+1432 <span class="string">'the total &quot;samples&quot; (the total number of frames wherein the data was measured),'</span>
+1433 <span class="string">'and the aggregate of &quot;counts&quot; for each one of the histogram''s bins.'</span>
+1434 };
+1435 <span class="keyword">end</span>
+1436 
+1437 
+1438 
+1439 <span class="comment">%% Construct the &quot;Statistical Significance MAT Files&quot; text.</span>
+1440 <a name="_sub16" href="#_subfunctions" class="code">function strs = SignificanceMATFilesText()</a>
+1441 strs = {
+1442 <span class="string">'Statistical Significance MAT File'</span>
+1443 <span class="string">''</span>
+1444 <span class="string">'The statistical significance for all strains is collected into a single MAT'</span>
+1445 <span class="string">'file. This file contains 3 top-level structs with information for both the'</span>
+1446 <span class="string">'&quot;worm&quot; and &quot;control&quot; collections as well as the &quot;dataInfo&quot; necessary to'</span>
+1447 <span class="string">'interpret the included matrices of data. The matrices are organized as rows of'</span>
+1448 <span class="string">'strains and columns of features. The &quot;worm&quot; struct has the following subfields:'</span>
+1449 <span class="string">''</span>
+1450 <span class="string">'1. info. The worm information for each strain collection presented as their'</span>
+1451 <span class="string">'&quot;strain&quot;, &quot;genotype&quot;, &quot;gene&quot;, and &quot;allele&quot;.'</span>
+1452 <span class="string">''</span>
+1453 <span class="string">'2. stats. The statistics for each strain collection presented, for every'</span>
+1454 <span class="string">'feature, as their &quot;mean&quot;, &quot;stdDev&quot; (standard deviation), &quot;samples&quot; (the number'</span>
+1455 <span class="string">'of worms providing a measurement for the feature - e.g., not all worms execute'</span>
+1456 <span class="string">'omega turns), and &quot;zScore&quot; relative to the control (note that the collection of'</span>
+1457 <span class="string">'N2 controls has no zScore). Furthermore, we include Shapiro-Wilk tests of data'</span>
+1458 <span class="string">'normality, per feature, in &quot;pNormal&quot; and correction for multiple testing, using'</span>
+1459 <span class="string">'their False-Discovery rate q value replacements, in &quot;qNormal&quot;. The q values are'</span>
+1460 <span class="string">'computed across all features per &quot;strain&quot; and their associated controls (roughly'</span>
+1461 <span class="string">'1404 tests) and across &quot;all&quot; strain and control features collectively (roughly'</span>
+1462 <span class="string">'329 by 1404 tests).'</span>
+1463 <span class="string">''</span>
+1464 <span class="string">'3. sig. The statistical significance for each strain collection is presented,'</span>
+1465 <span class="string">'for every feature, as their &quot;pTValue&quot; (Student''s t-test p value, unpaired'</span>
+1466 <span class="string">'samples with unequal variance), &quot;pWValue&quot; (Wilcoxon rank-sum test p value), and'</span>
+1467 <span class="string">'&quot;power&quot;. The &quot;qTValue&quot; and &quot;qWValue&quot; represent the False-Discovery rate q value'</span>
+1468 <span class="string">'replacements for the &quot;pTValue&quot; and &quot;pWValue&quot; respectively. The q values are'</span>
+1469 <span class="string">'computed across all features per &quot;strain&quot; (roughly 702 tests) and across &quot;all&quot;'</span>
+1470 <span class="string">'strains and features collectively (roughly 329 by 702 tests). The collection of'</span>
+1471 <span class="string">'N2s has no associated significance.'</span>
+1472 <span class="string">''</span>
+1473 <span class="string">'The &quot;control&quot; struct contains the control &quot;stats&quot; in an identical format to the'</span>
+1474 <span class="string">'&quot;worm&quot; struct &quot;stats&quot;, but without the &quot;zScores&quot;.'</span>
+1475 <span class="string">''</span>
+1476 <span class="string">'The &quot;dataInfo&quot; provides information for each column of the feature matrices used'</span>
+1477 <span class="string">'in the &quot;worm&quot; and &quot;control&quot; structs. Each feature has a &quot;name&quot;, a &quot;unit&quot; of'</span>
+1478 <span class="string">'measurement, titles for 3 possible subdivisions (&quot;title1&quot;, &quot;title2&quot;, and'</span>
+1479 <span class="string">'&quot;title3&quot; - the title of the feature itself, its motion state, and its signed'</span>
+1480 <span class="string">'subdivision), helpful indexed offsets for these titles (&quot;title1I&quot;, &quot;title2I&quot;,'</span>
+1481 <span class="string">'and &quot;title3I&quot;), an associated struct &quot;field&quot; to locate the feature in our other'</span>
+1482 <span class="string">'MAT files, the corresponding &quot;index&quot; for the struct field (e.g., the 6 eigenworm'</span>
+1483 <span class="string">'projections are represented in a field, as a 6-element array), &quot;isMain&quot; (is this'</span>
+1484 <span class="string">'the main feature as opposed to a subdivision of a main feature?), the feature'</span>
+1485 <span class="string">'&quot;category&quot; (morphology &quot;m&quot;, posture &quot;s&quot;, motion &quot;l&quot;, path &quot;p&quot;), the feature'</span>
+1486 <span class="string">'&quot;type&quot; (simple data &quot;s&quot;, motion data &quot;m&quot;, event summary data &quot;d&quot;, event data'</span>
+1487 <span class="string">'&quot;e&quot;, inter-event data &quot;i&quot;), the feature &quot;subtype&quot; (none &quot;n&quot;, forward motion'</span>
+1488 <span class="string">'state &quot;f&quot;, backward motion state &quot;b&quot;, paused state &quot;p&quot;, event-time data &quot;t&quot;,'</span>
+1489 <span class="string">'event-distance data &quot;d&quot;, event-frequency data &quot;h&quot;), and information regarding'</span>
+1490 <span class="string">'the feature''s &quot;sign&quot; (the feature is signed &quot;s&quot;, unsigned &quot;u&quot;, is the absolute'</span>
+1491 <span class="string">'value of the data &quot;a&quot;, contains only positive data values &quot;p&quot;, contains only'</span>
+1492 <span class="string">'negative data values &quot;n&quot;).'</span>
+1493 };
+1494 <span class="keyword">end</span>
+1495 
+1496 
+1497 
+1498 <span class="comment">%% Construct the &quot;Acknowledgements&quot; text.</span>
+1499 <a name="_sub17" href="#_subfunctions" class="code">function strs = AcknowledgementsText()</a>
+1500 strs = {
+1501 <span class="string">'Acknowledgements'</span>
+1502 <span class="string">''</span>
+1503 <span class="string">'WT2 employs Java for the tracking software and Matlab for the analysis software.'</span>
+1504 <span class="string">'Standard Matlab functions are used along with the Image Processing, Statistics,'</span>
+1505 <span class="string">'and Bioinformatics toolboxes. Special thanks and acknowledgements are due to'</span>
+1506 <span class="string">'Christopher J. Cronin and Paul W. Sternberg for supplying the Matlab code from'</span>
+1507 <span class="string">'their publication &quot;An automated system for measuring parameters of nematode'</span>
+1508 <span class="string">'sinusoidal movement&quot; (Cronin et al. 2005). Joan Lasenby and Nick Kingsbury where'</span>
+1509 <span class="string">'an invaluable resource for computer vision questions. Andrew Deonarine, Madan'</span>
+1510 <span class="string">'Babu, Richard Samworth, Sarah Teichmann, and Sreenivas Chavali provided a wealth'</span>
+1511 <span class="string">'of help and information for the bioinformatic clustering and statistics.'</span>
+1512 <span class="string">'Finally, thanks and acknowledgements are due for the following freely available'</span>
+1513 <span class="string">'code at the Matlab Central File Exchange'</span>
+1514 <span class="string">'(http://www.mathworks.com/matlabcentral/fileexchange/): the videoIO toolbox by'</span>
+1515 <span class="string">'Gerald Dalley, export\_fig function by Oliver Woodford, swtest function by'</span>
+1516 <span class="string">'Ahmed Ben Saïda, and rdir function by Gus Brown.'</span>
+1517 };
+1518 <span class="keyword">end</span>
+1519 
+1520 
+1521 
+1522 <span class="comment">%% Construct the &quot;References&quot; text.</span>
+1523 <a name="_sub18" href="#_subfunctions" class="code">function strs = ReferencesText()</a>
+1524 strs = {
+1525 <span class="string">'References'</span>
+1526 <span class="string">''</span>
+1527 <span class="string">'Alkema, M.J. et al., 2005. Tyramine Functions Independently of Octopamine in the'</span>
+1528 <span class="string">'Caenorhabditis elegans Nervous System. Neuron, 46(2), pp.247-260.'</span>
+1529 <span class="string">''</span>
+1530 <span class="string">'Brenner, S., 1974. The genetics of Caenorhabditis elegans. Genetics, 77(1),'</span>
+1531 <span class="string">'pp.71-94.'</span>
+1532 <span class="string">''</span>
+1533 <span class="string">'Cronin, C.J. et al., 2005. An automated system for measuring parameters of'</span>
+1534 <span class="string">'nematode sinusoidal movement. BMC genetics, 6, p.5.'</span>
+1535 <span class="string">''</span>
+1536 <span class="string">'Freeman, H., 1961. On the encoding of arbitrary geometric configurations.'</span>
+1537 <span class="string">'Electronic Computers, IRE Transactions on, (2), pp.260-268.'</span>
+1538 <span class="string">''</span>
+1539 <span class="string">'Huang, K.-M., Cosman, P. &amp; Schafer, W.R., 2006. Machine vision based detection'</span>
+1540 <span class="string">'of omega bends and reversals in C. elegans. Journal of Neuroscience Methods,'</span>
+1541 <span class="string">'158(2), pp.323-336.'</span>
+1542 <span class="string">''</span>
+1543 <span class="string">'Huang, K.-M., Cosman, P. &amp; Schafer, W.R., 2008. Automated detection and analysis'</span>
+1544 <span class="string">'of foraging behavior in Caenorhabditis elegans. Journal of Neuroscience Methods,'</span>
+1545 <span class="string">'171(1), pp.153-164.'</span>
+1546 <span class="string">''</span>
+1547 <span class="string">'Otsu, N., 1975. A threshold selection method from gray-level histograms.'</span>
+1548 <span class="string">'Automatica, 11(285-296), pp.23-27.'</span>
+1549 <span class="string">''</span>
+1550 <span class="string">'Stephens, G.J. et al., 2008. Dimensionality and Dynamics in the Behavior of C.'</span>
+1551 <span class="string">'elegans O. Sporns, ed. PLoS Computational Biology, 4(4), p.e1000028.'</span>
+1552 <span class="string">''</span>
+1553 <span class="string">'Storey, J.D., 2002. A direct approach to false discovery rates. Journal of the'</span>
+1554 <span class="string">'Royal Statistical Society: Series B (Statistical Methodology), 64(3),'</span>
+1555 <span class="string">'pp.479-498.'</span>
+1556 <span class="string">''</span>
+1557 <span class="string">'Sulston, J.E. &amp; Horvitz, H.R., 1977. Post-embryonic cell lineages of the'</span>
+1558 <span class="string">'nematode, Caenorhabditis elegans. Developmental Biology, 56(1), pp.110-156.'</span>
+1559 <span class="string">''</span>
+1560 <span class="string">''</span>
+1561 <span class="string">''</span>
+1562 <span class="string">'White, J.G. et al., 1986. The structure of the nervous system of the nematode'</span>
+1563 <span class="string">'Caenorhabditis elegans. Philosophical transactions of the Royal Society of'</span>
+1564 <span class="string">'London. Series B, Biological sciences, 314(1165), pp.1-340.'</span>
+1565 <span class="string">''</span>
+1566 <span class="string">'Yemini, E., Kerr, R.A. &amp; Schafer, W.R., 2011. Preparation of samples for'</span>
+1567 <span class="string">'single-worm tracking. Cold Spring Harbor protocols, 2011(12), pp.1475-1479.'</span>
+1568 };
+1569 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

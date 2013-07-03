@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of analyzeNumFinalHiddenFrames</title>
+  <meta name="keywords" content="analyzeNumFinalHiddenFrames">
+  <meta name="description" content="analyzeNumFinalHiddenFrames">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>analyzeNumFinalHiddenFrames
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>analyzeNumFinalHiddenFrames</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">analyzeNumFinalHiddenFrames
+ This script is used to examine all files in the current directory and
+ determine which ones appear to be fully readable.  When completed, it
+ prints out a table of all videos that appear to be readable, their FourCC
+ code (essentially it says what codec was used to compress the file), and
+ an estimate of the number of frames at the end of the file that could not
+ be read.
+
+ We do this for two reasons... first this lets users know which files can
+ be accessed.  If a video exists in the current directory but isn't
+ reported by this script, it's likely that there is either some bug in
+ videoReader, the codec has not been properly installed, or the file is in
+ an unsupported format.  
+
+ The second reason for this script deals with what appears to be some
+ deficiencies in current encoders.  Various encoders seem to create AVI
+ files such that the last few frames cannot be read.  The rest of this
+ comment block explains why the encoders are likely to blame.
+
+ As of June 2007, all of the supplied test files were created with the 
+ VirtualDub application (http://www.virtualdub.org).  VirtualDub is a
+ very mature piece of software with great attention paid to robustness
+ and correctness, so it is unlikely that the VirtualDub application is
+ to blame.  As further evidence, other encoder applications yield the
+ same results when using the same codecs that VirtualDub uses.
+
+ While it's certainly possible that videoReader was implemented 
+ incorrectly, there are reasons to doubt this is the cause.  The same
+ issues arise when decoding a given vido using the avifile API on 
+ Linux (something we no longer support), the ffmpeg API on Linux, and
+ the DirectShow API on Windows.  The way of extracting frames from each 
+ of these is quite different (look at FfmpegIVideo::next and 
+ DirectShowIVideo::next if you're curious).  We have also separately
+ written a test application in DirectShow and were unable to obtain 
+ the last frame's data no matter what we've done.  We also see the same
+ problems when using the mplayer application to decode the videos.
+
+ Codec bugs?  Given a codec binary, the problems are very repoduceable 
+ with different source files, different encoder applications (except 
+ strangely the revel library produces proper XviD-encoded AVIs but the 
+ XviD Video for Windows codec doesn't), different video lengths, and 
+ different decoder implementations (ffmpeg on Linux, Microsoft's own 
+ DirectShow on Windows, and the mplayer application on Linux).  This 
+ suggest that the problem might actually lie in the codec internals and 
+ our workaround solution that avoids the last few frames may be the 
+ only real solution. 
+
+Examples:
+  analyzeNumFinalHiddenFrames
+
+Copyright (c) 2006 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>	INFO=GET(VR)</li><li><a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>	FRAME=GETFRAME(VR)</li><li><a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>	WORKED=NEXT(VR)</li><li><a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="../../videoIO/@videoWriter/get.html" class="code" title="function info = get(vw,varargin)">get</a>	INFO=GET(VW)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%analyzeNumFinalHiddenFrames</span>
+0002 <span class="comment">% This script is used to examine all files in the current directory and</span>
+0003 <span class="comment">% determine which ones appear to be fully readable.  When completed, it</span>
+0004 <span class="comment">% prints out a table of all videos that appear to be readable, their FourCC</span>
+0005 <span class="comment">% code (essentially it says what codec was used to compress the file), and</span>
+0006 <span class="comment">% an estimate of the number of frames at the end of the file that could not</span>
+0007 <span class="comment">% be read.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% We do this for two reasons... first this lets users know which files can</span>
+0010 <span class="comment">% be accessed.  If a video exists in the current directory but isn't</span>
+0011 <span class="comment">% reported by this script, it's likely that there is either some bug in</span>
+0012 <span class="comment">% videoReader, the codec has not been properly installed, or the file is in</span>
+0013 <span class="comment">% an unsupported format.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% The second reason for this script deals with what appears to be some</span>
+0016 <span class="comment">% deficiencies in current encoders.  Various encoders seem to create AVI</span>
+0017 <span class="comment">% files such that the last few frames cannot be read.  The rest of this</span>
+0018 <span class="comment">% comment block explains why the encoders are likely to blame.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% As of June 2007, all of the supplied test files were created with the</span>
+0021 <span class="comment">% VirtualDub application (http://www.virtualdub.org).  VirtualDub is a</span>
+0022 <span class="comment">% very mature piece of software with great attention paid to robustness</span>
+0023 <span class="comment">% and correctness, so it is unlikely that the VirtualDub application is</span>
+0024 <span class="comment">% to blame.  As further evidence, other encoder applications yield the</span>
+0025 <span class="comment">% same results when using the same codecs that VirtualDub uses.</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% While it's certainly possible that videoReader was implemented</span>
+0028 <span class="comment">% incorrectly, there are reasons to doubt this is the cause.  The same</span>
+0029 <span class="comment">% issues arise when decoding a given vido using the avifile API on</span>
+0030 <span class="comment">% Linux (something we no longer support), the ffmpeg API on Linux, and</span>
+0031 <span class="comment">% the DirectShow API on Windows.  The way of extracting frames from each</span>
+0032 <span class="comment">% of these is quite different (look at FfmpegIVideo::next and</span>
+0033 <span class="comment">% DirectShowIVideo::next if you're curious).  We have also separately</span>
+0034 <span class="comment">% written a test application in DirectShow and were unable to obtain</span>
+0035 <span class="comment">% the last frame's data no matter what we've done.  We also see the same</span>
+0036 <span class="comment">% problems when using the mplayer application to decode the videos.</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">% Codec bugs?  Given a codec binary, the problems are very repoduceable</span>
+0039 <span class="comment">% with different source files, different encoder applications (except</span>
+0040 <span class="comment">% strangely the revel library produces proper XviD-encoded AVIs but the</span>
+0041 <span class="comment">% XviD Video for Windows codec doesn't), different video lengths, and</span>
+0042 <span class="comment">% different decoder implementations (ffmpeg on Linux, Microsoft's own</span>
+0043 <span class="comment">% DirectShow on Windows, and the mplayer application on Linux).  This</span>
+0044 <span class="comment">% suggest that the problem might actually lie in the codec internals and</span>
+0045 <span class="comment">% our workaround solution that avoids the last few frames may be the</span>
+0046 <span class="comment">% only real solution.</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%Examples:</span>
+0049 <span class="comment">%  analyzeNumFinalHiddenFrames</span>
+0050 <span class="comment">%</span>
+0051 <span class="comment">%Copyright (c) 2006 Gerald Dalley</span>
+0052 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0053 <span class="comment">%when using this library on GNU/Linux).</span>
+0054 
+0055 loadables     = cell(0);
+0056 fourccs       = cell(0);
+0057 nHiddenFrames = [];
+0058 nEst          = [];
+0059 nFramesActual = [];
+0060 
+0061 files = dir(<span class="string">'.'</span>);
+0062 <span class="keyword">for</span> i=1:length(files)
+0063   <span class="keyword">try</span>
+0064     <span class="comment">% Try opening it</span>
+0065     vr = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(files(i).name);
+0066     
+0067     <span class="comment">% Can we get basic stream info?</span>
+0068     info = <a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(vr);
+0069     
+0070     <span class="comment">% Does it look valid?</span>
+0071     <span class="keyword">if</span> (info.width     &lt;= 0), error(<span class="string">'bad width'</span>);     <span class="keyword">end</span>
+0072     <span class="keyword">if</span> (info.height    &lt;= 0), error(<span class="string">'bad height'</span>);    <span class="keyword">end</span>
+0073     <span class="keyword">if</span> (info.bpp       &lt;= 0), error(<span class="string">'bad bpp'</span>);       <span class="keyword">end</span>
+0074     <span class="keyword">if</span> (info.numFrames &lt;= 0), error(<span class="string">'bad numFrames'</span>); <span class="keyword">end</span>
+0075     
+0076     <span class="keyword">if</span> isfield(info, <span class="string">'nHiddenFinalFrames'</span>)
+0077       nEst(end+1) = info.nHiddenFinalFrames; <span class="comment">%#ok&lt;AGROW&gt; (there aren't that many files and we don't know how many errors will occur above this)</span>
+0078     <span class="keyword">else</span>
+0079       nEst(end+1) = nan; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0080     <span class="keyword">end</span>
+0081     
+0082     <span class="comment">% Can we read the first frame?</span>
+0083     <span class="keyword">if</span> (~<a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr)), error(<span class="string">'first next call failed'</span>); <span class="keyword">end</span>
+0084     
+0085     <span class="comment">% Is it at least the right size?</span>
+0086     frame = <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr);
+0087     <span class="keyword">if</span> (~all(size(frame) == [info.height info.width info.bpp/8])), 
+0088       error(<span class="string">'returned frame is the wrong size'</span>); 
+0089     <span class="keyword">end</span>
+0090     
+0091     <span class="comment">% Undo nHiddenFinalFrames so we can really test how many frames there</span>
+0092     <span class="comment">% are.  The videoReader plugins will all let us attempt to read at</span>
+0093     <span class="comment">% least info.numFrames + info.nHiddenFinalFrames frames.</span>
+0094     info.numFrames = info.numFrames + info.nHiddenFinalFrames;
+0095     
+0096     <span class="comment">% Can we actually read every frame?</span>
+0097     hFrames = info.numFrames - 1;
+0098     <span class="keyword">for</span> fnum=2:info.numFrames
+0099       <span class="keyword">try</span>
+0100         <span class="keyword">if</span> (~<a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr)), <span class="keyword">break</span>; <span class="keyword">end</span>
+0101         hFrames = hFrames - 1;
+0102       <span class="keyword">catch</span>
+0103         <span class="keyword">break</span>
+0104       <span class="keyword">end</span>
+0105     <span class="keyword">end</span>
+0106     <span class="comment">% Close it since we're done with it for now.</span>
+0107     vr = <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr);
+0108     
+0109     <span class="comment">% It looks good, so squirrel the name away</span>
+0110     loadables{end+1} = files(i).name; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0111     <span class="keyword">if</span> (isempty(info.fourcc)), info.fourcc = <span class="string">'    '</span>; <span class="keyword">end</span> <span class="comment">% for formatting</span>
+0112     fourccs{end+1} = info.fourcc; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0113     nHiddenFrames(end+1) = hFrames; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0114     nFramesActual(end+1) = info.numFrames - hFrames; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0115   <span class="keyword">catch</span>
+0116   <span class="keyword">end</span>
+0117 <span class="keyword">end</span>
+0118 
+0119 fprintf(<span class="string">'\n\n'</span>);
+0120 fprintf(<span class="string">'# actual  nHiddenFrames    fcc     file\n'</span>);
+0121 fprintf(<span class="string">'  frames     est actual    code    name\n'</span>);
+0122 fprintf(<span class="string">'--------  ------ ------    ----   -----\n'</span>);
+0123 <span class="keyword">for</span> i=1:length(loadables)
+0124   fprintf(<span class="string">'% 8d % 7d % 6d    %s   %s\n'</span>, <span class="keyword">...</span>
+0125           nFramesActual(i), nEst(i), nHiddenFrames(i), fourccs{i}, <span class="keyword">...</span>
+0126           loadables{i});
+0127 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

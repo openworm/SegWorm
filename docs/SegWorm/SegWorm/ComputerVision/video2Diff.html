@@ -1,0 +1,478 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of video2Diff</title>
+  <meta name="keywords" content="video2Diff">
+  <meta name="description" content="VIDEO2DIFF Differentiate a video frame by frame. The difference is">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>video2Diff
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>VIDEO2DIFF Differentiate a video frame by frame. The difference is</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function video2Diff(videoFile, diffFile, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">VIDEO2DIFF Differentiate a video frame by frame. The difference is
+   defined as the variance of pixel differences between subsequent frames.
+   Note 1: video frame indexing begins at zero; therefore, video
+   differentiation indexing begins at 1.
+   Note 2: dropped frames are labelled as NaN. Frames separated by dropped
+   frames are differentiated as subsequent. Therefore, these frames can be
+   recognized as any value following a NaN.
+
+   VIDEO2DIFF(VIDEOFILE, DIFFFILE)
+
+   VIDEO2DIFF(VIDEOFILE, DIFFFILE, DIFFVIDEOFILE)
+
+   VIDEO2DIFF(VIDEOFILE, DIFFFILE, DIFFVIDEOFILE, PROGRESSFUNC,
+       PROGRESSSTATE)
+
+   VIDEO2DIFF(VIDEOFILE, DIFFFILE, DIFFVIDEOFILE, PROGRESSFUNC,
+       PROGRESSSTATE, REMMODE)
+
+   VIDEO2DIFF(VIDEOFILE, DIFFFILE, DIFFVIDEOFILE, PROGRESSFUNC,
+       PROGRESSSTATE, REMMODE, DILATEPIXELS)
+
+   Inputs:
+       videoFile     - the name of the video to differentiate
+       diffFile      - the name for the file containing the frames/second
+                       and the video differences per subsequent frames
+                       (the difference is defined as the variance of
+                       pixel differences between subsequent frames).
+       diffVideoFile - the name for the video of the frame differences;
+                       if empty, we don't output a video
+       progressFunc  - the function to call as an update on our progress.
+                       Video differentiation is slow. The progress
+                       function, if not empty, is called every frame. This
+                       function can keep a GUI updated on the progress of
+                       video differentiation. The progress function must
+                       have the following signature:
+                       
+                       progressFunc(state, frames, frame, image,
+                                    diffImage, variance)
+                       
+                       state     = persistent state data for the function
+                       frames    = the total number of frames
+                       frame     = the frame number
+                       image     = the video image
+                       diffImage = the frame-difference image
+                       variance  = the frame-difference variance
+       progressState - the persistent state data for the progressFunc
+       remMode       - the worm removal mode. Occasionally fast worm
+                       movements can be confused with stage movements.
+                       Removing the worm eliminates its contribution to
+                       frame differences (unfortunately, this computation
+                       is temporally expensive). The modes are:
+
+                       0 = don't remoe the worm; the default
+                       1 = remove everything darker than the Otsu threshold
+                       2 = remove the largest Otsu-thresholded connected component
+
+       dilatePixels  - the number of neighboring pixels to use for
+                       dilating the lagest connected component (used in
+                       conjunction with worm removal); if empty, the
+                       largest connected component isn't dilated
+
+ See also FINDSTAGEMOVEMENT, SIMPLEPROGRESSUPDATE</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="otsuImg.html" class="code" title="function [bwImg] = otsuImg(img, varargin)">otsuImg</a>	OTSUIMG Use the Otsu threshold to binarize an image.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="video2DiffDir.html" class="code" title="">video2DiffDir</a>	Differentiate all the video files in this directory.</li><li><a href="../../SegWorm/Worms/StageMovement/findStageMovementDir.html" class="code" title="">findStageMovementDir</a>	Print a separator.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function video2Diff(videoFile, diffFile, varargin)</a>
+0002 <span class="comment">%VIDEO2DIFF Differentiate a video frame by frame. The difference is</span>
+0003 <span class="comment">%   defined as the variance of pixel differences between subsequent frames.</span>
+0004 <span class="comment">%   Note 1: video frame indexing begins at zero; therefore, video</span>
+0005 <span class="comment">%   differentiation indexing begins at 1.</span>
+0006 <span class="comment">%   Note 2: dropped frames are labelled as NaN. Frames separated by dropped</span>
+0007 <span class="comment">%   frames are differentiated as subsequent. Therefore, these frames can be</span>
+0008 <span class="comment">%   recognized as any value following a NaN.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   VIDEO2DIFF(VIDEOFILE, DIFFFILE)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   VIDEO2DIFF(VIDEOFILE, DIFFFILE, DIFFVIDEOFILE)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   VIDEO2DIFF(VIDEOFILE, DIFFFILE, DIFFVIDEOFILE, PROGRESSFUNC,</span>
+0015 <span class="comment">%       PROGRESSSTATE)</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   VIDEO2DIFF(VIDEOFILE, DIFFFILE, DIFFVIDEOFILE, PROGRESSFUNC,</span>
+0018 <span class="comment">%       PROGRESSSTATE, REMMODE)</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   VIDEO2DIFF(VIDEOFILE, DIFFFILE, DIFFVIDEOFILE, PROGRESSFUNC,</span>
+0021 <span class="comment">%       PROGRESSSTATE, REMMODE, DILATEPIXELS)</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   Inputs:</span>
+0024 <span class="comment">%       videoFile     - the name of the video to differentiate</span>
+0025 <span class="comment">%       diffFile      - the name for the file containing the frames/second</span>
+0026 <span class="comment">%                       and the video differences per subsequent frames</span>
+0027 <span class="comment">%                       (the difference is defined as the variance of</span>
+0028 <span class="comment">%                       pixel differences between subsequent frames).</span>
+0029 <span class="comment">%       diffVideoFile - the name for the video of the frame differences;</span>
+0030 <span class="comment">%                       if empty, we don't output a video</span>
+0031 <span class="comment">%       progressFunc  - the function to call as an update on our progress.</span>
+0032 <span class="comment">%                       Video differentiation is slow. The progress</span>
+0033 <span class="comment">%                       function, if not empty, is called every frame. This</span>
+0034 <span class="comment">%                       function can keep a GUI updated on the progress of</span>
+0035 <span class="comment">%                       video differentiation. The progress function must</span>
+0036 <span class="comment">%                       have the following signature:</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%                       progressFunc(state, frames, frame, image,</span>
+0039 <span class="comment">%                                    diffImage, variance)</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%                       state     = persistent state data for the function</span>
+0042 <span class="comment">%                       frames    = the total number of frames</span>
+0043 <span class="comment">%                       frame     = the frame number</span>
+0044 <span class="comment">%                       image     = the video image</span>
+0045 <span class="comment">%                       diffImage = the frame-difference image</span>
+0046 <span class="comment">%                       variance  = the frame-difference variance</span>
+0047 <span class="comment">%       progressState - the persistent state data for the progressFunc</span>
+0048 <span class="comment">%       remMode       - the worm removal mode. Occasionally fast worm</span>
+0049 <span class="comment">%                       movements can be confused with stage movements.</span>
+0050 <span class="comment">%                       Removing the worm eliminates its contribution to</span>
+0051 <span class="comment">%                       frame differences (unfortunately, this computation</span>
+0052 <span class="comment">%                       is temporally expensive). The modes are:</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%                       0 = don't remoe the worm; the default</span>
+0055 <span class="comment">%                       1 = remove everything darker than the Otsu threshold</span>
+0056 <span class="comment">%                       2 = remove the largest Otsu-thresholded connected component</span>
+0057 <span class="comment">%</span>
+0058 <span class="comment">%       dilatePixels  - the number of neighboring pixels to use for</span>
+0059 <span class="comment">%                       dilating the lagest connected component (used in</span>
+0060 <span class="comment">%                       conjunction with worm removal); if empty, the</span>
+0061 <span class="comment">%                       largest connected component isn't dilated</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">% See also FINDSTAGEMOVEMENT, SIMPLEPROGRESSUPDATE</span>
+0064 
+0065 <span class="comment">% % Get the vignette.</span>
+0066 <span class="comment">% vImg = [];</span>
+0067 <span class="comment">% vignetteFile = strrep(videoFile, '.avi', '.info.xml.vignette.dat');</span>
+0068 <span class="comment">% if exist(vignetteFile, 'file')</span>
+0069 <span class="comment">%     fid = fopen(vignetteFile, 'r');</span>
+0070 <span class="comment">%     vImg = fread(fid, [640 480],'int32=&gt;int8', 0, 'b')';</span>
+0071 <span class="comment">%     fclose(fid);</span>
+0072 <span class="comment">% end</span>
+0073 
+0074 <span class="comment">% Are we creating a video of the frame differences?</span>
+0075 diffVideoFile = [];
+0076 <span class="keyword">if</span> ~isempty(varargin)
+0077     diffVideoFile = varargin{1};
+0078 <span class="keyword">end</span>
+0079 
+0080 <span class="comment">% Is there a progress function?</span>
+0081 progressFunc = [];
+0082 <span class="keyword">if</span> length(varargin) &gt; 1
+0083     progressFunc = varargin{2};
+0084 <span class="keyword">end</span>
+0085 
+0086 <span class="comment">% Is there a state for the progress function?</span>
+0087 progressState = [];
+0088 <span class="keyword">if</span> length(varargin) &gt; 2
+0089     progressState = varargin{3};
+0090 <span class="keyword">end</span>
+0091 
+0092 <span class="comment">% Determine the thresholded-object removal mode.</span>
+0093 remMode = 0;
+0094 <span class="keyword">if</span> length(varargin) &gt; 3
+0095     remMode = varargin{4};
+0096 <span class="keyword">end</span>
+0097 
+0098 <span class="comment">% Create the dilation disk.</span>
+0099 dilateDisk = [];
+0100 <span class="keyword">if</span> length(varargin) &gt; 4 &amp;&amp; varargin{5} &gt; 0
+0101     dilateDisk = strel(<span class="string">'disk'</span>, varargin{5});
+0102 <span class="keyword">end</span>
+0103 
+0104 <span class="comment">% Open the video and get the seconds / frame.</span>
+0105 <span class="keyword">if</span> ispc()
+0106     vr = videoReader(videoFile, <span class="string">'plugin'</span>, <span class="string">'DirectShow'</span>);
+0107 <span class="keyword">else</span>
+0108     vr = videoReader(videoFile, <span class="string">'plugin'</span>, <span class="string">'ffmpegDirect'</span>);
+0109 <span class="keyword">end</span>
+0110 fps = get(vr, <span class="string">'fps'</span>);
+0111 spf = 1 / fps;
+0112 frames = get(vr, <span class="string">'numFrames'</span>) + get(vr, <span class="string">'nHiddenFinalFrames'</span>);
+0113 
+0114 <span class="comment">% Check the frame rate.</span>
+0115 minFPS = .1;
+0116 maxFPS = 100;
+0117 <span class="keyword">if</span> fps &lt; minFPS || fps &gt; maxFPS
+0118     warning(<span class="string">'video2Diff:WeirdFPS'</span>, [videoFile <span class="string">' was recorded at '</span> <span class="keyword">...</span>
+0119         num2str(fps) <span class="string">' frames/second. An unusual frame rate'</span>]);
+0120 <span class="keyword">end</span>
+0121 
+0122 <span class="comment">% Get the vignette.</span>
+0123 vImg = [];
+0124 <span class="keyword">if</span> remMode &gt; 0
+0125     
+0126     <span class="comment">% Pre-allocate memory.</span>
+0127     height = get(vr, <span class="string">'height'</span>);
+0128     width = get(vr, <span class="string">'width'</span>);
+0129     falseImg = false(height, width);
+0130     
+0131     
+0132     <span class="comment">% Get the vignette.</span>
+0133     vImg = [];
+0134     vignetteFile = strrep(videoFile, <span class="string">'.avi'</span>, <span class="string">'.info.xml.vignette.dat'</span>);
+0135     <span class="keyword">if</span> exist(vignetteFile, <span class="string">'file'</span>)
+0136         fid = fopen(vignetteFile, <span class="string">'r'</span>);
+0137         vImg = fread(fid, [width height], <span class="string">'int32=&gt;int8'</span>, 0, <span class="string">'b'</span>)';
+0138         fclose(fid);
+0139     <span class="keyword">end</span>
+0140 <span class="keyword">end</span>
+0141 
+0142 <span class="comment">% Is the video grayscale?</span>
+0143 <span class="comment">% Note: if there's no difference between the red and green channel, we</span>
+0144 <span class="comment">% consider all 3 RGB channels identical grayscale images.</span>
+0145 isGray = false;
+0146 isVideoFrame = next(vr);
+0147 <span class="keyword">if</span> isVideoFrame
+0148     img = getframe(vr);
+0149     
+0150     <span class="comment">% If the read and green channels are identical, the video is grayscale.</span>
+0151     <span class="keyword">if</span> max(max(abs(img(:,:,1) - img(:,:,2)))) == 0
+0152         isGray = true;
+0153         img = img(:,:,1);
+0154         
+0155     <span class="comment">% Convert the frame to grayscale.</span>
+0156     <span class="keyword">else</span>
+0157         img = rgb2gray(img);
+0158     <span class="keyword">end</span>
+0159     
+0160 <span class="comment">% The video is empty.</span>
+0161 <span class="keyword">else</span>
+0162     error(<span class="string">'video2Diff:NoFrames'</span>, [videoFile <span class="string">' has no frames'</span>]);
+0163 <span class="keyword">end</span>
+0164 
+0165 <span class="comment">% Remove dark objects from the image.</span>
+0166 <span class="keyword">if</span> remMode &gt; 0
+0167     
+0168     <span class="comment">% Correct the vignette.</span>
+0169     <span class="keyword">if</span> ~isempty(vImg)
+0170         img = uint8(single(img) - single(vImg));
+0171     <span class="keyword">end</span>
+0172     
+0173     <span class="comment">% Binarize the image.</span>
+0174     bImg = <a href="otsuImg.html" class="code" title="function [bwImg] = otsuImg(img, varargin)">otsuImg</a>(img, true);
+0175     bImg = ~bImg;
+0176     
+0177     <span class="comment">% Remove all thresholded pixels.</span>
+0178     <span class="keyword">if</span> remMode &lt; 2
+0179         
+0180         <span class="comment">% Dilate the thresholded pixels.</span>
+0181         <span class="keyword">if</span> ~isempty(dilateDisk)
+0182             bImg = imdilate(bImg, dilateDisk);
+0183         <span class="keyword">end</span>
+0184         
+0185         <span class="comment">% Remove the thresholded pixels.</span>
+0186         img = single(img);
+0187         img(bImg) = NaN;
+0188         
+0189         <span class="comment">% Remove the worm.</span>
+0190     <span class="keyword">else</span>
+0191         
+0192         <span class="comment">% Find the worm.</span>
+0193         cc = bwconncomp(bImg);
+0194         <span class="keyword">if</span> ~isempty(cc.PixelIdxList)
+0195             lengths = cellfun(@numel, cc.PixelIdxList);
+0196             [~, ccMaxI] = max(lengths, [], 2);
+0197             
+0198             <span class="comment">% Use the largest connected component.</span>
+0199             wormPixels = cc.PixelIdxList{ccMaxI};
+0200             
+0201             <span class="comment">% Create a mask of the worm.</span>
+0202             mask = falseImg;
+0203             mask(wormPixels) = true;
+0204             
+0205             <span class="comment">% Dilate the worm.</span>
+0206             <span class="keyword">if</span> ~isempty(dilateDisk)
+0207                 mask = imdilate(mask, dilateDisk);
+0208             <span class="keyword">end</span>
+0209             
+0210             <span class="comment">% Remove the worm.</span>
+0211             img = single(img);
+0212             img(mask) = NaN;
+0213         <span class="keyword">end</span>
+0214     <span class="keyword">end</span>
+0215 <span class="keyword">end</span>
+0216 
+0217 <span class="comment">% Check for dropped frames.</span>
+0218 timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0219 droppedFrames = round(timestamp / spf);
+0220 
+0221 <span class="comment">% Are we making a video of the differences?</span>
+0222 <span class="keyword">if</span> ~isempty(diffVideoFile)
+0223     
+0224     <span class="comment">% Construct the video file.</span>
+0225     diffVideoFile = strrep(videoFile, <span class="string">'.avi'</span>, <span class="string">'_diff.avi'</span>);
+0226     vw = videoWriter(diffVideoFile, <span class="string">'fps'</span>, fps, <span class="string">'plugin'</span>, <span class="string">'DirectShow'</span>);
+0227     
+0228     <span class="comment">% Initialize the video information.</span>
+0229     colorOffset = 16;
+0230     noImg = uint8(zeros(size(img)));
+0231     
+0232     <span class="comment">% Construct an empty RGB image.</span>
+0233     noRGBImg(:,:,1) = noImg;
+0234     noRGBImg(:,:,2) = noImg;
+0235     noRGBImg(:,:,3) = noImg;
+0236     prevDiffRGBImg = noRGBImg;
+0237 <span class="keyword">end</span>
+0238 
+0239 <span class="comment">% Differentiate the video.</span>
+0240 prevTimestamp = 0;
+0241 prevImg = img;
+0242 frameDiffs(1:frames) = NaN;
+0243 i = 1;
+0244 <span class="comment">%j = 1;</span>
+0245 <span class="keyword">while</span> next(vr) <span class="comment">%&amp;&amp; j &lt;= 1000</span>
+0246     <span class="comment">%j = j + 1;</span>
+0247     
+0248 <span class="comment">%     % Get the frame's red channel.</span>
+0249 <span class="comment">%     img = getframe(vr);</span>
+0250 <span class="comment">%     img = img(:,:,1);</span>
+0251         
+0252     <span class="comment">% Get the video frame and convert it to grayscale.</span>
+0253     <span class="keyword">if</span> isGray
+0254         img = getframe(vr);
+0255         img = img(:,:,1);
+0256     <span class="keyword">else</span>
+0257         img = rgb2gray(getframe(vr));
+0258     <span class="keyword">end</span>
+0259     
+0260     <span class="comment">% Remove dark objects from the image.</span>
+0261     <span class="keyword">if</span> remMode &gt; 0
+0262         
+0263         <span class="comment">% Correct the vignette.</span>
+0264         <span class="keyword">if</span> ~isempty(vImg)
+0265             img = uint8(single(img) - single(vImg));
+0266         <span class="keyword">end</span>
+0267         
+0268         <span class="comment">% Binarize the image.</span>
+0269         bImg = <a href="otsuImg.html" class="code" title="function [bwImg] = otsuImg(img, varargin)">otsuImg</a>(img, true);
+0270         bImg = ~bImg;
+0271         
+0272         <span class="comment">% Remove all thresholded pixels.</span>
+0273         <span class="keyword">if</span> remMode &lt; 2
+0274             
+0275             <span class="comment">% Dilate the thresholded pixels.</span>
+0276             <span class="keyword">if</span> ~isempty(dilateDisk)
+0277                 bImg = imdilate(bImg, dilateDisk);
+0278             <span class="keyword">end</span>
+0279             
+0280             <span class="comment">% Remove the thresholded pixels.</span>
+0281             img = single(img);
+0282             img(bImg) = NaN;
+0283             
+0284         <span class="comment">% Remove the worm.</span>
+0285         <span class="keyword">else</span>
+0286             
+0287             <span class="comment">% Find the worm.</span>
+0288             cc = bwconncomp(bImg);
+0289             <span class="keyword">if</span> ~isempty(cc.PixelIdxList)
+0290                 lengths = cellfun(@numel, cc.PixelIdxList);
+0291                 [~, ccMaxI] = max(lengths, [], 2);
+0292                 
+0293                 <span class="comment">% Use the largest connected component.</span>
+0294                 wormPixels = cc.PixelIdxList{ccMaxI};
+0295         
+0296                 <span class="comment">% Create a mask of the worm.</span>
+0297                 mask = falseImg;
+0298                 mask(wormPixels) = true;
+0299                 
+0300                 <span class="comment">% Dilate the worm.</span>
+0301                 <span class="keyword">if</span> ~isempty(dilateDisk)
+0302                     mask = imdilate(mask, dilateDisk);
+0303                 <span class="keyword">end</span>
+0304                 
+0305                 <span class="comment">% Remove the worm.</span>
+0306                 img = single(img);
+0307                 img(mask) = NaN;
+0308             <span class="keyword">end</span>
+0309         <span class="keyword">end</span>
+0310     <span class="keyword">end</span>
+0311     
+0312     <span class="comment">% Check for dropped frames.</span>
+0313     timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0314     droppedFrames = round((timestamp - prevTimestamp) / spf - 1);
+0315     i = i + droppedFrames;
+0316     prevTimestamp = timestamp;
+0317     
+0318     <span class="comment">% Differentiate subsequent frames and measure the variance.</span>
+0319     <span class="comment">% Note: frames separated by dropped frames are treated as subsequent.</span>
+0320     diffImg = single(img) - single(prevImg);
+0321     frameDiffs(i) = nanvar(single(diffImg(:)));
+0322     <span class="keyword">if</span> remMode &gt; 0
+0323         frameDiffs(i) = frameDiffs(i) .^ 2;
+0324     <span class="keyword">end</span>
+0325     i = i + 1;
+0326     prevImg = img;
+0327     
+0328     <span class="comment">% Update the progress.</span>
+0329     <span class="keyword">if</span> ~isempty(progressFunc)
+0330         index = i - 1;
+0331         progressFunc(progressState, frames, index, img, diffImg, <span class="keyword">...</span>
+0332             frameDiffs(index));
+0333     <span class="keyword">end</span>
+0334     
+0335     <span class="comment">% Are we making a video of the differences?</span>
+0336     <span class="keyword">if</span> ~isempty(diffVideoFile)
+0337         
+0338         <span class="comment">% Label the negative changes in red.</span>
+0339         rImg = noImg;
+0340         rDiffs = diffImg &lt; 0;
+0341         rImg(rDiffs) = uint8(abs(diffImg(rDiffs)) + colorOffset);
+0342         
+0343         <span class="comment">% Label the positive changes in green.</span>
+0344         gImg = noImg;
+0345         gDiffs = diffImg &gt; 0;
+0346         gImg(gDiffs) = uint8(abs(diffImg(gDiffs)) + colorOffset);
+0347         
+0348         <span class="comment">% Construct the RGB image.</span>
+0349         diffRGBImg(:,:,1) = rImg;
+0350         diffRGBImg(:,:,2) = gImg;
+0351         diffRGBImg(:,:,3) = noImg;
+0352         
+0353         <span class="comment">% Add the difference frame(s).</span>
+0354         <span class="keyword">for</span> k = 1:droppedFrames
+0355             addframe(vw, prevDiffRGBImg);
+0356         <span class="keyword">end</span>
+0357         addframe(vw, diffRGBImg);
+0358         prevDiffRGBImg = diffRGBImg;
+0359     <span class="keyword">end</span>
+0360 <span class="keyword">end</span>
+0361 
+0362 <span class="comment">% Clean up.</span>
+0363 close(vr);
+0364 <span class="keyword">if</span> ~isempty(diffVideoFile)
+0365     close(vw);
+0366 <span class="keyword">end</span>
+0367 frameDiffs(i:end) = [];
+0368 
+0369 <span class="comment">% Save the video differentiation.</span>
+0370 save(diffFile, <span class="string">'fps'</span>, <span class="string">'frameDiffs'</span>);
+0371 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

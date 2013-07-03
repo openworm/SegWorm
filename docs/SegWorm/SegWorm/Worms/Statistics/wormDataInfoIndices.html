@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormDataInfoIndices</title>
+  <meta name="keywords" content="wormDataInfoIndices">
+  <meta name="description" content="WORMDATAINFOINDICES Separate the worm data information into morphology,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>wormDataInfoIndices
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMDATAINFOINDICES Separate the worm data information into morphology,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [morphologyI postureI locomotionI pathI] = wormDataInfoIndices() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMDATAINFOINDICES Separate the worm data information into morphology,
+posture, locomotion, and path features.
+
+   [MORPHOLOGYI POSTUREI LOCOMOTIONI PATHI] = WORMDATAINFOINDICES()
+
+   Outputs:
+       morphologyI - the indices for the morphology features
+       postureI    - the indices for the posture features
+       locomotionI - the indices for the locomotion features
+       pathI       - the indices for the path features
+
+ See also WORMDATAINFO</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>	WORMDATAINFO Get information for computing the worm data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [morphologyI postureI locomotionI pathI] = wormDataInfoIndices()</a>
+0002 <span class="comment">%WORMDATAINFOINDICES Separate the worm data information into morphology,</span>
+0003 <span class="comment">%posture, locomotion, and path features.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   [MORPHOLOGYI POSTUREI LOCOMOTIONI PATHI] = WORMDATAINFOINDICES()</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Outputs:</span>
+0008 <span class="comment">%       morphologyI - the indices for the morphology features</span>
+0009 <span class="comment">%       postureI    - the indices for the posture features</span>
+0010 <span class="comment">%       locomotionI - the indices for the locomotion features</span>
+0011 <span class="comment">%       pathI       - the indices for the path features</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% See also WORMDATAINFO</span>
+0014 
+0015 <span class="comment">% Separate the worm data fields into their feature categories.</span>
+0016 info = <a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>();
+0017 morphologyI = <span class="keyword">...</span>
+0018     find(arrayfun(@(x) ~isempty(strfind(x.field, <span class="string">'morphology.'</span>)), info));
+0019 postureI = <span class="keyword">...</span>
+0020     find(arrayfun(@(x) ~isempty(strfind(x.field, <span class="string">'posture.'</span>)), info));
+0021 locomotionI = <span class="keyword">...</span>
+0022     find(arrayfun(@(x) ~isempty(strfind(x.field, <span class="string">'locomotion.'</span>)), info));
+0023 pathI = <span class="keyword">...</span>
+0024     find(arrayfun(@(x) ~isempty(strfind(x.field, <span class="string">'path.'</span>)), info));
+0025 <span class="keyword">end</span>
+0026</pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

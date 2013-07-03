@@ -1,0 +1,413 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormDataInfo</title>
+  <meta name="keywords" content="wormDataInfo">
+  <meta name="description" content="WORMDATAINFO Get information for computing the worm data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>wormDataInfo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMDATAINFO Get information for computing the worm data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function info = wormDataInfo() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMDATAINFO Get information for computing the worm data.
+
+   INFO = WORMDATAINFO()
+
+   Output:
+       info - information for computing the worm data; a structure where:
+
+              field        = the feature's path
+              subFields    = the feature's subfields (for complex features);
+                             for an event type:
+
+                             summary = the summary subfields
+                             data    = the data subfields
+                             sign    = a field describing the sign
+                                       (true/false = +/-);
+                                       if empty, the event is not signed
+                          
+              type         = the feature's type where:
+
+                             s = a simple data array
+                             m = a data array which can be further divided
+                                 into forward/paused/backward motion
+                             e = an event data array
+
+              category     = the feature's category where:
+
+                             m = morphology
+                             s = posture (shape)
+                             l = locomotion
+                             p = path
+
+              isTimeSeries = is the data a time series?
+
+ See also <a href="wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">WORMDISPLAYINFO</a>, WORM2HISTOGRAM, ADDWORMHISTOGRAMS, WORM2STATS,
+          WORM2NORMTIMES, WORM2CSV</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Printing/plotWormStats.html" class="code" title="function plotWormStats(wormFile, worm2num, state, titleName, varargin)">plotWormStats</a>	PLOTWORMSTATS Plot the worm statistics.</li><li><a href="../../../SegWorm/Worms/Printing/worm2TOCOntologyTIF.html" class="code" title="function [filename pages] = worm2TOCOntologyTIF(filename, worm, wormName,varargin)">worm2TOCOntologyTIF</a>	WORM2TOCONTOLOGYTIF Save worm details to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2detailsPDF2.html" class="code" title="function [filename pages] = worm2detailsPDF(filename, worm, wormName,varargin)">worm2detailsPDF2</a>	WORM2DETAILSPDF Save worm details to a PDF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>	WORM2DETAILSTIF Save worm details to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2summaryTIF.html" class="code" title="function [filename pages] = worm2summaryTIF(filename, worm, wormName,varargin)">worm2summaryTIF</a>	WORM2SUMMARYTIF Save a worm summary to a TIF.</li><li><a href="../../../SegWorm/Worms/Statistics/addWormHistograms.html" class="code" title="function addWormHistograms(filename, wormFiles, varargin)">addWormHistograms</a>	ADDWORMHISTOGRAMS Combine worm histograms.</li><li><a href="../../../SegWorm/Worms/Statistics/addWormStats.html" class="code" title="function addWormStats(filename, wormFiles, varargin)">addWormStats</a>	WORM2STATS Combine worm statistics.</li><li><a href="../../../SegWorm/Worms/Statistics/filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">filterWormHist</a>	FILTERWORMHIST Filter worm features to meet specific criteria.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2NormTimes.html" class="code" title="function worm2NormTimes(filename, seconds, wormFiles, varargin)">worm2NormTimes</a>	WORM2NORMTIMES Normalize worm feature time series.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2stats.html" class="code" title="function worm2stats(filename, wormFiles, varargin)">worm2stats</a>	WORM2STATS Convert worms to a set of statistics.</li><li><a href="../../../SegWorm/Worms/Statistics/wormDataInfoIndices.html" class="code" title="function [morphologyI postureI locomotionI pathI] = wormDataInfoIndices()">wormDataInfoIndices</a>	WORMDATAINFOINDICES Separate the worm data information into morphology,</li><li><a href="../../../SegWorm/Worms/Statistics/wormStats2Matrix2.html" class="code" title="function wormStats2Matrix(filename, wormFiles, varargin)">wormStats2Matrix2</a>	WORMSTATS2MATRIX Construct and save a features x worms matrix.</li><li><a href="../../../SegWorm/Worms/Statistics/wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>	WORMFEATUREINFO Get information for computing the worm statistics.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function info = wormDataInfo()</a>
+0002 <span class="comment">%WORMDATAINFO Get information for computing the worm data.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   INFO = WORMDATAINFO()</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Output:</span>
+0007 <span class="comment">%       info - information for computing the worm data; a structure where:</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%              field        = the feature's path</span>
+0010 <span class="comment">%              subFields    = the feature's subfields (for complex features);</span>
+0011 <span class="comment">%                             for an event type:</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%                             summary = the summary subfields</span>
+0014 <span class="comment">%                             data    = the data subfields</span>
+0015 <span class="comment">%                             sign    = a field describing the sign</span>
+0016 <span class="comment">%                                       (true/false = +/-);</span>
+0017 <span class="comment">%                                       if empty, the event is not signed</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%              type         = the feature's type where:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%                             s = a simple data array</span>
+0022 <span class="comment">%                             m = a data array which can be further divided</span>
+0023 <span class="comment">%                                 into forward/paused/backward motion</span>
+0024 <span class="comment">%                             e = an event data array</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%              category     = the feature's category where:</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%                             m = morphology</span>
+0029 <span class="comment">%                             s = posture (shape)</span>
+0030 <span class="comment">%                             l = locomotion</span>
+0031 <span class="comment">%                             p = path</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%              isTimeSeries = is the data a time series?</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">% See also WORMDISPLAYINFO, WORM2HISTOGRAM, ADDWORMHISTOGRAMS, WORM2STATS,</span>
+0036 <span class="comment">%          WORM2NORMTIMES, WORM2CSV</span>
+0037 
+0038 <span class="comment">% Initialize the data types.</span>
+0039 simpleDataType = <span class="string">'s'</span>;
+0040 motionDataType = <span class="string">'m'</span>;
+0041 eventDataType = <span class="string">'e'</span>;
+0042 
+0043 <span class="comment">% Initialize the data categories.</span>
+0044 morphologyType = <span class="string">'m'</span>;
+0045 postureType = <span class="string">'s'</span>;
+0046 locomotionType = <span class="string">'l'</span>;
+0047 pathType = <span class="string">'p'</span>;
+0048 
+0049 <span class="comment">% Initialize the duration data field.</span>
+0050 durationField = {<span class="string">'times'</span>};
+0051 
+0052 <span class="comment">% Initialize the coil event data fields.</span>
+0053 coilEventFields.summary = {<span class="string">'frequency'</span>, <span class="string">'timeRatio'</span>};
+0054 coilEventFields.data = {<span class="string">'time'</span>, <span class="string">'interTime'</span>, <span class="string">'interDistance'</span>};
+0055 coilEventFields.sign = [];
+0056 
+0057 <span class="comment">% Initialize the turn event data fields.</span>
+0058 turnEventFields.summary = {<span class="string">'frequency'</span>, <span class="string">'timeRatio'</span>};
+0059 turnEventFields.data = {<span class="string">'time'</span>, <span class="string">'interTime'</span>, <span class="string">'interDistance'</span>};
+0060 turnEventFields.sign = <span class="string">'isVentral'</span>;
+0061 
+0062 <span class="comment">% Initialize the motion event data fields.</span>
+0063 motionEventFields.summary = <span class="keyword">...</span>
+0064     {<span class="string">'frequency'</span>, <span class="string">'ratio.time'</span>, <span class="string">'ratio.distance'</span>};
+0065 motionEventFields.data = <span class="keyword">...</span>
+0066     {<span class="string">'time'</span>, <span class="string">'distance'</span>, <span class="string">'interTime'</span>, <span class="string">'interDistance'</span>};
+0067 motionEventFields.sign = [];
+0068 
+0069 <span class="comment">% Initialize the features.</span>
+0070 info.field = [];
+0071 info.subFields = [];
+0072 info.type = [];
+0073 info.category = [];
+0074 info.isTimeSeries = [];
+0075 
+0076 
+0077 
+0078 <span class="comment">%% Organize the morphology data.</span>
+0079 info(end).field = <span class="string">'morphology.length'</span>;
+0080 info(end).type = motionDataType;
+0081 info(end).category = morphologyType;
+0082 info(end).isTimeSeries = true;
+0083 info(end + 1).field = <span class="string">'morphology.width.head'</span>;
+0084 info(end).type = motionDataType;
+0085 info(end).category = morphologyType;
+0086 info(end).isTimeSeries = true;
+0087 info(end + 1).field = <span class="string">'morphology.width.midbody'</span>;
+0088 info(end).type = motionDataType;
+0089 info(end).category = morphologyType;
+0090 info(end).isTimeSeries = true;
+0091 info(end + 1).field = <span class="string">'morphology.width.tail'</span>;
+0092 info(end).type = motionDataType;
+0093 info(end).category = morphologyType;
+0094 info(end).isTimeSeries = true;
+0095 info(end + 1).field = <span class="string">'morphology.area'</span>;
+0096 info(end).type = motionDataType;
+0097 info(end).category = morphologyType;
+0098 info(end).isTimeSeries = true;
+0099 info(end + 1).field = <span class="string">'morphology.areaPerLength'</span>;
+0100 info(end).type = motionDataType;
+0101 info(end).category = morphologyType;
+0102 info(end).isTimeSeries = true;
+0103 info(end + 1).field = <span class="string">'morphology.widthPerLength'</span>;
+0104 info(end).type = motionDataType;
+0105 info(end).category = morphologyType;
+0106 info(end).isTimeSeries = true;
+0107 
+0108 
+0109 
+0110 <span class="comment">%% Organize the posture data.</span>
+0111 info(end + 1).field = <span class="string">'posture.bends.head.mean'</span>;
+0112 info(end).type = motionDataType;
+0113 info(end).category = postureType;
+0114 info(end).isTimeSeries = true;
+0115 info(end + 1).field = <span class="string">'posture.bends.neck.mean'</span>;
+0116 info(end).type = motionDataType;
+0117 info(end).category = postureType;
+0118 info(end).isTimeSeries = true;
+0119 info(end + 1).field = <span class="string">'posture.bends.midbody.mean'</span>;
+0120 info(end).type = motionDataType;
+0121 info(end).category = postureType;
+0122 info(end).isTimeSeries = true;
+0123 info(end + 1).field = <span class="string">'posture.bends.hips.mean'</span>;
+0124 info(end).type = motionDataType;
+0125 info(end).category = postureType;
+0126 info(end).isTimeSeries = true;
+0127 info(end + 1).field = <span class="string">'posture.bends.tail.mean'</span>;
+0128 info(end).type = motionDataType;
+0129 info(end).category = postureType;
+0130 info(end).isTimeSeries = true;
+0131 info(end + 1).field = <span class="string">'posture.bends.head.stdDev'</span>;
+0132 info(end).type = motionDataType;
+0133 info(end).category = postureType;
+0134 info(end).isTimeSeries = true;
+0135 info(end + 1).field = <span class="string">'posture.bends.neck.stdDev'</span>;
+0136 info(end).type = motionDataType;
+0137 info(end).category = postureType;
+0138 info(end).isTimeSeries = true;
+0139 info(end + 1).field = <span class="string">'posture.bends.midbody.stdDev'</span>;
+0140 info(end).type = motionDataType;
+0141 info(end).category = postureType;
+0142 info(end).isTimeSeries = true;
+0143 info(end + 1).field = <span class="string">'posture.bends.hips.stdDev'</span>;
+0144 info(end).type = motionDataType;
+0145 info(end).category = postureType;
+0146 info(end).isTimeSeries = true;
+0147 info(end + 1).field = <span class="string">'posture.bends.tail.stdDev'</span>;
+0148 info(end).type = motionDataType;
+0149 info(end).category = postureType;
+0150 info(end).isTimeSeries = true;
+0151 info(end + 1).field = <span class="string">'posture.amplitude.max'</span>;
+0152 info(end).type = motionDataType;
+0153 info(end).category = postureType;
+0154 info(end).isTimeSeries = true;
+0155 info(end + 1).field = <span class="string">'posture.amplitude.ratio'</span>;
+0156 info(end).type = motionDataType;
+0157 info(end).category = postureType;
+0158 info(end).isTimeSeries = true;
+0159 info(end + 1).field = <span class="string">'posture.wavelength.primary'</span>;
+0160 info(end).type = motionDataType;
+0161 info(end).category = postureType;
+0162 info(end).isTimeSeries = true;
+0163 info(end + 1).field = <span class="string">'posture.wavelength.secondary'</span>;
+0164 info(end).type = motionDataType;
+0165 info(end).category = postureType;
+0166 info(end).isTimeSeries = true;
+0167 info(end + 1).field = <span class="string">'posture.tracklength'</span>;
+0168 info(end).type = motionDataType;
+0169 info(end).category = postureType;
+0170 info(end).isTimeSeries = true;
+0171 info(end + 1).field = <span class="string">'posture.eccentricity'</span>;
+0172 info(end).type = motionDataType;
+0173 info(end).category = postureType;
+0174 info(end).isTimeSeries = true;
+0175 info(end + 1).field = <span class="string">'posture.kinks'</span>;
+0176 info(end).type = motionDataType;
+0177 info(end).category = postureType;
+0178 info(end).isTimeSeries = true;
+0179 info(end + 1).field = <span class="string">'posture.coils'</span>;
+0180 info(end).subFields = coilEventFields;
+0181 info(end).type = eventDataType;
+0182 info(end).category = postureType;
+0183 info(end).isTimeSeries = true;
+0184 info(end + 1).field = <span class="string">'posture.directions.tail2head'</span>;
+0185 info(end).type = motionDataType;
+0186 info(end).category = postureType;
+0187 info(end).isTimeSeries = true;
+0188 info(end + 1).field = <span class="string">'posture.directions.head'</span>;
+0189 info(end).type = motionDataType;
+0190 info(end).category = postureType;
+0191 info(end).isTimeSeries = true;
+0192 info(end + 1).field = <span class="string">'posture.directions.tail'</span>;
+0193 info(end).type = motionDataType;
+0194 info(end).category = postureType;
+0195 info(end).isTimeSeries = true;
+0196 info(end + 1).field = <span class="string">'posture.eigenProjection'</span>;
+0197 info(end).type = motionDataType;
+0198 info(end).category = postureType;
+0199 info(end).isTimeSeries = true;
+0200 
+0201 
+0202 
+0203 <span class="comment">%% Organize the locomotion data.</span>
+0204 info(end + 1).field = <span class="string">'locomotion.motion.forward'</span>;
+0205 info(end).subFields = motionEventFields;
+0206 info(end).type = eventDataType;
+0207 info(end).category = locomotionType;
+0208 info(end).isTimeSeries = true;
+0209 info(end + 1).field = <span class="string">'locomotion.motion.paused'</span>;
+0210 info(end).subFields = motionEventFields;
+0211 info(end).type = eventDataType;
+0212 info(end).category = locomotionType;
+0213 info(end).isTimeSeries = true;
+0214 info(end + 1).field = <span class="string">'locomotion.motion.backward'</span>;
+0215 info(end).subFields = motionEventFields;
+0216 info(end).type = eventDataType;
+0217 info(end).category = locomotionType;
+0218 info(end).isTimeSeries = true;
+0219 info(end + 1).field = <span class="string">'locomotion.velocity.headTip.speed'</span>;
+0220 info(end).type = motionDataType;
+0221 info(end).category = locomotionType;
+0222 info(end).isTimeSeries = true;
+0223 info(end + 1).field = <span class="string">'locomotion.velocity.head.speed'</span>;
+0224 info(end).type = motionDataType;
+0225 info(end).category = locomotionType;
+0226 info(end).isTimeSeries = true;
+0227 info(end + 1).field = <span class="string">'locomotion.velocity.midbody.speed'</span>;
+0228 info(end).type = motionDataType;
+0229 info(end).category = locomotionType;
+0230 info(end).isTimeSeries = true;
+0231 info(end + 1).field = <span class="string">'locomotion.velocity.tail.speed'</span>;
+0232 info(end).type = motionDataType;
+0233 info(end).category = locomotionType;
+0234 info(end).isTimeSeries = true;
+0235 info(end + 1).field = <span class="string">'locomotion.velocity.tailTip.speed'</span>;
+0236 info(end).type = motionDataType;
+0237 info(end).category = locomotionType;
+0238 info(end).isTimeSeries = true;
+0239 info(end + 1).field = <span class="string">'locomotion.velocity.headTip.direction'</span>;
+0240 info(end).type = motionDataType;
+0241 info(end).category = locomotionType;
+0242 info(end).isTimeSeries = true;
+0243 info(end + 1).field = <span class="string">'locomotion.velocity.head.direction'</span>;
+0244 info(end).type = motionDataType;
+0245 info(end).category = locomotionType;
+0246 info(end).isTimeSeries = true;
+0247 info(end + 1).field = <span class="string">'locomotion.velocity.midbody.direction'</span>;
+0248 info(end).type = motionDataType;
+0249 info(end).category = locomotionType;
+0250 info(end).isTimeSeries = true;
+0251 info(end + 1).field = <span class="string">'locomotion.velocity.tail.direction'</span>;
+0252 info(end).type = motionDataType;
+0253 info(end).category = locomotionType;
+0254 info(end).isTimeSeries = true;
+0255 info(end + 1).field = <span class="string">'locomotion.velocity.tailTip.direction'</span>;
+0256 info(end).type = motionDataType;
+0257 info(end).category = locomotionType;
+0258 info(end).isTimeSeries = true;
+0259 info(end + 1).field = <span class="string">'locomotion.bends.foraging.amplitude'</span>;
+0260 info(end).type = motionDataType;
+0261 info(end).category = locomotionType;
+0262 info(end).isTimeSeries = true;
+0263 info(end + 1).field = <span class="string">'locomotion.bends.head.amplitude'</span>;
+0264 info(end).type = motionDataType;
+0265 info(end).category = locomotionType;
+0266 info(end).isTimeSeries = true;
+0267 info(end + 1).field = <span class="string">'locomotion.bends.midbody.amplitude'</span>;
+0268 info(end).type = motionDataType;
+0269 info(end).category = locomotionType;
+0270 info(end).isTimeSeries = true;
+0271 info(end + 1).field = <span class="string">'locomotion.bends.tail.amplitude'</span>;
+0272 info(end).type = motionDataType;
+0273 info(end).category = locomotionType;
+0274 info(end).isTimeSeries = true;
+0275 info(end + 1).field = <span class="string">'locomotion.bends.foraging.angleSpeed'</span>;
+0276 info(end).type = motionDataType;
+0277 info(end).category = locomotionType;
+0278 info(end).isTimeSeries = true;
+0279 info(end + 1).field = <span class="string">'locomotion.bends.head.frequency'</span>;
+0280 info(end).type = motionDataType;
+0281 info(end).category = locomotionType;
+0282 info(end).isTimeSeries = true;
+0283 info(end + 1).field = <span class="string">'locomotion.bends.midbody.frequency'</span>;
+0284 info(end).type = motionDataType;
+0285 info(end).category = locomotionType;
+0286 info(end).isTimeSeries = true;
+0287 info(end + 1).field = <span class="string">'locomotion.bends.tail.frequency'</span>;
+0288 info(end).type = motionDataType;
+0289 info(end).category = locomotionType;
+0290 info(end).isTimeSeries = true;
+0291 info(end + 1).field = <span class="string">'locomotion.turns.omegas'</span>;
+0292 info(end).subFields = turnEventFields;
+0293 info(end).type = eventDataType;
+0294 info(end).category = locomotionType;
+0295 info(end).isTimeSeries = true;
+0296 info(end + 1).field = <span class="string">'locomotion.turns.upsilons'</span>;
+0297 info(end).subFields = turnEventFields;
+0298 info(end).type = eventDataType;
+0299 info(end).category = locomotionType;
+0300 info(end).isTimeSeries = true;
+0301 
+0302 
+0303 
+0304 <span class="comment">%% Organize the path data.</span>
+0305 info(end + 1).field = <span class="string">'path.range'</span>;
+0306 info(end).type = motionDataType;
+0307 info(end).category = pathType;
+0308 info(end).isTimeSeries = true;
+0309 info(end + 1).field = <span class="string">'path.duration.worm'</span>;
+0310 info(end).subFields = durationField;
+0311 info(end).type = simpleDataType;
+0312 info(end).category = pathType;
+0313 info(end).isTimeSeries = false;
+0314 info(end + 1).field = <span class="string">'path.duration.head'</span>;
+0315 info(end).subFields = durationField;
+0316 info(end).type = simpleDataType;
+0317 info(end).category = pathType;
+0318 info(end).isTimeSeries = false;
+0319 info(end + 1).field = <span class="string">'path.duration.midbody'</span>;
+0320 info(end).subFields = durationField;
+0321 info(end).type = simpleDataType;
+0322 info(end).category = pathType;
+0323 info(end).isTimeSeries = false;
+0324 info(end + 1).field = <span class="string">'path.duration.tail'</span>;
+0325 info(end).subFields = durationField;
+0326 info(end).type = simpleDataType;
+0327 info(end).category = pathType;
+0328 info(end).isTimeSeries = false;
+0329 info(end + 1).field = <span class="string">'path.curvature'</span>;
+0330 info(end).type = motionDataType;
+0331 info(end).category = pathType;
+0332 info(end).isTimeSeries = true;
+0333 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

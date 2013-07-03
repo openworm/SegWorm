@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of standardTestBattery</title>
+  <meta name="keywords" content="standardTestBattery">
+  <meta name="description" content="standardTestBattery(plugin)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>standardTestBattery
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>standardTestBattery(plugin)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function standardTestBattery(plugin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">standardTestBattery(plugin)
+  Performs a standard battery of tests on a given plugin
+
+Examples:
+  standardTestBattery
+  standardTestBattery ffmpegPopen2  % linux &amp; similar
+  standardTestBattery ffmpegDirect  % ...if system's gcc is compatible w/ Matlab's
+  standardTestBattery DirectShow    % Windows</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>	pluginName = defaultVideoIOPlugin(ctor)</li><li><a href="concatReadTests.html" class="code" title="function concatReadTests(plugin)">concatReadTests</a>	concatReadTests</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="longWriteTest.html" class="code" title="function longWriteTest(plugin, readerPlugin)">longWriteTest</a>	longWriteTests(plugin)</li><li><a href="readTests.html" class="code" title="function readTests(plugin)">readTests</a>	readTests(plugin)</li><li><a href="testBitRate.html" class="code" title="function testBitRate(varargin)">testBitRate</a>	testBitRate</li><li><a href="testGet.html" class="code" title="function testGet(plugin)">testGet</a>	testGet</li><li><a href="testGopSize.html" class="code" title="function testGopSize(varargin)">testGopSize</a>	testGopSize</li><li><a href="testQuality.html" class="code" title="function testQuality(varargin)">testQuality</a>	testQuality</li><li><a href="writeTests.html" class="code" title="function writeTests(plugin, readerPlugin)">writeTests</a>	writeTests(plugin)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="testDirectShow.html" class="code" title="">testDirectShow</a>	testDirectShow</li><li><a href="testFfmpeg.html" class="code" title="function testFfmpeg">testFfmpeg</a>	testFfmpeg</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function standardTestBattery(plugin)</a>
+0002 <span class="comment">%standardTestBattery(plugin)</span>
+0003 <span class="comment">%  Performs a standard battery of tests on a given plugin</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%Examples:</span>
+0006 <span class="comment">%  standardTestBattery</span>
+0007 <span class="comment">%  standardTestBattery ffmpegPopen2  % linux &amp; similar</span>
+0008 <span class="comment">%  standardTestBattery ffmpegDirect  % ...if system's gcc is compatible w/ Matlab's</span>
+0009 <span class="comment">%  standardTestBattery DirectShow    % Windows</span>
+0010 <span class="comment">%</span>
+0011 
+0012 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>
+0013 
+0014 <span class="keyword">if</span> nargin &lt; 1, plugin = <a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>; <span class="keyword">end</span>
+0015 
+0016 <a href="readTests.html" class="code" title="function readTests(plugin)">readTests</a>(plugin);
+0017 <a href="concatReadTests.html" class="code" title="function concatReadTests(plugin)">concatReadTests</a>; <span class="comment">% without a plugin specified</span>
+0018 <a href="concatReadTests.html" class="code" title="function concatReadTests(plugin)">concatReadTests</a>(plugin); <span class="comment">% with an explicit default</span>
+0019 <a href="writeTests.html" class="code" title="function writeTests(plugin, readerPlugin)">writeTests</a>(plugin);
+0020 <span class="keyword">if</span> ispc
+0021   <a href="testGet.html" class="code" title="function testGet(plugin)">testGet</a>(plugin);
+0022 <span class="keyword">end</span>
+0023 <span class="keyword">if</span> ~strcmpi(plugin, <span class="string">'DirectShow'</span>) <span class="comment">% DShow doesn't support these options now</span>
+0024   <a href="testBitRate.html" class="code" title="function testBitRate(varargin)">testBitRate</a>(plugin);
+0025   <a href="testGopSize.html" class="code" title="function testGopSize(varargin)">testGopSize</a>(plugin);
+0026   <a href="testQuality.html" class="code" title="function testQuality(varargin)">testQuality</a>(plugin);
+0027 <span class="keyword">end</span>
+0028 <a href="longWriteTest.html" class="code" title="function longWriteTest(plugin, readerPlugin)">longWriteTest</a>(plugin);
+0029 
+0030 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

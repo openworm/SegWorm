@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of resizeTest</title>
+  <meta name="keywords" content="resizeTest">
+  <meta name="description" content="writeTests(plugin)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>resizeTest
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>writeTests(plugin)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function resizeTest(plugin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">writeTests(plugin)
+  Checks to see if automatic resizing of images is working properly for a
+  given videoReader/videoWriter plugin using some quick heuristics.  
+
+Examples:
+  resizeTest
+  resizeTest ffmpegPopen2  % linux &amp; similar
+  resizeTest ffmpegDirect  % ...if system's gcc is compatible w/ Matlab's
+  resizeTest DirectShow    % Windows</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>	INFO=GET(VR)</li><li><a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>	ADDFRAME  Add video frame to VIDEOWRITER stream.</li><li><a href="../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="../../videoIO/@videoWriter/get.html" class="code" title="function info = get(vw,varargin)">get</a>	INFO=GET(VW)</li><li><a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>	videoWriter class constructor</li><li><a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>	pluginName = defaultVideoIOPlugin(ctor)</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="psychedelicFrame.html" class="code" title="function rgbFrame = psychedelicFrame(w,h,i)">psychedelicFrame</a>	rgbFrame = psychedelicFrame(w,h,i)</li><li><a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a>	vrassert(testCondition)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function resizeTest(plugin)</a>
+0002 <span class="comment">%writeTests(plugin)</span>
+0003 <span class="comment">%  Checks to see if automatic resizing of images is working properly for a</span>
+0004 <span class="comment">%  given videoReader/videoWriter plugin using some quick heuristics.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%Examples:</span>
+0007 <span class="comment">%  resizeTest</span>
+0008 <span class="comment">%  resizeTest ffmpegPopen2  % linux &amp; similar</span>
+0009 <span class="comment">%  resizeTest ffmpegDirect  % ...if system's gcc is compatible w/ Matlab's</span>
+0010 <span class="comment">%  resizeTest DirectShow    % Windows</span>
+0011 
+0012 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>
+0013 
+0014 <span class="keyword">if</span> nargin &lt; 1, plugin = <a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>; <span class="keyword">end</span>
+0015 
+0016 W = 640;
+0017 H = 480;
+0018 fname = [tempname <span class="string">'.avi'</span>];
+0019 <span class="keyword">try</span>
+0020   vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>(fname, plugin, <span class="string">'width'</span>,W, <span class="string">'height'</span>,H);
+0021   widths = 4:40:640;
+0022   <span class="keyword">for</span> i=1:length(widths)
+0023     w = widths(i);
+0024     frame = <a href="psychedelicFrame.html" class="code" title="function rgbFrame = psychedelicFrame(w,h,i)">psychedelicFrame</a>(w,w,i);
+0025     <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, frame);
+0026   <span class="keyword">end</span>
+0027   vw = <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw);
+0028   
+0029   vr = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(fname, plugin);
+0030   info = <a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(vr); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0031   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> W == info.width;
+0032   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> H == info.height;
+0033   vr = <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0034   
+0035   delete(fname);
+0036 <span class="keyword">catch</span>
+0037   e = lasterror;
+0038   <span class="keyword">try</span> <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw); <span class="keyword">catch</span> <span class="keyword">end</span>
+0039   delete(fname);
+0040   rethrow(e);
+0041 <span class="keyword">end</span>
+0042 
+0043 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

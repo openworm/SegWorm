@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormExps</title>
+  <meta name="keywords" content="wormExps">
+  <meta name="description" content="WORMEXPS Find worm experiments matching the given criteria.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Util -->
+<h1>wormExps
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMEXPS Find worm experiments matching the given criteria.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function exps =wormExps(dirPath, gene, allele, strain, isFood, side, tracker) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMEXPS Find worm experiments matching the given criteria.
+
+   WORMEXPS(DIRPATH, GENE, ALLELE, STRAIN, ISFOOD, SIDE, TRACKER)
+
+   Inputs:
+       dirPath - the directory for experiments
+       gene    - the worm's gene;
+                 use [] for 'gene NA'
+                 use '*' for all genes
+       allele  - the worm's allele
+                 use [] for 'allele NA'
+                 use '*' for all alleles
+       strain  - the worm's strain
+                 use [] for 'strain NA'
+                 use '*' for all strains
+       isFood  - is the worm on food?
+                 use [] for 'food NA'
+                 use '*' for all food types
+       side    - the left/right location of the worm's ventral side
+                 use 'L' for left
+                 use 'R' for right
+                 use [] for 'vulvaside NA'
+                 use '*' for all sides
+       tracker - the tracker number
+                 use [] for 'tracker NA'
+                 use '*' for all trackers
+
+   Output:
+       exps - a list of worm experiments matching the given criteria</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function exps = </a><span class="keyword">...</span>
+0002     wormExps(dirPath, gene, allele, strain, isFood, side, tracker)
+0003 <span class="comment">%WORMEXPS Find worm experiments matching the given criteria.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   WORMEXPS(DIRPATH, GENE, ALLELE, STRAIN, ISFOOD, SIDE, TRACKER)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Inputs:</span>
+0008 <span class="comment">%       dirPath - the directory for experiments</span>
+0009 <span class="comment">%       gene    - the worm's gene;</span>
+0010 <span class="comment">%                 use [] for 'gene NA'</span>
+0011 <span class="comment">%                 use '*' for all genes</span>
+0012 <span class="comment">%       allele  - the worm's allele</span>
+0013 <span class="comment">%                 use [] for 'allele NA'</span>
+0014 <span class="comment">%                 use '*' for all alleles</span>
+0015 <span class="comment">%       strain  - the worm's strain</span>
+0016 <span class="comment">%                 use [] for 'strain NA'</span>
+0017 <span class="comment">%                 use '*' for all strains</span>
+0018 <span class="comment">%       isFood  - is the worm on food?</span>
+0019 <span class="comment">%                 use [] for 'food NA'</span>
+0020 <span class="comment">%                 use '*' for all food types</span>
+0021 <span class="comment">%       side    - the left/right location of the worm's ventral side</span>
+0022 <span class="comment">%                 use 'L' for left</span>
+0023 <span class="comment">%                 use 'R' for right</span>
+0024 <span class="comment">%                 use [] for 'vulvaside NA'</span>
+0025 <span class="comment">%                 use '*' for all sides</span>
+0026 <span class="comment">%       tracker - the tracker number</span>
+0027 <span class="comment">%                 use [] for 'tracker NA'</span>
+0028 <span class="comment">%                 use '*' for all trackers</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   Output:</span>
+0031 <span class="comment">%       exps - a list of worm experiments matching the given criteria</span>
+0032 
+0033 <span class="comment">% Fix the directory.</span>
+0034 wormPath = dirPath;
+0035 fSep = filesep();
+0036 <span class="keyword">if</span> ~isempty(wormPath) &amp;&amp; wormPath(end) ~= fSep
+0037     wormPath(end + 1) = fSep;
+0038 <span class="keyword">end</span>
+0039 
+0040 <span class="comment">% Fix the gene, allele, and strain.</span>
+0041 <span class="keyword">if</span> isempty(gene)
+0042     gene = <span class="string">'gene NA'</span>;
+0043 <span class="keyword">end</span>
+0044 <span class="keyword">if</span> isempty(allele)
+0045     allele = <span class="string">'allele NA'</span>;
+0046 <span class="keyword">end</span>
+0047 <span class="keyword">if</span> isempty(gene)
+0048     strain = <span class="string">'strain NA'</span>;
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">% Construct the strain path.</span>
+0052 wormPath = [wormPath gene fSep allele fSep strain];
+0053 
+0054 <span class="comment">% Construct the food path.</span>
+0055 <span class="keyword">if</span> isempty(isFood)
+0056     wormPath = [wormPath fSep <span class="string">'food NA'</span>];
+0057 <span class="keyword">elseif</span> ischar(isFood) &amp;&amp; isFood == <span class="string">'*'</span>
+0058     wormPath = [wormPath fSep <span class="string">'*'</span>];
+0059 <span class="keyword">elseif</span> isFood
+0060     wormPath = [wormPath fSep <span class="string">'on food'</span>];
+0061 <span class="keyword">else</span>
+0062     wormPath = [wormPath fSep <span class="string">'off food'</span>];
+0063 <span class="keyword">end</span>
+0064 
+0065 <span class="comment">% Use all dates.</span>
+0066 wormPath = [wormPath fSep <span class="string">'*'</span>];
+0067 
+0068 <span class="comment">% Construct the ventral side path.</span>
+0069 <span class="keyword">if</span> isempty(side)
+0070     wormPath = [wormPath fSep <span class="string">'vulvaside NA'</span>];
+0071 <span class="keyword">else</span>
+0072     wormPath = [wormPath fSep upper(side)];
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="comment">% Construct the tracker path.</span>
+0076 <span class="keyword">if</span> isempty(tracker)
+0077     wormPath = [wormPath fSep <span class="string">'tracker NA'</span>];
+0078 <span class="keyword">elseif</span> ischar(tracker) &amp;&amp; tracker == <span class="string">'*'</span>
+0079     wormPath = [wormPath fSep <span class="string">'*'</span>];
+0080 <span class="keyword">else</span>
+0081     wormPath = [wormPath fSep num2str(tracker)];
+0082 <span class="keyword">end</span>
+0083 
+0084 <span class="comment">% Get the experiments.</span>
+0085 <span class="keyword">try</span>
+0086     expStr = ls(wormPath);
+0087 <span class="keyword">catch</span> exception
+0088     expStr = [];
+0089 <span class="keyword">end</span>
+0090 <span class="keyword">if</span> isempty(expStr)
+0091     error(<span class="string">'wormStats:NoExperiments'</span>, [<span class="string">'No experiments were found in '</span> <span class="keyword">...</span>
+0092         <span class="string">'the directory &quot;'</span> wormPath <span class="string">'&quot;!'</span>]);
+0093 <span class="keyword">end</span>
+0094 
+0095 <span class="comment">% Parse the experiments.</span>
+0096 <span class="keyword">if</span> isempty(strfind(expStr, <span class="string">':'</span>))
+0097     [~, expDir] = unix([<span class="string">'cd '</span> strrep(wormPath, <span class="string">' '</span>, <span class="string">'\ '</span>) <span class="string">'; pwd'</span>]);
+0098     expStrs = strread(expStr, <span class="string">'%s'</span>, <span class="string">'delimiter'</span>, <span class="string">'\n'</span>);
+0099     exps(length(expStrs)) = struct( <span class="keyword">...</span>
+0100         <span class="string">'path'</span>, [], <span class="keyword">...</span>
+0101         <span class="string">'dir'</span>, [], <span class="keyword">...</span>
+0102         <span class="string">'file'</span>, [], <span class="keyword">...</span>
+0103         <span class="string">'gene'</span>, [], <span class="keyword">...</span>
+0104         <span class="string">'allele'</span>, [], <span class="keyword">...</span>
+0105         <span class="string">'strain'</span>, [], <span class="keyword">...</span>
+0106         <span class="string">'date'</span>, [], <span class="keyword">...</span>
+0107         <span class="string">'food'</span>, [], <span class="keyword">...</span>
+0108         <span class="string">'side'</span>, [], <span class="keyword">...</span>
+0109         <span class="string">'tracker'</span>, []);
+0110 <span class="comment">%         'info', []);</span>
+0111     <span class="keyword">for</span> i = 1:length(expStrs)
+0112         exps(i).dir = expDir;
+0113         exps(i).file = expStrs{i};
+0114         exps(i).path = [exps(i).dir fSep exps(i).file];
+0115     <span class="keyword">end</span>
+0116     
+0117 <span class="comment">% Parse the recursive experiments.</span>
+0118 <span class="keyword">else</span>
+0119     expStrs = strread(expStr, <span class="string">'%s'</span>, <span class="string">'delimiter'</span>, <span class="string">':'</span>);
+0120     numExps = length(expStrs) / 2;
+0121     exps(numExps) = struct( <span class="keyword">...</span>
+0122         <span class="string">'path'</span>, [], <span class="keyword">...</span>
+0123         <span class="string">'dir'</span>, [], <span class="keyword">...</span>
+0124         <span class="string">'file'</span>, [], <span class="keyword">...</span>
+0125         <span class="string">'gene'</span>, [], <span class="keyword">...</span>
+0126         <span class="string">'allele'</span>, [], <span class="keyword">...</span>
+0127         <span class="string">'strain'</span>, [], <span class="keyword">...</span>
+0128         <span class="string">'date'</span>, [], <span class="keyword">...</span>
+0129         <span class="string">'food'</span>, [], <span class="keyword">...</span>
+0130         <span class="string">'side'</span>, [], <span class="keyword">...</span>
+0131         <span class="string">'tracker'</span>, []);
+0132     <span class="comment">%     'info', []);</span>
+0133     <span class="keyword">for</span> i = 1:2:(length(expStrs) - 1)
+0134         j = (i + 1) / 2;
+0135         exps(j).dir = expStrs{i};
+0136         exps(j).file = expStrs{i + 1};
+0137         exps(j).path = [exps(j).dir fSep exps(j).file];
+0138     <span class="keyword">end</span>
+0139 <span class="keyword">end</span>
+0140 
+0141 <span class="comment">% Parse the experiments information.</span>
+0142 minSeps = 7;
+0143 geneI = 6;
+0144 alleleI = 5;
+0145 strainI = 4;
+0146 foodI = 3;
+0147 dateI = 2;
+0148 sideI = 1;
+0149 trackerI = 0;
+0150 dateFormat = <span class="string">'yyyy-mm-dd   HH_MM_SS'</span>;
+0151 <span class="keyword">for</span> i = 1:length(exps)
+0152     
+0153     <span class="comment">% Parse the directory name.</span>
+0154     expDir = exps(i).dir;
+0155     sepIs = findstr(expDir, fSep);
+0156     
+0157     <span class="comment">% Parse the gene.</span>
+0158     <span class="keyword">if</span> length(sepIs) &lt; minSeps
+0159         geneStr = <span class="keyword">...</span>
+0160             expDir(1:(sepIs(end - geneI + 1) - 1));
+0161     <span class="keyword">else</span>
+0162         geneStr = <span class="keyword">...</span>
+0163             expDir((sepIs(end - geneI) + 1):(sepIs(end - geneI + 1) - 1));
+0164     <span class="keyword">end</span>
+0165     <span class="keyword">if</span> strcmp(geneStr, <span class="string">'gene NA'</span>)
+0166         geneStr = [];
+0167     <span class="keyword">end</span>
+0168     exps(i).gene = geneStr;
+0169 
+0170     <span class="comment">% Parse the allele.</span>
+0171     alleleStr = <span class="keyword">...</span>
+0172         expDir((sepIs(end - alleleI) + 1):(sepIs(end - alleleI + 1) - 1));
+0173     <span class="keyword">if</span> strcmp(alleleStr, <span class="string">'allele NA'</span>)
+0174         alleleStr = [];
+0175     <span class="keyword">end</span>
+0176     exps(i).allele = alleleStr;
+0177 
+0178     <span class="comment">% Parse the strain.</span>
+0179     strainStr = <span class="keyword">...</span>
+0180         expDir((sepIs(end - strainI) + 1):(sepIs(end - strainI + 1) - 1));
+0181     <span class="keyword">if</span> strcmp(strainStr, <span class="string">'strain NA'</span>)
+0182         strainStr = [];
+0183     <span class="keyword">end</span>
+0184     exps(i).strain = strainStr;
+0185 
+0186     <span class="comment">% Parse the date.</span>
+0187     dateStr = <span class="keyword">...</span>
+0188         expDir((sepIs(end - dateI) + 1):(sepIs(end - dateI + 1) - 1));
+0189     exps(i).date = datenum(dateStr, dateFormat);
+0190     
+0191     <span class="comment">% Parse the food.</span>
+0192     foodStr = <span class="keyword">...</span>
+0193         expDir((sepIs(end - foodI) + 1):(sepIs(end - foodI + 1) - 1));
+0194     <span class="keyword">switch</span> foodStr
+0195         <span class="keyword">case</span> <span class="string">'off food'</span>
+0196             exps(i).food = false;
+0197         <span class="keyword">case</span> <span class="string">'on food'</span>
+0198             exps(i).food = true;
+0199         <span class="keyword">otherwise</span>
+0200             exps(i).food = NaN;
+0201     <span class="keyword">end</span>
+0202     
+0203     <span class="comment">% Parse the side.</span>
+0204     sideStr = <span class="keyword">...</span>
+0205         expDir((sepIs(end - sideI) + 1):(sepIs(end - sideI + 1) - 1));
+0206     <span class="keyword">if</span> strcmp(sideStr, <span class="string">'L'</span>) &amp;&amp; strcmp(sideStr,<span class="string">'R'</span>)
+0207         sideStr = <span class="string">'X'</span>;
+0208     <span class="keyword">end</span>
+0209     exps(i).side = sideStr;
+0210     
+0211     <span class="comment">% Parse the tracker.</span>
+0212     trackerStr = expDir((sepIs(end - trackerI) + 1):end);
+0213     <span class="keyword">if</span> strcmp(trackerStr, <span class="string">'tracker NA'</span>)
+0214         exps(i).tracker = NaN;
+0215     <span class="keyword">else</span>
+0216         exps(i).tracker = str2double(trackerStr(end));
+0217     <span class="keyword">end</span>
+0218     
+0219 <span class="comment">%     % Load the data.</span>
+0220 <span class="comment">%     exps(i).info = load(exps(i).path, 'featureData', 'myAviInfo');</span>
+0221 <span class="comment">%     if isempty(exps(i).info)</span>
+0222 <span class="comment">%         error('wormStats:NoFeatures', ['&quot;' file ...</span>
+0223 <span class="comment">%             '&quot; does not contain feature data!' ]);</span>
+0224 <span class="comment">%     end</span>
+0225 <span class="keyword">end</span>
+0226 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

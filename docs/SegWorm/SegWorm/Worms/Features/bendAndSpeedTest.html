@@ -1,0 +1,367 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of bendAndSpeedTest</title>
+  <meta name="keywords" content="bendAndSpeedTest">
+  <meta name="description" content="Initialize our variables.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>bendAndSpeedTest
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Initialize our variables.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Initialize our variables.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>	EVENTS2ARRAY Convert a set of events into a logical array.</li><li><a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>	EVENTS2STATS Compute the event statistics.</li><li><a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>	EVENTS2VIDEO Create a video of events.</li><li><a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>	FINDEVENT Find an event within an array of data.</li><li><a href="multiScaleWorm.html" class="code" title="function [diffData startFrame endFrame fps useSamples] =multiScaleWorm(wormFile, startFrame, endFrame, useSamples,useFrames, type, scales, isSparse, offMode, isNoisy, htDirMode,isAbsDir, varargin)">multiScaleWorm</a>	MULTISCALEWORM Differentiate worm data at multiple scales.</li><li><a href="wormBends.html" class="code" title="function bends = wormBends(wormFile, varargin)">wormBends</a>	WORMBENDS Compute the temporal bending frequency at the nose, head,</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Initialize our variables.</span>
+0002 isMakingVideos = true;
+0003 wormFile = <span class="string">'segNormInfo.mat'</span>;
+0004 useSamples = {1:8,9:41,42:49};
+0005 type = <span class="string">'bf'</span>;
+0006 scales = .75;
+0007 isSparse = false;
+0008 offMode = 1;
+0009 isNoisy = false;
+0010 htDirMode = 3;
+0011 isAbsDir = false;
+0012 
+0013 <span class="comment">% Find the test directories.</span>
+0014 testDir = dir(<span class="string">'test *'</span>);
+0015 
+0016 <span class="comment">% Go through the test directories.</span>
+0017 <span class="keyword">for</span> i = fliplr(1:length(testDir))
+0018     
+0019     <span class="comment">%% Go into the test directory.</span>
+0020     <span class="keyword">if</span> ~testDir(i).isdir
+0021         <span class="keyword">continue</span>;
+0022     <span class="keyword">end</span>
+0023     disp([<span class="string">'Entering &quot;'</span> testDir(i).name <span class="string">'&quot; ...'</span>]);
+0024     cd(testDir(i).name);
+0025     
+0026 
+0027     
+0028     <span class="comment">%% Compute the mean worm length.</span>
+0029     meanWormLength = 1000;
+0030     features = dir(<span class="string">'*_features.mat'</span>);
+0031     <span class="keyword">if</span> isempty(features)
+0032         warning(<span class="string">'bendAndSpeedTest:NoFeatureFile'</span>, <span class="keyword">...</span>
+0033             <span class="string">'cannot find the features file'</span>);
+0034     <span class="keyword">else</span>
+0035         featureData = [];
+0036         load(features(1).name, <span class="string">'featureData'</span>);
+0037         <span class="keyword">if</span> isempty(featureData)
+0038             warning(<span class="string">'bendAndSpeedTest:NoFeatures'</span>, <span class="keyword">...</span>
+0039                 <span class="string">'the features file has an unknown format'</span>);
+0040         <span class="keyword">else</span>
+0041             meanWormLength = nanmean(featureData.wormLength);
+0042             clear(<span class="string">'featureData'</span>);
+0043         <span class="keyword">end</span>
+0044     <span class="keyword">end</span>
+0045     
+0046     
+0047     
+0048     <span class="comment">%% Go into the data directory.</span>
+0049     <span class="keyword">if</span> ~exist(<span class="string">'normalized'</span>, <span class="string">'dir'</span>)
+0050         cd(<span class="string">'..'</span>);
+0051         <span class="keyword">continue</span>;
+0052     <span class="keyword">end</span>
+0053     cd(<span class="string">'normalized'</span>);
+0054     
+0055     
+0056     
+0057     <span class="comment">%% Compute the speed.</span>
+0058     disp(<span class="string">'Computing the speed ...'</span>);
+0059     tic;
+0060     [diffData, ~, ~, fps, ~] = <a href="multiScaleWorm.html" class="code" title="function [diffData startFrame endFrame fps useSamples] =multiScaleWorm(wormFile, startFrame, endFrame, useSamples,useFrames, type, scales, isSparse, offMode, isNoisy, htDirMode,isAbsDir, varargin)">multiScaleWorm</a>(wormFile, [], [], <span class="keyword">...</span>
+0061         useSamples, [], type, scales, isSparse, offMode, isNoisy, <span class="keyword">...</span>
+0062         htDirMode, isAbsDir);
+0063     toc;
+0064     speeds = struct(<span class="keyword">...</span>
+0065         <span class="string">'head'</span>, diffData{7}{1}(1,:), <span class="keyword">...</span>
+0066         <span class="string">'midbody'</span>, diffData{7}{1}(2,:),<span class="keyword">...</span>
+0067         <span class="string">'tail'</span>, diffData{7}{1}(3,:));
+0068     
+0069 
+0070     <span class="comment">% Initialize the requisite data.</span>
+0071     speed = speeds.midbody;
+0072     totalFrames = length(speed);
+0073     lastFrame = totalFrames - 1;
+0074     
+0075     <span class="comment">% Compute the distance. This avoids both segmentation noise and having to</span>
+0076     <span class="comment">% re-interpolate the distance when frames are missing.</span>
+0077     distance = abs(speed / fps);
+0078     
+0079 
+0080 
+0081     <span class="comment">%% Find the forward motion.</span>
+0082     wormSpeedThr = meanWormLength * 0.05; <span class="comment">% 5 percent of its length</span>
+0083     wormDistanceThr = meanWormLength * 0.05; <span class="comment">% 5 percent of its length</span>
+0084     wormEventFramesThr = 1.5 * fps;
+0085     wormEventMinInterFramesThr = 0.25 * fps;
+0086     minForwardSpeed = wormSpeedThr;
+0087     minForwardDistance = wormDistanceThr;
+0088     forwardFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(speed, minForwardSpeed, [], true, <span class="keyword">...</span>
+0089         wormEventFramesThr, [], false, <span class="keyword">...</span>
+0090         minForwardDistance, [], true, distance, wormEventMinInterFramesThr);
+0091 
+0092     <span class="comment">% Compute the forward statistics.</span>
+0093     [forwardFrames forwardStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(forwardFrames, fps, <span class="keyword">...</span>
+0094         distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0095 <span class="comment">%</span>
+0096 <span class="comment">%     % Reorganize everything for the feature file.</span>
+0097 <span class="comment">%     forwardFrames = forwardEventStats;</span>
+0098 <span class="comment">%     forwardFrequency = [];</span>
+0099 <span class="comment">%     forwardRatios = [];</span>
+0100 <span class="comment">%     if ~isempty(forwardStats)</span>
+0101 <span class="comment">%         forwardFrequency = forwardStats.frequency;</span>
+0102 <span class="comment">%         forwardRatios = forwardStats.ratio;</span>
+0103 <span class="comment">%     end</span>
+0104 <span class="comment">%     forward = struct( ...</span>
+0105 <span class="comment">%         'frames', forwardFrames, ...</span>
+0106 <span class="comment">%         'frequency', forwardFrequency, ...</span>
+0107 <span class="comment">%         'ratio', forwardRatios);</span>
+0108     
+0109     
+0110     
+0111     <span class="comment">%% Find the backward motion.</span>
+0112     maxBackwardSpeed = -wormSpeedThr;
+0113     minBackwardDistance = wormDistanceThr;
+0114     backwardFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(speed, [], maxBackwardSpeed, true, <span class="keyword">...</span>
+0115         wormEventFramesThr, [], false, <span class="keyword">...</span>
+0116         minBackwardDistance, [], true, distance, wormEventMinInterFramesThr);
+0117     
+0118     <span class="comment">% Compute the backward statistics.</span>
+0119     [backwardFrames backwardStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(backwardFrames, fps, <span class="keyword">...</span>
+0120         distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0121 <span class="comment">%</span>
+0122 <span class="comment">%     % Reorganize everything for the feature file.</span>
+0123 <span class="comment">%     backwardFrames = backwardEventStats;</span>
+0124 <span class="comment">%     backwardFrequency = [];</span>
+0125 <span class="comment">%     backwardRatios = [];</span>
+0126 <span class="comment">%     if ~isempty(backwardStats)</span>
+0127 <span class="comment">%         backwardFrequency = backwardStats.frequency;</span>
+0128 <span class="comment">%         backwardRatios = backwardStats.ratio;</span>
+0129 <span class="comment">%     end</span>
+0130 <span class="comment">%     backward = struct( ...</span>
+0131 <span class="comment">%         'frames', backwardFrames, ...</span>
+0132 <span class="comment">%         'frequency', backwardFrequency, ...</span>
+0133 <span class="comment">%         'ratio', backwardRatios);</span>
+0134     
+0135     
+0136     
+0137     <span class="comment">%% Find the paused motion.</span>
+0138     wormPauseThr = meanWormLength * 0.025; <span class="comment">% 2.5 percent of its length</span>
+0139     minPausedSpeed = -wormPauseThr;
+0140     maxPausedSpeed = wormPauseThr;
+0141     pausedFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(speed, minPausedSpeed, maxPausedSpeed, true, <span class="keyword">...</span>
+0142         wormEventFramesThr, [], false, <span class="keyword">...</span>
+0143         [], [], true, distance, wormEventMinInterFramesThr);
+0144     
+0145     <span class="comment">% Compute the paused statistics.</span>
+0146     [pausedFrames pausedStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(pausedFrames, fps, <span class="keyword">...</span>
+0147         distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0148 <span class="comment">%</span>
+0149 <span class="comment">%     % Reorganize everything for the feature file.</span>
+0150 <span class="comment">%     pausedFrames = pausedEventStats;</span>
+0151 <span class="comment">%     pausedFrequency = [];</span>
+0152 <span class="comment">%     pausedRatios = [];</span>
+0153 <span class="comment">%     if ~isempty(pausedStats)</span>
+0154 <span class="comment">%         pausedFrequency = pausedStats.frequency;</span>
+0155 <span class="comment">%         pausedRatios = pausedStats.ratio;</span>
+0156 <span class="comment">%     end</span>
+0157 <span class="comment">%     paused = struct( ...</span>
+0158 <span class="comment">%         'frames', pausedFrames, ...</span>
+0159 <span class="comment">%         'frequency', pausedFrequency, ...</span>
+0160 <span class="comment">%         'ratio', pausedRatios);</span>
+0161 
+0162 
+0163 
+0164     <span class="comment">%% Compute the motion mode.</span>
+0165     
+0166     <span class="comment">% Translate the events to logical arrays.</span>
+0167     isForwardFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(forwardFrames, totalFrames);
+0168     isBackwardFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(backwardFrames, totalFrames);
+0169     isPausedFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(pausedFrames, totalFrames);
+0170     
+0171     <span class="comment">% Set forward = 1, backward = -1, paused = 0, and unknown = NaN.</span>
+0172     motionModes = nan(1,totalFrames);
+0173     motionModes(isForwardFrame) = 1;
+0174     motionModes(isBackwardFrame) = -1;
+0175     motionModes(isPausedFrame) = 0;
+0176     
+0177 
+0178     
+0179     <span class="comment">%% Compute the bends.</span>
+0180     disp(<span class="string">'Computing the bends ...'</span>);
+0181     tic;
+0182     bends = <a href="wormBends.html" class="code" title="function bends = wormBends(wormFile, varargin)">wormBends</a>(wormFile, motionModes);
+0183     toc;
+0184     
+0185 
+0186     
+0187     <span class="comment">%% Find the foraging events.</span>
+0188     disp(<span class="string">'Computing the events ...'</span>);
+0189 <span class="comment">%     wormEventMinFramesThr = .5 * fps;</span>
+0190 <span class="comment">%     foragingAmp = bends.foraging.amplitude;</span>
+0191 <span class="comment">%     noForagingFrames = findEvent(foragingAmp, [], 5, false, ...</span>
+0192 <span class="comment">%         wormEventMinFramesThr, [], false);</span>
+0193 <span class="comment">%     foragingFrames = findEvent(foragingAmp, 5, [], true, ...</span>
+0194 <span class="comment">%         [], [], false, [], [], false, [], wormEventMinFramesThr, [], false);</span>
+0195 <span class="comment">%</span>
+0196 <span class="comment">%     % Compute the foraging statistics.</span>
+0197 <span class="comment">%     [foragingFrames foragingStats] = events2stats(foragingFrames, fps, ...</span>
+0198 <span class="comment">%         distance, 'distance', 'interDistance');</span>
+0199 <span class="comment">%     [noForagingFrames noForagingStats] = events2stats(noForagingFrames, fps, ...</span>
+0200 <span class="comment">%         distance, 'distance', 'interDistance');</span>
+0201 
+0202     
+0203 
+0204     <span class="comment">%% Find the bending events.</span>
+0205     wormEventMinFramesThr = .75 * fps;
+0206     noBends = isnan(bends.midbody.frequency) &amp; motionModes == 0;
+0207     absBends = abs(bends.midbody.frequency);
+0208     meanBend = nanmean(absBends);
+0209     bendsFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(~noBends, 0, [], false, <span class="keyword">...</span>
+0210         wormEventMinFramesThr, [], false);
+0211     noBendsFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(noBends, 0, [], false, <span class="keyword">...</span>
+0212         wormEventMinFramesThr, [], false);
+0213     slowBendsFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(absBends, 0, meanBend, false, <span class="keyword">...</span>
+0214         [], [], false, [], [], false, [], wormEventMinFramesThr, [], false);
+0215     fastBendsFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(absBends, meanBend, [], true, <span class="keyword">...</span>
+0216         [], [], false, [], [], false, [], wormEventMinFramesThr, [], false);
+0217     
+0218     <span class="comment">% Compute the bending statistics.</span>
+0219     [bendsFrames bendsStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(bendsFrames, fps, <span class="keyword">...</span>
+0220         distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0221     [noBendsFrames noBendsStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(noBendsFrames, fps, <span class="keyword">...</span>
+0222         distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0223     [slowBendsFrames smallBendsStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(slowBendsFrames, fps, <span class="keyword">...</span>
+0224         distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0225     [fastBendsFrames bigBendsStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(fastBendsFrames, fps, <span class="keyword">...</span>
+0226         distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0227 
+0228 
+0229     
+0230     <span class="comment">%% Go back to the video directory.</span>
+0231     cd(<span class="string">'..'</span>);
+0232     
+0233     
+0234     
+0235     <span class="comment">%% Save the data.</span>
+0236     save(<span class="string">'bendSpeedEventData.mat'</span>, <span class="keyword">...</span>
+0237         <span class="string">'bends'</span>, <span class="keyword">...</span>
+0238         <span class="string">'speeds'</span>, <span class="keyword">...</span>
+0239         <span class="string">'motionModes'</span>, <span class="keyword">...</span>
+0240         <span class="keyword">...</span><span class="comment"> %'foragingFrames', ...</span>
+0241         <span class="keyword">...</span><span class="comment"> %'foragingStats', ...</span>
+0242         <span class="keyword">...</span><span class="comment"> %'noForagingFrames', ...</span>
+0243         <span class="string">'bendsFrames'</span>, <span class="keyword">...</span>
+0244         <span class="string">'bendsStats'</span>, <span class="keyword">...</span>
+0245         <span class="string">'fastBendsFrames'</span>, <span class="keyword">...</span>
+0246         <span class="string">'slowBendsFrames'</span>, <span class="keyword">...</span>
+0247         <span class="string">'noBendsFrames'</span>, <span class="keyword">...</span>
+0248         <span class="string">'forwardFrames'</span>, <span class="keyword">...</span>
+0249         <span class="string">'forwardStats'</span>, <span class="keyword">...</span>
+0250         <span class="string">'backwardFrames'</span>, <span class="keyword">...</span>
+0251         <span class="string">'backwardStats'</span>, <span class="keyword">...</span>
+0252         <span class="string">'pausedFrames'</span>, <span class="keyword">...</span>
+0253         <span class="string">'pausedStats'</span>);
+0254     
+0255     <span class="comment">% Make the event videos.</span>
+0256     <span class="keyword">if</span> isMakingVideos
+0257         
+0258         <span class="comment">% Construct the video file names.</span>
+0259         file = dir(<span class="string">'*_video.avi'</span>);
+0260         <span class="keyword">if</span> isempty(file)
+0261             warning(<span class="string">'bendAndSpeedTest:NoFeatureFile'</span>, <span class="keyword">...</span>
+0262                 <span class="string">'cannot find the video file'</span>);
+0263             <span class="keyword">continue</span>;
+0264         <span class="keyword">end</span>
+0265         video = file(1).name;
+0266         forwardVideo = strrep(video, <span class="string">'_video.avi'</span>, <span class="string">'_forward.avi'</span>);
+0267         backwardVideo = strrep(video, <span class="string">'_video.avi'</span>, <span class="string">'_backward.avi'</span>);
+0268         pausedVideo = strrep(video, <span class="string">'_video.avi'</span>, <span class="string">'_paused.avi'</span>);
+0269         foragingVideo = strrep(video, <span class="string">'_video.avi'</span>, <span class="string">'_foraging.avi'</span>);
+0270         noForagingVideo = strrep(video, <span class="string">'_video.avi'</span>, <span class="string">'_noForaging.avi'</span>);
+0271         bigBendsVideo = strrep(video, <span class="string">'_video.avi'</span>, <span class="string">'_fastBends.avi'</span>);
+0272         smallBendsVideo = strrep(video, <span class="string">'_video.avi'</span>, <span class="string">'_slowBends.avi'</span>);
+0273         noBendsVideo = strrep(video, <span class="string">'_video.avi'</span>, <span class="string">'_noBends.avi'</span>);
+0274         
+0275         <span class="comment">% Make the event videos.</span>
+0276         <span class="keyword">if</span> ~isempty(backwardFrames)
+0277             disp(<span class="string">'Creating backward video ...'</span>);
+0278             [~, orderI] = sort([backwardFrames.time], <span class="string">'descend'</span>);
+0279             tic;<a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(backwardFrames(orderI), video, backwardVideo, true); toc;
+0280         <span class="keyword">end</span>
+0281         <span class="keyword">if</span> ~isempty(pausedFrames)
+0282             disp(<span class="string">'Creating paused video ...'</span>);
+0283             [~, orderI] = sort([pausedFrames.time], <span class="string">'descend'</span>);
+0284             tic; <a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(pausedFrames(orderI), video, pausedVideo, true); toc;
+0285         <span class="keyword">end</span>
+0286         <span class="keyword">if</span> ~isempty(forwardFrames)
+0287             disp(<span class="string">'Creating forward video ...'</span>);
+0288             [~, orderI] = sort([forwardFrames.time], <span class="string">'descend'</span>);
+0289             tic; <a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(forwardFrames(orderI), video, forwardVideo, true); toc;
+0290         <span class="keyword">end</span>
+0291 <span class="comment">%         if ~isempty(foragingFrames)</span>
+0292 <span class="comment">%             disp('Creating foraging video ...');</span>
+0293 <span class="comment">%             [~, orderI] = sort([foragingFrames.time], 'descend');</span>
+0294 <span class="comment">%             tic; events2video(foragingFrames(orderI), video, foragingVideo, true); toc;</span>
+0295 <span class="comment">%         end</span>
+0296 <span class="comment">%         if ~isempty(noForagingFrames)</span>
+0297 <span class="comment">%             disp('Creating no foraging video ...');</span>
+0298 <span class="comment">%             [~, orderI] = sort([noForagingFrames.time], 'descend');</span>
+0299 <span class="comment">%             tic; events2video(noForagingFrames(orderI), video, noForagingVideo, true); toc;</span>
+0300 <span class="comment">%         end</span>
+0301         <span class="keyword">if</span> ~isempty(fastBendsFrames)
+0302             disp(<span class="string">'Creating big bends video ...'</span>);
+0303             [~, orderI] = sort([fastBendsFrames.time], <span class="string">'descend'</span>);
+0304             tic; <a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(fastBendsFrames(orderI), video, bigBendsVideo, true); toc;
+0305         <span class="keyword">end</span>
+0306         <span class="keyword">if</span> ~isempty(slowBendsFrames)
+0307             disp(<span class="string">'Creating small bends video ...'</span>);
+0308             [~, orderI] = sort([slowBendsFrames.time], <span class="string">'descend'</span>);
+0309             tic; <a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(slowBendsFrames(orderI), video, smallBendsVideo, true); toc;
+0310         <span class="keyword">end</span>
+0311         <span class="keyword">if</span> ~isempty(noBendsFrames)
+0312             disp(<span class="string">'Creating no bends video ...'</span>);
+0313             [~, orderI] = sort([noBendsFrames.time], <span class="string">'descend'</span>);
+0314             tic; <a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(noBendsFrames(orderI), video, noBendsVideo, true); toc;
+0315         <span class="keyword">end</span>
+0316             disp(<span class="string">'All videos done!'</span>);
+0317     <span class="keyword">end</span>
+0318     
+0319     <span class="comment">% Go back to the top level directory.</span>
+0320     cd(<span class="string">'..'</span>);
+0321 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

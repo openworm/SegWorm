@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imageDiff</title>
+  <meta name="keywords" content="imageDiff">
+  <meta name="description" content="d=imageDiff(a,b)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>imageDiff
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>d=imageDiff(a,b)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function d=imageDiff(a,b) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">d=imageDiff(a,b)
+  Computes a &quot;robust&quot; distance between two images, A and B.  Since we
+  periodically need to tweak the exact algorithm, we do not publicly
+  document the exact one used here (it's likely to change over time).
+
+  Units of D are intensity values (the same units of the values in A and
+  B). 
+
+  Motivation:
+  When testing our videoReader objects, we often need to check to see if
+  frames from different videoReaders are the &quot;same&quot;.  Unfortunately,
+  many decoders will produce slightly different images when decoding the
+  same frame from the same source video, even when on the same machine.
+  As such, we cannot just check pure equality.  Instead, we need to
+  tolerate small differences.  This function is designed to allow for
+  decoder inconsistencies while still producing non-zero differences for
+  intensity differences that might be meaningful.  
+
+  This function has been customized for use with the videoIO tests.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a>	vrassert(testCondition)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="assertSimilarImages.html" class="code" title="function assertSimilarImages(a,b)  %#ok<INUSD>">assertSimilarImages</a>	assertSimilarImages(a,b)</li><li><a href="doMultiFullReadTest.html" class="code" title="function doMultiFullReadTest(varargin)">doMultiFullReadTest</a>	DOMULTIFULLREADTEST(...)</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function out = mydiff(a,b)</a></li><li><a href="#_sub2" class="code">function out = clipper(d)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function d=imageDiff(a,b)</a>
+0002 <span class="comment">%d=imageDiff(a,b)</span>
+0003 <span class="comment">%  Computes a &quot;robust&quot; distance between two images, A and B.  Since we</span>
+0004 <span class="comment">%  periodically need to tweak the exact algorithm, we do not publicly</span>
+0005 <span class="comment">%  document the exact one used here (it's likely to change over time).</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Units of D are intensity values (the same units of the values in A and</span>
+0008 <span class="comment">%  B).</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%  Motivation:</span>
+0011 <span class="comment">%  When testing our videoReader objects, we often need to check to see if</span>
+0012 <span class="comment">%  frames from different videoReaders are the &quot;same&quot;.  Unfortunately,</span>
+0013 <span class="comment">%  many decoders will produce slightly different images when decoding the</span>
+0014 <span class="comment">%  same frame from the same source video, even when on the same machine.</span>
+0015 <span class="comment">%  As such, we cannot just check pure equality.  Instead, we need to</span>
+0016 <span class="comment">%  tolerate small differences.  This function is designed to allow for</span>
+0017 <span class="comment">%  decoder inconsistencies while still producing non-zero differences for</span>
+0018 <span class="comment">%  intensity differences that might be meaningful.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%  This function has been customized for use with the videoIO tests.</span>
+0021 
+0022 <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> ndims(a)==ndims(b);
+0023 <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> all(size(a)==size(b));
+0024 <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> isa(a,<span class="string">'uint8'</span>); <span class="comment">% We'd need to adjust thresholds for other types</span>
+0025 <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> strcmp(class(a),class(b));
+0026 
+0027 ad = <a href="#_sub2" class="code" title="subfunction out = clipper(d)">clipper</a>(<a href="#_sub1" class="code" title="subfunction out = mydiff(a,b)">mydiff</a>(a,b));
+0028 <span class="keyword">if</span> isempty(ad)
+0029   d = 0;
+0030 <span class="keyword">else</span>
+0031   rms = sqrt(mean(ad.^2));
+0032   d = rms;
+0033 <span class="keyword">end</span>
+0034 
+0035 <span class="comment">%-------------------------------------------------------------</span>
+0036 <a name="_sub1" href="#_subfunctions" class="code">function out = mydiff(a,b) </a>
+0037 <span class="comment">% right now: absolute differences</span>
+0038 out = abs(double(a(:)) - double(b(:)));
+0039 
+0040 <span class="comment">%-------------------------------------------------------------</span>
+0041 <a name="_sub2" href="#_subfunctions" class="code">function out = clipper(d) </a>
+0042 <span class="comment">% right now: ignore small pixel intensity differences</span>
+0043 dontCareErrThresh = 2;
+0044 out = d;
+0045 out(d&lt;=dontCareErrThresh) = 0;</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

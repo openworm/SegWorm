@@ -1,0 +1,1688 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of findStageMovement</title>
+  <meta name="keywords" content="findStageMovement">
+  <meta name="description" content="FINDSTAGEMOVEMENT Find stage movements in a worm experiment.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html StageMovement -->
+<h1>findStageMovement
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>FINDSTAGEMOVEMENT Find stage movements in a worm experiment.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [frames movesI locations] =findStageMovement(infoFile, logFile, diffFile, verbose, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FINDSTAGEMOVEMENT Find stage movements in a worm experiment.
+
+ The algorithm is as follows:
+
+ 1. video2Diff differentiates a video frame by frame and outputs the
+ differential variance. We load these frame differences.
+
+ 2. The info file contains the tracking delay. This delay represents the
+ minimum time between stage movements and, conversely, the maximum time it
+ takes for a stage movement to complete. If the delay is too small, the
+ stage movements become chaotic. We load the value for the delay.
+
+ 3. The log file contains the initial stage location at media time 0 as
+ well as the subsequent media times and locations per stage movement. Our
+ algorithm attempts to match the frame differences in the video (see step
+ 1) to the media times in this log file. Therefore, we load these media
+ times and stage locations.
+ 
+ 4. If there are no stage movements, we're done.
+
+ 5. The log file sometimes contains more than one entry at 0 media time.
+ These represent stage movements that may have completed before the video
+ begins. Therefore, we don't use them but, instead, store them in case we
+ find their stage movement in the video frame differences.
+
+ 6. The frame differences need to be aligned to the video frames.
+ Therefore, we copy the first one and shift the rest over so that the
+ frame differences are one-to-one with the video frames. Note that video
+ indexing starts at 0 while Matlab indexing begins at 1. Also note, due
+ to differentiation, large frame differences that occur at the beginning
+ of a stage movement now represent the first frame of movement. Large
+ frame differences that occur at the end of a stage movement now represent
+ the first non-movement frame.
+
+ 7. Compute the global Otsu threshold for the frame-differences to
+ distinguish stage-movement peaks. Then compute a global non-movement
+ threshold by taking all values less than the Otsu, and computing 3
+ standard deviations from the median (approximately 99% of the small
+ values). Please note, stage movements ramp up/down to
+ accelerate/decelerate to/from the target speed. Therefore, the values
+ below the Otsu threshold are contaminated with stage movement
+ acceleration and decelaration. Fortunately, non-movement frames account
+ for more than 50% of the frame differences. Therefore, to avoid the stage
+ movement contamination, we use the median of the small values rather than
+ their mean when computing the global non-movement (small) threshold. If
+ this small threshold is greater than the Otsu, we've made a poor choice
+ and ignore both thresholds. Otherwise, these 2 global thresholds serve as
+ a backup to the local ones when distinguishing stage movements.
+
+ 8. Ocasionally, computing the global Otsu threshold fails. This occurs
+ when a long video has few stage movements. In this case, stage movements
+ appear to be rare outliers and the Otsu method minimizes in-group
+ variance by splitting the non-stage movement modality into two groups
+ (most likely periods of worm activity and inactivity). Under these
+ circumstances we attempt to use a global threshold at half the maximum
+ frame-difference variance. As detailed above, we test this threshold to
+ see whether it is sufficiently larger than 99% of the smaller movements.
+
+ 9. When searching for stage movements, we use the same algorithm as the
+ one above(see step 7), over a smaller well-defined, search window, to
+ determine the local Otsu threshold. The local small threshold is computed
+ slightly differently (we use the mean instead of the median -- see step
+ 12 for an explanation). If the local Otsu threshold fails (it's smaller
+ than 99% of the values below it and smaller than the global Otsu), we
+ attempt to use the global one to see if it pulls out a peak.
+
+ 10. A stage movement peak is defined as the largest value that exceeds
+ the minimum of the global and local Otsu thresholds. To avoid a situation
+ in which 2 stage movements occur within the same search window, we scan
+ the window for the first value exceeding the Otsu threshold and, if any
+ subsequent values drop below the minimum of global and local small
+ thresholds, we cut off the remainder of the window and ignore it.
+
+ 11. Once a stage-movement peak is identified, we search for a temporary
+ back and front end to the movement. The stage movement must complete
+ within one delay time window (see step 2). Therefore, we search for the
+ minimum values, within one delay time window, before and after the peak.
+ The locations of these minimum values are the temporary back and front
+ ends for the stage movement. If the either value is below the small
+ threshold, we may have overshot the movement and, therefore, attempt to
+ find a location closer to the peak. Similarly, if either value is greater
+ than the maximum of the global and local small thresholds and the
+ remaining values till the end of the window are NaNs or, if either value
+ is greater than the Otsu threshold, we may have undershot the movement
+ and, therefore, attempt to find a location further from the peak.
+
+ 12. Using one stage movement's temporary front end and the subsequent
+ movement's temporary back end, we compute the small threshold. This
+ interval is assumed to have no stage motion and, therefore, represents
+ frame-difference variance from a non-movement interval. The local small
+ threshold is defined as 3 deviations from the mean of this non-movement
+ interval (99% confidence). With this small threshold, we start at the
+ first peak and search forward for its real front end. Similarly, we start
+ at the subsequent peak and search backward for its real back end.
+
+ 13. Conservatively, the beginning and end of the video are treated as the
+ end and begining of stage movements, respectively. We search for a
+ temporary front end and a temporary back end, respectively, using the
+ global small and Otsu thresholds.
+
+ 14. After the final, logged stage motion is found in the frame
+ differences, we look to see if there are any subsequent, extra peaks.
+ An Otsu threshold is computed, as detailed earlier, using the interval
+ spanning from the final stage movement's temporary front end till the
+ final frame difference. If this threshold is unsuitable, we use the
+ global Otsu threshold. If we find any extra peaks, the first peak's back
+ end is located and its frame as well as the remainder of the frame
+ differences (including any other extra peaks) are marked as a single
+ large stage movement that extends till the end of the video. This is
+ necessary since Worm Tracker users can terminate logging prior to
+ terminating the video (e.g., this may occur automatically if the worm is
+ lost).
+
+ 15. To find a stage movement, we compute its offset media time. The first
+ stage movement is offset by the delay time (see step 2). Subsequent media
+ times are offset by the difference between the previous media time and
+ its stage-movement peak. Therefore, each stage movement provides the
+ offset for the next one. The longer the wait till the next stage
+ movement, the less accurate this offset becomes. Therefore, we search for
+ each stage movement using a window that begins at the last stage
+ movement's temporary front end and ends at the offset media time plus
+ this distance (a window with its center at the offset media time). If the
+ window is too small (the offset media time is too close to the temporary
+ front end of the previous stage movement), we extend its end to be the
+ offset media time plus the delay time.
+
+ 16. If a stage movement peak is absent, we attempt to shift the media
+ times backward or forward, relative to the stage movement peaks,
+ depending on whether the current peak is closer to the next or previous
+ media time, respectively. When shifting the media times backward, we
+ assume the first stage movement occurred prior to video recording and,
+ therefore, throw away its media time and location. When shifting the
+ media times forward, we look for a spare 0 media time and location (see
+ step 5). If there are no spares, we swallow up all the frames prior to
+ the end of the first stage movement and label them as an unusable
+ movement that began prior to recording and bled into the beginning of the
+ video.
+ 
+ 17. If we find a stage-movement peak closer to the previous offset media
+ time than its own supposed offset media time, we assume we have a
+ misalignment and attempt to shift the media times forward relative to the
+ stage movement peaks. There are some restrictions to this check since
+ small-scale, frame jitter can misrepresent the reported media time.
+
+ 18. The final logged stage motion may occur after the video ends and, as
+ a result, may have no representation in the frame-difference variance.
+ Therefore, for the last stage movement, we check our threshold (see step
+ 10) to ensure that it separates 99% of the smaller values and, thereby,
+ picks up stage movement rather than splitting the non-movement modality.
+
+
+
+   FUNCTION [FRAMES INDICES LOCATIONS] = ...
+       FINDSTAGEMOVEMENT(INFOFILE, LOGFILE, DIFFFILE, VERBOSE)
+
+   FUNCTION [FRAMES INDICES LOCATIONS] = ...
+       FINDSTAGEMOVEMENT(INFOFILE, LOGFILE, DIFFFILE, VERBOSE, GUIHANDLE)
+
+   Input:
+       infoFile  - the XML file with the experiment information
+       logFile   - the CSV file with the stage locations
+       diffFile  - the MAT file with the video differentiation
+       verbose   - verbose mode 1 shows the results in a figure
+                   verbose mode 2 labels the stage movements in the figure
+       guiHandle - the GUI handle to use when showing the results;
+                   if empty, the results are shown in a new figure
+
+   Output:
+       frames    - a vector of frame status
+                   true  = the frame contains stage movement
+                   false = the frame does NOT contain stage movement
+                   NaN   = the original video frame was dropped
+                   Note: video frames are indexed from 0, Matlab indexes
+                   from 1, please adjust your calculations accordingly
+       movesI    - a 2-D matrix with, respectively, the start and end
+                   frame indices of stage movements
+       locations - the location of the stage after each stage movement
+
+ See also VIDEO2DIFF</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/maxPeaksDistHeight.html" class="code" title="function [peaks indices] = maxPeaksDistHeight(x, dist, height)">maxPeaksDistHeight</a>	MAXPEAKSDISTHEIGHT Find the maximum peaks in a vector. The peaks are</li><li><a href="../../../SegWorm/Util/xmlReadTag.html" class="code" title="function values = xmlReadTag(xml, tag)">xmlReadTag</a>	XMLREADTAG Read a tag from an XML document.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Features/wormVelocityTest.html" class="code" title="function [velocities centroidVelocities] =wormVelocityTest(wormFile, indices, use, type, scales, isSparse, verbose)">wormVelocityTest</a>	SEGWORMVIDEOFRAMES Segment the worm in a set of video frames and organize</li><li><a href="findStageMovementDir.html" class="code" title="">findStageMovementDir</a>	Print a separator.</li><li><a href="../../../SegWorm/Worms/Video/saveWormFrames.html" class="code" title="function failedFrames = saveWormFrames(wormFile, videoFile, frames,blockSize, varargin)">saveWormFrames</a>	SAVEWORMFRAMES Segment the worm in a set of video frames and save</li><li><a href="../../../SegWorm/Worms/Video/segWormVideo.html" class="code" title="function failedFrames = segWormVideo(videoFile, anglesVideoFile,touchVideoFile, debugVideoFile, varargin)">segWormVideo</a>	SEGWORMVIDEO Segment a worm video.</li><li><a href="../../../SegWorm/Worms/Video/video2Vignette.html" class="code" title="function vignette = video2Vignette(videoFile, frames, threshold,otsuStdDev, dilatePixels, erodePixels, smoothPixels, varargin)">video2Vignette</a>	VIDEO2VIGNETTE Compute the vignette from a video. Exclude the largest</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [frames movesI locations] = </a><span class="keyword">...</span>
+0002     findStageMovement(infoFile, logFile, diffFile, verbose, varargin)
+0003 <span class="comment">%FINDSTAGEMOVEMENT Find stage movements in a worm experiment.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% The algorithm is as follows:</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% 1. video2Diff differentiates a video frame by frame and outputs the</span>
+0008 <span class="comment">% differential variance. We load these frame differences.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% 2. The info file contains the tracking delay. This delay represents the</span>
+0011 <span class="comment">% minimum time between stage movements and, conversely, the maximum time it</span>
+0012 <span class="comment">% takes for a stage movement to complete. If the delay is too small, the</span>
+0013 <span class="comment">% stage movements become chaotic. We load the value for the delay.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% 3. The log file contains the initial stage location at media time 0 as</span>
+0016 <span class="comment">% well as the subsequent media times and locations per stage movement. Our</span>
+0017 <span class="comment">% algorithm attempts to match the frame differences in the video (see step</span>
+0018 <span class="comment">% 1) to the media times in this log file. Therefore, we load these media</span>
+0019 <span class="comment">% times and stage locations.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% 4. If there are no stage movements, we're done.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% 5. The log file sometimes contains more than one entry at 0 media time.</span>
+0024 <span class="comment">% These represent stage movements that may have completed before the video</span>
+0025 <span class="comment">% begins. Therefore, we don't use them but, instead, store them in case we</span>
+0026 <span class="comment">% find their stage movement in the video frame differences.</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">% 6. The frame differences need to be aligned to the video frames.</span>
+0029 <span class="comment">% Therefore, we copy the first one and shift the rest over so that the</span>
+0030 <span class="comment">% frame differences are one-to-one with the video frames. Note that video</span>
+0031 <span class="comment">% indexing starts at 0 while Matlab indexing begins at 1. Also note, due</span>
+0032 <span class="comment">% to differentiation, large frame differences that occur at the beginning</span>
+0033 <span class="comment">% of a stage movement now represent the first frame of movement. Large</span>
+0034 <span class="comment">% frame differences that occur at the end of a stage movement now represent</span>
+0035 <span class="comment">% the first non-movement frame.</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">% 7. Compute the global Otsu threshold for the frame-differences to</span>
+0038 <span class="comment">% distinguish stage-movement peaks. Then compute a global non-movement</span>
+0039 <span class="comment">% threshold by taking all values less than the Otsu, and computing 3</span>
+0040 <span class="comment">% standard deviations from the median (approximately 99% of the small</span>
+0041 <span class="comment">% values). Please note, stage movements ramp up/down to</span>
+0042 <span class="comment">% accelerate/decelerate to/from the target speed. Therefore, the values</span>
+0043 <span class="comment">% below the Otsu threshold are contaminated with stage movement</span>
+0044 <span class="comment">% acceleration and decelaration. Fortunately, non-movement frames account</span>
+0045 <span class="comment">% for more than 50% of the frame differences. Therefore, to avoid the stage</span>
+0046 <span class="comment">% movement contamination, we use the median of the small values rather than</span>
+0047 <span class="comment">% their mean when computing the global non-movement (small) threshold. If</span>
+0048 <span class="comment">% this small threshold is greater than the Otsu, we've made a poor choice</span>
+0049 <span class="comment">% and ignore both thresholds. Otherwise, these 2 global thresholds serve as</span>
+0050 <span class="comment">% a backup to the local ones when distinguishing stage movements.</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">% 8. Ocasionally, computing the global Otsu threshold fails. This occurs</span>
+0053 <span class="comment">% when a long video has few stage movements. In this case, stage movements</span>
+0054 <span class="comment">% appear to be rare outliers and the Otsu method minimizes in-group</span>
+0055 <span class="comment">% variance by splitting the non-stage movement modality into two groups</span>
+0056 <span class="comment">% (most likely periods of worm activity and inactivity). Under these</span>
+0057 <span class="comment">% circumstances we attempt to use a global threshold at half the maximum</span>
+0058 <span class="comment">% frame-difference variance. As detailed above, we test this threshold to</span>
+0059 <span class="comment">% see whether it is sufficiently larger than 99% of the smaller movements.</span>
+0060 <span class="comment">%</span>
+0061 <span class="comment">% 9. When searching for stage movements, we use the same algorithm as the</span>
+0062 <span class="comment">% one above(see step 7), over a smaller well-defined, search window, to</span>
+0063 <span class="comment">% determine the local Otsu threshold. The local small threshold is computed</span>
+0064 <span class="comment">% slightly differently (we use the mean instead of the median -- see step</span>
+0065 <span class="comment">% 12 for an explanation). If the local Otsu threshold fails (it's smaller</span>
+0066 <span class="comment">% than 99% of the values below it and smaller than the global Otsu), we</span>
+0067 <span class="comment">% attempt to use the global one to see if it pulls out a peak.</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">% 10. A stage movement peak is defined as the largest value that exceeds</span>
+0070 <span class="comment">% the minimum of the global and local Otsu thresholds. To avoid a situation</span>
+0071 <span class="comment">% in which 2 stage movements occur within the same search window, we scan</span>
+0072 <span class="comment">% the window for the first value exceeding the Otsu threshold and, if any</span>
+0073 <span class="comment">% subsequent values drop below the minimum of global and local small</span>
+0074 <span class="comment">% thresholds, we cut off the remainder of the window and ignore it.</span>
+0075 <span class="comment">%</span>
+0076 <span class="comment">% 11. Once a stage-movement peak is identified, we search for a temporary</span>
+0077 <span class="comment">% back and front end to the movement. The stage movement must complete</span>
+0078 <span class="comment">% within one delay time window (see step 2). Therefore, we search for the</span>
+0079 <span class="comment">% minimum values, within one delay time window, before and after the peak.</span>
+0080 <span class="comment">% The locations of these minimum values are the temporary back and front</span>
+0081 <span class="comment">% ends for the stage movement. If the either value is below the small</span>
+0082 <span class="comment">% threshold, we may have overshot the movement and, therefore, attempt to</span>
+0083 <span class="comment">% find a location closer to the peak. Similarly, if either value is greater</span>
+0084 <span class="comment">% than the maximum of the global and local small thresholds and the</span>
+0085 <span class="comment">% remaining values till the end of the window are NaNs or, if either value</span>
+0086 <span class="comment">% is greater than the Otsu threshold, we may have undershot the movement</span>
+0087 <span class="comment">% and, therefore, attempt to find a location further from the peak.</span>
+0088 <span class="comment">%</span>
+0089 <span class="comment">% 12. Using one stage movement's temporary front end and the subsequent</span>
+0090 <span class="comment">% movement's temporary back end, we compute the small threshold. This</span>
+0091 <span class="comment">% interval is assumed to have no stage motion and, therefore, represents</span>
+0092 <span class="comment">% frame-difference variance from a non-movement interval. The local small</span>
+0093 <span class="comment">% threshold is defined as 3 deviations from the mean of this non-movement</span>
+0094 <span class="comment">% interval (99% confidence). With this small threshold, we start at the</span>
+0095 <span class="comment">% first peak and search forward for its real front end. Similarly, we start</span>
+0096 <span class="comment">% at the subsequent peak and search backward for its real back end.</span>
+0097 <span class="comment">%</span>
+0098 <span class="comment">% 13. Conservatively, the beginning and end of the video are treated as the</span>
+0099 <span class="comment">% end and begining of stage movements, respectively. We search for a</span>
+0100 <span class="comment">% temporary front end and a temporary back end, respectively, using the</span>
+0101 <span class="comment">% global small and Otsu thresholds.</span>
+0102 <span class="comment">%</span>
+0103 <span class="comment">% 14. After the final, logged stage motion is found in the frame</span>
+0104 <span class="comment">% differences, we look to see if there are any subsequent, extra peaks.</span>
+0105 <span class="comment">% An Otsu threshold is computed, as detailed earlier, using the interval</span>
+0106 <span class="comment">% spanning from the final stage movement's temporary front end till the</span>
+0107 <span class="comment">% final frame difference. If this threshold is unsuitable, we use the</span>
+0108 <span class="comment">% global Otsu threshold. If we find any extra peaks, the first peak's back</span>
+0109 <span class="comment">% end is located and its frame as well as the remainder of the frame</span>
+0110 <span class="comment">% differences (including any other extra peaks) are marked as a single</span>
+0111 <span class="comment">% large stage movement that extends till the end of the video. This is</span>
+0112 <span class="comment">% necessary since Worm Tracker users can terminate logging prior to</span>
+0113 <span class="comment">% terminating the video (e.g., this may occur automatically if the worm is</span>
+0114 <span class="comment">% lost).</span>
+0115 <span class="comment">%</span>
+0116 <span class="comment">% 15. To find a stage movement, we compute its offset media time. The first</span>
+0117 <span class="comment">% stage movement is offset by the delay time (see step 2). Subsequent media</span>
+0118 <span class="comment">% times are offset by the difference between the previous media time and</span>
+0119 <span class="comment">% its stage-movement peak. Therefore, each stage movement provides the</span>
+0120 <span class="comment">% offset for the next one. The longer the wait till the next stage</span>
+0121 <span class="comment">% movement, the less accurate this offset becomes. Therefore, we search for</span>
+0122 <span class="comment">% each stage movement using a window that begins at the last stage</span>
+0123 <span class="comment">% movement's temporary front end and ends at the offset media time plus</span>
+0124 <span class="comment">% this distance (a window with its center at the offset media time). If the</span>
+0125 <span class="comment">% window is too small (the offset media time is too close to the temporary</span>
+0126 <span class="comment">% front end of the previous stage movement), we extend its end to be the</span>
+0127 <span class="comment">% offset media time plus the delay time.</span>
+0128 <span class="comment">%</span>
+0129 <span class="comment">% 16. If a stage movement peak is absent, we attempt to shift the media</span>
+0130 <span class="comment">% times backward or forward, relative to the stage movement peaks,</span>
+0131 <span class="comment">% depending on whether the current peak is closer to the next or previous</span>
+0132 <span class="comment">% media time, respectively. When shifting the media times backward, we</span>
+0133 <span class="comment">% assume the first stage movement occurred prior to video recording and,</span>
+0134 <span class="comment">% therefore, throw away its media time and location. When shifting the</span>
+0135 <span class="comment">% media times forward, we look for a spare 0 media time and location (see</span>
+0136 <span class="comment">% step 5). If there are no spares, we swallow up all the frames prior to</span>
+0137 <span class="comment">% the end of the first stage movement and label them as an unusable</span>
+0138 <span class="comment">% movement that began prior to recording and bled into the beginning of the</span>
+0139 <span class="comment">% video.</span>
+0140 <span class="comment">%</span>
+0141 <span class="comment">% 17. If we find a stage-movement peak closer to the previous offset media</span>
+0142 <span class="comment">% time than its own supposed offset media time, we assume we have a</span>
+0143 <span class="comment">% misalignment and attempt to shift the media times forward relative to the</span>
+0144 <span class="comment">% stage movement peaks. There are some restrictions to this check since</span>
+0145 <span class="comment">% small-scale, frame jitter can misrepresent the reported media time.</span>
+0146 <span class="comment">%</span>
+0147 <span class="comment">% 18. The final logged stage motion may occur after the video ends and, as</span>
+0148 <span class="comment">% a result, may have no representation in the frame-difference variance.</span>
+0149 <span class="comment">% Therefore, for the last stage movement, we check our threshold (see step</span>
+0150 <span class="comment">% 10) to ensure that it separates 99% of the smaller values and, thereby,</span>
+0151 <span class="comment">% picks up stage movement rather than splitting the non-movement modality.</span>
+0152 <span class="comment">%</span>
+0153 <span class="comment">%</span>
+0154 <span class="comment">%</span>
+0155 <span class="comment">%   FUNCTION [FRAMES INDICES LOCATIONS] = ...</span>
+0156 <span class="comment">%       FINDSTAGEMOVEMENT(INFOFILE, LOGFILE, DIFFFILE, VERBOSE)</span>
+0157 <span class="comment">%</span>
+0158 <span class="comment">%   FUNCTION [FRAMES INDICES LOCATIONS] = ...</span>
+0159 <span class="comment">%       FINDSTAGEMOVEMENT(INFOFILE, LOGFILE, DIFFFILE, VERBOSE, GUIHANDLE)</span>
+0160 <span class="comment">%</span>
+0161 <span class="comment">%   Input:</span>
+0162 <span class="comment">%       infoFile  - the XML file with the experiment information</span>
+0163 <span class="comment">%       logFile   - the CSV file with the stage locations</span>
+0164 <span class="comment">%       diffFile  - the MAT file with the video differentiation</span>
+0165 <span class="comment">%       verbose   - verbose mode 1 shows the results in a figure</span>
+0166 <span class="comment">%                   verbose mode 2 labels the stage movements in the figure</span>
+0167 <span class="comment">%       guiHandle - the GUI handle to use when showing the results;</span>
+0168 <span class="comment">%                   if empty, the results are shown in a new figure</span>
+0169 <span class="comment">%</span>
+0170 <span class="comment">%   Output:</span>
+0171 <span class="comment">%       frames    - a vector of frame status</span>
+0172 <span class="comment">%                   true  = the frame contains stage movement</span>
+0173 <span class="comment">%                   false = the frame does NOT contain stage movement</span>
+0174 <span class="comment">%                   NaN   = the original video frame was dropped</span>
+0175 <span class="comment">%                   Note: video frames are indexed from 0, Matlab indexes</span>
+0176 <span class="comment">%                   from 1, please adjust your calculations accordingly</span>
+0177 <span class="comment">%       movesI    - a 2-D matrix with, respectively, the start and end</span>
+0178 <span class="comment">%                   frame indices of stage movements</span>
+0179 <span class="comment">%       locations - the location of the stage after each stage movement</span>
+0180 <span class="comment">%</span>
+0181 <span class="comment">% See also VIDEO2DIFF</span>
+0182 
+0183 <span class="comment">% Is there a GUI handle?</span>
+0184 <span class="keyword">if</span> isempty(varargin)
+0185     guiHandle = [];
+0186 <span class="keyword">else</span>
+0187     guiHandle = varargin{1};
+0188 <span class="keyword">end</span>
+0189 
+0190 <span class="comment">% Load the video differentiation.</span>
+0191 <span class="keyword">if</span> ~exist(diffFile, <span class="string">'file'</span>)
+0192     error(<span class="string">'findStageMovement:BadDiffFile'</span>, [<span class="string">'Cannot open '</span> diffFile]);
+0193 <span class="keyword">end</span>
+0194 frameDiffs = []; <span class="comment">% the differences between subsequent video frames</span>
+0195 fps = []; <span class="comment">% the video frame rate (frames/second)</span>
+0196 load(diffFile, <span class="string">'fps'</span>, <span class="string">'frameDiffs'</span>);
+0197 
+0198 <span class="comment">% Check the variables.</span>
+0199 varName = <span class="string">'fps'</span>;
+0200 <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0201     error(<span class="string">'findStageMovement:BadVariable'</span>, <span class="keyword">...</span>
+0202         [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> diffFile <span class="string">''''</span>]);
+0203 <span class="keyword">end</span>
+0204 varName = <span class="string">'frameDiffs'</span>;
+0205 <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0206     error(<span class="string">'findStageMovement:BadVariable'</span>, <span class="keyword">...</span>
+0207         [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> diffFile <span class="string">''''</span>]);
+0208 <span class="keyword">end</span>
+0209 
+0210 <span class="comment">% Check the frame rate.</span>
+0211 minFPS = .1;
+0212 maxFPS = 100;
+0213 <span class="keyword">if</span> fps &lt; minFPS || fps &gt; maxFPS
+0214     warning(<span class="string">'video2Diff:WeirdFPS'</span>, [diffFile <span class="string">' was recorded at '</span> <span class="keyword">...</span>
+0215         num2str(fps) <span class="string">' frames/second. An unusual frame rate'</span>]);
+0216 <span class="keyword">end</span>
+0217 
+0218 <span class="comment">% Open the information file and read the tracking delay time.</span>
+0219 <span class="keyword">if</span> ~exist(infoFile, <span class="string">'file'</span>)
+0220     error(<span class="string">'findStageMovement:BadInfoFile'</span>, [<span class="string">'Cannot open '</span> infoFile]);
+0221 <span class="keyword">end</span>
+0222 xml = xmlread(infoFile);
+0223 delayStr = <a href="../../../SegWorm/Util/xmlReadTag.html" class="code" title="function values = xmlReadTag(xml, tag)">xmlReadTag</a>(xml, <span class="string">'configuration.info.tracker.algorithm.delay'</span>);
+0224 delayTime = str2double(delayStr) / 1000;
+0225 delayFrames = ceil(delayTime * fps);
+0226 
+0227 <span class="comment">% Open the log file.</span>
+0228 fid = fopen(logFile);
+0229 <span class="keyword">if</span> fid &lt; 0
+0230     error(<span class="string">'findStageMovement:BadLogFile'</span>, [<span class="string">'Cannot open '</span> logFile]);
+0231 <span class="keyword">end</span>
+0232 
+0233 <span class="comment">% Read the media times and locations from the log file.</span>
+0234 mediaTimes = [];
+0235 locations = [];
+0236 i = 1;
+0237 lineNum = 1;
+0238 <span class="keyword">while</span> ~feof(fid)
+0239     
+0240     <span class="comment">% Read a line from the log file.</span>
+0241     line = fgetl(fid);
+0242     [values count] = sscanf(line, [<span class="string">'%*d/%*d/%*d %*d:%*d:%*f,'</span> <span class="keyword">...</span>
+0243         <span class="string">'%d:%d:%f,'</span> <span class="string">'%*[^,],'</span> <span class="string">'%f,'</span> <span class="string">'%f,'</span> <span class="string">'%*[^\n]s\n'</span>]);
+0244     
+0245     <span class="comment">% Extract the media time and location from the line.</span>
+0246     <span class="keyword">if</span> count == 5
+0247         mediaTime = ((values(1) * 60) + values(2)) * 60 + values(3);
+0248         location = [values(4) values(5)];
+0249         
+0250         <span class="comment">% Was the location duplicated?</span>
+0251         <span class="keyword">if</span> i &gt; 1 &amp;&amp; isequal(locations(i - 1,:), location)
+0252             
+0253             <span class="comment">% Duplicate locations, prior to recording, are discarded.</span>
+0254             <span class="keyword">if</span> mediaTime &gt; 0
+0255                 error(<span class="string">'findStageMovement:DuplicateLocation'</span>, <span class="keyword">...</span>
+0256                     [<span class="string">'On line '</span> num2str(lineNum) <span class="string">', at '</span> <span class="keyword">...</span>
+0257                     num2str(values(1)) <span class="string">':'</span> <span class="keyword">...</span>
+0258                     num2str(values(2), <span class="string">'%02.0f'</span>) <span class="string">':'</span> <span class="keyword">...</span>
+0259                     num2str(values(3), <span class="string">'%02.3f'</span>) <span class="string">', location ('</span> <span class="keyword">...</span>
+0260                     num2str(location(1)) <span class="string">', '</span> num2str(location(2)) <span class="keyword">...</span>
+0261                     <span class="string">') is duplicated.'</span>]);
+0262             <span class="keyword">end</span>
+0263             
+0264         <span class="comment">% Advance.</span>
+0265         <span class="keyword">else</span>
+0266             mediaTimes(i) = mediaTime;
+0267             locations(i,:) = location;
+0268             i = i + 1;
+0269         <span class="keyword">end</span>
+0270     <span class="keyword">end</span>
+0271     
+0272     <span class="comment">% Advance.</span>
+0273     lineNum = lineNum + 1;
+0274 <span class="keyword">end</span>
+0275 
+0276 <span class="comment">% Clean up.</span>
+0277 fclose(fid);
+0278 
+0279 <span class="comment">% The media time must be initialized.</span>
+0280 <span class="keyword">if</span> isempty(mediaTimes) || mediaTimes(1) ~= 0
+0281     error(<span class="string">'findStageMovement:NoInitialMediaTime'</span>, <span class="keyword">...</span>
+0282         <span class="string">'The first media time must be 0'</span>);
+0283 <span class="keyword">end</span>
+0284 
+0285 <span class="comment">% If there's more than one initial media time, use the latest one.</span>
+0286 <span class="keyword">if</span> length(mediaTimes) &gt; 1
+0287     i = 2;
+0288     <span class="keyword">while</span> i &lt; length(mediaTimes) &amp;&amp; mediaTimes(i) == 0
+0289         i = i + 1;
+0290     <span class="keyword">end</span>
+0291     
+0292     <span class="comment">% Save the spare 0 media time location in case the corresponding</span>
+0293     <span class="comment">% stage-movement, frame difference occured after the video started.</span>
+0294     spareZeroTimeLocation = [];
+0295     <span class="keyword">if</span> i &gt; 2
+0296         spareZeroTimeLocation = locations(i - 2,:);
+0297     <span class="keyword">end</span>
+0298     
+0299     <span class="comment">% Dump the extraneous 0 media times and locations.</span>
+0300     mediaTimes(1:(i - 2)) = [];
+0301     locations(1:(i - 2),:) = [];
+0302 <span class="keyword">end</span>
+0303 
+0304 <span class="comment">% No frame difference means the frame was dropped.</span>
+0305 frameDiffs(frameDiffs == 0) = NaN;
+0306 
+0307 <span class="comment">% Normalize the frame differences and shift them over one to align them</span>
+0308 <span class="comment">% with the video frames.</span>
+0309 frameDiffs(2:(length(frameDiffs) + 1)) = frameDiffs / max(frameDiffs);
+0310 frameDiffs(1) = frameDiffs(2);
+0311 
+0312 <span class="comment">% Compute the global Otsu and small frame-difference thresholds.</span>
+0313 <span class="comment">% Note 1: we use the Otsu to locate frame-difference peaks corresponding to</span>
+0314 <span class="comment">% stage movement.</span>
+0315 <span class="comment">% Note 2: we use the small threshold to locate the boundaries between</span>
+0316 <span class="comment">% frame differences corresponding to stage movement and frame differences</span>
+0317 <span class="comment">% corresponding to a non-movement interval.</span>
+0318 gOtsuThr = graythresh(frameDiffs);
+0319 gSmallDiffs = frameDiffs(frameDiffs &lt; gOtsuThr);
+0320 gSmallThr = median(gSmallDiffs) + 3 * std(gSmallDiffs);
+0321 
+0322 <span class="comment">% The log file doesn't contain any stage movements.</span>
+0323 <span class="keyword">if</span> length(mediaTimes) &lt; 2
+0324     warning(<span class="string">'findStageMovements:NoStageMovements'</span>, <span class="string">'The stage never moves'</span>);
+0325     
+0326     <span class="comment">% Are there any large frame-difference peaks?</span>
+0327     <span class="keyword">if</span> gOtsuThr &gt;= gSmallThr
+0328         [~, indices] = <a href="../../../SegWorm/Util/maxPeaksDistHeight.html" class="code" title="function [peaks indices] = maxPeaksDistHeight(x, dist, height)">maxPeaksDistHeight</a>(frameDiffs, delayFrames, gOtsuThr);
+0329         warning(<span class="string">'findStageMovements:UnexpectedPeaks'</span>, [<span class="string">'There are '</span> <span class="keyword">...</span>
+0330             num2str(length(indices)) <span class="string">' large frame-difference peaks '</span> <span class="keyword">...</span>
+0331             <span class="string">'even though the stage never moves'</span>]);
+0332     <span class="keyword">end</span>
+0333     
+0334     <span class="comment">% Finish.</span>
+0335     frames = false(length(frameDiffs), 1);
+0336     movesI = [0 0];
+0337     <span class="keyword">return</span>;
+0338 <span class="keyword">end</span>
+0339 
+0340 <span class="comment">% Does the Otsu threshold separate the 99% of the small frame differences</span>
+0341 <span class="comment">% from the large ones?</span>
+0342 <span class="keyword">if</span> isempty(gSmallDiffs) || gOtsuThr &lt; gSmallThr
+0343     warning(<span class="string">'findStageMovements:NoGlobalOtsuThreshold'</span>, <span class="keyword">...</span>
+0344         [<span class="string">'Using the Otsu method, as a whole, the frame differences '</span> <span class="keyword">...</span>
+0345         <span class="string">'don''t appear to contain any distinguishably large peaks '</span> <span class="keyword">...</span>
+0346         <span class="string">'(corresponding to stage movements). Trying half of the '</span> <span class="keyword">...</span>
+0347         <span class="string">'maximum frame difference instead.'</span>]);
+0348     
+0349     <span class="comment">% Try half the maximum frame difference as a threshold to distinguish</span>
+0350     <span class="comment">% large peaks.</span>
+0351     gOtsuThr = .5;
+0352     gSmallDiffs = frameDiffs(frameDiffs &lt; gOtsuThr);
+0353     gSmallThr = median(gSmallDiffs) + 3 * std(gSmallDiffs);
+0354     
+0355     <span class="comment">% Does a threshold at half the maximum frame difference separate the</span>
+0356     <span class="comment">% 99% of the small frame differences from the large ones?</span>
+0357     <span class="keyword">if</span> isempty(gSmallDiffs) || gOtsuThr &lt; gSmallThr
+0358         warning(<span class="string">'findStageMovements:NoGlobalThresholds'</span>, <span class="keyword">...</span>
+0359             [<span class="string">'Cannot find a global threshold to distinguish the large '</span> <span class="keyword">...</span>
+0360             <span class="string">'frame-difference peaks.'</span>]);
+0361         gOtsuThr = NaN;
+0362         gSmallThr = NaN;
+0363     <span class="keyword">end</span>
+0364 <span class="keyword">end</span>
+0365 
+0366 <span class="comment">% Pre-allocate memory.</span>
+0367 frames = false(length(frameDiffs), 1); <span class="comment">% stage movement status for frames</span>
+0368 movesI(1:length(mediaTimes), 1:2) = NaN; <span class="comment">% stage movement indices</span>
+0369 movesI(1,:) = 0;
+0370 <span class="keyword">if</span> verbose
+0371     peaksI(1:length(mediaTimes)) = NaN; <span class="comment">% stage movement frame peaks</span>
+0372     endPeaksI = []; <span class="comment">% peaks after the last stage movement</span>
+0373     otsuThrs = zeros(1, length(mediaTimes) + 1); <span class="comment">% Otsu thresholds</span>
+0374     smallThrs = zeros(1, length(mediaTimes) - 1); <span class="comment">% small thresholds</span>
+0375     timeOffs = [mediaTimes, length(frameDiffs) / fps]; <span class="comment">% offset media times</span>
+0376     
+0377     <span class="comment">% Have we matched all the media times to frame-difference stage</span>
+0378     <span class="comment">% movements?</span>
+0379     isMediaTimesMatched = true;
+0380 <span class="keyword">end</span>
+0381 
+0382 <span class="comment">% Are there enough frames?</span>
+0383 <span class="keyword">if</span> sum(~isnan(frameDiffs)) &lt; 2
+0384     error(<span class="string">'findStageMovement:IsufficientFrames'</span>, <span class="keyword">...</span>
+0385         <span class="string">'The video must have at least 2, non-dropped frames'</span>);
+0386 <span class="keyword">end</span>
+0387 
+0388 <span class="comment">% Compute the search boundary for the first frame-difference peak.</span>
+0389 maxMoveFrames = delayFrames + 1; <span class="comment">% maximum frames a movement takes</span>
+0390 maxMoveTime = maxMoveFrames / fps; <span class="comment">% maximum time a movement takes</span>
+0391 timeOff = maxMoveTime; <span class="comment">% the current media time offset</span>
+0392 peakI = 1; <span class="comment">% the current stage movement peak's index</span>
+0393 prevPeakI = 1; <span class="comment">% the previous stage-movement peak's index</span>
+0394 prevPeakEndI = 1; <span class="comment">% the previous stage-movement peak's end index</span>
+0395 startI = 1; <span class="comment">% the start index for our search</span>
+0396 endI = 2 * maxMoveFrames; <span class="comment">% the end index for our search</span>
+0397 <span class="keyword">if</span> endI &gt; length(frameDiffs)
+0398     endI = length(frameDiffs);
+0399 <span class="keyword">end</span>
+0400 searchDiffs = frameDiffs(startI:endI);
+0401 
+0402 <span class="comment">% Is the Otsu threshold large enough?</span>
+0403 otsuThr = graythresh(searchDiffs);
+0404 isOtsu = otsuThr &gt; gOtsuThr; <span class="comment">% false if no global Otsu</span>
+0405 <span class="keyword">if</span> ~isOtsu
+0406     
+0407     <span class="comment">% Does the Otsu threshold separate the 99% of the small frame</span>
+0408     <span class="comment">% differences from the large ones? And, if there is a global small</span>
+0409     <span class="comment">% threshold, is the Otsu threshold larger?</span>
+0410     smallDiffs = searchDiffs(searchDiffs &lt; otsuThr);
+0411     isOtsu = ~isempty(smallDiffs) &amp;&amp; sum(~isnan(smallDiffs)) &gt; 0 &amp;&amp; <span class="keyword">...</span>
+0412         (isnan(gSmallThr) || otsuThr &gt; gSmallThr) &amp;&amp; <span class="keyword">...</span>
+0413         otsuThr &gt;= median(smallDiffs) + 3 * std(smallDiffs);
+0414     
+0415     <span class="comment">% Does the global Otsu threshold pull out any peaks?</span>
+0416     <span class="keyword">if</span> ~isOtsu
+0417         <span class="keyword">if</span> ~isnan(gOtsuThr) &amp;&amp; sum(searchDiffs &gt; gOtsuThr) &gt; 1
+0418             otsuThr = gOtsuThr;
+0419             isOtsu = true;
+0420         <span class="keyword">end</span>
+0421     <span class="keyword">end</span>
+0422 <span class="keyword">end</span>
+0423 
+0424 <span class="comment">% Are there any distinguishably large, frame-difference peaks?</span>
+0425 <span class="keyword">if</span> (verbose)
+0426     peaksI(1) = peakI;
+0427     otsuThrs(1) = gOtsuThr;
+0428 <span class="keyword">end</span>
+0429 <span class="keyword">if</span> isOtsu
+0430     
+0431     <span class="comment">% Do the frame differences begin with a stage movement?</span>
+0432     indices = find(searchDiffs &gt; otsuThr);
+0433     firstPeakI = indices(1);
+0434     <span class="keyword">if</span> firstPeakI &lt;= maxMoveFrames
+0435         
+0436         <span class="comment">% Find the largest frame-difference peak.</span>
+0437         [~, peakI] = max(frameDiffs(1:maxMoveFrames));
+0438         prevPeakI = peakI;
+0439         
+0440         <span class="comment">% Compute the media time offset.</span>
+0441         timeOff = peakI / fps;
+0442         <span class="keyword">if</span> verbose
+0443             peaksI(1) = peakI;
+0444             otsuThrs(1) = otsuThr;
+0445             timeOffs(1) = timeOff;
+0446         <span class="keyword">end</span>
+0447     <span class="keyword">end</span>
+0448     
+0449     <span class="comment">% Is there a still interval before the first stage movement?</span>
+0450     <span class="keyword">if</span> peakI &gt; 1
+0451         i = peakI - 1;
+0452         <span class="keyword">while</span> i &gt; 1
+0453             <span class="keyword">if</span> frameDiffs(i) &lt; gSmallThr &amp;&amp; frameDiffs(i - 1) &lt; gSmallThr
+0454                 peakI = 1;
+0455                 <span class="keyword">break</span>;
+0456             <span class="keyword">end</span>
+0457             i = i - 1;
+0458         <span class="keyword">end</span>
+0459     <span class="keyword">end</span>
+0460 <span class="keyword">end</span>
+0461 
+0462 <span class="comment">% We reached the end.</span>
+0463 endI = peakI + maxMoveFrames;
+0464 <span class="keyword">if</span> endI &gt;= length(frameDiffs)
+0465     prevPeakEndI = length(frameDiffs);
+0466     
+0467 <span class="comment">% Find a temporary front end for a potential initial stage movement.</span>
+0468 <span class="keyword">else</span>
+0469     searchDiffs = frameDiffs(peakI:endI);
+0470     
+0471     <span class="comment">% Does the search window contain multiple stage movements?</span>
+0472     <span class="keyword">if</span> ~isnan(gOtsuThr) &amp;&amp; ~isnan(gSmallThr)
+0473         foundMove = false;
+0474         <span class="keyword">for</span> i = 1:length(searchDiffs)
+0475             
+0476             <span class="comment">% We found a still interval.</span>
+0477             <span class="keyword">if</span> ~foundMove &amp;&amp; searchDiffs(i) &lt; gSmallThr
+0478                 foundMove = true;
+0479                 
+0480             <span class="comment">% We found the end of the still interval, cut off the rest.</span>
+0481             <span class="keyword">elseif</span> foundMove &amp;&amp; searchDiffs(i) &gt; gSmallThr
+0482                 searchDiffs = searchDiffs(1:(i - 1));
+0483                 <span class="keyword">break</span>;
+0484             <span class="keyword">end</span>
+0485         <span class="keyword">end</span>
+0486     <span class="keyword">end</span>
+0487     
+0488     <span class="comment">% Find a temporary front end for a potential initial stage movement.</span>
+0489     [minDiff i] = min(searchDiffs);
+0490     peakFrontEndI = peakI + i - 1;
+0491     
+0492     <span class="comment">% If the temporary front end's frame difference is small, try to push</span>
+0493     <span class="comment">% the front end backwards (closer to the stage movement).</span>
+0494     <span class="keyword">if</span> minDiff &lt;= gSmallThr
+0495         i = peakI;
+0496         <span class="keyword">while</span> i &lt; peakFrontEndI
+0497             <span class="keyword">if</span> frameDiffs(i) &lt;= gSmallThr
+0498                 peakFrontEndI = i;
+0499                 <span class="keyword">break</span>;
+0500             <span class="keyword">end</span>
+0501             i = i + 1;
+0502         <span class="keyword">end</span>
+0503     
+0504     <span class="comment">% If the temporary front end's frame difference is large, try to</span>
+0505     <span class="comment">% push the front end forwards (further from the stage movement).</span>
+0506     <span class="keyword">elseif</span> minDiff &gt;= gOtsuThr || (minDiff &gt; gSmallThr &amp;&amp; <span class="keyword">...</span>
+0507             peakFrontEndI &lt; endI &amp;&amp; <span class="keyword">...</span>
+0508             all(isnan(frameDiffs((peakFrontEndI + 1):endI))))
+0509         peakFrontEndI = endI;
+0510     <span class="keyword">end</span>
+0511     
+0512     <span class="comment">% Advance.</span>
+0513     prevPeakEndI = peakFrontEndI;
+0514 <span class="keyword">end</span>
+0515 
+0516 <span class="comment">% Match the media time-stage movements to the frame-difference peaks.</span>
+0517 mediaTimeOff = 0; <span class="comment">% the offset media time</span>
+0518 prevOtsuThr = gOtsuThr; <span class="comment">% the previous small threshold</span>
+0519 prevSmallThr = gSmallThr; <span class="comment">% the previous small threshold</span>
+0520 isShifted = false; <span class="comment">% have we shifted the data to try another alignment?</span>
+0521 i = 1;
+0522 <span class="keyword">while</span> i &lt; length(mediaTimes)
+0523     
+0524     <span class="comment">% Advance.</span>
+0525     i = i + 1;
+0526     
+0527     <span class="comment">% Compute the offset media time.</span>
+0528     prevMediaTimeOff = mediaTimeOff;
+0529     mediaTimeOff = mediaTimes(i) + timeOff;
+0530     <span class="keyword">if</span> verbose
+0531         timeOffs(i) = mediaTimeOff;
+0532     <span class="keyword">end</span>
+0533     
+0534     <span class="comment">% Compute the search boundary for matching frame-difference peaks.</span>
+0535     mediaTimeOffI = round(mediaTimeOff * fps);
+0536     startI = prevPeakEndI;
+0537     endI = max(startI + 2 * abs(mediaTimeOffI - startI), <span class="keyword">...</span>
+0538         max(startI, mediaTimeOffI) + maxMoveFrames);
+0539     <span class="keyword">if</span> endI &gt; length(frameDiffs)
+0540         endI = length(frameDiffs);
+0541     <span class="keyword">end</span>
+0542     searchDiffs = frameDiffs(startI:endI);
+0543     
+0544     <span class="comment">% Is the Otsu threshold large enough?</span>
+0545     otsuThr = graythresh(searchDiffs);
+0546     isOtsu = otsuThr &gt; prevSmallThr || otsuThr &gt; gOtsuThr;
+0547     <span class="keyword">if</span> ~isOtsu
+0548         
+0549         <span class="comment">% Does the Otsu threshold separate the 99% of the small frame</span>
+0550         <span class="comment">% differences from the large ones?</span>
+0551         <span class="keyword">if</span> isnan(prevSmallThr) || otsuThr &gt; prevSmallThr || <span class="keyword">...</span>
+0552                 otsuThr &gt; gSmallThr
+0553             smallDiffs = searchDiffs(searchDiffs &lt; otsuThr);
+0554             isOtsu = ~isempty(smallDiffs) &amp;&amp; <span class="keyword">...</span>
+0555                 sum(~isnan(smallDiffs)) &gt; 0 &amp;&amp; <span class="keyword">...</span>
+0556                 otsuThr &gt;= median(smallDiffs) + 3 * std(smallDiffs);
+0557         <span class="keyword">end</span>
+0558         
+0559         <span class="comment">% Try the global Otsu threshold or, if there is none, attempt to</span>
+0560         <span class="comment">% use half the search window's maximum frame difference.</span>
+0561         <span class="keyword">if</span> ~isOtsu
+0562             
+0563             <span class="comment">% Try using half the search window's maximum frame difference.</span>
+0564             <span class="keyword">if</span> isnan(gOtsuThr)
+0565                 otsuThr = max(searchDiffs) / 2;
+0566                 
+0567                 <span class="comment">% Does the half-maximum threshold separate the 99% of the</span>
+0568                 <span class="comment">% small frame differences from the large ones?</span>
+0569                 smallDiffs = searchDiffs(searchDiffs &lt; otsuThr);
+0570                 isOtsu = ~isempty(smallDiffs) &amp;&amp; <span class="keyword">...</span>
+0571                     sum(~isnan(smallDiffs)) &gt; 0 &amp;&amp; <span class="keyword">...</span>
+0572                     otsuThr &gt;= median(smallDiffs) + 3 * std(smallDiffs);
+0573                 
+0574             <span class="comment">% Does the global Otsu threshold pull out any peaks?</span>
+0575             <span class="keyword">elseif</span> sum(searchDiffs &gt; gOtsuThr) &gt; 0
+0576                 otsuThr = gOtsuThr;
+0577                 isOtsu = true;
+0578                 
+0579             <span class="comment">% Does the global Otsu threshold pull out any peaks?</span>
+0580             <span class="keyword">elseif</span> sum(searchDiffs &gt; prevOtsuThr) &gt; 0
+0581                 otsuThr = prevOtsuThr;
+0582                 isOtsu = true;
+0583             <span class="keyword">end</span>
+0584         <span class="keyword">end</span>
+0585     <span class="keyword">end</span>
+0586     <span class="keyword">if</span> (verbose)
+0587         otsuThrs(i) = otsuThr;
+0588     <span class="keyword">end</span>
+0589     
+0590     <span class="comment">% If we're at the end, make sure we're using an appropriate threshold.</span>
+0591     <span class="keyword">if</span> i == length(mediaTimes)
+0592         
+0593         <span class="comment">% Does the threshold separate the 99% of the small frame</span>
+0594         <span class="comment">% differences from the large ones?</span>
+0595         smallDiffs = searchDiffs(searchDiffs &lt; otsuThr);
+0596         isOtsu = ~isempty(smallDiffs) &amp;&amp; sum(~isnan(smallDiffs)) &gt; 0 &amp;&amp; <span class="keyword">...</span>
+0597             otsuThr &gt;= median(smallDiffs) + 3 * std(smallDiffs);
+0598     <span class="keyword">end</span>
+0599     
+0600     <span class="comment">% Match the media time stage movement to a peak.</span>
+0601     indices = [];
+0602     <span class="keyword">if</span> isOtsu
+0603         
+0604         <span class="comment">% Compute and set the global thresholds.</span>
+0605         <span class="keyword">if</span> isnan(gOtsuThr)
+0606             
+0607             <span class="comment">% Use a small threshold at 99% of the small frame differences.</span>
+0608             smallDiffs = searchDiffs(searchDiffs &lt; otsuThr);
+0609             smallThr = median(smallDiffs) + 3 * std(smallDiffs);
+0610             
+0611             <span class="comment">% Set the global thresholds.</span>
+0612             <span class="keyword">if</span> otsuThr &gt;= smallThr
+0613                 gOtsuThr = otsuThr;
+0614                 gSmallThr = smallThr;
+0615                 
+0616                 <span class="comment">% Set the previous small threshold.</span>
+0617                 <span class="keyword">if</span> isnan(prevOtsuThr)
+0618                     prevOtsuThr = otsuThr;
+0619                     prevSmallThr = smallThr;
+0620                 <span class="keyword">end</span>
+0621                 
+0622             <span class="comment">% Use the previous small threshold.</span>
+0623             <span class="keyword">elseif</span> ~isnan(prevSmallThr)
+0624                 smallThr = prevSmallThr;
+0625             <span class="keyword">end</span>
+0626             
+0627         <span class="comment">% Compute the local thresholds.</span>
+0628         <span class="keyword">else</span>
+0629             otsuThr = min(otsuThr, gOtsuThr);
+0630             smallThr = max(prevSmallThr, gSmallThr);
+0631             <span class="keyword">if</span> smallThr &gt; otsuThr
+0632                 smallThr = min(prevSmallThr, gSmallThr);
+0633             <span class="keyword">end</span>
+0634         <span class="keyword">end</span>
+0635         
+0636         <span class="comment">% Does the search window contain multiple stage movements?</span>
+0637         foundMove = false;
+0638         <span class="keyword">for</span> j = 1:length(searchDiffs)
+0639             
+0640             <span class="comment">% We found a stage movement.</span>
+0641             <span class="keyword">if</span> ~foundMove &amp;&amp; searchDiffs(j) &gt; otsuThr
+0642                 foundMove = true;
+0643                 
+0644             <span class="comment">% We found the end of the stage movement, cut off the rest.</span>
+0645             <span class="keyword">elseif</span> foundMove &amp;&amp; searchDiffs(j) &lt; smallThr
+0646                 searchDiffs = searchDiffs(1:(j - 1));
+0647                 <span class="keyword">break</span>;
+0648             <span class="keyword">end</span>
+0649         <span class="keyword">end</span>
+0650         
+0651         <span class="comment">% Find at least one distinguishably large peak.</span>
+0652         [~, indices] = <span class="keyword">...</span>
+0653             <a href="../../../SegWorm/Util/maxPeaksDistHeight.html" class="code" title="function [peaks indices] = maxPeaksDistHeight(x, dist, height)">maxPeaksDistHeight</a>(searchDiffs, maxMoveFrames, otsuThr);
+0654     <span class="keyword">end</span>
+0655     
+0656     <span class="comment">% We can't find any distinguishably large peaks.</span>
+0657     peakI = [];
+0658     <span class="keyword">if</span> isempty(indices)
+0659         
+0660         <span class="comment">% Does the last stage movement occur after the video ends?</span>
+0661         <span class="keyword">if</span> i == length(mediaTimes) &amp;&amp; endI &gt;= length(frameDiffs)
+0662             
+0663             <span class="comment">% Does the last offset media time occur before the video ends?</span>
+0664             <span class="keyword">if</span> mediaTimeOff &lt; (length(frameDiffs) - 1) / fps
+0665                 warning(<span class="string">'findStageMovement:LastPeak'</span>, <span class="keyword">...</span>
+0666                     [<span class="string">'The search window for the last stage movement ('</span> <span class="keyword">...</span>
+0667                     num2str(i) <span class="string">') at media time '</span> <span class="keyword">...</span>
+0668                     num2str(mediaTimes(i), <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0669                     <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+0670                     num2str(round(mediaTimes(i) * fps)) <span class="keyword">...</span>
+0671                     <span class="string">') offset to '</span> num2str(mediaTimeOff, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0672                     <span class="string">' seconds (frame '</span> num2str(round(mediaTimeOff * fps)) <span class="keyword">...</span>
+0673                     <span class="string">'), spanning from '</span> <span class="keyword">...</span>
+0674                     num2str((startI - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0675                     <span class="string">' seconds (frame '</span> num2str(startI - 1) <span class="keyword">...</span>
+0676                     <span class="string">') to the last frame '</span> <span class="keyword">...</span>
+0677                     num2str((endI - 1) / fps, <span class="string">'%.3f'</span>) <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+0678                     num2str(endI - 1) <span class="string">'), doesn''t have any'</span><span class="keyword">...</span>
+0679                     <span class="string">' distinguishably large peaks. The peak probably'</span> <span class="keyword">...</span>
+0680                     <span class="string">' occured after the video ended and, therefore,'</span> <span class="keyword">...</span>
+0681                     <span class="string">' the last stage movement will be ignored.'</span>]);
+0682             <span class="keyword">end</span>
+0683             
+0684             <span class="comment">% Ignore the last stage movement.</span>
+0685             mediaTimes(end) = [];
+0686             locations(<span class="keyword">end</span>,:) = [];
+0687             movesI(<span class="keyword">end</span>,:) = [];
+0688             <span class="keyword">if</span> verbose
+0689                 peaksI(end) = [];
+0690                 otsuThrs(end) = [];
+0691                 smallThrs(end) = [];
+0692                 timeOffs(end) = [];
+0693             <span class="keyword">end</span>
+0694             <span class="keyword">break</span>;
+0695         <span class="keyword">end</span>
+0696         
+0697         <span class="comment">% Report the warning.</span>
+0698         warning(<span class="string">'findStageMovement:NoPeaks'</span>, <span class="keyword">...</span>
+0699             [<span class="string">'The search window for stage movement '</span> num2str(i) <span class="keyword">...</span>
+0700             <span class="string">' at media time '</span> num2str(mediaTimes(i), <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0701             <span class="string">' seconds (frame '</span> num2str(round(mediaTimes(i) * fps)) <span class="keyword">...</span>
+0702             <span class="string">') offset to '</span> num2str(mediaTimeOff, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0703             <span class="string">' seconds (frame '</span> num2str(round(mediaTimeOff * fps)) <span class="keyword">...</span>
+0704             <span class="string">'), spanning from '</span> num2str((startI - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0705             <span class="string">' seconds (frame '</span> num2str(startI - 1) <span class="string">') to '</span> <span class="keyword">...</span>
+0706             num2str((endI - 1) / fps, <span class="string">'%.3f'</span>) <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+0707             num2str(endI - 1) <span class="string">'), doesn''t have any distinguishably'</span> <span class="keyword">...</span>
+0708             <span class="string">' large peaks'</span>]);
+0709         
+0710     <span class="comment">% Use the first peak.</span>
+0711     <span class="keyword">else</span>
+0712         peakI = indices(1) + startI - 1;
+0713         <span class="keyword">if</span> verbose
+0714             peaksI(i) = peakI;
+0715         <span class="keyword">end</span>
+0716         
+0717         <span class="comment">% Is the current offset media time further from the frame-</span>
+0718         <span class="comment">% difference stage movement than the previous offset media time?</span>
+0719         peakTime = (peakI - 1) / fps;
+0720         timeDiff = mediaTimeOff - peakTime;
+0721         prevTimeDiff = prevMediaTimeOff - peakTime;
+0722         <span class="keyword">if</span> i &gt; 2 &amp;&amp; (abs(prevTimeDiff) &gt; maxMoveTime || <span class="keyword">...</span>
+0723                 abs(timeDiff) &gt; maxMoveTime) &amp;&amp; <span class="keyword">...</span>
+0724                 mediaTimeOff &gt; prevMediaTimeOff &amp;&amp; <span class="keyword">...</span>
+0725                 abs(timeDiff / prevTimeDiff) &gt; 2
+0726             warning(<span class="string">'findStageMovement:FarPeak'</span>, <span class="keyword">...</span>
+0727                 [<span class="string">'Stage movement '</span> num2str(i) <span class="string">' (at media time '</span> <span class="keyword">...</span>
+0728                 num2str(mediaTimes(i), <span class="string">'%.3f'</span>) <span class="string">' seconds) offset to '</span> <span class="keyword">...</span>
+0729                 num2str(mediaTimeOff, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0730                 <span class="string">' seconds, has its frame-difference peak at '</span> <span class="keyword">...</span>
+0731                 num2str(peakTime, <span class="string">'%.3f'</span>) <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+0732                 num2str(peakI - 1) <span class="string">'), an error of '</span> <span class="keyword">...</span>
+0733                 num2str(timeDiff, <span class="string">'%.3f'</span>) <span class="string">' seconds.'</span> <span class="keyword">...</span>
+0734                 <span class="string">' The previous media time, offset to '</span> <span class="keyword">...</span>
+0735                 num2str(prevMediaTimeOff, <span class="string">'%.3f'</span>) <span class="string">' seconds, is closer'</span> <span class="keyword">...</span>
+0736                 <span class="string">' with an error of only '</span> num2str(prevTimeDiff, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0737                 <span class="string">' seconds (less than half the current media time''s'</span> <span class="keyword">...</span>
+0738                 <span class="string">' error). Therefore, we probably have either a false'</span> <span class="keyword">...</span>
+0739                 <span class="string">' peak, a shifted misalignment, or an abnormally long delay'</span>]);
+0740             
+0741             <span class="comment">% Ignore this wrong peak.</span>
+0742             peakI = [];
+0743         <span class="keyword">end</span>
+0744     <span class="keyword">end</span>
+0745     
+0746     <span class="comment">% Can we realign (shift) the stage movements and media times?</span>
+0747     <span class="keyword">if</span> isempty(peakI)
+0748         lastMoveTime = movesI(i - 1,1) / fps;
+0749         isShiftable = true;
+0750         <span class="keyword">if</span> isShifted
+0751             isShiftable = false;
+0752             
+0753         <span class="comment">% Shift the media times forward.</span>
+0754         <span class="keyword">elseif</span> i &gt; 2 &amp;&amp; abs(mediaTimes(i - 2) - lastMoveTime) &lt; <span class="keyword">...</span>
+0755                 abs(mediaTimes(i) - lastMoveTime)
+0756             
+0757             <span class="comment">% Would a time shift align the media times with the</span>
+0758             <span class="comment">% frame-difference stage movements?</span>
+0759             <span class="keyword">for</span> j = 2:(i - 2)
+0760                 
+0761                 <span class="comment">% Compute the error from the predicted time.</span>
+0762                 offset =  movesI(j,1) / fps - mediaTimes(j - 1);
+0763                 predictedTime = mediaTimes(j) + offset;
+0764                 moveTime =  movesI(j + 1,1) / fps;
+0765                 timeDiff = abs(predictedTime - moveTime);
+0766                 
+0767                 <span class="comment">% Compute the interval between the media times.</span>
+0768                 mediaDiff = mediaTimes(j) - mediaTimes(j - 1);
+0769                 
+0770                 <span class="comment">% Is the error in the predicted time greater than</span>
+0771                 <span class="comment">% the interval between media times?</span>
+0772                 <span class="keyword">if</span> timeDiff &gt; mediaDiff
+0773                     isShiftable = false;
+0774                     <span class="keyword">break</span>;
+0775                 <span class="keyword">end</span>
+0776             <span class="keyword">end</span>
+0777             
+0778             <span class="comment">% Time cannot be shifted due to misalignment between the media</span>
+0779             <span class="comment">% times and frame-difference stage movements.</span>
+0780             <span class="keyword">if</span> ~isShiftable
+0781                 warning(<span class="string">'findStageMovement:TimeShiftAlignment'</span>, <span class="keyword">...</span>
+0782                     [<span class="string">'Time cannot be shifted forward because the'</span> <span class="keyword">...</span>
+0783                     <span class="string">' frame-difference stage movement at '</span> <span class="keyword">...</span>
+0784                     num2str(moveTime, <span class="string">'%.3f'</span>) <span class="string">' seconds would have a'</span> <span class="keyword">...</span>
+0785                     <span class="string">' predicted time of '</span> num2str(predictedTime, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0786                     <span class="string">' seconds (an error of '</span> num2str(timeDiff, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0787                     <span class="string">' seconds) whereas the interval between its media'</span> <span class="keyword">...</span>
+0788                     <span class="string">' time and the previous media time is only '</span> <span class="keyword">...</span>
+0789                     num2str(mediaDiff, <span class="string">'%.3f'</span>) <span class="string">' seconds and,'</span> <span class="keyword">...</span>
+0790                     <span class="string">' therefore, smaller than the error from shifting'</span>]);
+0791                 
+0792             <span class="comment">% Shift everything forward using the spare 0 media time location.</span>
+0793             <span class="keyword">elseif</span> ~isempty(spareZeroTimeLocation)
+0794                 mediaTimes = [0 mediaTimes];
+0795                 locations = [spareZeroTimeLocation; locations];
+0796                 movesI(end + 1,:) = [0 0];
+0797                 timeOff = prevPeakI / fps - mediaTimes(i - 1);
+0798                 <span class="keyword">if</span> verbose
+0799                     peaksI = [1 peaksI];
+0800                     otsuThrs = [gOtsuThr otsuThrs];
+0801                     smallThrs = [gSmallThr smallThrs];
+0802                     timeOffs(1:(end + 1)) = [0 timeOffs(1:end)];
+0803                     timeDiffs =  movesI(2:(i - 2),1)' / fps - <span class="keyword">...</span>
+0804                         mediaTimes(2:(i - 2));
+0805                     timeOffs(3:(i - 1)) = mediaTimes(3:(i - 1)) + timeDiffs;
+0806                 <span class="keyword">end</span>
+0807                 
+0808                 <span class="comment">% Redo the match.</span>
+0809                 i = i - 1;
+0810                 
+0811                 <span class="comment">% Warn about the time shift.</span>
+0812                 warning(<span class="string">'findStageMovement:TimeShiftForward'</span>, <span class="keyword">...</span>
+0813                     [<span class="string">'Shifting the media times forward relative to the '</span> <span class="keyword">...</span>
+0814                     <span class="string">'frame-difference stage movements (using a spare '</span> <span class="keyword">...</span>
+0815                     <span class="string">'location at media time 0:0:0.000) in an attempt '</span> <span class="keyword">...</span>
+0816                     <span class="string">'to realign them'</span>]);
+0817                 
+0818             <span class="comment">% Shift everything forward by assuming a missing 0 media time</span>
+0819             <span class="comment">% location and swallowing earlier frames into the the first</span>
+0820             <span class="comment">% stage movement.</span>
+0821             <span class="keyword">else</span>
+0822                 frames(1:movesI(2,1)) = true;
+0823                 movesI(1:(i - 2),:) = movesI(2:(i - 1),:);
+0824                 movesI(1,1) = 0;
+0825                 timeOff = prevPeakI / fps - mediaTimes(i - 2);
+0826                 <span class="keyword">if</span> verbose
+0827                     peaksI(1:(i - 2)) = peaksI(2:(i - 1));
+0828                     otsuThrs(1:(i - 2)) = otsuThrs(2:(i - 1));
+0829                     smallThrs(1:(i - 2)) = smallThrs(2:(i - 1));
+0830                     timeDiffs =  movesI(1:(i - 3),1)' / fps - <span class="keyword">...</span>
+0831                         mediaTimes(1:(i - 3));
+0832                     timeOffs(2:(i - 2)) = mediaTimes(2:(i - 2)) + timeDiffs;
+0833                 <span class="keyword">end</span>
+0834                 
+0835                 <span class="comment">% Redo the match.</span>
+0836                 i = i - 2;
+0837                 
+0838                 <span class="comment">% Warn about the time shift.</span>
+0839                 warning(<span class="string">'findStageMovement:TimeShiftForward'</span>, <span class="keyword">...</span>
+0840                     [<span class="string">'Shifting the media times forward relative to the '</span> <span class="keyword">...</span>
+0841                     <span class="string">'frame-difference stage movements (by swallowing '</span> <span class="keyword">...</span>
+0842                     <span class="string">'earlier frames into the first stage movement) in '</span> <span class="keyword">...</span>
+0843                     <span class="string">'an attempt to realign them'</span>]);
+0844             <span class="keyword">end</span>
+0845             
+0846         <span class="comment">% Shift the media times backward.</span>
+0847         <span class="keyword">else</span>
+0848             
+0849             <span class="comment">% Would a time shift align the media times with the</span>
+0850             <span class="comment">% frame-difference stage movements?</span>
+0851             <span class="keyword">for</span> j = 3:(i - 1)
+0852                 
+0853                 <span class="comment">% Compute the error from the predicted time.</span>
+0854                 offset =  movesI(j - 1,1) / fps - mediaTimes(j);
+0855                 predictedTime = mediaTimes(j + 1) + offset;
+0856                 moveTime =  movesI(j,1) / fps;
+0857                 timeDiff = abs(predictedTime - moveTime);
+0858                 
+0859                 <span class="comment">% Compute the interval between the media times.</span>
+0860                 mediaDiff = mediaTimes(j + 1) - mediaTimes(j);
+0861                 
+0862                 <span class="comment">% Is the error in the predicted time greater than the</span>
+0863                 <span class="comment">% interval between media times?</span>
+0864                 <span class="keyword">if</span> timeDiff &gt; mediaDiff
+0865                     isShiftable = false;
+0866                     <span class="keyword">break</span>;
+0867                 <span class="keyword">end</span>
+0868             <span class="keyword">end</span>
+0869             
+0870             <span class="comment">% Time cannot be shifted due to misalignment between the media</span>
+0871             <span class="comment">% times and frame-difference stage movements.</span>
+0872             <span class="keyword">if</span> ~isShiftable
+0873                 warning(<span class="string">'findStageMovement:TimeShiftAlignment'</span>, <span class="keyword">...</span>
+0874                     [<span class="string">'Time cannot be shifted backward because the'</span> <span class="keyword">...</span>
+0875                     <span class="string">' frame-difference stage movement at '</span> <span class="keyword">...</span>
+0876                     num2str(moveTime, <span class="string">'%.3f'</span>) <span class="string">' seconds would have a'</span> <span class="keyword">...</span>
+0877                     <span class="string">' predicted time of '</span> num2str(predictedTime, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0878                     <span class="string">' seconds (an error of '</span> num2str(timeDiff, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0879                     <span class="string">' seconds) whereas the interval between its media'</span> <span class="keyword">...</span>
+0880                     <span class="string">' time and the previous one is only '</span> <span class="keyword">...</span>
+0881                     num2str(mediaDiff, <span class="string">'%.3f'</span>) <span class="string">' seconds and,'</span> <span class="keyword">...</span>
+0882                     <span class="string">' therefore, smaller than the error from shifting'</span>]);
+0883                 
+0884             <span class="comment">% Shift everything backward.</span>
+0885             <span class="keyword">else</span>
+0886                 mediaTimes(1) = [];
+0887                 locations(1,:) = [];
+0888                 movesI(<span class="keyword">end</span>,:) = [];
+0889                 timeOff = prevPeakI / fps - mediaTimes(i - 1);
+0890                 <span class="keyword">if</span> verbose
+0891                     peaksI(end) = [];
+0892                     otsuThrs(end) = [];
+0893                     smallThrs(end) = [];
+0894                     timeOffs(1) = [];
+0895                     timeDiffs =  movesI(1:(i - 2),1)' / fps - <span class="keyword">...</span>
+0896                         mediaTimes(1:(i - 2));
+0897                     timeOffs(1:(i - 1)) = [mediaTimes(1), <span class="keyword">...</span>
+0898                         mediaTimes(2:(i - 1)) + timeDiffs];
+0899                 <span class="keyword">end</span>
+0900                 
+0901                 <span class="comment">% Redo the match.</span>
+0902                 i = i - 1;
+0903                 
+0904                 <span class="comment">% Warn about the time shift.</span>
+0905                 warning(<span class="string">'findStageMovement:TimeShiftBackward'</span>, <span class="keyword">...</span>
+0906                     [<span class="string">'Shifting the media times backward relative to '</span> <span class="keyword">...</span>
+0907                     <span class="string">'the frame-difference stage movements in an '</span> <span class="keyword">...</span>
+0908                     <span class="string">'attempt to realign them'</span>]);
+0909             <span class="keyword">end</span>
+0910         <span class="keyword">end</span>
+0911         
+0912         <span class="comment">% Record the shift and continue.</span>
+0913         <span class="keyword">if</span> isShiftable
+0914             isShifted = true;
+0915             <span class="keyword">continue</span>;
+0916             
+0917         <span class="comment">% We cannot realign (shift) the stage movements and media times.</span>
+0918         <span class="keyword">else</span>
+0919             
+0920             <span class="comment">% Compute the stage movement sizes.</span>
+0921             movesI(i:<span class="keyword">end</span>,:) = [];
+0922             moveSizes = zeros(size(movesI, 1),1);
+0923             <span class="keyword">for</span> j = 2:(size(movesI, 1) - 1)
+0924                 moveDiffs = frameDiffs(movesI(j,1):movesI(j,2));
+0925                 moveSizes(j) = sum(moveDiffs(~isnan(moveDiffs)));
+0926             <span class="keyword">end</span>
+0927             
+0928             <span class="comment">% Compute the statistics for stage movement sizes.</span>
+0929             meanMoveSize = mean(moveSizes(2:end));
+0930             stdMoveSize = std(moveSizes(2:end));
+0931             smallMoveThr = meanMoveSize - 2.5 * stdMoveSize;
+0932             largeMoveThr = meanMoveSize + 2.5 * stdMoveSize;
+0933             
+0934             <span class="comment">% Are any of the stage movements considerably small or large?</span>
+0935             <span class="keyword">for</span> j = 2:(size(movesI, 1) - 1)
+0936                 
+0937                 <span class="comment">% Is the stage movement small?</span>
+0938                 <span class="keyword">if</span> moveSizes(j) &lt; smallMoveThr
+0939                     
+0940                     <span class="comment">% Report the warning.</span>
+0941                     warning(<span class="string">'findStageMovement:ShortMove'</span>, <span class="keyword">...</span>
+0942                         [<span class="string">'Stage movement '</span> num2str(j) <span class="keyword">...</span>
+0943                         <span class="string">' at media time '</span> num2str(mediaTimes(j), <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0944                         <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+0945                         num2str(round(mediaTimes(j) * fps)) <span class="keyword">...</span>
+0946                         <span class="string">'), spanning from '</span> <span class="keyword">...</span>
+0947                         num2str((movesI(j,1) - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0948                         <span class="string">' seconds (frame '</span> num2str(movesI(j,1) - 1) <span class="keyword">...</span>
+0949                         <span class="string">') to '</span> num2str((movesI(j,2) - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0950                         <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+0951                         num2str(movesI(j,2) - 1) <span class="string">'), is considerably small'</span>]);
+0952                     
+0953                 <span class="comment">% Is the stage movement large?</span>
+0954                 <span class="keyword">elseif</span> moveSizes(j) &gt; largeMoveThr
+0955                     
+0956                     <span class="comment">% Report the warning.</span>
+0957                     warning(<span class="string">'findStageMovement:LongMove'</span>, <span class="keyword">...</span>
+0958                         [<span class="string">'Stage movement '</span> num2str(j) <span class="keyword">...</span>
+0959                         <span class="string">' at media time '</span> num2str(mediaTimes(j), <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0960                         <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+0961                         num2str(round(mediaTimes(j) * fps)) <span class="keyword">...</span>
+0962                         <span class="string">'), spanning from '</span> <span class="keyword">...</span>
+0963                         num2str((movesI(j,1) - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0964                         <span class="string">' seconds (frame '</span> num2str(movesI(j,1) - 1) <span class="keyword">...</span>
+0965                         <span class="string">') to '</span> num2str((movesI(j,2) - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+0966                         <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+0967                         num2str(movesI(j,2) - 1) <span class="string">'), is considerably large'</span>]);
+0968                 <span class="keyword">end</span>
+0969             <span class="keyword">end</span>
+0970                     
+0971             <span class="comment">% Construct the report.</span>
+0972             id = <span class="string">'findStageMovement:NoShift'</span>;
+0973             msg = [<span class="string">'We cannot find a matching peak nor shift the time '</span> <span class="keyword">...</span>
+0974                 <span class="string">'for stage movement '</span> num2str(i) <span class="string">' at media time '</span> <span class="keyword">...</span>
+0975                 num2str(mediaTimes(i), <span class="string">'%.3f'</span>) <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+0976                 num2str(round(mediaTimes(i) * fps)) <span class="string">')'</span>];
+0977         
+0978             <span class="comment">% Report the error.</span>
+0979             <span class="keyword">if</span> ~verbose
+0980                 error(id, msg);
+0981                 
+0982             <span class="comment">% Report the warning.</span>
+0983             <span class="keyword">else</span>
+0984                 warning(id, msg);
+0985                 
+0986                 <span class="comment">% Finish.</span>
+0987                 isMediaTimesMatched = false;
+0988                 peaksI(i:end) = [];
+0989                 otsuThrs(i:end) = [];
+0990                 smallThrs((i - 1):end) = [];
+0991                 timeOffs(i:end) = [];
+0992                 <span class="keyword">break</span>;
+0993             <span class="keyword">end</span>
+0994         <span class="keyword">end</span>
+0995     <span class="keyword">end</span>
+0996         
+0997     <span class="comment">% Find a temporary back end for this stage movement.</span>
+0998     <span class="comment">% Note: this peak may serve as its own temporary back end.</span>
+0999     startI = max(peakI - maxMoveFrames, prevPeakEndI);
+1000     [minDiff j] = min(fliplr(frameDiffs(startI:peakI)));
+1001     peakBackEndI = peakI - j + 1; <span class="comment">% we flipped to choose the last min</span>
+1002     j = peakI - 1;
+1003     
+1004     <span class="comment">% If the temporary back end's frame difference is small, try to push</span>
+1005     <span class="comment">% the back end forwards (closer to the stage movement).</span>
+1006     <span class="keyword">if</span> minDiff &lt;= prevSmallThr
+1007         <span class="keyword">while</span> j &gt; startI
+1008             <span class="keyword">if</span> frameDiffs(j) &lt;= prevSmallThr
+1009                 peakBackEndI = j;
+1010                 <span class="keyword">break</span>;
+1011             <span class="keyword">end</span>
+1012             j = j - 1;
+1013         <span class="keyword">end</span>
+1014         
+1015     <span class="comment">% If the temporary back end's frame difference is large, try to push</span>
+1016     <span class="comment">% the back end backwards (further from the stage movement).</span>
+1017     <span class="keyword">elseif</span> minDiff &gt;= min(otsuThr, gOtsuThr) || <span class="keyword">...</span>
+1018             (minDiff &gt; gSmallThr &amp;&amp; peakBackEndI &gt; startI &amp;&amp; <span class="keyword">...</span>
+1019             all(isnan(frameDiffs(startI:(peakBackEndI - 1)))))
+1020         peakBackEndI = startI;
+1021     <span class="keyword">end</span>
+1022     
+1023     <span class="comment">% Compute a threshold for stage movement.</span>
+1024     smallDiffs = frameDiffs(prevPeakEndI:peakBackEndI);
+1025     smallThr = nanmean(smallDiffs) + 3 * nanstd(smallDiffs);
+1026     <span class="keyword">if</span> isnan(smallThr)
+1027         smallThr = prevSmallThr;
+1028     <span class="keyword">end</span>
+1029     <span class="keyword">if</span> (verbose)
+1030         smallThrs(i - 1) = smallThr;
+1031     <span class="keyword">end</span>
+1032     
+1033     <span class="comment">% Find the front end for the previous stage movement.</span>
+1034     j = prevPeakI;
+1035     <span class="keyword">while</span> j &lt; peakI &amp;&amp; (isnan(frameDiffs(j)) || <span class="keyword">...</span>
+1036             frameDiffs(j) &gt; smallThr) &amp;&amp; (isnan(frameDiffs(j + 1)) || <span class="keyword">...</span>
+1037             frameDiffs(j + 1) &gt; smallThr)
+1038         j = j + 1;
+1039     <span class="keyword">end</span>
+1040     movesI(i - 1,2) = j - 1;
+1041     prevPeakEndI = j - 1;
+1042     
+1043     <span class="comment">% Mark the previous stage movement.</span>
+1044     <span class="keyword">if</span> movesI(i - 1,1) &lt; 1
+1045         frames(1:movesI(i - 1,2)) = true;
+1046     <span class="keyword">else</span>
+1047         frames(movesI(i - 1,1):movesI(i - 1,2)) = true;
+1048     <span class="keyword">end</span>
+1049     
+1050     <span class="comment">% Find the back end for this stage movement.</span>
+1051     j = peakI;
+1052     <span class="keyword">while</span> j &gt; prevPeakEndI &amp;&amp; (isnan(frameDiffs(j)) || <span class="keyword">...</span>
+1053             frameDiffs(j) &gt; smallThr)
+1054         j = j - 1;
+1055     <span class="keyword">end</span>
+1056     movesI(i, 1) = j + 1;
+1057     
+1058     <span class="comment">% Is the non-movement frame-differences threshold too large?</span>
+1059     <span class="keyword">if</span> smallThr &lt;= otsuThr &amp;&amp; (isnan(gOtsuThr) || smallThr &lt;= gOtsuThr)
+1060         prevOtsuThr = otsuThr;
+1061         prevSmallThr = smallThr;
+1062     <span class="keyword">else</span>
+1063         warning(<span class="string">'findStageMovement:LargeNonMovementThreshold'</span>, <span class="keyword">...</span>
+1064             [<span class="string">'The non-movement window between stage movement '</span> <span class="keyword">...</span>
+1065             num2str(i - 1) <span class="string">' and stage movement '</span> num2str(i) <span class="keyword">...</span>
+1066             <span class="string">', from '</span> num2str((movesI(i - 1,2) - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+1067             <span class="string">' seconds (frame '</span> num2str(movesI(i - 1,2) - 1) <span class="keyword">...</span>
+1068             <span class="string">') to '</span> num2str((movesI(i,1) - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+1069             <span class="string">' seconds (frame '</span> num2str(movesI(i,1) - 1) <span class="string">'),'</span> <span class="keyword">...</span>
+1070             <span class="string">' contains considerably large frame-difference variance'</span>]);
+1071     <span class="keyword">end</span>
+1072     
+1073     <span class="comment">% Compute the media time offset.</span>
+1074     timeOff = peakTime - mediaTimes(i);
+1075     
+1076     <span class="comment">% We reached the end.</span>
+1077     endI = peakI + maxMoveFrames;
+1078     <span class="keyword">if</span> endI &gt;= length(frameDiffs)
+1079         peakFrontEndI = length(frameDiffs);
+1080         
+1081     <span class="comment">% Find a temporary front end for this stage movement.</span>
+1082     <span class="keyword">else</span>
+1083         [minDiff j] = min(frameDiffs((peakI + 1):endI));
+1084         peakFrontEndI = peakI + j;
+1085         
+1086         <span class="comment">% If the temporary front end's frame difference is large, try to</span>
+1087         <span class="comment">% push the front end forwards (further from the stage movement).</span>
+1088         <span class="keyword">if</span> minDiff &gt;= min(otsuThr, gOtsuThr) || <span class="keyword">...</span>
+1089                 (minDiff &gt; max(smallThr, gSmallThr) &amp;&amp; <span class="keyword">...</span>
+1090                 peakFrontEndI &lt; endI &amp;&amp; <span class="keyword">...</span>
+1091                 all(isnan(frameDiffs((peakFrontEndI + 1):endI))))
+1092             peakFrontEndI = endI;
+1093         <span class="keyword">end</span>
+1094     <span class="keyword">end</span>
+1095     
+1096     <span class="comment">% Try to push the temporary front end backwards (closer to the stage</span>
+1097     <span class="comment">% movement).</span>
+1098     j = peakI + 1;
+1099     <span class="keyword">while</span> j &lt; peakFrontEndI
+1100         <span class="keyword">if</span> frameDiffs(j) &lt;= smallThr
+1101             peakFrontEndI = j;
+1102             <span class="keyword">break</span>;
+1103         <span class="keyword">end</span>
+1104         j = j + 1;
+1105     <span class="keyword">end</span>
+1106     
+1107     <span class="comment">% Advance.</span>
+1108     prevPeakI = peakI;
+1109     prevPeakEndI = peakFrontEndI;
+1110 <span class="keyword">end</span>
+1111 
+1112 <span class="comment">% Do the frame differences end with a stage movement?</span>
+1113 <span class="keyword">if</span> prevPeakEndI &gt; length(frameDiffs)
+1114     movesI(<span class="keyword">end</span>,2) = length(frameDiffs);
+1115     frames(movesI(<span class="keyword">end</span>,1):end) = true;
+1116     movesI(end + 1,:) = [length(frameDiffs) length(frameDiffs)] + 1;
+1117     <span class="keyword">if</span> verbose
+1118         smallThrs(end + 1) = gSmallThr;
+1119     <span class="keyword">end</span>
+1120     
+1121 <span class="comment">% Find the front end for the last stage movement.</span>
+1122 <span class="keyword">else</span>
+1123     
+1124     <span class="comment">% Is the Otsu threshold large enough?</span>
+1125     searchDiffs = frameDiffs(prevPeakEndI:end);
+1126     otsuThr = graythresh(searchDiffs);
+1127     isOtsu = otsuThr &gt; gOtsuThr; <span class="comment">% false if no global Otsu</span>
+1128     <span class="keyword">if</span> ~isOtsu
+1129         
+1130         <span class="comment">% Does the Otsu threshold separate the 99% of the small frame</span>
+1131         <span class="comment">% differences from the large ones? And, if there is a global small</span>
+1132         <span class="comment">% threshold, is the Otsu threshold larger?</span>
+1133         smallDiffs = searchDiffs(searchDiffs &lt; otsuThr);
+1134         isOtsu = ~isempty(smallDiffs) &amp;&amp; sum(~isnan(smallDiffs)) &gt; 0 &amp;&amp; <span class="keyword">...</span>
+1135             (isnan(gSmallThr) || otsuThr &gt; gSmallThr) &amp;&amp; <span class="keyword">...</span>
+1136             otsuThr &gt;= median(smallDiffs) + 3 * std(smallDiffs);
+1137         
+1138         <span class="comment">% Does the global Otsu threshold pull out any peaks?</span>
+1139         <span class="keyword">if</span> ~isOtsu
+1140             <span class="keyword">if</span> ~isnan(gOtsuThr) &amp;&amp; sum(searchDiffs &gt; gOtsuThr) &gt; 1
+1141                 otsuThr = gOtsuThr;
+1142                 isOtsu = true;
+1143             <span class="keyword">end</span>
+1144         <span class="keyword">end</span>
+1145     <span class="keyword">end</span>
+1146     
+1147     <span class="comment">% Are there any large frame difference past the last stage movement?</span>
+1148     isExtraPeaks = false;
+1149     <span class="keyword">if</span> ~isOtsu
+1150         peakI = length(frameDiffs) + 1;
+1151         peakBackEndI = length(frameDiffs);
+1152         
+1153     <span class="comment">% There are too many large frame-difference peaks.</span>
+1154     <span class="keyword">else</span>
+1155         [~, indices] = <span class="keyword">...</span>
+1156             <a href="../../../SegWorm/Util/maxPeaksDistHeight.html" class="code" title="function [peaks indices] = maxPeaksDistHeight(x, dist, height)">maxPeaksDistHeight</a>(searchDiffs, maxMoveFrames, otsuThr);
+1157         isExtraPeaks = ~isempty(indices);
+1158         <span class="keyword">if</span> verbose
+1159             endPeaksI = indices + prevPeakEndI - 1;
+1160         <span class="keyword">end</span>
+1161         
+1162         <span class="comment">% Find the first large peak past the last stage movement.</span>
+1163         i = prevPeakEndI;
+1164         <span class="keyword">while</span> i &lt; length(frameDiffs) &amp;&amp; (isnan(frameDiffs(i)) || <span class="keyword">...</span>
+1165                 frameDiffs(i) &lt; otsuThr)
+1166             i = i + 1;
+1167         <span class="keyword">end</span>
+1168         peakI = i;
+1169         
+1170         <span class="comment">% Find a temporary back end for this large peak.</span>
+1171         <span class="comment">% Note: this peak may serve as its own temporary back end.</span>
+1172         startI = max(peakI - maxMoveFrames, prevPeakEndI);
+1173         [minDiff i] = min(fliplr(frameDiffs(startI:peakI)));
+1174         peakBackEndI = peakI - i + 1; <span class="comment">% we flipped to choose the last min</span>
+1175         
+1176         <span class="comment">% If the temporary back end's frame difference is small, try to</span>
+1177         <span class="comment">% push the back end forwards (closer to the stage movement).</span>
+1178         <span class="keyword">if</span> minDiff &lt;= prevSmallThr
+1179             i = peakI - 1;
+1180             <span class="keyword">while</span> i &gt; startI
+1181                 <span class="keyword">if</span> frameDiffs(i) &lt;= prevSmallThr
+1182                     peakBackEndI = i;
+1183                     <span class="keyword">break</span>;
+1184                 <span class="keyword">end</span>
+1185                 i = i - 1;
+1186             <span class="keyword">end</span>
+1187             
+1188         <span class="comment">% If the temporary back end's frame difference is large, try to</span>
+1189         <span class="comment">% push the back end backwards (further from the stage movement).</span>
+1190         <span class="keyword">elseif</span> minDiff &gt;= min(otsuThr, gOtsuThr) || <span class="keyword">...</span>
+1191                 (minDiff &gt; gSmallThr &amp;&amp; peakBackEndI &gt; startI &amp;&amp; <span class="keyword">...</span>
+1192                 all(isnan(frameDiffs(startI:(peakBackEndI - 1)))))
+1193             peakBackEndI = startI;
+1194         <span class="keyword">end</span>
+1195     <span class="keyword">end</span>
+1196             
+1197     <span class="comment">% Compute a threshold for stage movement.</span>
+1198     smallDiffs = frameDiffs(prevPeakEndI:peakBackEndI);
+1199     smallThr = nanmean(smallDiffs) + 3 * nanstd(smallDiffs);
+1200     <span class="keyword">if</span> isnan(smallThr)
+1201         smallThr = prevSmallThr;
+1202     <span class="keyword">end</span>
+1203     <span class="keyword">if</span> (verbose)
+1204         smallThrs(end + 1) = smallThr;
+1205     <span class="keyword">end</span>
+1206     
+1207     <span class="comment">% Find the front end for the last logged stage movement.</span>
+1208     i = prevPeakI;
+1209     <span class="keyword">while</span> i &lt; peakI &amp;&amp; ((isnan(frameDiffs(i)) || <span class="keyword">...</span>
+1210             frameDiffs(i) &gt; smallThr) &amp;&amp; <span class="keyword">...</span>
+1211             (isnan(frameDiffs(i + 1)) || <span class="keyword">...</span>
+1212             frameDiffs(i + 1) &gt; smallThr))
+1213         i = i + 1;
+1214     <span class="keyword">end</span>
+1215     movesI(<span class="keyword">end</span>,2) = i - 1;
+1216     prevPeakEndI = i - 1;
+1217     
+1218     <span class="comment">% Mark the last logged stage movement.</span>
+1219     <span class="keyword">if</span> size(movesI, 1) == 1
+1220         frames(1:movesI(<span class="keyword">end</span>,2)) = true;
+1221     <span class="keyword">else</span>
+1222         frames(movesI(<span class="keyword">end</span>,1):movesI(<span class="keyword">end</span>,2)) = true;
+1223     <span class="keyword">end</span>
+1224     
+1225     <span class="comment">% Are there any large frame-difference peaks after the last logged</span>
+1226     <span class="comment">% stage movement?</span>
+1227     <span class="keyword">if</span> isExtraPeaks
+1228         warning(<span class="string">'findStageMovement:TooManyPeaks'</span>, <span class="keyword">...</span>
+1229             [<span class="string">'There are, approximately, '</span> num2str(length(indices)) <span class="keyword">...</span>
+1230             <span class="string">' large frame-difference peaks after the last stage'</span> <span class="keyword">...</span>
+1231             <span class="string">' movement ends at '</span> num2str((movesI(<span class="keyword">end</span>,2) - 1)/ fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+1232             <span class="string">' seconds (frame '</span> num2str(movesI(<span class="keyword">end</span>,2) - 1) <span class="string">')'</span>]);
+1233     <span class="keyword">end</span>
+1234     
+1235     <span class="comment">% Find the back end for logged stage movements.</span>
+1236     i = peakI - 1;
+1237     <span class="keyword">while</span> i &gt; prevPeakEndI &amp;&amp; (isnan(frameDiffs(i)) || <span class="keyword">...</span>
+1238             frameDiffs(i) &gt; smallThr)
+1239         i = i - 1;
+1240     <span class="keyword">end</span>
+1241     movesI(end + 1,:) = [i + 1, length(frameDiffs) + 1];
+1242     frames(movesI(<span class="keyword">end</span>,1):end) = true;
+1243 <span class="keyword">end</span>
+1244 
+1245 <span class="comment">% Are any of the stage movements considerably small or large?</span>
+1246 <span class="keyword">if</span> (~verbose || isMediaTimesMatched) &amp;&amp; isExtraPeaks
+1247     
+1248     <span class="comment">% Compute the stage movement sizes.</span>
+1249     movesI(i:<span class="keyword">end</span>,:) = [];
+1250     moveSizes = zeros(size(movesI, 1),1);
+1251     <span class="keyword">for</span> j = 2:(size(movesI, 1) - 1)
+1252         
+1253         moveDiffs = frameDiffs(movesI(j,1):movesI(j,2));
+1254         moveSizes(j) = sum(moveDiffs(~isnan(moveDiffs)));
+1255         
+1256 <span class="comment">%         % Interpolate over NaNs.</span>
+1257 <span class="comment">%         moveDiffs = frameDiffs((movesI(j,1) - 1):(movesI(j,2) + 1));</span>
+1258 <span class="comment">%         moveDiffs(isnan(moveDiffs)) = ...</span>
+1259 <span class="comment">%             interp1(find(~isnan(moveDiffs)), ...</span>
+1260 <span class="comment">%             moveDiffs(~isnan(moveDiffs)), find(isnan(moveDiffs)), ...</span>
+1261 <span class="comment">%             'linear');</span>
+1262 <span class="comment">%         moveSizes(j) = sum(moveDiffs(~isnan(moveDiffs(2:end-1))));</span>
+1263     <span class="keyword">end</span>
+1264     
+1265     <span class="comment">% Compute the statistics for stage movement sizes.</span>
+1266     meanMoveSize = mean(moveSizes(2:end));
+1267     stdMoveSize = std(moveSizes(2:end));
+1268     smallMoveThr = meanMoveSize - 2.5 * stdMoveSize;
+1269     largeMoveThr = meanMoveSize + 2.5 * stdMoveSize;
+1270     
+1271     <span class="comment">% Are any of the stage movements considerably small or large?</span>
+1272     <span class="keyword">for</span> i = 2:(size(movesI, 1) - 1)
+1273         
+1274         <span class="comment">% Is the stage movement small?</span>
+1275         <span class="keyword">if</span> moveSizes(i) &lt; smallMoveThr
+1276             
+1277             <span class="comment">% Report the warning.</span>
+1278             warning(<span class="string">'findStageMovement:ShortMove'</span>, <span class="keyword">...</span>
+1279                 [<span class="string">'Stage movement '</span> num2str(i) <span class="keyword">...</span>
+1280                 <span class="string">' at media time '</span> num2str(mediaTimes(i), <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+1281                 <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+1282                 num2str(round(mediaTimes(i) * fps)) <span class="keyword">...</span>
+1283                 <span class="string">'), spanning from '</span> <span class="keyword">...</span>
+1284                 num2str((movesI(i,1) - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+1285                 <span class="string">' seconds (frame '</span> num2str(movesI(i,1) - 1) <span class="keyword">...</span>
+1286                 <span class="string">') to '</span> num2str((movesI(i,2) - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+1287                 <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+1288                 num2str(movesI(i,2) - 1) <span class="string">'), is considerably small'</span>]);
+1289             
+1290         <span class="comment">% Is the stage movement large?</span>
+1291         <span class="keyword">elseif</span> moveSizes(i) &gt; largeMoveThr
+1292             
+1293             <span class="comment">% Report the warning.</span>
+1294             warning(<span class="string">'findStageMovement:LongMove'</span>, <span class="keyword">...</span>
+1295                 [<span class="string">'Stage movement '</span> num2str(i) <span class="keyword">...</span>
+1296                 <span class="string">' at media time '</span> num2str(mediaTimes(i), <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+1297                 <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+1298                 num2str(round(mediaTimes(i) * fps)) <span class="keyword">...</span>
+1299                 <span class="string">'), spanning from '</span> <span class="keyword">...</span>
+1300                 num2str((movesI(i,1) - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+1301                 <span class="string">' seconds (frame '</span> num2str(movesI(i,1) - 1) <span class="keyword">...</span>
+1302                 <span class="string">') to '</span> num2str((movesI(i,2) - 1) / fps, <span class="string">'%.3f'</span>) <span class="keyword">...</span>
+1303                 <span class="string">' seconds (frame '</span> <span class="keyword">...</span>
+1304                 num2str(movesI(i,2) - 1) <span class="string">'), is considerably large'</span>]);
+1305         <span class="keyword">end</span>
+1306     <span class="keyword">end</span>
+1307 <span class="keyword">end</span>
+1308 
+1309 <span class="comment">% Show the stage movements.</span>
+1310 <span class="keyword">if</span> verbose
+1311     
+1312     <span class="comment">% Open up a big figure.</span>
+1313     isGUI = true;
+1314     <span class="keyword">if</span> isempty(guiHandle)
+1315         figure(<span class="string">'OuterPosition'</span>, [50 50 1280 960]);
+1316         guiHandle = axes;
+1317         isGUI = false;
+1318     <span class="keyword">end</span>
+1319     hold on;
+1320     
+1321     <span class="comment">% Plot the video frame differences. Then plot the offset stage movement</span>
+1322     <span class="comment">% times and their otsu thresholds on the same axes.</span>
+1323     [ax h1 h2] = plotyy(guiHandle, 0:(length(frameDiffs) - 1), <span class="keyword">...</span>
+1324         frameDiffs, timeOffs, otsuThrs);
+1325     set(ax(2), <span class="string">'XAxisLocation'</span>, <span class="string">'top'</span>);
+1326     set(h1, <span class="string">'Color'</span>, <span class="string">'r'</span>);
+1327     set(h2, <span class="string">'Color'</span>, <span class="string">'b'</span>, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>, <span class="string">'Marker'</span>, <span class="string">'.'</span>);
+1328     
+1329     <span class="comment">% Setup the axes colors.</span>
+1330     set(ax(1), <span class="string">'XColor'</span>, <span class="string">'r'</span>, <span class="string">'YColor'</span>, <span class="string">'r'</span>);
+1331     set(ax(2), <span class="string">'XColor'</span>, <span class="string">'k'</span>, <span class="string">'YColor'</span>, <span class="string">'k'</span>);
+1332     
+1333     <span class="comment">% Setup the axes numbering.</span>
+1334     linkaxes(ax, <span class="string">'y'</span>);
+1335     xlim(ax(1), [0 (length(frameDiffs) - 1)]);
+1336     xlim(ax(2), [0 ((length(frameDiffs) - 1) / fps)]);
+1337     set(ax(2), <span class="string">'YTick'</span>, []);
+1338     set(zoom(guiHandle), <span class="string">'Motion'</span>, <span class="string">'horizontal'</span>, <span class="string">'Enable'</span>, <span class="string">'on'</span>);
+1339     
+1340     <span class="comment">% Setup the axes labels.</span>
+1341     xlabel(ax(1), <span class="string">'Frame'</span>);
+1342     ylabel(ax(1), <span class="string">'Subsequent Frame-Difference Variance'</span>);
+1343     xlabel(ax(2), <span class="string">'Time (seconds)'</span>);
+1344     <span class="keyword">if</span> ~isGUI <span class="comment">% underscores confuse TeX</span>
+1345         title(ax(2), strrep(logFile, <span class="string">'_'</span>, <span class="string">'\_'</span>));
+1346     <span class="keyword">end</span>
+1347     
+1348     <span class="comment">% Setup the legends.</span>
+1349     legends1{1} = <span class="string">'Variance of Subsequent Frame Differences'</span>;
+1350     legends2 = [];
+1351     <span class="keyword">if</span> ~isempty(timeOffs)
+1352         legends2{end + 1} = <span class="keyword">...</span>
+1353             <span class="string">'Offset Movement Times at Otsu Threshold Height'</span>;
+1354     <span class="keyword">end</span>
+1355     
+1356     <span class="comment">% Hold on.</span>
+1357     hold(ax(1), <span class="string">'on'</span>);
+1358     hold(ax(2), <span class="string">'on'</span>);
+1359     
+1360     <span class="comment">% Plot the offset stage movement times and their otsu thresholds.</span>
+1361     <span class="keyword">if</span> verbose &gt; 1
+1362         text(timeOffs, otsuThrs, num2str((1:length(timeOffs))'), <span class="keyword">...</span>
+1363             <span class="string">'Color'</span>, <span class="string">'b'</span>, <span class="string">'Parent'</span>, ax(2));
+1364     <span class="keyword">end</span>
+1365     
+1366     <span class="comment">% Pretty plot the stage movements.</span>
+1367     <span class="comment">% Note: earlier, we shifted the frame differences over one to align</span>
+1368     <span class="comment">% them with the video frames. Due to differentiation and this shift,</span>
+1369     <span class="comment">% the large differences at the end of stage movements represent a drop</span>
+1370     <span class="comment">% in variance and, therefore, a non-movement frame. Visually, it's much</span>
+1371     <span class="comment">% easier to recognize correct stage movement detection by aligning the</span>
+1372     <span class="comment">% start and end of large differences with frame status. Therefore, we</span>
+1373     <span class="comment">% extend the end of detected stage movements by one in order to achieve</span>
+1374     <span class="comment">% visual alignment of large frame differences and stage movement intervals.</span>
+1375     plotFrames = frames;
+1376     <span class="keyword">if</span> movesI(1,2) &gt; 0
+1377         plotFrames(movesI(1,2) + 1) = true;
+1378     <span class="keyword">end</span>
+1379     plotFrames(movesI(2:(end - 1),2) + 1) = true;
+1380     plot(ax(1), 0:(length(plotFrames) - 1), plotFrames, <span class="string">'k'</span>);
+1381     <span class="keyword">if</span> ~isempty(plotFrames)
+1382         legends1{end + 1} = <span class="keyword">...</span>
+1383             <span class="string">'Stage Movements (Shifted for Variance Alignment)'</span>;
+1384     <span class="keyword">end</span>
+1385     
+1386     <span class="comment">% Plot the small thresholds.</span>
+1387     plotThrs(1:length(frames)) = NaN;
+1388     startI = 1;
+1389     <span class="keyword">if</span> movesI(1,2) &gt; 0
+1390         startI = movesI(1,2) + 2;
+1391     <span class="keyword">end</span>
+1392     plotThrs(startI:(movesI(2,1) - 1)) = smallThrs(1);
+1393     <span class="keyword">for</span> i = 2:(size(movesI, 1) - 1)
+1394         plotThrs((movesI(i,2) + 2):(movesI(i + 1,1)) - 1) = smallThrs(i);
+1395     <span class="keyword">end</span>
+1396     plot(ax(1), 0:(length(plotThrs) - 1), plotThrs, <span class="string">'c'</span>);
+1397     <span class="keyword">if</span> ~isempty(plotThrs)
+1398         legends1{end + 1} = <span class="string">'Non-movement Thresholds'</span>;
+1399     <span class="keyword">end</span>
+1400     
+1401     <span class="comment">% Plot the matched video frame difference peaks.</span>
+1402     brown = [.5 .3 .1];
+1403     plot(ax(1), peaksI - 1, frameDiffs(peaksI), <span class="string">'.'</span>, <span class="string">'Color'</span>, brown);
+1404     <span class="keyword">if</span> ~isempty(peaksI)
+1405         legends1{end + 1} = <span class="string">'Movement Peaks'</span>;
+1406     <span class="keyword">end</span>
+1407     <span class="keyword">if</span> verbose &gt; 1
+1408         matchedPeaksStr = num2str((1:length(peaksI))');
+1409         text(peaksI - 1, frameDiffs(peaksI), matchedPeaksStr, <span class="keyword">...</span>
+1410             <span class="string">'Color'</span>, brown, <span class="string">'Parent'</span>, ax(1));
+1411     <span class="keyword">end</span>
+1412     
+1413     <span class="comment">% Plot the unmatched video frame difference peaks.</span>
+1414     yellow = [1 .8 .2];
+1415     plot(ax(1), endPeaksI - 1, frameDiffs(endPeaksI), <span class="string">'.'</span>, <span class="keyword">...</span>
+1416         <span class="string">'Color'</span>, yellow);
+1417     <span class="keyword">if</span> ~isempty(endPeaksI)
+1418         legends1{end + 1} = <span class="string">'Unmatched Peaks'</span>;
+1419     <span class="keyword">end</span>
+1420        
+1421     <span class="comment">% Plot the matched stage movement times and their small thresholds.</span>
+1422     matchedMediaTimes = mediaTimes(1:length(peaksI));
+1423     matchedSmallThrs = [gSmallThr smallThrs(1:(length(peaksI) - 1))];
+1424     plot(ax(2), matchedMediaTimes, matchedSmallThrs, <span class="string">'g.'</span>);
+1425     <span class="keyword">if</span> ~isempty(matchedMediaTimes)
+1426         legends2{end + 1} = <span class="keyword">...</span>
+1427             <span class="string">'Movement Times at Non-Movement Threshold Height'</span>;
+1428     <span class="keyword">end</span>
+1429     <span class="keyword">if</span> verbose &gt; 1
+1430         text(matchedMediaTimes, matchedSmallThrs, matchedPeaksStr, <span class="keyword">...</span>
+1431             <span class="string">'Color'</span>, <span class="string">'g'</span>, <span class="string">'Parent'</span>,ax(2));
+1432     <span class="keyword">end</span>
+1433     
+1434     <span class="comment">% Plot the unmatched stage movement times.</span>
+1435     unmatchedMediaTimes = <span class="keyword">...</span>
+1436         mediaTimes((length(peaksI) + 1):length(mediaTimes));
+1437     unmatchedMediaTimesY = zeros(length(unmatchedMediaTimes), 1);
+1438     plot(ax(2), unmatchedMediaTimes, unmatchedMediaTimesY, <span class="string">'m.'</span>);
+1439     <span class="keyword">if</span> ~isempty(unmatchedMediaTimes)
+1440         legends2{end + 1} = <span class="string">'Unmatched Stage Movements'</span>;
+1441     <span class="keyword">end</span>
+1442     <span class="keyword">if</span> verbose &gt; 1
+1443         text(unmatchedMediaTimes, unmatchedMediaTimesY, <span class="keyword">...</span>
+1444             num2str(((length(peaksI) + 1):length(mediaTimes))'), <span class="keyword">...</span>
+1445             <span class="string">'Color'</span>, <span class="string">'m'</span>, <span class="string">'Parent'</span>, ax(2));
+1446     <span class="keyword">end</span>
+1447     
+1448     <span class="comment">% Show the legend.</span>
+1449     legends1((end + 1):(end + length(legends2))) = legends2;
+1450     legend(ax(1), legends1, <span class="string">'Location'</span>, <span class="string">'NorthEast'</span>);
+1451     
+1452     <span class="comment">% Hold off.</span>
+1453     hold(ax(1), <span class="string">'off'</span>);
+1454     hold(ax(2), <span class="string">'off'</span>);
+1455     
+1456     <span class="comment">% Report the unmatched stage movements.</span>
+1457     <span class="keyword">if</span> ~isempty(unmatchedMediaTimes)
+1458         error(<span class="string">'findStageMovement:UnmatchedStageMovements'</span>, <span class="keyword">...</span>
+1459             [<span class="string">'There are '</span> num2str(length(unmatchedMediaTimes)) <span class="keyword">...</span>
+1460             <span class="string">' stage movements that couldn''t be matched to '</span> <span class="keyword">...</span>
+1461             <span class="string">'large, appropriately-timed frame differences'</span>]);
+1462     <span class="keyword">end</span>
+1463 <span class="keyword">end</span>
+1464 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

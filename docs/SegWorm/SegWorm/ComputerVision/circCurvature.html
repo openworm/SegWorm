@@ -1,0 +1,299 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of circCurvature</title>
+  <meta name="keywords" content="circCurvature">
+  <meta name="description" content="CIRCCURVATURE Compute the curvature for a clockwise, circularly-connected">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>circCurvature
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CIRCCURVATURE Compute the curvature for a clockwise, circularly-connected</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function angles = circCurvature(points, edgeLength, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CIRCCURVATURE Compute the curvature for a clockwise, circularly-connected
+vector of points.
+
+   ANGLES = CIRCCURVATURE(POINTS, EDGELENGTH)
+
+   ANGLES = CIRCCURVATURE(POINTS, EDGELENGTH, CHAINCODELENGTHS)
+
+   Inputs:
+       points           - the vector of clockwise, circularly-connected
+                          points ((x,y) pairs).
+       edgeLength       - the length of edges from the angle vertex.
+       chainCodeLengths - the chain-code length at each point;
+                          if empty, the array indices are used instead
+   Output:
+       angles - the angles of curvature per point (0 = none to +-180 =
+                maximum curvature). The sign represents whether the angle
+                is convex (+) or concave (-).
+
+ See also <a href="curvature.html" class="code" title="function angles = curvature(points, edgeLength, varargin)">CURVATURE</a>, <a href="circComputeChainCodeLengths.html" class="code" title="function lengths = circComputeChainCodeLengths(points)">CIRCCOMPUTECHAINCODELENGTHS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Segmentation/cleanWorm.html" class="code" title="function contour = cleanWorm(contour, wormSegSize)">cleanWorm</a>	CLEANWORM Clean up the worm contour by connecting any splits ends.</li><li><a href="../../SegWorm/Worms/Segmentation/cleanWorm2.html" class="code" title="function contour = cleanWorm2(contour, wormSegSize)">cleanWorm2</a>	CLEANWORM2 Clean up the worm contour by connecting any splits ends.</li><li><a href="../../SegWorm/Worms/Segmentation/coiledSkeleton.html" class="code" title="function worm = coiledSkeleton(oContour, iContour, sWormSegs)">coiledSkeleton</a>	COILEDSKELETON Summary of this function goes here</li><li><a href="../../SegWorm/Worms/Segmentation/loopedSkeleton.html" class="code" title="function worm = loopedSkeleton(oContour, iContour, wormSegSize)">loopedSkeleton</a>	LOOPEDSKELETON Summary of this function goes here</li><li><a href="../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li><li><a href="../../SegWorm/Worms/Util/norm2Worm.html" class="code" title="function worm = norm2Worm(frame, vulvaContour, nonVulvaContour,skeleton, skeletonAngles, inOutTouch, skeletonLength, widths,headArea, tailArea, vulvaArea, nonVulvaArea,origin, pixel2MicronScale, rotation, worm)">norm2Worm</a>	NORM2WORM Convert normalized worm information into a worm structure.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function angles = circCurvature(points, edgeLength, varargin)</a>
+0002 <span class="comment">%CIRCCURVATURE Compute the curvature for a clockwise, circularly-connected</span>
+0003 <span class="comment">%vector of points.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   ANGLES = CIRCCURVATURE(POINTS, EDGELENGTH)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   ANGLES = CIRCCURVATURE(POINTS, EDGELENGTH, CHAINCODELENGTHS)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Inputs:</span>
+0010 <span class="comment">%       points           - the vector of clockwise, circularly-connected</span>
+0011 <span class="comment">%                          points ((x,y) pairs).</span>
+0012 <span class="comment">%       edgeLength       - the length of edges from the angle vertex.</span>
+0013 <span class="comment">%       chainCodeLengths - the chain-code length at each point;</span>
+0014 <span class="comment">%                          if empty, the array indices are used instead</span>
+0015 <span class="comment">%   Output:</span>
+0016 <span class="comment">%       angles - the angles of curvature per point (0 = none to +-180 =</span>
+0017 <span class="comment">%                maximum curvature). The sign represents whether the angle</span>
+0018 <span class="comment">%                is convex (+) or concave (-).</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% See also CURVATURE, CIRCCOMPUTECHAINCODELENGTHS</span>
+0021 
+0022 <span class="comment">% Are there chain-code lengths?</span>
+0023 <span class="keyword">if</span> length(varargin) == 1
+0024     chainCodeLengths = varargin{1};
+0025 <span class="keyword">else</span>
+0026     chainCodeLengths = [];
+0027 <span class="keyword">end</span>
+0028 
+0029 <span class="comment">% Are the the points 2 dimensional?</span>
+0030 <span class="keyword">if</span> ndims(points) ~=2 || (size(points, 1) ~= 2 &amp;&amp; size(points, 2) ~= 2)
+0031     error(<span class="string">'circCurvature:PointsNot2D'</span>, <span class="keyword">...</span>
+0032         <span class="string">'The matrix of points must be 2 dimensional'</span>);
+0033 <span class="keyword">end</span>
+0034 
+0035 <span class="comment">% Orient the points as a N-by-2 matrix.</span>
+0036 isTransposed = false;
+0037 <span class="keyword">if</span> size(points, 2) ~= 2
+0038     points = points';
+0039     isTransposed = true;
+0040 <span class="keyword">end</span>
+0041 
+0042 <span class="comment">% Are there enough points?</span>
+0043 <span class="keyword">if</span> (isempty(chainCodeLengths) &amp;&amp; size(points,1) &lt; 2 * edgeLength + 1) || <span class="keyword">...</span>
+0044         (~isempty(chainCodeLengths) &amp;&amp; <span class="keyword">...</span>
+0045         chainCodeLengths(size(points,1)) &lt; 2 * edgeLength + 1)
+0046     warning(<span class="string">'circCurvature:EdgesTooLong'</span>, <span class="keyword">...</span>
+0047         <span class="string">'The length of the edges from the vertex exceeds the number of points'</span>);
+0048     angles(1:size(points, 1),1) = nan;
+0049     <span class="keyword">return</span>;
+0050 <span class="keyword">end</span>
+0051 
+0052 <span class="comment">% Pre-allocate memory.</span>
+0053 angles(1:size(points,1),1) = NaN; <span class="comment">% orient the vector as rows</span>
+0054 
+0055 <span class="comment">% Compute the curvature using the array indices for length.</span>
+0056 <span class="keyword">if</span> isempty(chainCodeLengths)
+0057 
+0058     <span class="comment">% Initialize the edges.</span>
+0059     edgeLength = round(edgeLength);
+0060     p1 = [points((end - edgeLength + 1):<span class="keyword">end</span>,:); <span class="keyword">...</span>
+0061         points(1:(end - edgeLength),:)];
+0062     p2 = [points((edgeLength + 1):<span class="keyword">end</span>,:); points(1:edgeLength,:)];
+0063     
+0064     <span class="comment">% Use the difference in tangents to measure the angle.</span>
+0065     angles = atan2(points(:,1) - p2(:,1), points(:,2) - p2(:,2)) - <span class="keyword">...</span>
+0066         atan2(p1(:,1) - points(:,1), p1(:,2) - points(:,2));
+0067     <span class="keyword">for</span> i = 1:length(angles)
+0068         <span class="keyword">if</span> angles(i) &gt; pi
+0069             angles(i) = angles(i) - 2 * pi;
+0070         <span class="keyword">elseif</span> angles(i) &lt; -pi
+0071             angles(i) = angles(i) + 2 * pi;
+0072         <span class="keyword">end</span>
+0073         angles(i) = angles(i) * 180 / pi;
+0074     <span class="keyword">end</span>
+0075     
+0076 <span class="comment">% Compute the curvature using the chain-code lengths.</span>
+0077 <span class="keyword">else</span>
+0078     
+0079     <span class="comment">% Initialize the first edge.</span>
+0080     p1I = size(points,1);
+0081     pvI = 1;
+0082     pvLength = chainCodeLengths(size(points, 1)) + chainCodeLengths(pvI);
+0083     e1 = pvLength - chainCodeLengths(p1I);
+0084     <span class="keyword">while</span> p1I &gt; 0 &amp;&amp; e1 &lt; edgeLength
+0085         p1I = p1I - 1;
+0086         e1 = pvLength - chainCodeLengths(p1I);
+0087     <span class="keyword">end</span>
+0088     
+0089     <span class="comment">% Compute the angles.</span>
+0090     sqrt2 = sqrt(2);
+0091     p2I = pvI;
+0092     <span class="keyword">while</span> pvI &lt;= size(points, 1)
+0093         
+0094         <span class="comment">% Compute the second edge length.</span>
+0095         <span class="keyword">if</span> p2I &gt;= pvI
+0096             e2 = chainCodeLengths(p2I) - chainCodeLengths(pvI);
+0097             
+0098         <span class="comment">% Compute the wrapped, second edge length.</span>
+0099         <span class="keyword">else</span>
+0100             e2 = chainCodeLengths(size(points, 1)) + <span class="keyword">...</span>
+0101                 chainCodeLengths(p2I) - chainCodeLengths(pvI);
+0102         <span class="keyword">end</span>
+0103         
+0104         <span class="comment">% Find the second edge.</span>
+0105         <span class="keyword">while</span> e2 &lt; edgeLength
+0106             p2I = p2I + 1;
+0107             
+0108             <span class="comment">% Wrap.</span>
+0109             <span class="keyword">if</span> p2I &gt; size(points, 1);
+0110                 p2I = p2I - size(points, 1);
+0111             <span class="keyword">end</span>
+0112             
+0113             <span class="comment">% Compute the second edge length.</span>
+0114             <span class="keyword">if</span> p2I &gt;= pvI
+0115                 e2 = chainCodeLengths(p2I) - chainCodeLengths(pvI);
+0116                 
+0117             <span class="comment">% Compute the wrapped, second edge length.</span>
+0118             <span class="keyword">else</span>
+0119                 e2 = chainCodeLengths(size(points, 1)) + <span class="keyword">...</span>
+0120                     chainCodeLengths(p2I) - chainCodeLengths(pvI);
+0121             <span class="keyword">end</span>
+0122         <span class="keyword">end</span>
+0123         
+0124         <span class="comment">% Compute fractional pixels for the first edge.</span>
+0125         <span class="comment">% Note: the first edge is equal to or just over the requested edge</span>
+0126         <span class="comment">% length. Therefore, the fractional pixels for the requested length</span>
+0127         <span class="comment">% lie on the line separating point 1 (index = p1I) from the next</span>
+0128         <span class="comment">% closest point to the vertex (index = p1I + 1). Now, we need to</span>
+0129         <span class="comment">% add the difference between the requested and real distance (de1)</span>
+0130         <span class="comment">% to point p1I, going in a line towards p1I + 1. Therefore, we need</span>
+0131         <span class="comment">% to solve the differences between the requested and real x &amp; y</span>
+0132         <span class="comment">% (dx1 &amp; dy1). Remember the requested x &amp; y lie on the slope</span>
+0133         <span class="comment">% between point p1I and p1I + 1. Therefore, dy1 = m * dx1 where m</span>
+0134         <span class="comment">% is the slope. We want to solve de1 = sqrt(dx1^2 + dy1^2).</span>
+0135         <span class="comment">% Plugging in m, we get de1 = sqrt(dx1^2 + (m*dx1)^2). Then</span>
+0136         <span class="comment">% re-arrange the equality to solve:</span>
+0137         <span class="comment">%</span>
+0138         <span class="comment">% dx1 = de1/sqrt(1 + m^2) and dy1 = de1/sqrt(1 + (1/m)^2)</span>
+0139         <span class="comment">%</span>
+0140         <span class="comment">% But, Matlab uses (r,c) = (y,x), so x &amp; y are reversed.</span>
+0141         de1 = e1 - edgeLength;
+0142         <span class="keyword">if</span> p1I &lt; size(points, 1)
+0143             nextP1I = p1I + 1;
+0144         <span class="keyword">else</span>
+0145             nextP1I = p1I + 1 - size(points, 1);
+0146         <span class="keyword">end</span>
+0147         dp1 = points(nextP1I,:) - points(p1I,:);
+0148         <span class="keyword">if</span> any(dp1 == 0)
+0149             p1 = de1 .* sign(dp1) + points(p1I,:);
+0150         <span class="keyword">elseif</span> all(abs(dp1) == 1)
+0151             p1 = (de1 / sqrt2) .* dp1 + points(p1I,:);
+0152         <span class="keyword">else</span>
+0153             dy1 = de1 / sqrt(1 + (dp1(2) / dp1(1)) ^ 2);
+0154             dx1 = de1 / sqrt(1 + (dp1(1) / dp1(2)) ^ 2);
+0155             p1 = [dy1 dx1] .* sign(dp1) + points(p1I,:);
+0156         <span class="keyword">end</span>
+0157         
+0158         <span class="comment">% Compute fractional pixels for the second edge.</span>
+0159         de2 = e2 - edgeLength;
+0160         <span class="keyword">if</span> p2I &gt; 1
+0161             prevP2I = p2I - 1;
+0162         <span class="keyword">else</span>
+0163             prevP2I = p2I - 1 + size(points, 1);
+0164         <span class="keyword">end</span>
+0165         dp2 = points(prevP2I,:) - points(p2I,:);
+0166         <span class="keyword">if</span> any(dp2 == 0)
+0167             p2 = de2 .* sign(dp2) + points(p2I,:);
+0168         <span class="keyword">elseif</span> all(abs(dp2) == 1)
+0169             p2 = (de2 / sqrt2) .* dp2 + points(p2I,:);
+0170         <span class="keyword">else</span>
+0171             dy2 = de2 / sqrt(1 + (dp2(2) / dp2(1)) ^ 2);
+0172             dx2 = de2 / sqrt(1 + (dp2(1) / dp2(2)) ^ 2);
+0173             p2 = [dy2 dx2] .* sign(dp2) + points(p2I,:);
+0174         <span class="keyword">end</span>
+0175         
+0176         <span class="comment">% Use the difference in tangents to measure the angle.</span>
+0177         angles(pvI) = <span class="keyword">...</span>
+0178             atan2(points(pvI,1) - p2(1), points(pvI,2) - p2(2)) - <span class="keyword">...</span>
+0179             atan2(p1(1) - points(pvI,1), p1(2) - points(pvI,2));
+0180         <span class="keyword">if</span> angles(pvI) &gt; pi
+0181             angles(pvI) = angles(pvI) - 2 * pi;
+0182         <span class="keyword">elseif</span> angles(pvI) &lt; -pi
+0183             angles(pvI) = angles(pvI) + 2 * pi;
+0184         <span class="keyword">end</span>
+0185         angles(pvI) = angles(pvI) * 180 / pi;
+0186         
+0187         <span class="comment">% Advance.</span>
+0188         pvI = pvI + 1;
+0189         
+0190         <span class="comment">% Compute the first edge length.</span>
+0191         <span class="keyword">if</span> pvI &lt;= size(points, 1)
+0192             <span class="keyword">if</span> p1I &lt;= pvI
+0193                 e1 = chainCodeLengths(pvI) - chainCodeLengths(p1I);
+0194                 
+0195             <span class="comment">% Compute the wrapped, second edge length.</span>
+0196             <span class="keyword">else</span>
+0197                 e1 = chainCodeLengths(size(points, 1)) + <span class="keyword">...</span>
+0198                     chainCodeLengths(pvI) - chainCodeLengths(p1I);
+0199             <span class="keyword">end</span>
+0200             
+0201             <span class="comment">% Find the first edge.</span>
+0202             nextE1 = e1;
+0203             nextP1I = p1I;
+0204             <span class="keyword">while</span> nextE1 &gt; edgeLength
+0205                 
+0206                 <span class="comment">% Advance.</span>
+0207                 e1 = nextE1;
+0208                 p1I = nextP1I;
+0209                 nextP1I = p1I + 1;
+0210                 
+0211                 <span class="comment">% Wrap.</span>
+0212                 <span class="keyword">if</span> nextP1I &gt; size(points, 1);
+0213                     nextP1I = nextP1I - size(points, 1);
+0214                 <span class="keyword">end</span>
+0215                 
+0216                 <span class="comment">% Compute the first edge length.</span>
+0217                 <span class="keyword">if</span> nextP1I &lt;= pvI
+0218                     nextE1 = chainCodeLengths(pvI) - <span class="keyword">...</span>
+0219                         chainCodeLengths(nextP1I);
+0220                     
+0221                 <span class="comment">% Compute the wrapped, second edge length.</span>
+0222                 <span class="keyword">else</span>
+0223                     nextE1 = chainCodeLengths(size(points, 1)) + <span class="keyword">...</span>
+0224                         chainCodeLengths(pvI) - chainCodeLengths(nextP1I);
+0225                 <span class="keyword">end</span>
+0226             <span class="keyword">end</span>
+0227         <span class="keyword">end</span>
+0228     <span class="keyword">end</span>
+0229 <span class="keyword">end</span>
+0230 
+0231 <span class="comment">% Transpose the angles.</span>
+0232 <span class="keyword">if</span> isTransposed
+0233     angles = angles';
+0234 <span class="keyword">end</span>
+0235 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

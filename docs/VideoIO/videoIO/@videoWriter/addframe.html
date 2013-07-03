@@ -1,0 +1,414 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of addframe</title>
+  <meta name="keywords" content="addframe">
+  <meta name="description" content="ADDFRAME  Add video frame to VIDEOWRITER stream.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html @videoWriter -->
+<h1>addframe
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ADDFRAME  Add video frame to VIDEOWRITER stream.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function addframe(vw,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">ADDFRAME  Add video frame to VIDEOWRITER stream.
+   ADDFRAME(VW,IMG) appends the data in IMG to VW, which is created
+     with VIDEOWRITER.  IMG can be either a grayscale image (M-by-N) or a
+     truecolor image (M-by-N-by-3) of logical, double, or uint8  precision.
+     IMG is autoconverted to a uint8 image as follows:  
+
+          type     assumed range
+          ----     -------------
+          uint8    0 to 255
+          double   0 to 1
+          logical  0 to 1
+
+     If IMG is a different size than needed for the video file, it will be
+     resized with the highest quality method available of IMRESIZE. 
+
+     Returns 0 on failure and 1 on success.
+
+     STANDARD EXAMPLE:
+       vw = videoWriter('example1.avi');
+       for i=1:10
+         addframe(vw, rand(100)); % a double grayscale image
+       end
+       vw = close(vw);
+
+   ADDFRAME(VW,IMG1,IMG2,IMG3,...) adds multiple frames to a video stream.
+
+   ADDFRAME(VW,MOV) appends the frame(s) contained in the MATLAB movie MOV
+     to the AVI file.  The CDATA field is interpreted in the same way that
+     ADDFRAME(VW,IMG) interprets images.
+
+   ADDFRAME(VW,H) captures a frame from the figure handle H, and appends
+     this frame to the video stream. The frame is rendered into an
+     offscreen array before it is appended to the video stream.  This
+     syntax should not be used if the graphics in the animation are using
+     XOR graphics. 
+
+     FIGURE HANDLE EXAMPLE:
+       fig = gcf;
+       hax = gca;
+       vw = videoWriter('example2.avi', 'width',320, 'height',240);
+       for i=1:10
+         image(k.*peaks,'parent',hax);
+         set(gca,'Zlim',[-20 20]); 
+         addframe(vw,fig);
+       end
+       vw = close(vw);
+
+     If the animation is using XOR graphics, use GETFRAME instead to
+     capture the graphics into one frame of a MATLAB movie and then use
+     the syntax ADDFRAME(VW,MOV) as in the example below. GETFRAME will
+     perform a snapshot of the onscreen image. 
+
+     GETFRAME/MOV EXAMPLE:
+       fig=figure;
+       set(fig,'DoubleBuffer','on');
+       set(gca,'xlim',[-80 80],'ylim',[-80 80],...
+           'nextplot','replace','Visible','off')
+       vw = videoWriter('example3.avi', 'width',320, 'height',240);
+       x = -pi:.1:pi;
+       radius = [0:length(x)];
+       for i=1:length(x)
+         h = patch(sin(x)*radius(i),cos(x)*radius(i),[abs(cos(x(i))) 0 0]);
+         set(h,'EraseMode','xor');
+         frame = getframe(gca);
+         addframe(vw,frame);
+       end
+       vw = close(vw);
+
+   COMPARISON WITH AVIFILE/ADDFRAME
+     This version of VIDEOWRITER/ADDFRAME was initially adapted from
+     MathWorks's AVIFILE/ADDFRAME.  We use undocumented features of Matlab
+     to allow capturing images from figure handles.  This method works
+     largely the same as MathWork's, with the following differences:
+
+     Unlike AVIFILE/ADDFRAME, this method does not support indexed images:
+     2D arrays are treated as grayscale images, not as indexed ones.  The
+     user may use Matlab's IND2RGB or IND2GRAY to convert indexed images
+     to rgb or grayscale images.
+
+     VIDEOWRITER/ADDFRAME also does not currently pad frames that are not
+     a multiple of 4 in width.  If the width and height do not match the
+     expected, the frame is rescaled instead using the highest known
+     quality method of IMRESIZE.
+
+     Matlab's AVIFILE/ADDFRAME allows the user to supply an axis handle or
+     a figure handle; however, when supplying an axis handle, the entire
+     figure is captured, not just the axis in question.  Since we consider
+     this to be counter-intuitive, we do not support capturing based on
+     the axis handle.  Furthermore, we would like to reserve the right to
+     actually cropping out just the axis in question if we add axis handle
+     support in the future.  If you have an axis handle and need the
+     figure handle, use GET(MYAXISHANDLE,'parent').
+
+     As of Matlab R2007a, AVIFILE/ADDFRAME makes a number of assumptions
+     when using the figure handle method.  It also modifies properties
+     of the figure window without restoring them.  We restore all
+     changed properties and we are robust to the figure 'units' property.
+
+   SEE ALSO
+     <a href="videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>
+     videoWriter/close
+     avifile/addframe
+     tests/addFrameDemo
+     tests/videoWriterDemo
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>	INFO=GET(VR)</li><li><a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>	INFO=GET(VW)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/tests/addFrameDemo.html" class="code" title="function addFrameDemo">addFrameDemo</a>	addFrameDemo</li><li><a href="../../videoIO/tests/longWriteTest.html" class="code" title="function longWriteTest(plugin, readerPlugin)">longWriteTest</a>	longWriteTests(plugin)</li><li><a href="../../videoIO/tests/resizeTest.html" class="code" title="function resizeTest(plugin)">resizeTest</a>	writeTests(plugin)</li><li><a href="../../videoIO/tests/testBitRate.html" class="code" title="function testBitRate(varargin)">testBitRate</a>	testBitRate</li><li><a href="../../videoIO/tests/testGet.html" class="code" title="function testGet(plugin)">testGet</a>	testGet</li><li><a href="../../videoIO/tests/testGopSize.html" class="code" title="function testGopSize(varargin)">testGopSize</a>	testGopSize</li><li><a href="../../videoIO/tests/testQuality.html" class="code" title="function testQuality(varargin)">testQuality</a>	testQuality</li><li><a href="../../videoIO/tests/videoWriterDemo.html" class="code" title="">videoWriterDemo</a>	videoWriterDemo</li><li><a href="../../videoIO/tests/writeTests.html" class="code" title="function writeTests(plugin, readerPlugin)">writeTests</a>	writeTests(plugin)</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function addSingleDataFrame(vw,img)</a></li><li><a href="#_sub2" class="code">function m = defaultResizeMethod</a></li><li><a href="#_sub3" class="code">function inputType = getInputType(frame)</a></li><li><a href="#_sub4" class="code">function frame = extractFrameFromFigure(fig)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function addframe(vw,varargin)</a>
+0002 <span class="comment">%ADDFRAME  Add video frame to VIDEOWRITER stream.</span>
+0003 <span class="comment">%   ADDFRAME(VW,IMG) appends the data in IMG to VW, which is created</span>
+0004 <span class="comment">%     with VIDEOWRITER.  IMG can be either a grayscale image (M-by-N) or a</span>
+0005 <span class="comment">%     truecolor image (M-by-N-by-3) of logical, double, or uint8  precision.</span>
+0006 <span class="comment">%     IMG is autoconverted to a uint8 image as follows:</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%          type     assumed range</span>
+0009 <span class="comment">%          ----     -------------</span>
+0010 <span class="comment">%          uint8    0 to 255</span>
+0011 <span class="comment">%          double   0 to 1</span>
+0012 <span class="comment">%          logical  0 to 1</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%     If IMG is a different size than needed for the video file, it will be</span>
+0015 <span class="comment">%     resized with the highest quality method available of IMRESIZE.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%     Returns 0 on failure and 1 on success.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%     STANDARD EXAMPLE:</span>
+0020 <span class="comment">%       vw = videoWriter('example1.avi');</span>
+0021 <span class="comment">%       for i=1:10</span>
+0022 <span class="comment">%         addframe(vw, rand(100)); % a double grayscale image</span>
+0023 <span class="comment">%       end</span>
+0024 <span class="comment">%       vw = close(vw);</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   ADDFRAME(VW,IMG1,IMG2,IMG3,...) adds multiple frames to a video stream.</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%   ADDFRAME(VW,MOV) appends the frame(s) contained in the MATLAB movie MOV</span>
+0029 <span class="comment">%     to the AVI file.  The CDATA field is interpreted in the same way that</span>
+0030 <span class="comment">%     ADDFRAME(VW,IMG) interprets images.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%   ADDFRAME(VW,H) captures a frame from the figure handle H, and appends</span>
+0033 <span class="comment">%     this frame to the video stream. The frame is rendered into an</span>
+0034 <span class="comment">%     offscreen array before it is appended to the video stream.  This</span>
+0035 <span class="comment">%     syntax should not be used if the graphics in the animation are using</span>
+0036 <span class="comment">%     XOR graphics.</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%     FIGURE HANDLE EXAMPLE:</span>
+0039 <span class="comment">%       fig = gcf;</span>
+0040 <span class="comment">%       hax = gca;</span>
+0041 <span class="comment">%       vw = videoWriter('example2.avi', 'width',320, 'height',240);</span>
+0042 <span class="comment">%       for i=1:10</span>
+0043 <span class="comment">%         image(k.*peaks,'parent',hax);</span>
+0044 <span class="comment">%         set(gca,'Zlim',[-20 20]);</span>
+0045 <span class="comment">%         addframe(vw,fig);</span>
+0046 <span class="comment">%       end</span>
+0047 <span class="comment">%       vw = close(vw);</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%     If the animation is using XOR graphics, use GETFRAME instead to</span>
+0050 <span class="comment">%     capture the graphics into one frame of a MATLAB movie and then use</span>
+0051 <span class="comment">%     the syntax ADDFRAME(VW,MOV) as in the example below. GETFRAME will</span>
+0052 <span class="comment">%     perform a snapshot of the onscreen image.</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%     GETFRAME/MOV EXAMPLE:</span>
+0055 <span class="comment">%       fig=figure;</span>
+0056 <span class="comment">%       set(fig,'DoubleBuffer','on');</span>
+0057 <span class="comment">%       set(gca,'xlim',[-80 80],'ylim',[-80 80],...</span>
+0058 <span class="comment">%           'nextplot','replace','Visible','off')</span>
+0059 <span class="comment">%       vw = videoWriter('example3.avi', 'width',320, 'height',240);</span>
+0060 <span class="comment">%       x = -pi:.1:pi;</span>
+0061 <span class="comment">%       radius = [0:length(x)];</span>
+0062 <span class="comment">%       for i=1:length(x)</span>
+0063 <span class="comment">%         h = patch(sin(x)*radius(i),cos(x)*radius(i),[abs(cos(x(i))) 0 0]);</span>
+0064 <span class="comment">%         set(h,'EraseMode','xor');</span>
+0065 <span class="comment">%         frame = getframe(gca);</span>
+0066 <span class="comment">%         addframe(vw,frame);</span>
+0067 <span class="comment">%       end</span>
+0068 <span class="comment">%       vw = close(vw);</span>
+0069 <span class="comment">%</span>
+0070 <span class="comment">%   COMPARISON WITH AVIFILE/ADDFRAME</span>
+0071 <span class="comment">%     This version of VIDEOWRITER/ADDFRAME was initially adapted from</span>
+0072 <span class="comment">%     MathWorks's AVIFILE/ADDFRAME.  We use undocumented features of Matlab</span>
+0073 <span class="comment">%     to allow capturing images from figure handles.  This method works</span>
+0074 <span class="comment">%     largely the same as MathWork's, with the following differences:</span>
+0075 <span class="comment">%</span>
+0076 <span class="comment">%     Unlike AVIFILE/ADDFRAME, this method does not support indexed images:</span>
+0077 <span class="comment">%     2D arrays are treated as grayscale images, not as indexed ones.  The</span>
+0078 <span class="comment">%     user may use Matlab's IND2RGB or IND2GRAY to convert indexed images</span>
+0079 <span class="comment">%     to rgb or grayscale images.</span>
+0080 <span class="comment">%</span>
+0081 <span class="comment">%     VIDEOWRITER/ADDFRAME also does not currently pad frames that are not</span>
+0082 <span class="comment">%     a multiple of 4 in width.  If the width and height do not match the</span>
+0083 <span class="comment">%     expected, the frame is rescaled instead using the highest known</span>
+0084 <span class="comment">%     quality method of IMRESIZE.</span>
+0085 <span class="comment">%</span>
+0086 <span class="comment">%     Matlab's AVIFILE/ADDFRAME allows the user to supply an axis handle or</span>
+0087 <span class="comment">%     a figure handle; however, when supplying an axis handle, the entire</span>
+0088 <span class="comment">%     figure is captured, not just the axis in question.  Since we consider</span>
+0089 <span class="comment">%     this to be counter-intuitive, we do not support capturing based on</span>
+0090 <span class="comment">%     the axis handle.  Furthermore, we would like to reserve the right to</span>
+0091 <span class="comment">%     actually cropping out just the axis in question if we add axis handle</span>
+0092 <span class="comment">%     support in the future.  If you have an axis handle and need the</span>
+0093 <span class="comment">%     figure handle, use GET(MYAXISHANDLE,'parent').</span>
+0094 <span class="comment">%</span>
+0095 <span class="comment">%     As of Matlab R2007a, AVIFILE/ADDFRAME makes a number of assumptions</span>
+0096 <span class="comment">%     when using the figure handle method.  It also modifies properties</span>
+0097 <span class="comment">%     of the figure window without restoring them.  We restore all</span>
+0098 <span class="comment">%     changed properties and we are robust to the figure 'units' property.</span>
+0099 <span class="comment">%</span>
+0100 <span class="comment">%   SEE ALSO</span>
+0101 <span class="comment">%     videoWriter</span>
+0102 <span class="comment">%     videoWriter/close</span>
+0103 <span class="comment">%     avifile/addframe</span>
+0104 <span class="comment">%     tests/addFrameDemo</span>
+0105 <span class="comment">%     tests/videoWriterDemo</span>
+0106 <span class="comment">%</span>
+0107 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0108 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0109 <span class="comment">%when using this library on GNU/Linux).</span>
+0110 
+0111 numframes = nargin - 1;
+0112 error(nargoutchk(0,0,nargout));
+0113 <span class="keyword">if</span> ~isa(vw,<span class="string">'videoWriter'</span>)
+0114   error(<span class="string">'First input must be an videoWriter object.'</span>);
+0115 <span class="keyword">end</span>
+0116 
+0117 <span class="keyword">for</span> i = 1:numframes
+0118   MovieLength = 1;
+0119   mlMovie = 0;
+0120   <span class="comment">% Obtain frame(s) from this input arg</span>
+0121   inputType = <a href="#_sub3" class="code" title="subfunction inputType = getInputType(frame)">getInputType</a>(varargin{i});
+0122   <span class="keyword">switch</span> inputType
+0123     <span class="keyword">case</span> <span class="string">'axes'</span>
+0124       error([<span class="string">'Axis handles are not supported at the current time.  See '</span> <span class="keyword">...</span>
+0125         mfilename <span class="string">'''s documentation for the reasons.'</span>]);
+0126       <span class="comment">%frame = extractFrameFromFigure(get(varargin{i},'parent'));</span>
+0127     <span class="keyword">case</span> <span class="string">'figure'</span>
+0128       frame = <a href="#_sub4" class="code" title="subfunction frame = extractFrameFromFigure(fig)">extractFrameFromFigure</a>(varargin{i});
+0129     <span class="keyword">case</span> <span class="string">'movie'</span>
+0130       mlMovie = 1;
+0131       MovieLength = length(varargin{i});
+0132       <span class="comment">% no need to handle indexed images here either</span>
+0133     <span class="keyword">case</span> <span class="string">'data'</span>
+0134       frame = varargin{i};
+0135     <span class="keyword">otherwise</span>
+0136       error(<span class="string">'Unrecognized input type: %s'</span>, inputType);
+0137   <span class="keyword">end</span>
+0138   
+0139   <span class="comment">% Add each frame extracted from this input arg</span>
+0140   <span class="keyword">for</span> j = 1:MovieLength
+0141     <span class="keyword">if</span> mlMovie
+0142       frame = varargin{i}(j).cdata;
+0143     <span class="keyword">end</span>
+0144     <a href="#_sub1" class="code" title="subfunction addSingleDataFrame(vw,img)">addSingleDataFrame</a>(vw, frame);
+0145   <span class="keyword">end</span>
+0146 <span class="keyword">end</span>
+0147 <span class="keyword">return</span>;
+0148 
+0149 <span class="comment">% ------------------------------------------------------------------------</span>
+0150 <a name="_sub1" href="#_subfunctions" class="code">function addSingleDataFrame(vw,img)</a>
+0151 <span class="comment">% Handles type conversion, rescaling, and grayscale-&gt;RGB conversion, as</span>
+0152 <span class="comment">% necessary.  Then, the backend is called to add the frame.</span>
+0153 
+0154 [h,w,d] = size(img);
+0155 
+0156 <span class="comment">% If the width and height were not set in the constructor, assume that</span>
+0157 <span class="comment">% the incoming image can be handled by the backend without rescaling</span>
+0158 <span class="comment">% here.  Note: since we don't return vw, these values do not persist, for</span>
+0159 <span class="comment">% now.</span>
+0160 <span class="keyword">if</span> vw.w &lt; 0, vw.w = w; <span class="keyword">end</span>
+0161 <span class="keyword">if</span> vw.h &lt; 0, vw.h = h; <span class="keyword">end</span>
+0162 
+0163 <span class="keyword">if</span> (isa(img, <span class="string">'uint8'</span>))
+0164   <span class="keyword">if</span> (h ~= vw.h || w ~= vw.w)
+0165     img = uint8(255*imresize(double(img)/255, [vw.h vw.w]));
+0166   <span class="keyword">else</span>
+0167     <span class="comment">% no changes needed</span>
+0168   <span class="keyword">end</span>
+0169   
+0170 <span class="keyword">elseif</span> (isa(img, <span class="string">'double'</span>) || islogical(img))
+0171   <span class="keyword">if</span> (h ~= vw.h || w ~= vw.w)
+0172     img = uint8(255*imresize(img, [vw.h vw.w], <a href="#_sub2" class="code" title="subfunction m = defaultResizeMethod">defaultResizeMethod</a>));
+0173   <span class="keyword">else</span>
+0174     img = uint8(255*img);
+0175   <span class="keyword">end</span>
+0176   
+0177 <span class="keyword">else</span>
+0178   error(<span class="string">'Invalid image type.'</span>);
+0179 <span class="keyword">end</span>
+0180 
+0181 <span class="keyword">if</span> (d == 1)
+0182   img = repmat(img, [1 1 3]);
+0183 <span class="keyword">end</span>
+0184 
+0185 feval(vw.plugin, <span class="string">'addframe'</span>, vw.handle, img);
+0186 <span class="keyword">return</span>;
+0187 
+0188 <span class="comment">% ------------------------------------------------------------------------</span>
+0189 <a name="_sub2" href="#_subfunctions" class="code">function m = defaultResizeMethod</a>
+0190 
+0191 verdata = ver(<span class="string">'Matlab'</span>);
+0192 verparts = sscanf(verdata.Version,<span class="string">'%d.'</span>);
+0193 vernum = dot(logspace(0,(1-length(verparts))*2, length(verparts)), verparts);
+0194 
+0195 <span class="keyword">if</span> vernum&gt;7.0400 <span class="comment">% R2007a or later -- lanczos3 is allowed</span>
+0196   m = <span class="string">'lanczos3'</span>;
+0197 <span class="keyword">else</span>
+0198   m = <span class="string">'bicubic'</span>;
+0199 <span class="keyword">end</span>
+0200 <span class="keyword">return</span>;
+0201 
+0202 <span class="comment">% ------------------------------------------------------------------------</span>
+0203 <a name="_sub3" href="#_subfunctions" class="code">function inputType = getInputType(frame)</a>
+0204 <span class="keyword">if</span> isscalar(frame) &amp;&amp; ishandle(frame) &amp;&amp; (frame &gt; 0)
+0205   inputType = <a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>(frame,<span class="string">'type'</span>);
+0206   
+0207 <span class="keyword">elseif</span> isstruct(frame) &amp;&amp; isfield(frame,<span class="string">'cdata'</span>)
+0208   <span class="comment">% we do not support indexed images</span>
+0209   <span class="keyword">if</span> isfield(frame(1),<span class="string">'colormap'</span>) &amp;&amp; ~isempty(frame(1).colormap)
+0210     error(<span class="string">'Indexed frames are not supported at this time.'</span>);
+0211   <span class="keyword">end</span>
+0212   inputType = <span class="string">'movie'</span>;
+0213   
+0214 <span class="keyword">elseif</span> isa(frame,<span class="string">'numeric'</span>)
+0215   inputType = <span class="string">'data'</span>;
+0216   
+0217 <span class="keyword">else</span>
+0218   error(<span class="string">'Invalid input argument.  Each frame must be a numeric matrix, a MATLAB movie structure, or a handle to a figure or axis.'</span>);
+0219 <span class="keyword">end</span>
+0220 <span class="keyword">return</span>;
+0221 
+0222 <span class="comment">% ------------------------------------------------------------------------</span>
+0223 <a name="_sub4" href="#_subfunctions" class="code">function frame = extractFrameFromFigure(fig)</a>
+0224 
+0225 <span class="comment">% The renderer requires DPI units.  Get the necessary conversion factor.</span>
+0226 pixelsperinch = <a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>(0,<span class="string">'screenpixelsperinch'</span>);
+0227 
+0228 <span class="comment">% The easiest way to obtain the conversion is to switch to pixel units.</span>
+0229 <span class="comment">% This provides robustness to whatever units the user was using previously.</span>
+0230 oldUnits = <a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>(fig,<span class="string">'units'</span>);
+0231 set(fig,<span class="string">'units'</span>,<span class="string">'pixels'</span>);
+0232 
+0233 <span class="comment">% Now we obtain the figure size</span>
+0234 pos = <a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>(fig,<span class="string">'position'</span>);
+0235 oldPaperPosition = <a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>(fig,<span class="string">'paperposition'</span>);
+0236 set(fig, <span class="string">'paperposition'</span>, pos./pixelsperinch);
+0237 
+0238 <span class="comment">% Upgrade no renderer and painters renderer to OpenGL for the off-screen</span>
+0239 <span class="comment">% rendering, because that's what AVIFILE/ADDFRAME does.</span>
+0240 renderer = <a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>(fig,<span class="string">'renderer'</span>);
+0241 <span class="keyword">if</span> strcmp(renderer,<span class="string">'painters'</span>) || strcmp(renderer,<span class="string">'None'</span>)
+0242   renderer = <span class="string">'opengl'</span>;
+0243 <span class="keyword">end</span>
+0244 
+0245 <span class="comment">% Temporarily turn off warning in case opengl is not supported and</span>
+0246 <span class="comment">% hardcopy needs to use zbuffer</span>
+0247 warnstate = warning(<span class="string">'off'</span>, <span class="string">'MATLAB:addframe:warningsTurnedOff'</span>);
+0248 noanimate(<span class="string">'save'</span>,fig);
+0249 frame = hardcopy(fig, [<span class="string">'-d'</span> renderer],[<span class="string">'-r'</span> num2str(round(pixelsperinch))]);
+0250 noanimate(<span class="string">'restore'</span>,fig);
+0251 warning(warnstate);
+0252 
+0253 <span class="comment">% Restore figure state.  We do it in the opposite order that it was changed</span>
+0254 <span class="comment">% so dependent state elements work correctly (esp. paperposition's</span>
+0255 <span class="comment">% interplay with units).</span>
+0256 set(fig, <span class="string">'paperposition'</span>, oldPaperPosition);
+0257 set(fig, <span class="string">'units'</span>,oldUnits); 
+0258 
+0259 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

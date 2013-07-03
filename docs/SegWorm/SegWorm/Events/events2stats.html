@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of events2stats</title>
+  <meta name="keywords" content="events2stats">
+  <meta name="description" content="EVENTS2STATS Compute the event statistics.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Events -->
+<h1>events2stats
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>EVENTS2STATS Compute the event statistics.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">EVENTS2STATS Compute the event statistics.
+
+   [EVENTSTATS SUMMARYSTATS] = EVENTS2STATS(FRAMES, FPS, DATA)
+
+   Inputs:
+       frames    - the event frames (see findEvent)
+       fps       - the video's frames/second
+       data      - the data values
+       name      - the struct field name for the event's data sum;
+                   if empty, this value is neither computed nor included
+       interName - the struct field name for the data sum till the next
+                   event;
+                   if empty, this value is neither computed nor included
+
+   Outputs:
+       eventStats   - the event statistics; a structure array with fields:
+
+                      start       = the start frame
+                      end         = the end frame
+                      time        = the event time
+                      &lt;name&gt;      = the sum of the event data
+                      interTime   = the time till the next event
+                      inter&lt;name&gt; = the sum of the data till the next event
+
+       summaryStats - the summary statistics for the events;
+                      a structure with fields:
+
+                      frequency = the event frequency (excluding partial
+                                  events at the start and end)
+                      ratio     = a structure with fields:
+                      
+                                  time   = the ratio of time
+                                           (event time / total time)
+                                  &lt;name&gt; = the ratio of data
+                                           (event data / total data)
+
+ See also <a href="findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">FINDEVENT</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Features/bendAndSpeedTest.html" class="code" title="">bendAndSpeedTest</a>	Initialize our variables.</li><li><a href="../../SegWorm/Worms/Features/wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li><li><a href="../../SegWorm/Worms/Features/wormVelocity.html" class="code" title="function [velocity events] = wormVelocity(x, y, fps, lengths, varargin)">wormVelocity</a>	WORMVELOCITY Compute the worm velocity (speed & direction) at the</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [eventStats summaryStats] = events2stats(frames, fps, data, </a><span class="keyword">...</span>
+0002     name, interName)
+0003 <span class="comment">%EVENTS2STATS Compute the event statistics.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   [EVENTSTATS SUMMARYSTATS] = EVENTS2STATS(FRAMES, FPS, DATA)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Inputs:</span>
+0008 <span class="comment">%       frames    - the event frames (see findEvent)</span>
+0009 <span class="comment">%       fps       - the video's frames/second</span>
+0010 <span class="comment">%       data      - the data values</span>
+0011 <span class="comment">%       name      - the struct field name for the event's data sum;</span>
+0012 <span class="comment">%                   if empty, this value is neither computed nor included</span>
+0013 <span class="comment">%       interName - the struct field name for the data sum till the next</span>
+0014 <span class="comment">%                   event;</span>
+0015 <span class="comment">%                   if empty, this value is neither computed nor included</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   Outputs:</span>
+0018 <span class="comment">%       eventStats   - the event statistics; a structure array with fields:</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%                      start       = the start frame</span>
+0021 <span class="comment">%                      end         = the end frame</span>
+0022 <span class="comment">%                      time        = the event time</span>
+0023 <span class="comment">%                      &lt;name&gt;      = the sum of the event data</span>
+0024 <span class="comment">%                      interTime   = the time till the next event</span>
+0025 <span class="comment">%                      inter&lt;name&gt; = the sum of the data till the next event</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%       summaryStats - the summary statistics for the events;</span>
+0028 <span class="comment">%                      a structure with fields:</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%                      frequency = the event frequency (excluding partial</span>
+0031 <span class="comment">%                                  events at the start and end)</span>
+0032 <span class="comment">%                      ratio     = a structure with fields:</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%                                  time   = the ratio of time</span>
+0035 <span class="comment">%                                           (event time / total time)</span>
+0036 <span class="comment">%                                  &lt;name&gt; = the ratio of data</span>
+0037 <span class="comment">%                                           (event data / total data)</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">% See also FINDEVENT</span>
+0040 
+0041 <span class="comment">% Are there any event frames?</span>
+0042 eventStats = [];
+0043 summaryStats = [];
+0044 <span class="keyword">if</span> isempty(frames)
+0045     <span class="keyword">return</span>;
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="comment">% Fix the data.</span>
+0049 data = data(:);
+0050 
+0051 <span class="comment">% Are we computing/including the event's data sum.</span>
+0052 isName = true;
+0053 <span class="keyword">if</span> isempty(name)
+0054     isName = false;
+0055     name = <span class="string">'tmpName'</span>;
+0056 <span class="keyword">end</span>
+0057 
+0058 <span class="comment">% Are we computing/including the data sum till the next event?</span>
+0059 isInterName = true;
+0060 <span class="keyword">if</span> isempty(interName)
+0061     isName = false;
+0062     interName = <span class="string">'tmpInterName'</span>;
+0063 <span class="keyword">end</span>
+0064 
+0065 <span class="comment">% Organize the event information.</span>
+0066 eventStats = struct( <span class="keyword">...</span>
+0067     <span class="string">'start'</span>, [], <span class="keyword">...</span>
+0068     <span class="string">'end'</span>, [], <span class="keyword">...</span>
+0069     <span class="string">'time'</span>, [], <span class="keyword">...</span>
+0070     name, [], <span class="keyword">...</span>
+0071     <span class="string">'interTime'</span>, [], <span class="keyword">...</span>
+0072     interName, []);
+0073 <span class="keyword">if</span> ~isName
+0074     eventStats = rmfield(eventStats, name);
+0075 <span class="keyword">end</span>
+0076 <span class="keyword">if</span> ~isInterName
+0077     eventStats = rmfield(eventStats, interName);
+0078 <span class="keyword">end</span>
+0079 
+0080 <span class="comment">% Compute the event information.</span>
+0081 <span class="keyword">for</span> i = 1:length(frames)
+0082 
+0083     <span class="comment">% Compute the event information.</span>
+0084     eventTime = (frames(i).end - frames(i).start + 1) / fps;
+0085     eventSum = [];
+0086     <span class="keyword">if</span> isName
+0087         eventSum = nansum(data((frames(i).start + 1):(frames(i).end + 1)));
+0088     <span class="keyword">end</span>
+0089     
+0090     <span class="comment">% The last inter- time and sum are unknown.</span>
+0091     interTime = NaN;
+0092     interSum = NaN;
+0093     <span class="keyword">if</span> i &lt; length(frames)
+0094         interTime = (frames(i + 1).start - frames(i).end - 1) / fps;
+0095         <span class="keyword">if</span> isInterName
+0096             interSum = <span class="keyword">...</span>
+0097                 nansum(data((frames(i).end + 2):(frames(i + 1).start)));
+0098         <span class="keyword">end</span>
+0099     <span class="keyword">end</span>
+0100     
+0101     <span class="comment">% Organize the event information.</span>
+0102     eventStats(i).start = frames(i).start;
+0103     eventStats(i).end = frames(i).end;
+0104     eventStats(i).time = eventTime;
+0105     <span class="keyword">if</span> isName
+0106         eventStats(i).(name) = eventSum;
+0107     <span class="keyword">end</span>
+0108     eventStats(i).interTime = interTime;
+0109     <span class="keyword">if</span> isInterName
+0110         eventStats(i).(interName) = interSum;
+0111     <span class="keyword">end</span>
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">% Compute the number of events, excluding the partially recorded ones.</span>
+0115 numEvents = length(frames);
+0116 <span class="keyword">if</span> numEvents &gt; 1 &amp;&amp; frames(1).start == 0
+0117     numEvents = numEvents - 1;
+0118 <span class="keyword">end</span>
+0119 <span class="keyword">if</span> numEvents &gt; 1 &amp;&amp; frames(end).end == length(data) - 1
+0120     numEvents = numEvents - 1;
+0121 <span class="keyword">end</span>
+0122 
+0123 <span class="comment">% Compute the event statistics.</span>
+0124 totalTime = length(data) / fps;
+0125 frequency = numEvents / totalTime;
+0126 timeRatio = nansum([eventStats.time]) / totalTime;
+0127 <span class="keyword">if</span> isName
+0128     dataRatio = nansum([eventStats.(name)]) / nansum(data);
+0129     ratios = struct( <span class="keyword">...</span>
+0130         <span class="string">'time'</span>, timeRatio, <span class="keyword">...</span>
+0131         name, dataRatio);
+0132 <span class="keyword">else</span>
+0133     ratios = struct(<span class="string">'time'</span>, timeRatio);
+0134 <span class="keyword">end</span>
+0135 summaryStats = struct( <span class="keyword">...</span>
+0136     <span class="string">'frequency'</span>, frequency, <span class="keyword">...</span>
+0137     <span class="string">'ratio'</span>, ratios);
+0138 <span class="keyword">end</span>
+0139</pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

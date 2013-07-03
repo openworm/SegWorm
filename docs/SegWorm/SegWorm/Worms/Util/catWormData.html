@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of catWormData</title>
+  <meta name="keywords" content="catWormData">
+  <meta name="description" content="CATWORMBLOCKS Concatenate the worm data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Util -->
+<h1>catWormData
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>CATWORMBLOCKS Concatenate the worm data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function data = catWormData(wormFile, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CATWORMBLOCKS Concatenate the worm data.
+
+   DATA = CATWORMDATA(WORMFILE)
+   DATA = CATWORMDATA(WORMFILE, INDEX)
+   DATA = CATWORMDATA(WORMFILE, INDEX, STARTFRAME)
+   DATA = CATWORMDATA(WORMFILE, INDEX, STARTFRAME, ENDFRAME)
+
+   Inputs:
+
+       wormFile   - the name of the file containing normalized worms (see
+                    saveWormFrames). The file format is MAT (Matlab's
+                    '.mat') and contains the following variables:
+                   
+                    samples      = the samples per normalized worm; if
+                                   empty, the worms are in structs
+                    fps          = frames/seconds
+                    firstFrame   = the first frame number (in block1)
+                    lastFrame    = the last frame number (in the last block)
+                    blockSize    = the size of a block
+                    blocks       = the number of blocks
+                    block1       = the first block
+                    ...
+                    blockN       = the N-th (last) block
+
+                    If the data is normalized, the blocks are cell arrays
+                    with following structure (see normWorms):
+
+                    blockN{1}  = status:
+                                 s = segmented
+                                 f = segmentation failed
+                                 m = stage movement
+                                 d = dropped frame
+                    blockN{2}  = vulvaContours
+                    blockN{3}  = nonVulvaContours
+                    blockN{4}  = skeletons
+                    blockN{5}  = angles
+                    blockN{6}  = inOutTouches
+                    blockN{7}  = lengths
+                    blockN{8}  = widths
+                    blockN{9}  = headAreas
+                    blockN{10} = tailAreas
+                    blockN{11} = vulvaAreas
+                    blockN{12} = nonVulvaAreas
+
+                    Otherwise, the blocks are just cell arrays of worm
+                    cells; missing worms are labeled with their frame
+                    status instead:
+
+                    blockN = 1 to, at most, blockSize number of worm cells;
+                             or, for missing worms, their frame status:
+                             f = segmentation failed
+                             m = stage movement
+                             d = dropped frame
+
+       index      - the data index in the block;
+                    if empty, return all data
+       startFrame - the first frame to use;
+                    if empty, we start at the first frame
+       endFrame   - the last frame to use;
+                    if empty, we end at the last frame
+
+   Output:
+
+       data - the concatenated worm data
+
+   See also SAVEWORMVIDEOFRAMES, <a href="normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">NORMWORMS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="worm2func.html" class="code" title="function data = worm2func(func, state, wormFile, startFrame, endFrame,backScale, frontScale, varargin)">worm2func</a>	WORM2FUNC Apply a function to worm data (normalized within blocks).</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [data dataBlockI] = echoFunc(dataInfo, dataBlockI)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function data = catWormData(wormFile, varargin)</a>
+0002 <span class="comment">%CATWORMBLOCKS Concatenate the worm data.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   DATA = CATWORMDATA(WORMFILE)</span>
+0005 <span class="comment">%   DATA = CATWORMDATA(WORMFILE, INDEX)</span>
+0006 <span class="comment">%   DATA = CATWORMDATA(WORMFILE, INDEX, STARTFRAME)</span>
+0007 <span class="comment">%   DATA = CATWORMDATA(WORMFILE, INDEX, STARTFRAME, ENDFRAME)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Inputs:</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%       wormFile   - the name of the file containing normalized worms (see</span>
+0012 <span class="comment">%                    saveWormFrames). The file format is MAT (Matlab's</span>
+0013 <span class="comment">%                    '.mat') and contains the following variables:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%                    samples      = the samples per normalized worm; if</span>
+0016 <span class="comment">%                                   empty, the worms are in structs</span>
+0017 <span class="comment">%                    fps          = frames/seconds</span>
+0018 <span class="comment">%                    firstFrame   = the first frame number (in block1)</span>
+0019 <span class="comment">%                    lastFrame    = the last frame number (in the last block)</span>
+0020 <span class="comment">%                    blockSize    = the size of a block</span>
+0021 <span class="comment">%                    blocks       = the number of blocks</span>
+0022 <span class="comment">%                    block1       = the first block</span>
+0023 <span class="comment">%                    ...</span>
+0024 <span class="comment">%                    blockN       = the N-th (last) block</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%                    If the data is normalized, the blocks are cell arrays</span>
+0027 <span class="comment">%                    with following structure (see normWorms):</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%                    blockN{1}  = status:</span>
+0030 <span class="comment">%                                 s = segmented</span>
+0031 <span class="comment">%                                 f = segmentation failed</span>
+0032 <span class="comment">%                                 m = stage movement</span>
+0033 <span class="comment">%                                 d = dropped frame</span>
+0034 <span class="comment">%                    blockN{2}  = vulvaContours</span>
+0035 <span class="comment">%                    blockN{3}  = nonVulvaContours</span>
+0036 <span class="comment">%                    blockN{4}  = skeletons</span>
+0037 <span class="comment">%                    blockN{5}  = angles</span>
+0038 <span class="comment">%                    blockN{6}  = inOutTouches</span>
+0039 <span class="comment">%                    blockN{7}  = lengths</span>
+0040 <span class="comment">%                    blockN{8}  = widths</span>
+0041 <span class="comment">%                    blockN{9}  = headAreas</span>
+0042 <span class="comment">%                    blockN{10} = tailAreas</span>
+0043 <span class="comment">%                    blockN{11} = vulvaAreas</span>
+0044 <span class="comment">%                    blockN{12} = nonVulvaAreas</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%                    Otherwise, the blocks are just cell arrays of worm</span>
+0047 <span class="comment">%                    cells; missing worms are labeled with their frame</span>
+0048 <span class="comment">%                    status instead:</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">%                    blockN = 1 to, at most, blockSize number of worm cells;</span>
+0051 <span class="comment">%                             or, for missing worms, their frame status:</span>
+0052 <span class="comment">%                             f = segmentation failed</span>
+0053 <span class="comment">%                             m = stage movement</span>
+0054 <span class="comment">%                             d = dropped frame</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">%       index      - the data index in the block;</span>
+0057 <span class="comment">%                    if empty, return all data</span>
+0058 <span class="comment">%       startFrame - the first frame to use;</span>
+0059 <span class="comment">%                    if empty, we start at the first frame</span>
+0060 <span class="comment">%       endFrame   - the last frame to use;</span>
+0061 <span class="comment">%                    if empty, we end at the last frame</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">%   Output:</span>
+0064 <span class="comment">%</span>
+0065 <span class="comment">%       data - the concatenated worm data</span>
+0066 <span class="comment">%</span>
+0067 <span class="comment">%   See also SAVEWORMVIDEOFRAMES, NORMWORMS</span>
+0068 
+0069 <span class="comment">% Determine the data index.</span>
+0070 index = 1:12;
+0071 <span class="keyword">if</span> ~isempty(varargin)
+0072     index = varargin{1};
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="comment">% Determine the start and end frames.</span>
+0076 startFrame = [];
+0077 <span class="keyword">if</span> length(varargin) &gt; 1
+0078     startFrame = varargin{2};
+0079 <span class="keyword">end</span>
+0080 endFrame = [];
+0081 <span class="keyword">if</span> length(varargin) &gt; 2
+0082     endFrame = varargin{3};
+0083 <span class="keyword">end</span>
+0084 
+0085 <span class="comment">% Get the data blocks.</span>
+0086 state = index;
+0087 dataBlocks = <a href="worm2func.html" class="code" title="function data = worm2func(func, state, wormFile, startFrame, endFrame,backScale, frontScale, varargin)">worm2func</a>(@<a href="#_sub1" class="code" title="subfunction [data dataBlockI] = echoFunc(dataInfo, dataBlockI)">echoFunc</a>, state, wormFile, startFrame, <span class="keyword">...</span>
+0088     endFrame, 0, 0);
+0089 
+0090 <span class="comment">% Concatenate the data blocks.</span>
+0091 data = cell(length(dataBlocks{1}), 1);
+0092 <span class="keyword">for</span> i = 1:length(dataBlocks)
+0093     <span class="keyword">for</span> j = 1:length(data)
+0094         <span class="keyword">if</span> ~isempty(dataBlocks{i})
+0095             <span class="keyword">switch</span> ndims(dataBlocks{i}{j})
+0096                 <span class="keyword">case</span> 2
+0097                     data{j} = cat(2, data{j}, dataBlocks{i}{j});
+0098                 <span class="keyword">case</span> 3
+0099                     data{j} = cat(3, data{j}, dataBlocks{i}{j});
+0100                 <span class="keyword">otherwise</span>
+0101                     error(<span class="string">'catWormBlocks:BadVariable'</span>, [<span class="string">'Data cell '</span> <span class="keyword">...</span>
+0102                         num2str(i) <span class="string">' has inappropropriate dimensionality'</span>]);
+0103             <span class="keyword">end</span>
+0104         <span class="keyword">end</span>
+0105     <span class="keyword">end</span>
+0106 <span class="keyword">end</span>
+0107 <span class="keyword">end</span>
+0108 
+0109 <span class="comment">% Echo the data.</span>
+0110 <a name="_sub1" href="#_subfunctions" class="code">function [data dataBlockI] = echoFunc(dataInfo, dataBlockI)</a>
+0111 
+0112 <span class="comment">% Initialize the variables.</span>
+0113 dataBlock = dataInfo.data;
+0114 startI = dataInfo.startDataFrameI;
+0115 endI = dataInfo.endDataFrameI;
+0116 
+0117 <span class="comment">% Extract the subset of the data.</span>
+0118 data = cell(length(dataBlockI), 1);
+0119 <span class="keyword">for</span> i = 1:length(data)
+0120     j = dataBlockI(i);
+0121     <span class="keyword">switch</span> ndims(dataBlock{j})
+0122         <span class="keyword">case</span> 2
+0123             data{i} = dataBlock{j}(:,startI:endI);
+0124         <span class="keyword">case</span> 3
+0125             data{i} = dataBlock{j}(:,:,startI:endI);
+0126         <span class="keyword">otherwise</span>
+0127             error(<span class="string">'catWormBlocks:BadVariable'</span>, [<span class="string">'Data cell '</span> <span class="keyword">...</span>
+0128                 num2str(j) <span class="string">' has inappropropriate dimensionality'</span>]);
+0129     <span class="keyword">end</span>
+0130 <span class="keyword">end</span>
+0131 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

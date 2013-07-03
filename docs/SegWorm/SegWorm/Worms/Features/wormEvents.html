@@ -1,0 +1,976 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormEvents</title>
+  <meta name="keywords" content="wormEvents">
+  <meta name="description" content="% Compute the multi-scale worm.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>wormEvents
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% Compute the multi-scale worm.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Compute the multi-scale worm.
+ *** REPLACE THESE CALLS WITH WHAT YOU ALREADY HAVE ***</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>	EVENT2BOX Convert an event to a box (for plotting with PLOTEVENT).</li><li><a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>	EVENTS2ARRAY Convert a set of events into a logical array.</li><li><a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>	EVENTS2STATS Compute the event statistics.</li><li><a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>	EVENTS2VIDEO Create a video of events.</li><li><a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>	FINDEVENT Find an event within an array of data.</li><li><a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>	PLOTEVENT Plot a time series of events.</li><li><a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>	HISTOGRAM Compute the data's histogram.</li><li><a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>	PLOTHISTOGRAM Plot a histogram(s) of data.</li><li><a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>	STR2COLORS Convert a string of colors to RGB values.</li><li><a href="multiScaleWorm.html" class="code" title="function [diffData startFrame endFrame fps useSamples] =multiScaleWorm(wormFile, startFrame, endFrame, useSamples,useFrames, type, scales, isSparse, offMode, isNoisy, htDirMode,isAbsDir, varargin)">multiScaleWorm</a>	MULTISCALEWORM Differentiate worm data at multiple scales.</li><li><a href="removePartialEvents.html" class="code" title="function eventStats = removePartialEvents(eventStats, totalFrames)">removePartialEvents</a>	REMOVEPARTIALEVENTS Remove partial events at the start and end of the data.</li><li><a href="wormBends.html" class="code" title="function bends = wormBends(wormFile, varargin)">wormBends</a>	WORMBENDS Compute the temporal bending frequency at the nose, head,</li><li><a href="wormPathRange.html" class="code" title="function range = wormPathRange(x, y)">wormPathRange</a>	WORMPATHRANGE Compute the worm path range (i.e., the worm's distance from</li><li><a href="wormPathTime.html" class="code" title="function [arena times] = wormPathTime(skeletonX, skeletonY, points,scale, fps)">wormPathTime</a>	WORMPATHTIME Compute the time spent at each point along the worm path.</li><li><a href="wormTouchFrames.html" class="code" title="function touchFrames = wormTouchFrames(frameCodes, fps)">wormTouchFrames</a>	WORMTOUCHFRAMES Find the frames where the worm touches itself (i.e., coils).</li><li><a href="../../../SegWorm/Worms/Printing/plotWormPathTime.html" class="code" title="function plotWormPathTime(arena, time, titleName, axisName, varargin)">plotWormPathTime</a>	PLOTWORMPATHTIME Plot the worm path integral.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Compute the multi-scale worm.</span>
+0002 <span class="comment">% *** REPLACE THESE CALLS WITH WHAT YOU ALREADY HAVE ***</span>
+0003 wormSamples = 49;
+0004 file = dir(<span class="string">'*_features.mat'</span>);
+0005 <span class="keyword">if</span> isempty(file)
+0006     error(<span class="string">'wormEvents:NoFeatures'</span>, <span class="string">'cannot find the features file'</span>);
+0007 <span class="keyword">end</span>
+0008 load(file(1).name, <span class="string">'featureData'</span>);
+0009 <span class="keyword">if</span> ~exist(<span class="string">'normalized'</span>, <span class="string">'dir'</span>)
+0010     <span class="keyword">return</span>;
+0011 <span class="keyword">end</span>
+0012 cd(<span class="string">'normalized'</span>);
+0013 frameCodes = featureData.frameAnnotation;
+0014 omegaFrames = featureData.omegaFrames1;
+0015 upsilonFrames = featureData.upsilonFrames1;
+0016 wormFile = <span class="string">'segNormInfo.mat'</span>;
+0017 useSamples = {17:33, 1:49};
+0018 type = <span class="string">'bf'</span>;
+0019 scales = .75;
+0020 isSparse = false;
+0021 isAtT1 = true;
+0022 isNoisy = false;
+0023 htDirMode = 3;
+0024 isAbsDir = false;
+0025 [diffData, ~, ~, fps, ~] = <a href="multiScaleWorm.html" class="code" title="function [diffData startFrame endFrame fps useSamples] =multiScaleWorm(wormFile, startFrame, endFrame, useSamples,useFrames, type, scales, isSparse, offMode, isNoisy, htDirMode,isAbsDir, varargin)">multiScaleWorm</a>(wormFile, [], [], useSamples, <span class="keyword">...</span>
+0026     [], type, scales, isSparse, isAtT1, isNoisy, htDirMode, isAbsDir, <span class="keyword">...</span>
+0027     ventralMode);
+0028 
+0029 <span class="comment">% *** REPLACE THIS THE COMPUTATION OF MEAN WORM LENGTH ***</span>
+0030 meanWormLength = 1000;
+0031 
+0032 <span class="comment">% Get the midbody (mid 1/3 of the worm) speed.</span>
+0033 midbodySpeed = diffData{7}{1}(1,:);
+0034 
+0035 
+0036 
+0037 <span class="comment">%% *** COPY STARTS HERE</span>
+0038 
+0039 <span class="comment">% *** Make videos of the events.</span>
+0040 isEventVideos = false;
+0041 
+0042 <span class="comment">% % *** Check the values.</span>
+0043 <span class="comment">% isSanityCheck = true;</span>
+0044 
+0045 <span class="comment">% Offset the speed to match the frame count.</span>
+0046 <span class="comment">% speed = [];</span>
+0047 <span class="comment">% speed(1) = NaN;</span>
+0048 <span class="comment">% speed(2:(length(midbodySpeed) + 1)) = midbodySpeed;</span>
+0049 speed = midbodySpeed;
+0050 totalFrames = length(speed);
+0051 lastFrame = totalFrames - 1;
+0052 
+0053 <span class="comment">% Compute the distance. This avoids both segmentation noise and having to</span>
+0054 <span class="comment">% re-interpolate the distance when frames are missing.</span>
+0055 distance = abs(speed / fps);
+0056 
+0057 <span class="comment">%% Find the forward motion.</span>
+0058 wormSpeedThr = meanWormLength * 0.05; <span class="comment">% 5 percent of its length</span>
+0059 wormDistanceThr = meanWormLength * 0.05; <span class="comment">% 5 percent of its length</span>
+0060 wormEventFramesThr = 1.5 * fps;
+0061 wormEventMinInterFramesThr = 0.25 * fps;
+0062 minForwardSpeed = wormSpeedThr;
+0063 minForwardDistance = wormDistanceThr;
+0064 forwardFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(speed, minForwardSpeed, [], true, <span class="keyword">...</span>
+0065     wormEventFramesThr, [], false, <span class="keyword">...</span>
+0066     minForwardDistance, [], true, distance, wormEventMinInterFramesThr);
+0067 
+0068 <span class="comment">% % Save this for computing paused frames.</span>
+0069 <span class="comment">% allForwardFrames = findEvent(speed, minForwardSpeed, [], true, ...</span>
+0070 <span class="comment">%     [], [], false, ...</span>
+0071 <span class="comment">%     minForwardDistance, [], true, distance, wormEventMinInterFramesThr);</span>
+0072 
+0073 <span class="comment">% Compute the forward statistics.</span>
+0074 [forwardEventStats forwardStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(forwardFrames, fps, <span class="keyword">...</span>
+0075     distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0076 
+0077 <span class="comment">% Reorganize everything for the feature file.</span>
+0078 forwardFrames = forwardEventStats;
+0079 forwardFrequency = [];
+0080 forwardRatios = [];
+0081 <span class="keyword">if</span> ~isempty(forwardStats)
+0082     forwardFrequency = forwardStats.frequency;
+0083     forwardRatios = forwardStats.ratio;
+0084 <span class="keyword">end</span>
+0085 forward = struct( <span class="keyword">...</span>
+0086     <span class="string">'frames'</span>, forwardFrames, <span class="keyword">...</span>
+0087     <span class="string">'frequency'</span>, forwardFrequency, <span class="keyword">...</span>
+0088     <span class="string">'ratio'</span>, forwardRatios);
+0089 
+0090 
+0091 
+0092 <span class="comment">%% Find the backward motion.</span>
+0093 maxBackwardSpeed = -wormSpeedThr;
+0094 minBackwardDistance = wormDistanceThr;
+0095 backwardFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(speed, [], maxBackwardSpeed, true, <span class="keyword">...</span>
+0096     wormEventFramesThr, [], false, <span class="keyword">...</span>
+0097     minBackwardDistance, [], true, distance, wormEventMinInterFramesThr);
+0098 
+0099 <span class="comment">% % Save this for computing paused frames.</span>
+0100 <span class="comment">% allBackwardFrames = findEvent(speed, [], maxBackwardSpeed, true, ...</span>
+0101 <span class="comment">%     [], [], false, ...</span>
+0102 <span class="comment">%     minBackwardDistance, [], true, distance, wormEventMinInterFramesThr);</span>
+0103 
+0104 <span class="comment">% Compute the backward statistics.</span>
+0105 [backwardEventStats backwardStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(backwardFrames, fps, <span class="keyword">...</span>
+0106     distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0107 
+0108 <span class="comment">% Reorganize everything for the feature file.</span>
+0109 backwardFrames = backwardEventStats;
+0110 backwardFrequency = [];
+0111 backwardRatios = [];
+0112 <span class="keyword">if</span> ~isempty(backwardStats)
+0113     backwardFrequency = backwardStats.frequency;
+0114     backwardRatios = backwardStats.ratio;
+0115 <span class="keyword">end</span>
+0116 backward = struct( <span class="keyword">...</span>
+0117     <span class="string">'frames'</span>, backwardFrames, <span class="keyword">...</span>
+0118     <span class="string">'frequency'</span>, backwardFrequency, <span class="keyword">...</span>
+0119     <span class="string">'ratio'</span>, backwardRatios);
+0120 
+0121 
+0122 
+0123 <span class="comment">%% Find the paused motion.</span>
+0124 wormPauseThr = meanWormLength * 0.025; <span class="comment">% 2.5 percent of its length</span>
+0125 minPausedSpeed = -wormPauseThr;
+0126 maxPausedSpeed = wormPauseThr;
+0127 pausedFrames = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(speed, minPausedSpeed, maxPausedSpeed, true, <span class="keyword">...</span>
+0128     wormEventFramesThr, [], false, <span class="keyword">...</span>
+0129     [], [], true, distance, wormEventMinInterFramesThr);
+0130 
+0131 <span class="comment">% Compute the paused statistics.</span>
+0132 [pausedEventStats pausedStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(pausedFrames, fps, <span class="keyword">...</span>
+0133     distance, <span class="string">'distance'</span>, <span class="string">'interDistance'</span>);
+0134 
+0135 <span class="comment">% Reorganize everything for the feature file.</span>
+0136 pausedFrames = pausedEventStats;
+0137 pausedFrequency = [];
+0138 pausedRatios = [];
+0139 <span class="keyword">if</span> ~isempty(pausedStats)
+0140     pausedFrequency = pausedStats.frequency;
+0141     pausedRatios = pausedStats.ratio;
+0142 <span class="keyword">end</span>
+0143 paused = struct( <span class="keyword">...</span>
+0144     <span class="string">'frames'</span>, pausedFrames, <span class="keyword">...</span>
+0145     <span class="string">'frequency'</span>, pausedFrequency, <span class="keyword">...</span>
+0146     <span class="string">'ratio'</span>, pausedRatios);
+0147 
+0148 <span class="comment">% % Combine all the forward and backward motion.</span>
+0149 <span class="comment">% motionStartFrames = ...</span>
+0150 <span class="comment">%     cat(2, [forwardFrames.start], [backwardFrames.start]);</span>
+0151 <span class="comment">% motionEndFrames = ...</span>
+0152 <span class="comment">%     cat(2, [forwardFrames.end], [backwardFrames.end]);</span>
+0153 <span class="comment">% [motionStartFrames orderI] = sort(motionStartFrames);</span>
+0154 <span class="comment">% motionEndFrames = motionEndFrames(orderI);</span>
+0155 <span class="comment">%</span>
+0156 <span class="comment">% % The paused motion is anything that's neither forward nor backward motion.</span>
+0157 <span class="comment">% pausedFrames = struct( ...</span>
+0158 <span class="comment">%     'start', [], ...</span>
+0159 <span class="comment">%     'end',  []);</span>
+0160 <span class="comment">% j = 0;</span>
+0161 <span class="comment">% for i = 1:(length(motionStartFrames) - 1)</span>
+0162 <span class="comment">%</span>
+0163 <span class="comment">%     % Are there any frames between the forward and backward motion?</span>
+0164 <span class="comment">%     startFrame = motionEndFrames(i) + 1;</span>
+0165 <span class="comment">%     endFrame = motionStartFrames(i + 1) - 1;</span>
+0166 <span class="comment">%     if endFrame &gt;= startFrame</span>
+0167 <span class="comment">%         j = j + 1;</span>
+0168 <span class="comment">%         pausedFrames(j).start = startFrame;</span>
+0169 <span class="comment">%         pausedFrames(j).end = endFrame;</span>
+0170 <span class="comment">%     end</span>
+0171 <span class="comment">% end</span>
+0172 <span class="comment">%</span>
+0173 <span class="comment">% % Add the first and last pauses, if they exist.</span>
+0174 <span class="comment">% if motionStartFrames ~= 0</span>
+0175 <span class="comment">%     pausedFrames(2:(end + 1)) = pausedFrames;</span>
+0176 <span class="comment">%     pausedFrames(1).start = 0;</span>
+0177 <span class="comment">%     pausedFrames(1).end = motionStartFrames(1) - 1;</span>
+0178 <span class="comment">% end</span>
+0179 <span class="comment">% if motionEndFrames ~= lastFrame</span>
+0180 <span class="comment">%     pausedFrames(end + 1).start = motionEndFrames(end) + 1;</span>
+0181 <span class="comment">%     pausedFrames(end).end = lastFrame;</span>
+0182 <span class="comment">% end</span>
+0183 <span class="comment">%</span>
+0184 <span class="comment">% % % Unify small time gaps.</span>
+0185 <span class="comment">% % if isSanityCheck</span>
+0186 <span class="comment">% %     allPausedFrames = pausedFrames; % *** save this for the sanity check</span>
+0187 <span class="comment">% % end</span>
+0188 <span class="comment">% i = 1;</span>
+0189 <span class="comment">% while i &lt; length(pausedFrames)</span>
+0190 <span class="comment">%</span>
+0191 <span class="comment">%     % Swallow the gaps.</span>
+0192 <span class="comment">%     while i &lt; length(pausedFrames) &amp;&amp; ...</span>
+0193 <span class="comment">%             pausedFrames(i + 1).start - pausedFrames(i).end - 1 &lt; ...</span>
+0194 <span class="comment">%             wormEventMinInterFramesThr</span>
+0195 <span class="comment">%         pausedFrames(i).end = pausedFrames(i + 1).end;</span>
+0196 <span class="comment">%         pausedFrames(i + 1) = [];</span>
+0197 <span class="comment">%     end</span>
+0198 <span class="comment">%</span>
+0199 <span class="comment">%     % Advance.</span>
+0200 <span class="comment">%     i = i + 1;</span>
+0201 <span class="comment">% end</span>
+0202 <span class="comment">%</span>
+0203 <span class="comment">% % Remove short paused events.</span>
+0204 <span class="comment">% pausedNumFrames = [pausedFrames.end] - [pausedFrames.start] + 1;</span>
+0205 <span class="comment">% pausedFrames(pausedNumFrames &lt; wormEventFramesThr) = [];</span>
+0206 <span class="comment">% if isempty(pausedFrames(1).start)</span>
+0207 <span class="comment">%     pausedFrames = [];</span>
+0208 <span class="comment">% end</span>
+0209 <span class="comment">%</span>
+0210 <span class="comment">% % Compute the paused statistics.</span>
+0211 <span class="comment">% [pausedEventStats pausedStats] = events2stats(pausedFrames, fps, ...</span>
+0212 <span class="comment">%     distance, 'distance', 'interDistance');</span>
+0213 <span class="comment">%</span>
+0214 <span class="comment">% % Reorganize everything for the feature file.</span>
+0215 <span class="comment">% pausedFrames = pausedEventStats;</span>
+0216 <span class="comment">% pausedFrequency = [];</span>
+0217 <span class="comment">% pausedRatios = [];</span>
+0218 <span class="comment">% if ~isempty(pausedStats)</span>
+0219 <span class="comment">%     pausedFrequency = pausedStats.frequency;</span>
+0220 <span class="comment">%     pausedRatios = pausedStats.ratio;</span>
+0221 <span class="comment">% end</span>
+0222 <span class="comment">% paused = struct( ...</span>
+0223 <span class="comment">%     'frames', pausedFrames, ...</span>
+0224 <span class="comment">%     'frequency', pausedFrequency, ...</span>
+0225 <span class="comment">%     'ratio', pausedRatios);</span>
+0226 
+0227 
+0228 
+0229 <span class="comment">%% Compute the motion mode.</span>
+0230 
+0231 <span class="comment">% Translate the events to logical arrays.</span>
+0232 isForwardFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(forwardFrames, totalFrames);
+0233 isBackwardFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(backwardFrames, totalFrames);
+0234 isPausedFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(pausedFrames, totalFrames);
+0235 
+0236 <span class="comment">% Set forward = 1, backward = -1, paused = 0, and unknown = NaN.</span>
+0237 motionModes = nan(1,totalFrames);
+0238 motionModes(isForwardFrame) = 1;
+0239 motionModes(isBackwardFrame) = -1;
+0240 motionModes(isPausedFrame) = 0;
+0241 
+0242 
+0243 
+0244 <span class="comment">%% Compute the bends.</span>
+0245 locomotionBends = <a href="wormBends.html" class="code" title="function bends = wormBends(wormFile, varargin)">wormBends</a>(wormFile, motionModes, ventralMode);
+0246 
+0247 
+0248 
+0249 <span class="comment">%% Compute the coiled shapes.</span>
+0250 
+0251 <span class="comment">% Compute the coiled frames.</span>
+0252 coilFrames = <a href="wormTouchFrames.html" class="code" title="function touchFrames = wormTouchFrames(frameCodes, fps)">wormTouchFrames</a>(frameCodes, fps);
+0253 
+0254 <span class="comment">% Compute the coiled statistics.</span>
+0255 [coilEventStats coiledStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(coilFrames, fps, <span class="keyword">...</span>
+0256     distance, [], <span class="string">'interDistance'</span>);
+0257 
+0258 <span class="comment">% Reorganize everything for the feature file.</span>
+0259 coilFrames = coilEventStats;
+0260 coilFrequency = [];
+0261 coilTimeRatio = [];
+0262 <span class="keyword">if</span> ~isempty(coiledStats)
+0263     coilFrequency = coiledStats.frequency;
+0264     coilTimeRatio = coiledStats.ratio.time;
+0265 <span class="keyword">end</span>
+0266 coils = struct( <span class="keyword">...</span>
+0267     <span class="string">'frames'</span>, coilFrames, <span class="keyword">...</span>
+0268     <span class="string">'frequency'</span>, coilFrequency, <span class="keyword">...</span>
+0269     <span class="string">'timeRatio'</span>, coilTimeRatio);
+0270 
+0271 
+0272 
+0273 <span class="comment">%% Compute the omega turns.</span>
+0274 
+0275 <span class="comment">% Compute the omega frames.</span>
+0276 omegaFramesDorsal = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(omegaFrames, 1, [], true);
+0277 omegaFramesVentral = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(omegaFrames, [], -1, true);
+0278 
+0279 <span class="comment">% Unify the ventral and dorsal turns.</span>
+0280 omegaFrames = cat(2, omegaFramesVentral, omegaFramesDorsal);
+0281 isOmegaVentral = [true(1, length(omegaFramesVentral)), <span class="keyword">...</span>
+0282     false(1, length(omegaFramesDorsal))];
+0283 <span class="keyword">if</span> ~isempty(omegaFramesVentral) &amp;&amp; ~isempty(omegaFramesDorsal)
+0284     [~, orderI] = sort([omegaFrames.start]);
+0285     omegaFrames = omegaFrames(orderI);
+0286     isOmegaVentral = isOmegaVentral(orderI);
+0287 <span class="keyword">end</span>
+0288 
+0289 <span class="comment">% Compute the omega statistics.</span>
+0290 [omegaEventStats omegaStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(omegaFrames, fps, <span class="keyword">...</span>
+0291     distance, [], <span class="string">'interDistance'</span>);
+0292 
+0293 <span class="comment">% Add the turns ventral/dorsal side.</span>
+0294 omegaFrames = omegaEventStats;
+0295 <span class="keyword">if</span> ~isempty(omegaFrames)
+0296     omegaCells = squeeze(struct2cell(omegaFrames));
+0297     omegaCells{end+1,1} = [];
+0298     <span class="keyword">for</span> i = 1:size(omegaCells, 2)
+0299         omegaCells{<span class="keyword">end</span>, i} = isOmegaVentral(i);
+0300     <span class="keyword">end</span>
+0301     omegaFieldNames = fieldnames(omegaFrames);
+0302     omegaFieldNames{end + 1} = <span class="string">'isVentral'</span>;
+0303     omegaFrames = cell2struct(omegaCells, omegaFieldNames, 1);
+0304 <span class="keyword">end</span>
+0305 
+0306 <span class="comment">% Reorganize everything for the feature file.</span>
+0307 omegaFrequency = [];
+0308 omegaTimeRatio = [];
+0309 <span class="keyword">if</span> ~isempty(omegaStats)
+0310     omegaFrequency = omegaStats.frequency;
+0311     omegaTimeRatio = omegaStats.ratio.time;
+0312 <span class="keyword">end</span>
+0313 omegas = struct( <span class="keyword">...</span>
+0314     <span class="string">'frames'</span>, omegaFrames, <span class="keyword">...</span>
+0315     <span class="string">'frequency'</span>, omegaFrequency, <span class="keyword">...</span>
+0316     <span class="string">'timeRatio'</span>, omegaTimeRatio);
+0317 
+0318 
+0319 
+0320 <span class="comment">%% Compute the upsilon turns.</span>
+0321 
+0322 <span class="comment">% Compute the upsilon frames.</span>
+0323 upsilonFramesDorsal = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(upsilonFrames, 1, [], true);
+0324 upsilonFramesVentral = <a href="../../../SegWorm/Events/findEvent.html" class="code" title="function frames = findEvent(data, minThr, maxThr, varargin)">findEvent</a>(upsilonFrames, [], -1, true);
+0325 
+0326 <span class="comment">% Unify the ventral and dorsal turns.</span>
+0327 upsilonFrames = cat(2, upsilonFramesVentral, upsilonFramesDorsal);
+0328 isUpsilonVentral = [true(1, length(upsilonFramesVentral)), <span class="keyword">...</span>
+0329     false(1, length(upsilonFramesDorsal))];
+0330 <span class="keyword">if</span> ~isempty(upsilonFramesVentral) &amp;&amp; ~isempty(upsilonFramesDorsal)
+0331     [~, orderI] = sort([upsilonFrames.start]);
+0332     upsilonFrames = upsilonFrames(orderI);
+0333     isUpsilonVentral = isUpsilonVentral(orderI);
+0334 <span class="keyword">end</span>
+0335 
+0336 <span class="comment">% Compute the upsilon statistics.</span>
+0337 [upsilonEventStats upsilonStats] = <a href="../../../SegWorm/Events/events2stats.html" class="code" title="function [eventStats summaryStats] = events2stats(frames, fps, data,name, interName)">events2stats</a>(upsilonFrames, fps, <span class="keyword">...</span>
+0338     distance, [], <span class="string">'interDistance'</span>);
+0339 
+0340 <span class="comment">% Add the turns ventral/dorsal side.</span>
+0341 upsilonFrames = upsilonEventStats;
+0342 <span class="keyword">if</span> ~isempty(upsilonFrames)
+0343     upsilonCells = squeeze(struct2cell(upsilonFrames));
+0344     upsilonCells{end+1,1} = [];
+0345     <span class="keyword">for</span> i = 1:size(upsilonCells, 2)
+0346         upsilonCells{<span class="keyword">end</span>, i} = isUpsilonVentral(i);
+0347     <span class="keyword">end</span>
+0348     upsilonFieldNames = fieldnames(upsilonFrames);
+0349     upsilonFieldNames{end + 1} = <span class="string">'isVentral'</span>;
+0350     upsilonFrames = cell2struct(upsilonCells, upsilonFieldNames, 1);
+0351 <span class="keyword">end</span>
+0352 
+0353 <span class="comment">% Reorganize everything for the feature file.</span>
+0354 upsilonFrequency = [];
+0355 upsilonTimeRatio = [];
+0356 <span class="keyword">if</span> ~isempty(upsilonStats)
+0357     upsilonFrequency = upsilonStats.frequency;
+0358     upsilonTimeRatio = upsilonStats.ratio.time;
+0359 <span class="keyword">end</span>
+0360 upsilons = struct( <span class="keyword">...</span>
+0361     <span class="string">'frames'</span>, upsilonFrames, <span class="keyword">...</span>
+0362     <span class="string">'frequency'</span>, upsilonFrequency, <span class="keyword">...</span>
+0363     <span class="string">'timeRatio'</span>, upsilonTimeRatio);
+0364 
+0365 
+0366 
+0367 <span class="comment">%% Compute the path range.</span>
+0368 pathRange = <a href="wormPathRange.html" class="code" title="function range = wormPathRange(x, y)">wormPathRange</a>(centroidPathX, centroidPathY);
+0369 
+0370 
+0371 
+0372 <span class="comment">%% Compute the path duration.</span>
+0373 
+0374 <span class="comment">% Compute the path scale.</span>
+0375 headWidth = nanmean(headWidths);
+0376 midWidth = nanmean(midbodyWidths);
+0377 tailWidth = nanmean(tailWidths);
+0378 meanWidth = (headWidth + midWidth + tailWidth) / 3;
+0379 pathScale = sqrt(2) / meanWidth;
+0380 
+0381 <span class="comment">% Compute the worm segments.</span>
+0382 headI = 1;
+0383 tailI = wormSamples;
+0384 wormSegSize = round(tailI / 6);
+0385 headIs = headI:(headI + wormSegSize - 1);
+0386 midbodyIs = (headI + wormSegSize):(tailI - wormSegSize);
+0387 tailIs = (tailI - wormSegSize + 1):tailI;
+0388 
+0389 <span class="comment">% Compute the skeleton points.</span>
+0390 points = { <span class="keyword">...</span>
+0391     headI:tailI, <span class="keyword">...</span>
+0392     headIs, <span class="keyword">...</span>
+0393     midbodyIs, <span class="keyword">...</span>
+0394     tailIs};
+0395 
+0396 <span class="comment">% Compute the path duration and organize everything for the feature file.</span>
+0397 [arena durations] = <a href="wormPathTime.html" class="code" title="function [arena times] = wormPathTime(skeletonX, skeletonY, points,scale, fps)">wormPathTime</a>(postureXSkeletons, postureYSkeletons, <span class="keyword">...</span>
+0398     points, pathScale, fps);
+0399 pathDuration = struct( <span class="keyword">...</span>
+0400     <span class="string">'arena'</span>, arena, <span class="keyword">...</span>
+0401     <span class="string">'worm'</span>, durations(1), <span class="keyword">...</span>
+0402     <span class="string">'head'</span>, durations(2), <span class="keyword">...</span>
+0403     <span class="string">'midbody'</span>, durations(3), <span class="keyword">...</span>
+0404     <span class="string">'tail'</span>, durations(4));
+0405 
+0406 
+0407 
+0408 <span class="comment">%% *** SANITY CHECK</span>
+0409 <span class="comment">% The forward, backward, and paused frames should account for all frames,</span>
+0410 <span class="comment">% time, and distance with no overlap.</span>
+0411 <span class="comment">% if isSanityCheck</span>
+0412 <span class="comment">%     [allForwardFrames, ~] = events2stats(allForwardFrames, fps, ...</span>
+0413 <span class="comment">%         distance, 'distance', 'interDistance');</span>
+0414 <span class="comment">%     [allBackwardFrames, ~] = events2stats(allBackwardFrames, fps, ...</span>
+0415 <span class="comment">%         distance, 'distance', 'interDistance');</span>
+0416 <span class="comment">%     [allPausedFrames, ~] = events2stats(allPausedFrames, fps, ...</span>
+0417 <span class="comment">%         distance, 'distance', 'interDistance');</span>
+0418 <span class="comment">%     allFrames = [];</span>
+0419 <span class="comment">%     totalTime = 0;</span>
+0420 <span class="comment">%     totalDistance = 0;</span>
+0421 <span class="comment">%     for i = 1:length(allForwardFrames)</span>
+0422 <span class="comment">%         allFrames((end + 1): ...</span>
+0423 <span class="comment">%             (end + allForwardFrames(i).end - allForwardFrames(i).start + 1)) = ...</span>
+0424 <span class="comment">%             allForwardFrames(i).start:allForwardFrames(i).end;</span>
+0425 <span class="comment">%         totalTime = totalTime + allForwardFrames(i).time;</span>
+0426 <span class="comment">%         totalDistance = totalDistance + allForwardFrames(i).distance;</span>
+0427 <span class="comment">%     end</span>
+0428 <span class="comment">%     for i = 1:length(allBackwardFrames)</span>
+0429 <span class="comment">%         allFrames((end + 1): ...</span>
+0430 <span class="comment">%             (end + allBackwardFrames(i).end - allBackwardFrames(i).start + 1)) = ...</span>
+0431 <span class="comment">%             allBackwardFrames(i).start:allBackwardFrames(i).end;</span>
+0432 <span class="comment">%         totalTime = totalTime + allBackwardFrames(i).time;</span>
+0433 <span class="comment">%         totalDistance = totalDistance + allBackwardFrames(i).distance;</span>
+0434 <span class="comment">%     end</span>
+0435 <span class="comment">%     for i = 1:length(allPausedFrames)</span>
+0436 <span class="comment">%         allFrames((end + 1): ...</span>
+0437 <span class="comment">%             (end + allPausedFrames(i).end - allPausedFrames(i).start + 1)) = ...</span>
+0438 <span class="comment">%             allPausedFrames(i).start:allPausedFrames(i).end;</span>
+0439 <span class="comment">%         totalTime = totalTime + allPausedFrames(i).time;</span>
+0440 <span class="comment">%         totalDistance = totalDistance + allPausedFrames(i).distance;</span>
+0441 <span class="comment">%     end</span>
+0442 <span class="comment">%</span>
+0443 <span class="comment">%     % Check the frames.</span>
+0444 <span class="comment">%     if length(allFrames) ~= totalFrames || ...</span>
+0445 <span class="comment">%             length(unique(allFrames)) ~= totalFrames</span>
+0446 <span class="comment">%         error('wormEvents:ForwardBackwardPausedFrames', ...</span>
+0447 <span class="comment">%             'the sum of the forward, backward, and paused frames do not add up!')</span>
+0448 <span class="comment">%     end</span>
+0449 <span class="comment">%</span>
+0450 <span class="comment">%     % Check the time (IEEE floating point errors will lead to imprecision).</span>
+0451 <span class="comment">%     totalRealTime = totalFrames / fps;</span>
+0452 <span class="comment">%     disp(['Total time (seconds): ' num2str(totalRealTime)]);</span>
+0453 <span class="comment">%     disp(['Summed time (seconds): ' num2str(totalTime)]);</span>
+0454 <span class="comment">%     disp(['Time difference (seconds): ' num2str(totalRealTime - totalTime)]);</span>
+0455 <span class="comment">%</span>
+0456 <span class="comment">%     % Check the distance (IEEE floating point errors will lead to imprecision).</span>
+0457 <span class="comment">%     totalRealDistance = nansum(distance);</span>
+0458 <span class="comment">%     disp(['Total distance (microns): ' num2str(totalRealDistance)]);</span>
+0459 <span class="comment">%     disp(['Summed distance (microns): ' num2str(totalDistance)]);</span>
+0460 <span class="comment">%     disp(['Distance difference (microns): ' ...</span>
+0461 <span class="comment">%         num2str(totalRealDistance - totalDistance)]);</span>
+0462 <span class="comment">% end</span>
+0463 
+0464 
+0465 <span class="comment">%% *** COPY ENDS HERE</span>
+0466 
+0467 <span class="comment">%% *** WHEN DISPLAYING THE EVENTS IN THE FEATURE VIEWER USE THE FOLLOWING.</span>
+0468 
+0469 
+0470 
+0471 <span class="comment">%% Display the forward motion.</span>
+0472 <span class="comment">% Display the forward motion histogram.</span>
+0473 isForwardFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(forwardFrames, totalFrames); <span class="comment">% for your GUI</span>
+0474 forwardStats4Plots = <a href="removePartialEvents.html" class="code" title="function eventStats = removePartialEvents(eventStats, totalFrames)">removePartialEvents</a>(forwardEventStats, totalFrames);
+0475 <span class="keyword">if</span> ~isempty(forwardStats4Plots)
+0476     histData = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>([forwardStats4Plots.distance]);
+0477     figure;
+0478     <span class="keyword">if</span> ~isempty(forwardStats4Plots)
+0479         <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, <span class="string">'Forward Motion Events Histogram'</span>, <span class="keyword">...</span>
+0480             <span class="string">'Forward Event Distance (microns)'</span>, <span class="keyword">...</span>
+0481             <span class="string">'Forward Event Distance'</span>, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>));
+0482     <span class="keyword">end</span>
+0483     
+0484     <span class="comment">% Display the forward motion plot.</span>
+0485     figure;
+0486     <span class="keyword">if</span> ~isempty(forwardStats4Plots)
+0487         
+0488         <span class="comment">% Plot distance vs. inter distance.</span>
+0489         hold on;
+0490         subplot(1,2,1);
+0491         states(2) = struct( <span class="keyword">...</span>
+0492             <span class="string">'fieldName'</span>, <span class="string">'interDistance'</span>, <span class="keyword">...</span>
+0493             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0494             <span class="string">'width'</span>, 1, <span class="keyword">...</span>
+0495             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0496             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0497             <span class="string">'evalFieldFuncs'</span>, []);
+0498         states(1).fieldName = <span class="string">'distance'</span>;
+0499         states(1).isInterEvent = false;
+0500         eventNames = {<span class="string">'Forward Motion'</span>, <span class="string">'Not Forward Motion'</span>};
+0501         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(forwardEventStats, totalFrames, fps, <span class="keyword">...</span>
+0502             <span class="string">'Forward Motion Distance'</span>, <span class="string">'Forward Distance (microns)'</span>, <span class="keyword">...</span>
+0503             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'gr'</span>, -0.1));
+0504         
+0505         <span class="comment">% Plot time vs. inter time.</span>
+0506         subplot(1,2,2);
+0507         states(2) = struct( <span class="keyword">...</span>
+0508             <span class="string">'fieldName'</span>, <span class="string">'interDistance'</span>, <span class="keyword">...</span>
+0509             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0510             <span class="string">'width'</span>, 1, <span class="keyword">...</span>
+0511             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0512             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0513             <span class="string">'evalFieldFuncs'</span>, []);
+0514         states(1).fieldName = <span class="string">'time'</span>;
+0515         states(1).isInterEvent = false;
+0516         eventNames = {<span class="string">'Forward Motion'</span>, <span class="string">'Not Forward Motion'</span>};
+0517         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(forwardEventStats, totalFrames, fps, <span class="keyword">...</span>
+0518             <span class="string">'Forward Motion Time'</span>, <span class="string">'Forward Time (seconds)'</span>, <span class="keyword">...</span>
+0519             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'gr'</span>, -0.1));
+0520         
+0521     <span class="comment">% No data.</span>
+0522     <span class="keyword">else</span>
+0523         xlabel(<span class="string">'Time (seconds)'</span>);
+0524         ylabel(<span class="string">'Distance (microns)'</span>);
+0525         title(<span class="string">'Forward Motion Events'</span>);
+0526     <span class="keyword">end</span>
+0527 <span class="keyword">end</span>
+0528 
+0529 
+0530 
+0531 <span class="comment">%% Display the backward motion.</span>
+0532 <span class="comment">% Display the forward motion histogram.</span>
+0533 isBackwardFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(backwardFrames, totalFrames); <span class="comment">% for your GUI</span>
+0534 backwardStats4Plots = <a href="removePartialEvents.html" class="code" title="function eventStats = removePartialEvents(eventStats, totalFrames)">removePartialEvents</a>(backwardEventStats, totalFrames);
+0535 <span class="keyword">if</span> ~isempty(backwardStats4Plots)
+0536     histData = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>([backwardStats4Plots.distance]);
+0537     figure;
+0538     <span class="keyword">if</span> ~isempty(backwardStats4Plots)
+0539         <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, <span class="string">'Backward Motion Events Histogram'</span>, <span class="keyword">...</span>
+0540             <span class="string">'Backward Event Distance (microns)'</span>, <span class="keyword">...</span>
+0541             <span class="string">'Backward Event Distance'</span>, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>));
+0542     <span class="keyword">end</span>
+0543     
+0544     <span class="comment">% Display the backward motion plot.</span>
+0545     figure;
+0546     <span class="keyword">if</span> ~isempty(forwardStats4Plots)
+0547         
+0548         <span class="comment">% Plot distance vs. inter distance.</span>
+0549         hold on;
+0550         subplot(1,2,1);
+0551         states(2) = struct( <span class="keyword">...</span>
+0552             <span class="string">'fieldName'</span>, <span class="string">'interDistance'</span>, <span class="keyword">...</span>
+0553             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0554             <span class="string">'width'</span>, 1, <span class="keyword">...</span>
+0555             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0556             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0557             <span class="string">'evalFieldFuncs'</span>, []);
+0558         states(1).fieldName = <span class="string">'distance'</span>;
+0559         states(1).isInterEvent = false;
+0560         eventNames = {<span class="string">'Backward Motion'</span>, <span class="string">'Not Backward Motion'</span>};
+0561         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(backwardEventStats, totalFrames, fps, <span class="keyword">...</span>
+0562             <span class="string">'Backward Motion Distance'</span>, <span class="string">'Backward Distance (microns)'</span>, <span class="keyword">...</span>
+0563             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'gr'</span>, -0.1));
+0564         
+0565         <span class="comment">% Plot time vs. inter time.</span>
+0566         subplot(1,2,2);
+0567         states(2) = struct( <span class="keyword">...</span>
+0568             <span class="string">'fieldName'</span>, <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0569             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0570             <span class="string">'width'</span>, 1, <span class="keyword">...</span>
+0571             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0572             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0573             <span class="string">'evalFieldFuncs'</span>, []);
+0574         states(1).fieldName = <span class="string">'time'</span>;
+0575         states(1).isInterEvent = false;
+0576         eventNames = {<span class="string">'Backward Motion'</span>, <span class="string">'Not Backward Motion'</span>};
+0577         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(backwardEventStats, totalFrames, fps, <span class="keyword">...</span>
+0578             <span class="string">'Backward Motion Time'</span>, <span class="string">'Backward Time (seconds)'</span>, <span class="keyword">...</span>
+0579             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'gr'</span>, -0.1));
+0580         
+0581     <span class="comment">% No data.</span>
+0582     <span class="keyword">else</span>
+0583         xlabel(<span class="string">'Time (seconds)'</span>);
+0584         ylabel(<span class="string">'Distance (microns)'</span>);
+0585         title(<span class="string">'Backward Motion Events'</span>);
+0586     <span class="keyword">end</span>
+0587 <span class="keyword">end</span>
+0588 
+0589 
+0590 
+0591 <span class="comment">%% Display the paused motion.</span>
+0592 <span class="comment">% Display the paused motion histogram.</span>
+0593 isPausedFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(pausedFrames, totalFrames); <span class="comment">% for your GUI</span>
+0594 pausedStats4Plots = <a href="removePartialEvents.html" class="code" title="function eventStats = removePartialEvents(eventStats, totalFrames)">removePartialEvents</a>(pausedEventStats, totalFrames);
+0595 <span class="keyword">if</span> ~isempty(pausedStats4Plots)
+0596     histData = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>([pausedStats4Plots.distance]);
+0597     figure;
+0598     <span class="keyword">if</span> ~isempty(pausedStats4Plots)
+0599         <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, <span class="string">'Paused Motion Events Histogram'</span>, <span class="keyword">...</span>
+0600             <span class="string">'Paused Event Distance (microns)'</span>, <span class="keyword">...</span>
+0601             <span class="string">'Paused Event Distance'</span>, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>));
+0602     <span class="keyword">end</span>
+0603     
+0604     <span class="comment">% Display the paused motion plot.</span>
+0605     figure;
+0606     hold on;
+0607     <span class="keyword">if</span> ~isempty(pausedStats4Plots)
+0608         
+0609         <span class="comment">% Plot distance vs. inter distance.</span>
+0610         hold on;
+0611         subplot(1,2,1);
+0612         states(2) = struct( <span class="keyword">...</span>
+0613             <span class="string">'fieldName'</span>, <span class="string">'interDistance'</span>, <span class="keyword">...</span>
+0614             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0615             <span class="string">'width'</span>, 1, <span class="keyword">...</span>
+0616             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0617             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0618             <span class="string">'evalFieldFuncs'</span>, []);
+0619         states(1).fieldName = <span class="string">'distance'</span>;
+0620         states(1).isInterEvent = false;
+0621         eventNames = {<span class="string">'Paused Motion'</span>, <span class="string">'Not Paused Motion'</span>};
+0622         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(pausedEventStats, totalFrames, fps, <span class="keyword">...</span>
+0623             <span class="string">'Paused Motion Distance'</span>, <span class="string">'Paused Distance (microns)'</span>, <span class="keyword">...</span>
+0624             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'gr'</span>, -0.1));
+0625         
+0626         <span class="comment">% Plot time vs. inter time.</span>
+0627         subplot(1,2,2);
+0628         states(2) = struct( <span class="keyword">...</span>
+0629             <span class="string">'fieldName'</span>, <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0630             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0631             <span class="string">'width'</span>, 1, <span class="keyword">...</span>
+0632             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0633             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0634             <span class="string">'evalFieldFuncs'</span>, []);
+0635         states(1).fieldName = <span class="string">'time'</span>;
+0636         states(1).isInterEvent = false;
+0637         eventNames = {<span class="string">'Paused Motion'</span>, <span class="string">'Not Paused Motion'</span>};
+0638         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(pausedEventStats, totalFrames, fps, <span class="keyword">...</span>
+0639             <span class="string">'Paused Motion Time'</span>, <span class="string">'Paused Time (seconds)'</span>, <span class="keyword">...</span>
+0640             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'gr'</span>, -0.1));
+0641         
+0642     <span class="comment">% No data.</span>
+0643     <span class="keyword">else</span>
+0644         xlabel(<span class="string">'Time (seconds)'</span>);
+0645         ylabel(<span class="string">'Distance (microns)'</span>);
+0646         title(<span class="string">'Paused Motion Events'</span>);
+0647     <span class="keyword">end</span>
+0648 <span class="keyword">end</span>
+0649 
+0650 
+0651 
+0652 <span class="comment">%% Display the motion modes.</span>
+0653 figure;
+0654 <span class="comment">% hold on;</span>
+0655 <span class="comment">% forwardMotionFrames = find(motionModes == 1);</span>
+0656 <span class="comment">% plot((forwardMotionFrames - 1) / fps, 1, 'r');</span>
+0657 <span class="comment">% backwardMotionFrames = find(motionModes == -1);</span>
+0658 <span class="comment">% plot((backwardMotionFrames - 1) / fps, -1, 'b');</span>
+0659 <span class="comment">% pausedMotionFrames = find(motionModes == 0);</span>
+0660 <span class="comment">% plot((pausedMotionFrames - 1) / fps, 0, 'k');</span>
+0661 plot((0:(length(motionModes) - 1)) / fps, motionModes);
+0662 xlabel(<span class="string">'Time (seconds)'</span>);
+0663 ylabel(<span class="string">'Mode'</span>);
+0664 ylim([-2 2]);
+0665 set(gca,<span class="string">'YTick'</span>, -1:1)
+0666 set(gca,<span class="string">'YTickLabel'</span>,{<span class="string">'Backward'</span>,<span class="string">'Paused'</span>,<span class="string">'Forward'</span>})
+0667 title(<span class="string">'Motion Events'</span>);
+0668 
+0669 
+0670 
+0671 <span class="comment">%% Display the coiled postures.</span>
+0672 <span class="comment">% Display the coiled posture histogram.</span>
+0673 isCoilFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(coilFrames, totalFrames); <span class="comment">% for your GUI</span>
+0674 coilStats4Plots = <a href="removePartialEvents.html" class="code" title="function eventStats = removePartialEvents(eventStats, totalFrames)">removePartialEvents</a>(coilEventStats, totalFrames);
+0675 <span class="keyword">if</span> ~isempty(coilStats4Plots)
+0676     histData = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>([coilStats4Plots.time]);
+0677     figure;
+0678     <span class="keyword">if</span> ~isempty(coilStats4Plots)
+0679         <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, <span class="string">'Coiled Posture Events Histogram'</span>, <span class="keyword">...</span>
+0680             <span class="string">'Coil Event Time (seconds)'</span>, <span class="keyword">...</span>
+0681             <span class="string">'Coil Event Time'</span>, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>));
+0682     <span class="keyword">end</span>
+0683     
+0684     <span class="comment">% Display the coiled motion plot.</span>
+0685     figure;
+0686     hold on;
+0687     <span class="keyword">if</span> ~isempty(coilStats4Plots)
+0688         
+0689         <span class="comment">% Plot inter distance.</span>
+0690         hold on;
+0691         subplot(1,2,1);
+0692         states = struct( <span class="keyword">...</span>
+0693             <span class="string">'fieldName'</span>, <span class="string">'interDistance'</span>, <span class="keyword">...</span>
+0694             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0695             <span class="string">'width'</span>, [], <span class="keyword">...</span>
+0696             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0697             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0698             <span class="string">'evalFieldFuncs'</span>, []);
+0699         eventNames = <span class="string">'Not Coiled'</span>;
+0700         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(coilEventStats, totalFrames, fps, <span class="keyword">...</span>
+0701             <span class="string">'Not Coiled Distance'</span>, <span class="string">'Not Coiled Distance (microns)'</span>, <span class="keyword">...</span>
+0702             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'r'</span>, -0.1), true);
+0703         
+0704         <span class="comment">% Plot time vs. inter time.</span>
+0705         subplot(1,2,2);
+0706         states(2) = struct( <span class="keyword">...</span>
+0707             <span class="string">'fieldName'</span>, <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0708             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0709             <span class="string">'width'</span>, [], <span class="keyword">...</span>
+0710             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0711             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0712             <span class="string">'evalFieldFuncs'</span>, []);
+0713         states(1).fieldName = <span class="string">'time'</span>;
+0714         states(1).isInterEvent = false;
+0715         states(1).height = 1;
+0716         states(2).height = 1;
+0717         eventNames = {<span class="string">'Coiled'</span>, <span class="string">'Not Coiled'</span>};
+0718         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(coilEventStats, totalFrames, fps, <span class="keyword">...</span>
+0719             <span class="string">'Coiled Time'</span>, <span class="string">''</span>, <span class="keyword">...</span>
+0720             <span class="keyword">...</span><span class="comment"> %'Coiled Time', 'Coiled Time (seconds)', ...</span>
+0721             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'gr'</span>, -0.1));
+0722         
+0723     <span class="comment">% No data.</span>
+0724     <span class="keyword">else</span>
+0725         xlabel(<span class="string">'Time (seconds)'</span>);
+0726         ylabel(<span class="string">'Time (seconds)'</span>);
+0727         title(<span class="string">'Coiled Posture Events'</span>);
+0728     <span class="keyword">end</span>
+0729 <span class="keyword">end</span>
+0730 
+0731 
+0732 
+0733 <span class="comment">%% Display the omega turns.</span>
+0734 <span class="comment">% Display the omega turns histogram.</span>
+0735 isOmegaFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(omegaFrames, totalFrames); <span class="comment">% for your GUI</span>
+0736 omegaStats4Plots = <a href="removePartialEvents.html" class="code" title="function eventStats = removePartialEvents(eventStats, totalFrames)">removePartialEvents</a>(omegaFrames, totalFrames);
+0737 <span class="keyword">if</span> ~isempty(omegaStats4Plots)
+0738     histData = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>([omegaStats4Plots.time]);
+0739     figure;
+0740     <span class="keyword">if</span> ~isempty(omegaStats4Plots)
+0741         <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, <span class="string">'Omega Turns Histogram'</span>, <span class="keyword">...</span>
+0742             <span class="string">'Omega Turns Time (seconds)'</span>, <span class="keyword">...</span>
+0743             <span class="string">'Omega Turns Time'</span>, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>));
+0744     <span class="keyword">end</span>
+0745     
+0746     <span class="comment">% Display the omega turns plot.</span>
+0747     figure;
+0748     hold on;
+0749     <span class="keyword">if</span> ~isempty(omegaStats4Plots)
+0750         
+0751         <span class="comment">% Plot inter distance.</span>
+0752         hold on;
+0753         subplot(1,2,1);
+0754         states = struct( <span class="keyword">...</span>
+0755             <span class="string">'fieldName'</span>, <span class="string">'interDistance'</span>, <span class="keyword">...</span>
+0756             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0757             <span class="string">'width'</span>, [], <span class="keyword">...</span>
+0758             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0759             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0760             <span class="string">'evalFieldFuncs'</span>, []);
+0761         eventNames = <span class="string">'Not Omega Turn'</span>;
+0762         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(omegaFrames, totalFrames, fps, <span class="keyword">...</span>
+0763             <span class="string">'Not Omega Turn Distance'</span>, <span class="string">'Not Omega Turn Distance (microns)'</span>, <span class="keyword">...</span>
+0764             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'r'</span>, -0.1), true);
+0765         
+0766         <span class="comment">% Plot time vs. inter time.</span>
+0767         subplot(1,2,2);
+0768         states(3) = struct( <span class="keyword">...</span>
+0769             <span class="string">'fieldName'</span>, <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0770             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0771             <span class="string">'width'</span>, [], <span class="keyword">...</span>
+0772             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0773             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0774             <span class="string">'evalFieldFuncs'</span>, []);
+0775         states(1).fieldName = <span class="string">'time'</span>;
+0776         states(1).isInterEvent = false;
+0777         states(1).evalFieldNames = <span class="string">'isVentral'</span>;
+0778         states(1).evalFieldFuncs = @(x) not(x);
+0779         states(2).fieldName = <span class="string">'time'</span>;
+0780         states(2).isInterEvent = false;
+0781         states(2).evalFieldNames = <span class="string">'isVentral'</span>;
+0782         states(2).evalFieldFuncs = @(x) x;
+0783         states(1).height = 1;
+0784         states(2).height = 1;
+0785         eventNames = {<span class="string">'Dorsal Omega Turn'</span>, <span class="string">'Ventral Omega Turn'</span>, <span class="keyword">...</span>
+0786             <span class="string">'Not Omega Turn'</span>};
+0787         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(omegaFrames, totalFrames, fps, <span class="keyword">...</span>
+0788             <span class="string">'Omega Turn Time'</span>, <span class="string">'Omega Turn Time (seconds)'</span>, <span class="keyword">...</span>
+0789             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'gbr'</span>, -0.1));
+0790         
+0791     <span class="comment">% No data.</span>
+0792     <span class="keyword">else</span>
+0793         xlabel(<span class="string">'Time (seconds)'</span>);
+0794         ylabel(<span class="string">'Time (seconds)'</span>);
+0795         title(<span class="string">'Omega Turns'</span>);
+0796     <span class="keyword">end</span>
+0797 <span class="keyword">end</span>
+0798 
+0799 
+0800 
+0801 <span class="comment">%% Display the upsilon turns.</span>
+0802 <span class="comment">% Display the upsilon turns histogram.</span>
+0803 isUpsilonFrame = <a href="../../../SegWorm/Events/events2array.html" class="code" title="function isEvent = events2array(frames, totalFrames)">events2array</a>(upsilonFrames, totalFrames); <span class="comment">% for your GUI</span>
+0804 upsilonStats4Plots = <a href="removePartialEvents.html" class="code" title="function eventStats = removePartialEvents(eventStats, totalFrames)">removePartialEvents</a>(upsilonFrames, totalFrames);
+0805 <span class="keyword">if</span> ~isempty(upsilonStats4Plots)
+0806     histData = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>([upsilonStats4Plots.time]);
+0807     figure;
+0808     <span class="keyword">if</span> ~isempty(upsilonStats4Plots)
+0809         <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, <span class="string">'Upsilon Turns Histogram'</span>, <span class="keyword">...</span>
+0810             <span class="string">'Upsilon Turns Time (seconds)'</span>, <span class="keyword">...</span>
+0811             <span class="string">'Upsilon Turns Time'</span>, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>));
+0812     <span class="keyword">end</span>
+0813     
+0814     <span class="comment">% Display the upsilon turns plot.</span>
+0815     figure;
+0816     hold on;
+0817     <span class="keyword">if</span> ~isempty(upsilonStats4Plots)
+0818         
+0819         <span class="comment">% Plot inter distance.</span>
+0820         hold on;
+0821         subplot(1,2,1);
+0822         states = struct( <span class="keyword">...</span>
+0823             <span class="string">'fieldName'</span>, <span class="string">'interDistance'</span>, <span class="keyword">...</span>
+0824             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0825             <span class="string">'width'</span>, [], <span class="keyword">...</span>
+0826             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0827             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0828             <span class="string">'evalFieldFuncs'</span>, []);
+0829         eventNames = <span class="string">'Not Upsilon Turn'</span>;
+0830         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(upsilonFrames, totalFrames, fps, <span class="keyword">...</span>
+0831             <span class="string">'Not Upsilon Turn Distance'</span>, <span class="string">'Not Upsilon Turn Distance (microns)'</span>, <span class="keyword">...</span>
+0832             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'r'</span>, -0.1), true);
+0833         
+0834         <span class="comment">% Plot time vs. inter time.</span>
+0835         subplot(1,2,2);
+0836         states(3) = struct( <span class="keyword">...</span>
+0837             <span class="string">'fieldName'</span>, <span class="string">'interTime'</span>, <span class="keyword">...</span>
+0838             <span class="string">'height'</span>, [], <span class="keyword">...</span>
+0839             <span class="string">'width'</span>, [], <span class="keyword">...</span>
+0840             <span class="string">'isInterEvent'</span>, true, <span class="keyword">...</span>
+0841             <span class="string">'evalFieldNames'</span>, [], <span class="keyword">...</span>
+0842             <span class="string">'evalFieldFuncs'</span>, []);
+0843         states(1).fieldName = <span class="string">'time'</span>;
+0844         states(1).isInterEvent = false;
+0845         states(1).evalFieldNames = <span class="string">'isVentral'</span>;
+0846         states(1).evalFieldFuncs = @(x) not(x);
+0847         states(2).fieldName = <span class="string">'time'</span>;
+0848         states(2).isInterEvent = false;
+0849         states(2).evalFieldNames = <span class="string">'isVentral'</span>;
+0850         states(2).evalFieldFuncs = @(x) x;
+0851         states(1).height = 1;
+0852         states(2).height = 1;
+0853         eventNames = {<span class="string">'Dorsal Upsilon Turn'</span>, <span class="string">'Ventral Upsilon Turn'</span>, <span class="keyword">...</span>
+0854             <span class="string">'Not Upsilon Turn'</span>};
+0855         <a href="../../../SegWorm/Events/plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>(upsilonFrames, totalFrames, fps, <span class="keyword">...</span>
+0856             <span class="string">'Upsilon Turn Time'</span>, <span class="string">'Upsilon Turn Time (seconds)'</span>, <span class="keyword">...</span>
+0857             eventNames, @<a href="../../../SegWorm/Events/event2box.html" class="code" title="function [box state] = event2box(state, prevEvent, event, nextEvent)">event2box</a>, states, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'gbr'</span>, -0.1));
+0858         
+0859     <span class="comment">% No data.</span>
+0860     <span class="keyword">else</span>
+0861         xlabel(<span class="string">'Time (seconds)'</span>);
+0862         ylabel(<span class="string">'Time (seconds)'</span>);
+0863         title(<span class="string">'Upsilon Turns'</span>);
+0864     <span class="keyword">end</span>
+0865 <span class="keyword">end</span>
+0866 
+0867 
+0868 
+0869 <span class="comment">%% Display the path range.</span>
+0870 figure;
+0871 histData = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(pathRange);
+0872 <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, <span class="string">'Distance from Path Center'</span>, <span class="keyword">...</span>
+0873     <span class="string">'Distance (microns)'</span>, <span class="string">'Distance'</span>, <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>));
+0874 
+0875 
+0876 
+0877 <span class="comment">%% Display the path duration.</span>
+0878 h = figure;
+0879 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1]);
+0880 hold on;
+0881 subplot(2,2,1);
+0882 <a href="../../../SegWorm/Worms/Printing/plotWormPathTime.html" class="code" title="function plotWormPathTime(arena, time, titleName, axisName, varargin)">plotWormPathTime</a>(pathDuration.arena, pathDuration.worm, <span class="keyword">...</span>
+0883     <span class="string">'Worm Duration'</span>, <span class="string">'Location (microns)'</span>);
+0884 subplot(2,2,2);
+0885 <a href="../../../SegWorm/Worms/Printing/plotWormPathTime.html" class="code" title="function plotWormPathTime(arena, time, titleName, axisName, varargin)">plotWormPathTime</a>(pathDuration.arena, pathDuration.head, <span class="keyword">...</span>
+0886     <span class="string">'Head Duration'</span>, <span class="string">'Location (microns)'</span>);
+0887 subplot(2,2,3);
+0888 <a href="../../../SegWorm/Worms/Printing/plotWormPathTime.html" class="code" title="function plotWormPathTime(arena, time, titleName, axisName, varargin)">plotWormPathTime</a>(pathDuration.arena, pathDuration.midbody, <span class="keyword">...</span>
+0889     <span class="string">'Midbody Duration'</span>, <span class="string">'Location (microns)'</span>);
+0890 subplot(2,2,4);
+0891 <a href="../../../SegWorm/Worms/Printing/plotWormPathTime.html" class="code" title="function plotWormPathTime(arena, time, titleName, axisName, varargin)">plotWormPathTime</a>(pathDuration.arena, pathDuration.tail, <span class="keyword">...</span>
+0892     <span class="string">'Tail Duration'</span>, <span class="string">'Location (microns)'</span>);
+0893 
+0894 
+0895 
+0896 <span class="comment">%% Make videos of the events.</span>
+0897 <span class="comment">% Go back to the original directory.</span>
+0898 cd(<span class="string">'..'</span>);
+0899 
+0900 <span class="comment">% Make the videos.</span>
+0901 <span class="keyword">if</span> isEventVideos
+0902     
+0903     <span class="comment">% Construct the video file names.</span>
+0904     video = strrep(file.name, <span class="string">'_features.mat'</span>, <span class="string">'.avi'</span>);
+0905     forwardVideo = strrep(file.name, <span class="string">'_features.mat'</span>, <span class="string">'_forward.avi'</span>);
+0906     backwardVideo = strrep(file.name, <span class="string">'_features.mat'</span>, <span class="string">'_backward.avi'</span>);
+0907     pausedVideo = strrep(file.name, <span class="string">'_features.mat'</span>, <span class="string">'_paused.avi'</span>);
+0908     coilVideo = strrep(file.name, <span class="string">'_features.mat'</span>, <span class="string">'_coil.avi'</span>);
+0909     omegaVideo = strrep(file.name, <span class="string">'_features.mat'</span>, <span class="string">'_omega.avi'</span>);
+0910     upsilonVideo = strrep(file.name, <span class="string">'_features.mat'</span>, <span class="string">'_upsilon.avi'</span>);
+0911     
+0912     <span class="comment">% Make the event videos.</span>
+0913     disp(<span class="string">'Creating omega video ...'</span>);
+0914     tic; <a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(omegaFrames, video, omegaVideo); toc;
+0915     disp(<span class="string">'Creating upsilon video ...'</span>);
+0916     tic; <a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(upsilonFrames, video, upsilonVideo); toc;
+0917     disp(<span class="string">'Creating coil video ...'</span>);
+0918     tic; <a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(coilFrames, video, coilVideo); toc;
+0919     disp(<span class="string">'Creating backward video ...'</span>);
+0920     [~, orderI] = sort([backwardFrames.time]);
+0921     tic; <a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(backwardFrames(orderI), video, backwardVideo); toc;
+0922     disp(<span class="string">'Creating paused video ...'</span>);
+0923     [~, orderI] = sort([pausedFrames.time]);
+0924     tic; <a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(pausedFrames(orderI), video, pausedVideo); toc;
+0925     disp(<span class="string">'Creating forward video ...'</span>);
+0926     [~, orderI] = sort([forwardFrames.time]);
+0927     tic; <a href="../../../SegWorm/Events/events2video.html" class="code" title="function events2video(eventFrames, videoFile, eventVideoFile, varargin)">events2video</a>(forwardFrames(orderI), video, forwardVideo); toc;
+0928     disp(<span class="string">'All videos done!'</span>);
+0929 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of emptyHistogram</title>
+  <meta name="keywords" content="emptyHistogram">
+  <meta name="description" content="HISTOGRAM Get a histogram full of NaNs.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>emptyHistogram
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>HISTOGRAM Get a histogram full of NaNs.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function data = emptyHistogram(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">HISTOGRAM Get a histogram full of NaNs.
+
+   DATA = EMPTYHISTOGRAM()
+
+   Inputs:
+       isSigned - is the data signed (+/-)?
+                  if empty, the data is assumed to be not signed
+
+   Outputs:
+       data - the NaN histogram data. A struct with fields:
+                  Note: the absolute, positive, and negative value
+                  statistics are only available when the data is signed
+                  (see wormDisplayInfo).
+
+                  PDF        = the PDF (probability density of each bin)
+                  bins       = the center of each bin
+                  resolution = the data resolution
+                  isZeroBin  = is there a bin center at 0
+                  isSigned   = is the data signed (+/-)?
+                  sets       = a struct with fields:
+                     samples    = the number of set samples
+                     mean.all   = the mean of the sets
+                     stdDev.all = the standard deviation of the sets
+                     mean.abs   = the mean of the set magnitudes
+                     stdDev.abs = the deviation of the set magnitudes
+                     mean.pos   = the mean of the positive set values
+                     stdDev.pos = the deviation of the positive set values
+                     mean.neg   = the mean of the negative set values
+                     stdDev.neg = the deviation of the negative set values
+                  data       = a struct with fields:
+                     counts     = the count per set per bin (sets x bins)
+                     samples    = the number of data samples per set
+                     mean.all   = the mean of the data per set
+                     stdDev.all = the standard deviation the data per set
+                     mean.abs   = the mean of the data magnitudes per set
+                     stdDev.abs = the deviation of the data magnitudes per set
+                     mean.pos   = the mean of the positive data per set
+                     stdDev.pos = the deviation of the positive data per set
+                     mean.neg   = the mean of the negative data per set
+                     stdDev.neg = the deviation of the negative data per set
+                  allData    = a struct with fields:
+                     counts     = the count per bin
+                     samples    = the total number of all data samples
+                     mean.all   = the mean of all the data
+                     stdDev.all = the standard deviation of all the data
+                     mean.abs   = the mean of all the data magnitudes
+                     stdDev.abs = the deviation of all the data magnitudes
+                     mean.pos   = the mean of all the positive data
+                     stdDev.pos = the deviation of all the positive data
+                     mean.neg   = the mean of all the negative data
+                     stdDev.neg = the deviation of all the negative data
+
+ See also <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">HISTOGRAM</a>, <a href="nanHistogram.html" class="code" title="function data = nanHistogram(varargin)">NANHISTOGRAM</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Printing/worm2summaryPDF2.html" class="code" title="function [filename pages] = worm2summaryPDF(filename, worm, wormName,varargin)">worm2summaryPDF2</a>	WORM2SUMMARYPDF Save a worm summary to a PDF.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function data = emptyHistogram(varargin)</a>
+0002 <span class="comment">%HISTOGRAM Get a histogram full of NaNs.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   DATA = EMPTYHISTOGRAM()</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       isSigned - is the data signed (+/-)?</span>
+0008 <span class="comment">%                  if empty, the data is assumed to be not signed</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Outputs:</span>
+0011 <span class="comment">%       data - the NaN histogram data. A struct with fields:</span>
+0012 <span class="comment">%                  Note: the absolute, positive, and negative value</span>
+0013 <span class="comment">%                  statistics are only available when the data is signed</span>
+0014 <span class="comment">%                  (see wormDisplayInfo).</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%                  PDF        = the PDF (probability density of each bin)</span>
+0017 <span class="comment">%                  bins       = the center of each bin</span>
+0018 <span class="comment">%                  resolution = the data resolution</span>
+0019 <span class="comment">%                  isZeroBin  = is there a bin center at 0</span>
+0020 <span class="comment">%                  isSigned   = is the data signed (+/-)?</span>
+0021 <span class="comment">%                  sets       = a struct with fields:</span>
+0022 <span class="comment">%                     samples    = the number of set samples</span>
+0023 <span class="comment">%                     mean.all   = the mean of the sets</span>
+0024 <span class="comment">%                     stdDev.all = the standard deviation of the sets</span>
+0025 <span class="comment">%                     mean.abs   = the mean of the set magnitudes</span>
+0026 <span class="comment">%                     stdDev.abs = the deviation of the set magnitudes</span>
+0027 <span class="comment">%                     mean.pos   = the mean of the positive set values</span>
+0028 <span class="comment">%                     stdDev.pos = the deviation of the positive set values</span>
+0029 <span class="comment">%                     mean.neg   = the mean of the negative set values</span>
+0030 <span class="comment">%                     stdDev.neg = the deviation of the negative set values</span>
+0031 <span class="comment">%                  data       = a struct with fields:</span>
+0032 <span class="comment">%                     counts     = the count per set per bin (sets x bins)</span>
+0033 <span class="comment">%                     samples    = the number of data samples per set</span>
+0034 <span class="comment">%                     mean.all   = the mean of the data per set</span>
+0035 <span class="comment">%                     stdDev.all = the standard deviation the data per set</span>
+0036 <span class="comment">%                     mean.abs   = the mean of the data magnitudes per set</span>
+0037 <span class="comment">%                     stdDev.abs = the deviation of the data magnitudes per set</span>
+0038 <span class="comment">%                     mean.pos   = the mean of the positive data per set</span>
+0039 <span class="comment">%                     stdDev.pos = the deviation of the positive data per set</span>
+0040 <span class="comment">%                     mean.neg   = the mean of the negative data per set</span>
+0041 <span class="comment">%                     stdDev.neg = the deviation of the negative data per set</span>
+0042 <span class="comment">%                  allData    = a struct with fields:</span>
+0043 <span class="comment">%                     counts     = the count per bin</span>
+0044 <span class="comment">%                     samples    = the total number of all data samples</span>
+0045 <span class="comment">%                     mean.all   = the mean of all the data</span>
+0046 <span class="comment">%                     stdDev.all = the standard deviation of all the data</span>
+0047 <span class="comment">%                     mean.abs   = the mean of all the data magnitudes</span>
+0048 <span class="comment">%                     stdDev.abs = the deviation of all the data magnitudes</span>
+0049 <span class="comment">%                     mean.pos   = the mean of all the positive data</span>
+0050 <span class="comment">%                     stdDev.pos = the deviation of all the positive data</span>
+0051 <span class="comment">%                     mean.neg   = the mean of all the negative data</span>
+0052 <span class="comment">%                     stdDev.neg = the deviation of all the negative data</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">% See also HISTOGRAM, NANHISTOGRAM</span>
+0055 
+0056 <span class="comment">% Is the data signed.</span>
+0057 isSigned = false;
+0058 <span class="keyword">if</span> ~isempty(varargin) &amp;&amp; ~isempty(varargin{1})
+0059     isSigned = varargin{1};
+0060 <span class="keyword">end</span>
+0061 
+0062 <span class="comment">% Organize the histogram set data.</span>
+0063 data.sets.samples = [];
+0064 data.sets.mean.all = [];
+0065 data.sets.stdDev.all = [];
+0066 <span class="keyword">if</span> isSigned
+0067     
+0068     <span class="comment">% Set the absolute value statisitics.</span>
+0069     data.sets.mean.abs = [];
+0070     data.sets.stdDev.abs = [];
+0071     
+0072     <span class="comment">% Set the positive value statisitics.</span>
+0073     data.sets.mean.pos = [];
+0074     data.sets.stdDev.pos = [];
+0075     
+0076     <span class="comment">% Set the negative value statisitics.</span>
+0077     data.sets.mean.neg = [];
+0078     data.sets.stdDev.neg = [];
+0079 <span class="keyword">end</span>
+0080 
+0081 <span class="comment">% Organize the histogram data sets.</span>
+0082 data.data.counts = [];
+0083 data.data.samples = [];
+0084 data.data.mean.all = [];
+0085 data.data.stdDev.all = [];
+0086 <span class="keyword">if</span> isSigned
+0087     
+0088     <span class="comment">% Set the absolute value statisitics.</span>
+0089     data.data.mean.abs = [];
+0090     data.data.stdDev.abs = [];
+0091     
+0092     <span class="comment">% Set the positive value statisitics.</span>
+0093     data.data.mean.pos = [];
+0094     data.data.stdDev.pos = [];
+0095     
+0096     <span class="comment">% Set the negative value statisitics.</span>
+0097     data.data.mean.neg = [];
+0098     data.data.stdDev.neg = [];
+0099 <span class="keyword">end</span>
+0100 
+0101 <span class="comment">% Organize the histogram total data.</span>
+0102 data.allData.counts = [];
+0103 data.allData.samples = [];
+0104 data.allData.mean.all = [];
+0105 data.allData.stdDev.all = [];
+0106 <span class="keyword">if</span> isSigned
+0107     
+0108     <span class="comment">% Set the absolute value statisitics.</span>
+0109     data.allData.mean.abs = [];
+0110     data.allData.stdDev.abs = [];
+0111     
+0112     <span class="comment">% Set the positive value statisitics.</span>
+0113     data.allData.mean.pos = [];
+0114     data.allData.stdDev.pos = [];
+0115     
+0116     <span class="comment">% Set the negative value statisitics.</span>
+0117     data.allData.mean.neg = [];
+0118     data.allData.stdDev.neg = [];
+0119 <span class="keyword">end</span>
+0120 
+0121 <span class="comment">% Organize the histogram.</span>
+0122 data.PDF = [];
+0123 data.bins = [];
+0124 data.resolution = [];
+0125 data.isZeroBin = [];
+0126 data.isSigned = [];
+0127 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

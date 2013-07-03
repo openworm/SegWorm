@@ -1,0 +1,700 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of printWormStatsMatrix</title>
+  <meta name="keywords" content="printWormStatsMatrix">
+  <meta name="description" content="PRINTWORMSTATSMATRIX Print a worms x features matrix to a CSV file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>printWormStatsMatrix
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>PRINTWORMSTATSMATRIX Print a worms x features matrix to a CSV file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function printWormStatsMatrix(filename, wormFile, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PRINTWORMSTATSMATRIX Print a worms x features matrix to a CSV file.
+
+   PRINTWORMSTATSMATRIX(FILENAME, WORMFILES)
+
+   PRINTWORMSTATSMATRIX(FILENAME, WORMFILES, ISTRANSPOSE,
+                        ISHOWMAIN, SHOWCATEGORY, SHOWTYPE, SHOWSIGN, SHOWI,
+                        VERBOSE)
+
+   Inputs:
+       filename - the file name for the worms x features matrix
+       wormFile - the worms x features matrix file;
+                  a file containing structures with fields:
+
+                  dataInfo:
+
+                     name     = the feature's name
+                     field    = the feature's path; a struct where:
+
+                                histogram  = the histogram data path
+                                statistics = the statistics data path
+
+                     index    = the feature's field index
+                     isMain   = is this a main feature?
+                     category = the feature's category, where:
+
+                                m = morphology
+                                s = posture (shape)
+                                l = locomotion
+                                p = path
+
+                     type     = the feature's type, where:
+
+                                s = simple data
+                                m = motion data
+                                e = event data
+                                f = event summary
+
+                     sign     = the feature's sign, where:
+
+                                d = all data
+                                a = the absolute value of the data
+                                p = the positive data
+                                n = the negative data
+
+                  worm:
+
+                     label   = the worm labels
+                     mean    = the worm data means (worms x features)
+                     zScore  = the worm data z-scores (worms x features)
+                     pValue  = the worm data p-values (worms x features)
+                     qValue  = the worm data q-values (worms x features)
+                     power   = the worm data power (worms x features)
+
+       isTranspose  - are we transposing the file to features x worms?
+       isShowMain   - are we showing the main features?
+                      the default is yes (true)
+       showCategory - which feature categories should we show?
+                      the default is all categories ([] or 'mslp')
+
+                      m = morphology
+                      s = posture (shape)
+                      l = locomotion
+                      p = path
+
+       showType     - which feature types should we show?
+                      the default is all types ([] or 'smef')
+
+                      s = simple data
+                      m = motion data
+                      e = event data
+                      f = event summary
+
+       showSign     - which feature signs should we show?
+                      the default is all signs ([] or 'dapn')
+
+                      d = all data
+                      a = the absolute value of the data
+                      p = the positive data
+                      n = the negative data
+
+       showI        - the indices of the features to show;
+                      the default is all ([])
+       isVerbose    - verbose mode displays the progress;
+                      the default is yes (true)
+
+ See also WORM2STATSMATRIX</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Statistics/wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>	WORMFEATUREINFO Get information for computing the worm statistics.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function printControl(fid, strain, genotype, wormMean, wormStdDev,</a></li><li><a href="#_sub2" class="code">function printWorms(fid, strains, genotypes, wormMean, wormStdDev,</a></li><li><a href="#_sub3" class="code">function printWormData(fid, strain, genotype, wormMean, wormStdDev,</a></li><li><a href="#_sub4" class="code">function printFeatures(fid, dataInfo, wormMean, wormStdDev,</a></li><li><a href="#_sub5" class="code">function printFeatureData(fid, dataInfo, wormMean, wormStdDev,</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function printWormStatsMatrix(filename, wormFile, varargin)</a>
+0002 <span class="comment">%PRINTWORMSTATSMATRIX Print a worms x features matrix to a CSV file.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   PRINTWORMSTATSMATRIX(FILENAME, WORMFILES)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   PRINTWORMSTATSMATRIX(FILENAME, WORMFILES, ISTRANSPOSE,</span>
+0007 <span class="comment">%                        ISHOWMAIN, SHOWCATEGORY, SHOWTYPE, SHOWSIGN, SHOWI,</span>
+0008 <span class="comment">%                        VERBOSE)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Inputs:</span>
+0011 <span class="comment">%       filename - the file name for the worms x features matrix</span>
+0012 <span class="comment">%       wormFile - the worms x features matrix file;</span>
+0013 <span class="comment">%                  a file containing structures with fields:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%                  dataInfo:</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%                     name     = the feature's name</span>
+0018 <span class="comment">%                     field    = the feature's path; a struct where:</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%                                histogram  = the histogram data path</span>
+0021 <span class="comment">%                                statistics = the statistics data path</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%                     index    = the feature's field index</span>
+0024 <span class="comment">%                     isMain   = is this a main feature?</span>
+0025 <span class="comment">%                     category = the feature's category, where:</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%                                m = morphology</span>
+0028 <span class="comment">%                                s = posture (shape)</span>
+0029 <span class="comment">%                                l = locomotion</span>
+0030 <span class="comment">%                                p = path</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%                     type     = the feature's type, where:</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%                                s = simple data</span>
+0035 <span class="comment">%                                m = motion data</span>
+0036 <span class="comment">%                                e = event data</span>
+0037 <span class="comment">%                                f = event summary</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%                     sign     = the feature's sign, where:</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%                                d = all data</span>
+0042 <span class="comment">%                                a = the absolute value of the data</span>
+0043 <span class="comment">%                                p = the positive data</span>
+0044 <span class="comment">%                                n = the negative data</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%                  worm:</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%                     label   = the worm labels</span>
+0049 <span class="comment">%                     mean    = the worm data means (worms x features)</span>
+0050 <span class="comment">%                     zScore  = the worm data z-scores (worms x features)</span>
+0051 <span class="comment">%                     pValue  = the worm data p-values (worms x features)</span>
+0052 <span class="comment">%                     qValue  = the worm data q-values (worms x features)</span>
+0053 <span class="comment">%                     power   = the worm data power (worms x features)</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">%       isTranspose  - are we transposing the file to features x worms?</span>
+0056 <span class="comment">%       isShowMain   - are we showing the main features?</span>
+0057 <span class="comment">%                      the default is yes (true)</span>
+0058 <span class="comment">%       showCategory - which feature categories should we show?</span>
+0059 <span class="comment">%                      the default is all categories ([] or 'mslp')</span>
+0060 <span class="comment">%</span>
+0061 <span class="comment">%                      m = morphology</span>
+0062 <span class="comment">%                      s = posture (shape)</span>
+0063 <span class="comment">%                      l = locomotion</span>
+0064 <span class="comment">%                      p = path</span>
+0065 <span class="comment">%</span>
+0066 <span class="comment">%       showType     - which feature types should we show?</span>
+0067 <span class="comment">%                      the default is all types ([] or 'smef')</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">%                      s = simple data</span>
+0070 <span class="comment">%                      m = motion data</span>
+0071 <span class="comment">%                      e = event data</span>
+0072 <span class="comment">%                      f = event summary</span>
+0073 <span class="comment">%</span>
+0074 <span class="comment">%       showSign     - which feature signs should we show?</span>
+0075 <span class="comment">%                      the default is all signs ([] or 'dapn')</span>
+0076 <span class="comment">%</span>
+0077 <span class="comment">%                      d = all data</span>
+0078 <span class="comment">%                      a = the absolute value of the data</span>
+0079 <span class="comment">%                      p = the positive data</span>
+0080 <span class="comment">%                      n = the negative data</span>
+0081 <span class="comment">%</span>
+0082 <span class="comment">%       showI        - the indices of the features to show;</span>
+0083 <span class="comment">%                      the default is all ([])</span>
+0084 <span class="comment">%       isVerbose    - verbose mode displays the progress;</span>
+0085 <span class="comment">%                      the default is yes (true)</span>
+0086 <span class="comment">%</span>
+0087 <span class="comment">% See also WORM2STATSMATRIX</span>
+0088 
+0089 <span class="comment">% Are we transposing the plot to features x worms?</span>
+0090 isTranspose = false;
+0091 <span class="keyword">if</span> ~isempty(varargin)
+0092     isTranspose = varargin{1};
+0093 <span class="keyword">end</span>
+0094 
+0095 <span class="comment">% Are we showing the main features?</span>
+0096 isShowMain = true;
+0097 <span class="keyword">if</span> length(varargin) &gt; 1
+0098     isShowMain = varargin{2};
+0099 <span class="keyword">end</span>
+0100 
+0101 <span class="comment">% Which feature categories should we show?</span>
+0102 showCategory = [];
+0103 <span class="keyword">if</span> length(varargin) &gt; 2
+0104     showCategory = varargin{3};
+0105 <span class="keyword">end</span>
+0106 
+0107 <span class="comment">% Which feature types should we show?</span>
+0108 showType = [];
+0109 <span class="keyword">if</span> length(varargin) &gt; 3
+0110     showType = varargin{4};
+0111 <span class="keyword">end</span>
+0112 
+0113 <span class="comment">% Which feature signs should we show?</span>
+0114 showSign = [];
+0115 <span class="keyword">if</span> length(varargin) &gt; 4
+0116     showSign = varargin{5};
+0117 <span class="keyword">end</span>
+0118 
+0119 <span class="comment">% Determine the indices of the features to show.</span>
+0120 showI = [];
+0121 <span class="keyword">if</span> length(varargin) &gt; 5
+0122     showI = varargin{6};
+0123 <span class="keyword">end</span>
+0124 
+0125 <span class="comment">% Are we displaying the progress?</span>
+0126 isVerbose = true;
+0127 <span class="keyword">if</span> length(varargin) &gt; 6
+0128     isVerbose = varargin{7};
+0129 <span class="keyword">end</span>
+0130 
+0131 <span class="comment">% Load the matrix.</span>
+0132 data = load(wormFile);
+0133 
+0134 <span class="comment">% Initialize the feature information.</span>
+0135 dataInfo = <a href="../../../SegWorm/Worms/Statistics/wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>();
+0136 
+0137 <span class="comment">% Determine the worm labels.</span>
+0138 strains = data.worm.strain;
+0139 genotypes = data.worm.genotype;
+0140 
+0141 <span class="comment">% Remove unwanted features.</span>
+0142 isShow = true(length(dataInfo), 1);
+0143 <span class="keyword">if</span> ~isShowMain
+0144     isShow([dataInfo.isMain]) = false;
+0145 <span class="keyword">end</span>
+0146 <span class="keyword">if</span> ~isempty(showCategory)
+0147     hide = setdiff(<span class="string">'mslp'</span>, showCategory);
+0148     <span class="keyword">for</span> i = 1:length(hide)
+0149         isShow([dataInfo.category] == hide(i)) = false;
+0150     <span class="keyword">end</span>
+0151 <span class="keyword">end</span>
+0152 <span class="keyword">if</span> ~isempty(showType)
+0153     hide = setdiff(<span class="string">'smef'</span>, showType);
+0154     <span class="keyword">for</span> i = 1:length(hide)
+0155         isShow([dataInfo.type] == hide(i)) = false;
+0156     <span class="keyword">end</span>
+0157 <span class="keyword">end</span>
+0158 <span class="keyword">if</span> ~isempty(showSign)
+0159     hide = setdiff(<span class="string">'dapn'</span>, showSign);
+0160     <span class="keyword">for</span> i = 1:length(hide)
+0161         isShow([dataInfo.sign] == hide(i)) = false;
+0162     <span class="keyword">end</span>
+0163 <span class="keyword">end</span>
+0164 <span class="keyword">if</span> ~isempty(showI)
+0165     isShow(showI) = true;
+0166 <span class="keyword">end</span>
+0167 
+0168 <span class="comment">% Remove paused motion features.</span>
+0169 featureLabels = {dataInfo.name};
+0170 lowerLabels = lower(featureLabels);
+0171 pausedI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'paused'</span>)), lowerLabels);
+0172 bendI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'bend'</span>)), lowerLabels);
+0173 amplitudeI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'amplitude'</span>)), lowerLabels);
+0174 frequencyI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'frequency'</span>)), lowerLabels);
+0175 isShow(pausedI &amp; bendI &amp; (amplitudeI | frequencyI)) = false;
+0176 dataInfo = dataInfo(isShow);
+0177 
+0178 <span class="comment">% Find the wild-type control values.</span>
+0179 <span class="comment">%controlStr = 'N2: C. elegans Wild Isolate, Schafer Lab N2 (Bristol, UK)';</span>
+0180 controlStr = <span class="string">'C. elegans Wild Isolate, Schafer Lab N2 (Bristol, UK)'</span>;
+0181 controlI = cellfun(@(x) strcmp(x, controlStr), genotypes);
+0182 controlI = find(controlI);
+0183 <span class="keyword">if</span> length(controlI) ~= 1
+0184     warning(<span class="string">'plotWormStatsMatrix:NoControl'</span>, <span class="keyword">...</span>
+0185         <span class="string">'Cannot find the wild-type control'</span>);
+0186 <span class="keyword">end</span>
+0187 
+0188 <span class="comment">% Find the wild-type males.</span>
+0189 maleI = find(cellfun(@(x) ~isempty(strfind(x, <span class="string">'Male'</span>)), genotypes)');
+0190 
+0191 <span class="comment">% Find the axenic CGC wild-type.</span>
+0192 axenicI = find(cellfun(@(x) ~isempty(strfind(x, <span class="string">'Axenic'</span>)), genotypes)');
+0193 
+0194 <span class="comment">% Find the axenic CGC wild-type.</span>
+0195 CGCI = find(cellfun(@(x) ~isempty(strfind(x, <span class="string">'CGC'</span>)), genotypes)');
+0196 CGCI = setdiff(CGCI, axenicI);
+0197 
+0198 <span class="comment">% Find the N2 month, day, and time controls.</span>
+0199 N2I = find(cellfun(@(x) ~isempty(strfind(x, <span class="string">'Lab N2'</span>)), genotypes))';
+0200 N2I = setdiff(N2I, [controlI, maleI, axenicI, CGCI]);
+0201 
+0202 <span class="comment">% Find the wild-type isolates.</span>
+0203 wildI = find(cellfun(@(x) ~isempty(strfind(x, <span class="string">'Wild'</span>)), genotypes))';
+0204 wildI = setdiff(wildI, [controlI, maleI, axenicI, CGCI, N2I]);
+0205 
+0206 <span class="comment">% Find the non wild types.</span>
+0207 wormI = 1:length(genotypes);
+0208 wormI = setdiff(wormI, [controlI, maleI, axenicI, CGCI, N2I, wildI]);
+0209 [~, sortI] = sort(lower(genotypes(wormI)));
+0210 wormI = wormI(sortI);
+0211 
+0212 <span class="comment">% Initialize the worm data.</span>
+0213 wormMeans = data.worm.mean(:,isShow);
+0214 wormStdDevs = data.worm.stdDev(:,isShow);
+0215 wormSamples = data.worm.samples(:,isShow);
+0216 qValues = data.worm.qValue(:,isShow);
+0217 powers = data.worm.power(:,isShow);
+0218 
+0219 <span class="comment">% Initialize the control data.</span>
+0220 controlMeans = data.control.mean(:,isShow);
+0221 controlStdDevs = data.control.stdDev(:,isShow);
+0222 controlSamples = data.control.samples(:,isShow);
+0223 
+0224 <span class="comment">% Clean up the worm labels.</span>
+0225 genotypes = cellfun(@(x) strrep(x, <span class="string">','</span>, <span class="string">'.'</span>), genotypes, <span class="keyword">...</span>
+0226     <span class="string">'UniformOutput'</span>, false);
+0227 
+0228 <span class="comment">% Delete the file if it already exists.</span>
+0229 <span class="keyword">if</span> exist(filename, <span class="string">'file'</span>)
+0230     delete(filename);
+0231 <span class="keyword">end</span>
+0232 
+0233 <span class="comment">% Open the file.</span>
+0234 fid = fopen(filename, <span class="string">'w'</span>);
+0235 
+0236 <span class="comment">% Print the features x worms.</span>
+0237 <span class="keyword">if</span> isTranspose
+0238 
+0239     <span class="comment">% Reorganize the worms.</span>
+0240     wormI = [controlI, maleI, CGCI, axenicI, wildI, wormI, N2I];
+0241     strains = strains(wormI);
+0242     genotypes = genotypes(wormI);
+0243     wormMeans = wormMeans(wormI,:);
+0244     wormStdDevs = wormStdDevs(wormI,:);
+0245     wormSamples = wormSamples(wormI,:);
+0246     qValues = qValues(wormI,:);
+0247     powers = powers(wormI,:);
+0248     
+0249     <span class="comment">% Reorganize the controls.</span>
+0250     controlMeans = controlMeans(wormI,:);
+0251     controlStdDevs = controlStdDevs(wormI,:);
+0252     controlSamples = controlSamples(wormI,:);
+0253     
+0254     <span class="comment">% Print the worm header.</span>
+0255     fprintf(fid, <span class="string">',Strain &amp; Genotype,,,'</span>);
+0256     <span class="keyword">for</span> i = 1:length(strains)
+0257         fprintf(fid, <span class="string">'%s,%s,,'</span>, strains{i}, genotypes{i});
+0258     <span class="keyword">end</span>
+0259     fprintf(fid, <span class="string">'\n'</span>);
+0260     
+0261     <span class="comment">% Print the worm samples header.</span>
+0262     fprintf(fid, <span class="string">',,,,'</span>);
+0263     <span class="keyword">for</span> i = 1:length(genotypes)
+0264         fprintf(fid, <span class="string">'Samples,%d,,'</span>, wormSamples(i,1));
+0265     <span class="keyword">end</span>
+0266     fprintf(fid, <span class="string">'\n'</span>);
+0267     
+0268     <span class="comment">% Print the control samples header.</span>
+0269     fprintf(fid, <span class="string">',,,,,,,'</span>);
+0270     <span class="keyword">for</span> i = 2:length(genotypes)
+0271         fprintf(fid, <span class="string">'Control Samples,%d,,'</span>, controlSamples(i,1));
+0272     <span class="keyword">end</span>
+0273     fprintf(fid, <span class="string">'\n'</span>);
+0274     
+0275     <span class="comment">% Print the features.</span>
+0276     fprintf(fid, <span class="string">'Feature,\n'</span>);
+0277     <a href="#_sub4" class="code" title="subfunction printFeatures(fid, dataInfo, wormMean, wormStdDev, ">printFeatures</a>(fid, dataInfo, wormMeans, wormStdDevs, wormSamples, <span class="keyword">...</span>
+0278         qValues, powers, controlMeans, controlStdDevs, controlSamples, <span class="keyword">...</span>
+0279         isVerbose);
+0280     
+0281 <span class="comment">% Print the worms x features.</span>
+0282 <span class="keyword">else</span>
+0283     
+0284     <span class="comment">% Print the features 1st title.</span>
+0285     fprintf(fid, <span class="string">',Feature,'</span>);
+0286     <span class="keyword">for</span> i = 1:length(dataInfo)
+0287         <span class="keyword">if</span> dataInfo(i).title2I == 1 &amp;&amp; dataInfo(i).title3I == 1
+0288             fprintf(fid, <span class="string">'%s,'</span>, dataInfo(i).title1);
+0289         <span class="keyword">else</span>
+0290             fprintf(fid, <span class="string">','</span>);
+0291         <span class="keyword">end</span>
+0292     <span class="keyword">end</span>
+0293     fprintf(fid, <span class="string">'\n'</span>);
+0294     
+0295     <span class="comment">% Print the features 2nd title.</span>
+0296     fprintf(fid, <span class="string">',,'</span>);
+0297     <span class="keyword">for</span> i = 1:length(dataInfo)
+0298         <span class="keyword">if</span> dataInfo(i).title3I == 1
+0299             fprintf(fid, <span class="string">'%s,'</span>, dataInfo(i).title2);
+0300         <span class="keyword">else</span>
+0301             fprintf(fid, <span class="string">','</span>);
+0302         <span class="keyword">end</span>
+0303     <span class="keyword">end</span>
+0304     fprintf(fid, <span class="string">'\n'</span>);
+0305     
+0306     <span class="comment">% Print the features 3rd title.</span>
+0307     fprintf(fid, <span class="string">',,'</span>);
+0308     <span class="keyword">for</span> i = 1:length(dataInfo)
+0309         fprintf(fid, <span class="string">'%s,'</span>, dataInfo(i).title3);
+0310     <span class="keyword">end</span>
+0311     fprintf(fid, <span class="string">'\n'</span>);
+0312     
+0313     <span class="comment">% Print the features 2nd title.</span>
+0314     fprintf(fid, <span class="string">',Units,'</span>);
+0315     <span class="keyword">for</span> i = 1:length(dataInfo)
+0316         fprintf(fid, <span class="string">'%s,'</span>, dataInfo(i).unit);
+0317     <span class="keyword">end</span>
+0318     fprintf(fid, <span class="string">'\n'</span>);
+0319     
+0320     <span class="comment">% Print the control.</span>
+0321     fprintf(fid, <span class="string">'Strain &amp; Genotype\n'</span>);
+0322     <a href="#_sub1" class="code" title="subfunction printControl(fid, strain, genotype, wormMean, wormStdDev, ">printControl</a>(fid, strains{controlI}, genotypes{controlI}, <span class="keyword">...</span>
+0323         wormMeans(controlI,:), wormStdDevs(controlI,:), <span class="keyword">...</span>
+0324         wormSamples(controlI,:), isVerbose);
+0325 
+0326     <span class="comment">% Print the males.</span>
+0327     <a href="#_sub2" class="code" title="subfunction printWorms(fid, strains, genotypes, wormMean, wormStdDev, ">printWorms</a>(fid, strains(maleI), genotypes(maleI), <span class="keyword">...</span>
+0328         wormMeans(maleI,:), wormStdDevs(maleI,:), <span class="keyword">...</span>
+0329         wormSamples(maleI,:), qValues(maleI,:), powers(maleI,:), <span class="keyword">...</span>
+0330         controlMeans(maleI,:), controlStdDevs(maleI,:), <span class="keyword">...</span>
+0331         controlSamples(maleI,:), isVerbose);
+0332     
+0333     <span class="comment">% Print the CGC N2.</span>
+0334     <a href="#_sub2" class="code" title="subfunction printWorms(fid, strains, genotypes, wormMean, wormStdDev, ">printWorms</a>(fid, strains(CGCI), genotypes(CGCI), <span class="keyword">...</span>
+0335         wormMeans(CGCI,:), wormStdDevs(CGCI,:), <span class="keyword">...</span>
+0336         wormSamples(CGCI,:), qValues(CGCI,:), powers(CGCI,:), <span class="keyword">...</span>
+0337         controlMeans(CGCI,:), controlStdDevs(CGCI,:), <span class="keyword">...</span>
+0338         controlSamples(CGCI,:), isVerbose);
+0339     
+0340     <span class="comment">% Print the axenic CGC N2.</span>
+0341     <a href="#_sub2" class="code" title="subfunction printWorms(fid, strains, genotypes, wormMean, wormStdDev, ">printWorms</a>(fid, strains(axenicI), genotypes(axenicI), <span class="keyword">...</span>
+0342         wormMeans(axenicI,:), wormStdDevs(axenicI,:), <span class="keyword">...</span>
+0343         wormSamples(axenicI,:), qValues(axenicI,:), powers(axenicI,:), <span class="keyword">...</span>
+0344         controlMeans(axenicI,:), controlStdDevs(axenicI,:), <span class="keyword">...</span>
+0345         controlSamples(axenicI,:), isVerbose);
+0346     
+0347     <span class="comment">% Print the wild-type isolates.</span>
+0348     <a href="#_sub2" class="code" title="subfunction printWorms(fid, strains, genotypes, wormMean, wormStdDev, ">printWorms</a>(fid, strains(wildI), genotypes(wildI), <span class="keyword">...</span>
+0349         wormMeans(wildI,:), wormStdDevs(wildI,:), <span class="keyword">...</span>
+0350         wormSamples(wildI,:), qValues(wildI,:), powers(wildI,:), <span class="keyword">...</span>
+0351         controlMeans(wildI,:), controlStdDevs(wildI,:), <span class="keyword">...</span>
+0352         controlSamples(wildI,:), isVerbose);
+0353     
+0354     <span class="comment">% Print the worms.</span>
+0355     <a href="#_sub2" class="code" title="subfunction printWorms(fid, strains, genotypes, wormMean, wormStdDev, ">printWorms</a>(fid, strains(wormI), genotypes(wormI), <span class="keyword">...</span>
+0356         wormMeans(wormI,:), wormStdDevs(wormI,:), <span class="keyword">...</span>
+0357         wormSamples(wormI,:), qValues(wormI,:), powers(wormI,:), <span class="keyword">...</span>
+0358         controlMeans(wormI,:), controlStdDevs(wormI,:), <span class="keyword">...</span>
+0359         controlSamples(wormI,:), isVerbose);
+0360     
+0361     <span class="comment">% Print the N2s.</span>
+0362     <a href="#_sub2" class="code" title="subfunction printWorms(fid, strains, genotypes, wormMean, wormStdDev, ">printWorms</a>(fid, strains(N2I), genotypes(N2I), <span class="keyword">...</span>
+0363         wormMeans(N2I,:), wormStdDevs(N2I,:), <span class="keyword">...</span>
+0364         wormSamples(N2I,:), qValues(N2I,:), powers(N2I,:), <span class="keyword">...</span>
+0365         controlMeans(N2I,:), controlStdDevs(N2I,:), <span class="keyword">...</span>
+0366         controlSamples(N2I,:), isVerbose);
+0367 <span class="keyword">end</span>
+0368 
+0369 <span class="comment">% Clean up.</span>
+0370 fclose(fid);
+0371 <span class="keyword">end</span>
+0372 
+0373 
+0374 
+0375 <span class="comment">%% Print the control.</span>
+0376 <a name="_sub1" href="#_subfunctions" class="code">function printControl(fid, strain, genotype, wormMean, wormStdDev, </a><span class="keyword">...</span>
+0377     wormSamples, isVerbose)
+0378 
+0379 <span class="comment">% Display the progress.</span>
+0380 <span class="keyword">if</span> isVerbose
+0381     disp([<span class="string">'Printing '</span> genotype <span class="string">' ...'</span>]);
+0382 <span class="keyword">end</span>
+0383 
+0384 <span class="comment">% Print the mean.</span>
+0385 fprintf(fid, <span class="string">'%s,Mean,'</span>, strain);
+0386 <span class="keyword">for</span> i = 1:length(wormMean)
+0387     fprintf(fid, <span class="string">'%d,'</span>, wormMean(i));
+0388 <span class="keyword">end</span>
+0389 fprintf(fid, <span class="string">'\n'</span>);
+0390 
+0391 <span class="comment">% Print the standard deviation.</span>
+0392 fprintf(fid, <span class="string">'%s,S.D.,'</span>, genotype);
+0393 <span class="keyword">for</span> i = 1:length(wormStdDev)
+0394     fprintf(fid, <span class="string">'%d,'</span>, wormStdDev(i));
+0395 <span class="keyword">end</span>
+0396 fprintf(fid, <span class="string">'\n'</span>);
+0397 
+0398 <span class="comment">% Print the wormSamples.</span>
+0399 fprintf(fid, <span class="string">'Samples,\n'</span>);
+0400 fprintf(fid, <span class="string">'%d,'</span>, wormSamples(1));
+0401 fprintf(fid, <span class="string">'\n\n'</span>);
+0402 <span class="keyword">end</span>
+0403 
+0404 
+0405 
+0406 <span class="comment">%% Print the worms.</span>
+0407 <a name="_sub2" href="#_subfunctions" class="code">function printWorms(fid, strains, genotypes, wormMean, wormStdDev, </a><span class="keyword">...</span>
+0408     wormSamples, qValues, powers, controlMean, controlStdDev, <span class="keyword">...</span>
+0409     controlSamples, isVerbose)
+0410 
+0411 <span class="comment">% Print the worms and display the progress.</span>
+0412 <span class="keyword">if</span> isVerbose
+0413     <span class="keyword">for</span> i = 1:length(genotypes)
+0414         disp([<span class="string">'Printing '</span> genotypes{i} <span class="string">' ...'</span>]);
+0415         <a href="#_sub3" class="code" title="subfunction printWormData(fid, strain, genotype, wormMean, wormStdDev, ">printWormData</a>(fid, strains{i}, genotypes{i}, wormMean(i,:), <span class="keyword">...</span>
+0416             wormStdDev(i,:), wormSamples(i,:), qValues(i,:), <span class="keyword">...</span>
+0417             powers(i,:), controlMean(i,:), controlStdDev(i,:), <span class="keyword">...</span>
+0418             controlSamples(i,:));
+0419     <span class="keyword">end</span>
+0420     
+0421 <span class="comment">% Print the worms.</span>
+0422 <span class="keyword">else</span>
+0423     <span class="keyword">for</span> i = 1:length(genotypes)
+0424         <a href="#_sub3" class="code" title="subfunction printWormData(fid, strain, genotype, wormMean, wormStdDev, ">printWormData</a>(fid, strains{i}, genotypes{i}, wormMean(i,:), <span class="keyword">...</span>
+0425             wormStdDev(i,:), wormSamples(i,:), qValues(i,:), <span class="keyword">...</span>
+0426             powers(i,:), controlMean(i,:), controlStdDev(i,:), <span class="keyword">...</span>
+0427             controlSamples(i,:));
+0428     <span class="keyword">end</span>
+0429 <span class="keyword">end</span>
+0430 <span class="keyword">end</span>
+0431 
+0432 
+0433 
+0434 <span class="comment">%% Print the worm data.</span>
+0435 <a name="_sub3" href="#_subfunctions" class="code">function printWormData(fid, strain, genotype, wormMean, wormStdDev, </a><span class="keyword">...</span>
+0436     wormSamples, qValue, power, controlMean, controlStdDev, controlSamples)
+0437 
+0438 <span class="comment">% Print the worm mean.</span>
+0439 fprintf(fid, <span class="string">'%s,Mean,'</span>, strain);
+0440 <span class="keyword">for</span> i = 1:length(wormMean)
+0441     fprintf(fid, <span class="string">'%d,'</span>, wormMean(i));
+0442 <span class="keyword">end</span>
+0443 fprintf(fid, <span class="string">'\n'</span>);
+0444 
+0445 <span class="comment">% Print the worm standard deviation.</span>
+0446 fprintf(fid, <span class="string">'%s,S.D.,'</span>, genotype);
+0447 <span class="keyword">for</span> i = 1:length(wormStdDev)
+0448     fprintf(fid, <span class="string">'%d,'</span>, wormStdDev(i));
+0449 <span class="keyword">end</span>
+0450 fprintf(fid, <span class="string">'\n'</span>);
+0451 
+0452 <span class="comment">% Print the worm samples and q-value.</span>
+0453 fprintf(fid, <span class="string">'Samples,Q-Value,'</span>);
+0454 <span class="keyword">for</span> i = 1:length(wormStdDev)
+0455     fprintf(fid, <span class="string">'%d,'</span>, qValue(i));
+0456 <span class="keyword">end</span>
+0457 fprintf(fid, <span class="string">'\n'</span>);
+0458 
+0459 <span class="comment">% Print the power.</span>
+0460 fprintf(fid, <span class="string">'%d,Power,'</span>, wormSamples(1));
+0461 <span class="keyword">for</span> i = 1:length(wormStdDev)
+0462     fprintf(fid, <span class="string">'%d,'</span>, power(i));
+0463 <span class="keyword">end</span>
+0464 fprintf(fid, <span class="string">'\n'</span>);
+0465 
+0466 <span class="comment">% Print the control mean.</span>
+0467 fprintf(fid, <span class="string">'Control Samples,Control Mean,'</span>);
+0468 <span class="keyword">for</span> i = 1:length(controlMean)
+0469     fprintf(fid, <span class="string">'%d,'</span>, controlMean(i));
+0470 <span class="keyword">end</span>
+0471 fprintf(fid, <span class="string">'\n'</span>);
+0472 
+0473 <span class="comment">% Print the control standard deviation.</span>
+0474 fprintf(fid, <span class="string">'%d,Control S.D.,'</span>, controlSamples(1));
+0475 <span class="keyword">for</span> i = 1:length(controlStdDev)
+0476     fprintf(fid, <span class="string">'%d,'</span>, controlStdDev(i));
+0477 <span class="keyword">end</span>
+0478 fprintf(fid, <span class="string">'\n\n'</span>);
+0479 <span class="keyword">end</span>
+0480 
+0481 
+0482 
+0483 <span class="comment">%% Print the features.</span>
+0484 <a name="_sub4" href="#_subfunctions" class="code">function printFeatures(fid, dataInfo, wormMean, wormStdDev, </a><span class="keyword">...</span>
+0485     wormSamples, qValues, powers, controlMean, controlStdDev, <span class="keyword">...</span>
+0486     controlSamples, isVerbose)
+0487 
+0488 <span class="comment">% Print the worms and display the progress.</span>
+0489 <span class="keyword">if</span> isVerbose
+0490     <span class="keyword">for</span> i = 1:length(dataInfo)
+0491         disp([<span class="string">'Printing '</span> dataInfo(i).name <span class="string">' ...'</span>]);
+0492         <a href="#_sub5" class="code" title="subfunction printFeatureData(fid, dataInfo, wormMean, wormStdDev, ">printFeatureData</a>(fid, dataInfo(i), wormMean(:,i), <span class="keyword">...</span>
+0493             wormStdDev(:,i), wormSamples(:,i), qValues(:,i), <span class="keyword">...</span>
+0494             powers(:,i), controlMean(:,i), controlStdDev(:,i), <span class="keyword">...</span>
+0495             controlSamples(:,i));
+0496     <span class="keyword">end</span>
+0497     
+0498 <span class="comment">% Print the worms.</span>
+0499 <span class="keyword">else</span>
+0500     <span class="keyword">for</span> i = 1:length(dataInfo)
+0501         <a href="#_sub5" class="code" title="subfunction printFeatureData(fid, dataInfo, wormMean, wormStdDev, ">printFeatureData</a>(fid, dataInfo(i), wormMean(:,i), <span class="keyword">...</span>
+0502             wormStdDev(:,i), wormSamples(:,i), qValues(:,i), <span class="keyword">...</span>
+0503             powers(:,i), controlMean(:,i), controlStdDev(:,i), <span class="keyword">...</span>
+0504             controlSamples(:,i));
+0505     <span class="keyword">end</span>
+0506 <span class="keyword">end</span>
+0507 <span class="keyword">end</span>
+0508 
+0509 
+0510 
+0511 <span class="comment">%% Print the feature data.</span>
+0512 <a name="_sub5" href="#_subfunctions" class="code">function printFeatureData(fid, dataInfo, wormMean, wormStdDev, </a><span class="keyword">...</span>
+0513     wormSamples, qValue, power, controlMean, controlStdDev, controlSamples)
+0514 
+0515 <span class="comment">% Organize the feature titles.</span>
+0516 title1 = <span class="string">''</span>;
+0517 <span class="keyword">if</span> dataInfo.title2I == 1 &amp;&amp; dataInfo.title3I == 1
+0518     title1 = dataInfo.title1;
+0519 <span class="keyword">end</span>
+0520 title2 = <span class="string">''</span>;
+0521 <span class="keyword">if</span> dataInfo.title3I == 1
+0522     title2 = dataInfo.title2;
+0523 <span class="keyword">end</span>
+0524 title3 = dataInfo.title3;
+0525 
+0526 <span class="comment">% Print the mean.</span>
+0527 fprintf(fid, <span class="string">'%s,%s,%s,Mean,'</span>, title1, title2, title3);
+0528 <span class="keyword">for</span> i = 1:length(wormMean)
+0529     fprintf(fid, <span class="string">'%d,,,'</span>, wormMean(i));
+0530 <span class="keyword">end</span>
+0531 fprintf(fid, <span class="string">'\n'</span>);
+0532 
+0533 <span class="comment">% Print the standard deviation.</span>
+0534 fprintf(fid, <span class="string">',,,S.D.,'</span>);
+0535 <span class="keyword">for</span> i = 1:length(wormStdDev)
+0536     fprintf(fid, <span class="string">'%d,,,'</span>, wormStdDev(i));
+0537 <span class="keyword">end</span>
+0538 fprintf(fid, <span class="string">'\n'</span>);
+0539 
+0540 <span class="comment">% Print the q-value.</span>
+0541 fprintf(fid, <span class="string">',,,Q-Value,,,,'</span>);
+0542 <span class="keyword">for</span> i = 2:length(qValue)
+0543     fprintf(fid, <span class="string">'%d,,,'</span>, qValue(i));
+0544 <span class="keyword">end</span>
+0545 fprintf(fid, <span class="string">'\n'</span>);
+0546 
+0547 <span class="comment">% Print the power.</span>
+0548 fprintf(fid, <span class="string">',,,Power,,,,'</span>);
+0549 <span class="keyword">for</span> i = 2:length(power)
+0550     fprintf(fid, <span class="string">'%d,,,'</span>, power(i));
+0551 <span class="keyword">end</span>
+0552 fprintf(fid, <span class="string">'\n'</span>);
+0553 
+0554 <span class="comment">% Print the standard deviation.</span>
+0555 fprintf(fid, <span class="string">',,,Control Mean,,,,'</span>);
+0556 <span class="keyword">for</span> i = 2:length(controlMean)
+0557     fprintf(fid, <span class="string">'%d,,,'</span>, controlMean(i));
+0558 <span class="keyword">end</span>
+0559 fprintf(fid, <span class="string">'\n'</span>);
+0560 
+0561 <span class="comment">% Print the standard deviation.</span>
+0562 fprintf(fid, <span class="string">',,,Control S.D.,,,,'</span>);
+0563 <span class="keyword">for</span> i = 2:length(controlStdDev)
+0564     fprintf(fid, <span class="string">'%d,,,'</span>, controlStdDev(i));
+0565 <span class="keyword">end</span>
+0566 fprintf(fid, <span class="string">'\n\n'</span>);
+0567 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

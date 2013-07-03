@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of removePartialEvents</title>
+  <meta name="keywords" content="removePartialEvents">
+  <meta name="description" content="REMOVEPARTIALEVENTS Remove partial events at the start and end of the data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>removePartialEvents
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>REMOVEPARTIALEVENTS Remove partial events at the start and end of the data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function eventStats = removePartialEvents(eventStats, totalFrames) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">REMOVEPARTIALEVENTS Remove partial events at the start and end of the data.
+
+   EVENTSTATS = REMOVEPARTIALEVENTS(EVENTSTATS, TOTALFRAMES)
+
+   Inputs:
+       eventStats  - the event statistics (see events2stats)
+       totalFrames - the total number of frames in the video
+
+   Output:
+       eventStats - the event statistics (see events2stats) with partial
+                    events, at the start and end of the data, removed
+
+   See also EVENTS2STATS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2NormTimes.html" class="code" title="function worm2NormTimes(filename, seconds, wormFiles, varargin)">worm2NormTimes</a>	WORM2NORMTIMES Normalize worm feature time series.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">worm2histogram</a>	WORM2HISTOGRAM Convert worm features to their histogram.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function eventStats = removePartialEvents(eventStats, totalFrames)</a>
+0002 <span class="comment">%REMOVEPARTIALEVENTS Remove partial events at the start and end of the data.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   EVENTSTATS = REMOVEPARTIALEVENTS(EVENTSTATS, TOTALFRAMES)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       eventStats  - the event statistics (see events2stats)</span>
+0008 <span class="comment">%       totalFrames - the total number of frames in the video</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Output:</span>
+0011 <span class="comment">%       eventStats - the event statistics (see events2stats) with partial</span>
+0012 <span class="comment">%                    events, at the start and end of the data, removed</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   See also EVENTS2STATS</span>
+0015 
+0016 <span class="comment">% Remove partially recorded events.</span>
+0017 <span class="keyword">if</span> ~isempty(eventStats)
+0018     <span class="keyword">if</span> eventStats(1).start == 0
+0019         eventStats(1) = [];
+0020     <span class="keyword">end</span>
+0021 <span class="keyword">end</span>
+0022 <span class="keyword">if</span> ~isempty(eventStats)
+0023     <span class="keyword">if</span> eventStats(end).end == totalFrames
+0024         eventStats(end) = [];
+0025     <span class="keyword">end</span>
+0026 <span class="keyword">end</span>
+0027 <span class="keyword">end</span>
+0028</pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of linearSkeleton3</title>
+  <meta name="keywords" content="linearSkeleton3">
+  <meta name="description" content="LINEARSKELETON3 Skeletonize a linear (non-looped) worm. The worm is">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Segmentation -->
+<h1>linearSkeleton3
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>LINEARSKELETON3 Skeletonize a linear (non-looped) worm. The worm is</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [skeleton cWidths] =linearSkeleton3(headI, tailI, minP, minI, contour, wormSegSize) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">LINEARSKELETON3 Skeletonize a linear (non-looped) worm. The worm is
+skeletonized by splitting its contour, from head to tail, into short
+segments. These short segments are bounded by matching pairs of minimal
+angles (&lt; -20 degrees) and their nearest points on the opposite side of
+the worm's contour. We then walk along the opposing sides of these short
+segments and mark the midline as our skeleton. The final step is cleaning
+up this skeleton to remove overlapping points and interpolate missing ones.
+
+   LINEARSKELETON3(HEADI, TAILI, MINP, MINI, MAXP, MAXI, CONTOUR)
+
+   Inputs:
+       headI       - the head's contour index
+       tailI       - the tail's contour index
+       minP        - the local minimal peaks
+       minI        - the local minimal peaks' contour indices
+       contour     - the worm's contour
+       wormSegSize - the size (in contour points) of a worm segment.
+                     Note: The worm's contour is roughly divided into 50
+                     segments of musculature (i.e., hinges that represent
+                     degrees of freedom).
+
+   Output:
+       skeleton - the worm's skeleton
+       cWidths  - the worm contour's width at each skeleton point</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/circOpposingPoints.html" class="code" title="function pointsI = circOpposingPoints(pointsI, startI, endI, vLength,varargin)">circOpposingPoints</a>	CIRCOPPOSINGPOINTS Find the equivalent point indices on the opposing side</li><li><a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>	SKELETONIZE Skeletonize takes the 2 pairs of start and end points on a</li><li><a href="cleanSkeleton.html" class="code" title="function [cSkeleton cWidths] = cleanSkeleton(skeleton, widths, wormSegSize)">cleanSkeleton</a>	CLEANSKELETON Clean an 8-connected skeleton by removing any overlap and</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [skeleton cWidths] = </a><span class="keyword">...</span>
+0002     linearSkeleton3(headI, tailI, minP, minI, contour, wormSegSize)
+0003 <span class="comment">%LINEARSKELETON3 Skeletonize a linear (non-looped) worm. The worm is</span>
+0004 <span class="comment">%skeletonized by splitting its contour, from head to tail, into short</span>
+0005 <span class="comment">%segments. These short segments are bounded by matching pairs of minimal</span>
+0006 <span class="comment">%angles (&lt; -20 degrees) and their nearest points on the opposite side of</span>
+0007 <span class="comment">%the worm's contour. We then walk along the opposing sides of these short</span>
+0008 <span class="comment">%segments and mark the midline as our skeleton. The final step is cleaning</span>
+0009 <span class="comment">%up this skeleton to remove overlapping points and interpolate missing ones.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   LINEARSKELETON3(HEADI, TAILI, MINP, MINI, MAXP, MAXI, CONTOUR)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Inputs:</span>
+0014 <span class="comment">%       headI       - the head's contour index</span>
+0015 <span class="comment">%       tailI       - the tail's contour index</span>
+0016 <span class="comment">%       minP        - the local minimal peaks</span>
+0017 <span class="comment">%       minI        - the local minimal peaks' contour indices</span>
+0018 <span class="comment">%       contour     - the worm's contour</span>
+0019 <span class="comment">%       wormSegSize - the size (in contour points) of a worm segment.</span>
+0020 <span class="comment">%                     Note: The worm's contour is roughly divided into 50</span>
+0021 <span class="comment">%                     segments of musculature (i.e., hinges that represent</span>
+0022 <span class="comment">%                     degrees of freedom).</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%   Output:</span>
+0025 <span class="comment">%       skeleton - the worm's skeleton</span>
+0026 <span class="comment">%       cWidths  - the worm contour's width at each skeleton point</span>
+0027 
+0028 <span class="comment">% Is the segment size too long?</span>
+0029 <span class="comment">% Note: the head and tail are not part of the sides.</span>
+0030 cLength = size(contour, 1);
+0031 size1 = abs(headI - tailI) - 1;
+0032 size2 = cLength - size1 - 2;
+0033 <span class="keyword">if</span> min(size1, size2) &lt; wormSegSize;
+0034     error(<span class="string">'linearSkeleton:SegSizeTooBig'</span>, <span class="keyword">...</span>
+0035         [<span class="string">'The segment size for skeletonization, to compute opposing '</span> <span class="keyword">...</span>
+0036         <span class="string">'points for bends, is too long. Please contact the programmer.'</span>]);
+0037 <span class="keyword">end</span>
+0038     
+0039 <span class="comment">% Find the large minimal bends (less than -30 degrees).</span>
+0040 bendI = minI(minP &lt; -30);
+0041 
+0042 <span class="comment">% Compute the bounding indices for the contour's sides.</span>
+0043 preHeadI = headI - 1;
+0044 <span class="keyword">if</span> preHeadI &lt; 1
+0045     preHeadI = preHeadI + cLength;
+0046 <span class="keyword">end</span>
+0047 postHeadI = headI + 1;
+0048 <span class="keyword">if</span> postHeadI &gt; cLength
+0049     postHeadI = postHeadI - cLength;
+0050 <span class="keyword">end</span>
+0051 preTailI = tailI - 1;
+0052 <span class="keyword">if</span> preTailI &lt; 1
+0053     preTailI = preTailI + cLength;
+0054 <span class="keyword">end</span>
+0055 postTailI = tailI + 1;
+0056 <span class="keyword">if</span> postTailI &gt; cLength
+0057     postTailI = postTailI - cLength;
+0058 <span class="keyword">end</span>
+0059 
+0060 <span class="comment">% Compute opposing points for the bends.</span>
+0061 <span class="comment">% Side1 always goes from head to tail in positive, index increments.</span>
+0062 <span class="comment">% Side2 always goes from head to tail in negative, index increments.</span>
+0063 segI = zeros(length(bendI), 2);
+0064 <span class="keyword">if</span> headI &lt;= tailI
+0065     
+0066     <span class="comment">% Side 1.</span>
+0067     side1 = bendI &gt; headI &amp; bendI &lt; tailI;
+0068     sSize1 = sum(side1);
+0069     sSize2 = length(bendI) - sSize1;
+0070     segI(1:sSize1,1) = bendI(side1);
+0071     minBendI1 = segI(1:sSize1,1) - wormSegSize;
+0072     minBendI1(minBendI1 &lt;= headI) = postHeadI;
+0073     maxBendI1 = segI(1:sSize1,1) + wormSegSize;
+0074     maxBendI1(maxBendI1 &gt;= tailI) = preTailI;
+0075     
+0076     <span class="comment">% Side 2.</span>
+0077     <span class="comment">% Note: the head and tail have already been excluded as their bends are</span>
+0078     <span class="comment">% much greater than -30 degrees.</span>
+0079     side2 = ~side1;
+0080     segI((sSize1 + 1):<span class="keyword">end</span>,2) = bendI(side2);
+0081     minBendI2 = segI((sSize1 + 1):<span class="keyword">end</span>,2) + wormSegSize;
+0082     wrap = minBendI2 &gt; cLength;
+0083     minBendI2(wrap) = minBendI2(wrap) - cLength;
+0084     minBendI2(minBendI2 &gt;= headI &amp; minBendI2 &lt;= tailI) = preHeadI;
+0085     maxBendI2 = segI((sSize1 + 1):<span class="keyword">end</span>,2) - wormSegSize;
+0086     wrap = maxBendI2 &lt; 1;
+0087     maxBendI2(wrap) = maxBendI2(wrap) + cLength;
+0088     maxBendI2(maxBendI2 &gt;= headI &amp; maxBendI2 &lt;= tailI) = postTailI;
+0089 <span class="keyword">else</span>
+0090     
+0091     <span class="comment">% Side 2.</span>
+0092     side2 = bendI &gt; tailI &amp; bendI &lt; headI;
+0093     sSize2 = sum(side2);
+0094     sSize1 = length(bendI) - sSize2;
+0095     segI((sSize1 + 1):<span class="keyword">end</span>,2) = bendI(side2);
+0096     minBendI2 = segI((sSize1 + 1):<span class="keyword">end</span>,2) + wormSegSize;
+0097     minBendI2(minBendI2 &gt;= headI) = preHeadI;
+0098     maxBendI2 = segI((sSize1 + 1):<span class="keyword">end</span>,2) - wormSegSize;
+0099     maxBendI2(maxBendI2 &lt;= tailI) = postTailI;
+0100     
+0101     <span class="comment">% Side 1.</span>
+0102     <span class="comment">% Note: the head and tail have already been excluded as their bends are</span>
+0103     <span class="comment">% much greater than -30 degrees.</span>
+0104     side1 = ~side2;
+0105     segI(1:sSize1,1) = bendI(side1);
+0106     minBendI1 = segI(1:sSize1,1) - wormSegSize;
+0107     wrap = segI(1:sSize1,1) &lt; 1;
+0108     minBendI1(wrap) = minBendI1(wrap) + cLength;
+0109     minBendI1(minBendI1 &gt;= tailI &amp; minBendI1 &lt;= headI) = postHeadI;
+0110     maxBendI1 = segI(1:sSize1,1) + wormSegSize;
+0111     wrap = maxBendI1 &gt; cLength;
+0112     maxBendI1(wrap) = maxBendI1(wrap) - cLength;
+0113     maxBendI1(maxBendI1 &gt;= tailI &amp; maxBendI1 &lt;= headI) = preTailI;
+0114 <span class="keyword">end</span>
+0115 
+0116 <span class="comment">% Find the opposing points for bends on side 1.</span>
+0117 minOppI1 = <a href="../../../SegWorm/ComputerVision/circOpposingPoints.html" class="code" title="function pointsI = circOpposingPoints(pointsI, startI, endI, vLength,varargin)">circOpposingPoints</a>(maxBendI1, headI, tailI, cLength);
+0118 maxOppI1 = <a href="../../../SegWorm/ComputerVision/circOpposingPoints.html" class="code" title="function pointsI = circOpposingPoints(pointsI, startI, endI, vLength,varargin)">circOpposingPoints</a>(minBendI1, headI, tailI, cLength);
+0119 <span class="keyword">for</span> i = 1:sSize1
+0120     segI(i,2) = circNearestPoint(contour(segI(i,1),:), <span class="keyword">...</span>
+0121         minOppI1(i), maxOppI1(i), contour);
+0122 <span class="keyword">end</span>
+0123 
+0124 <span class="comment">% Find the opposing points for bends on side 2.</span>
+0125 minOppI2 = <a href="../../../SegWorm/ComputerVision/circOpposingPoints.html" class="code" title="function pointsI = circOpposingPoints(pointsI, startI, endI, vLength,varargin)">circOpposingPoints</a>(maxBendI2, headI, tailI, cLength);
+0126 maxOppI2 = <a href="../../../SegWorm/ComputerVision/circOpposingPoints.html" class="code" title="function pointsI = circOpposingPoints(pointsI, startI, endI, vLength,varargin)">circOpposingPoints</a>(minBendI2, headI, tailI, cLength);
+0127 <span class="keyword">for</span> i = (sSize1 + 1):size(segI, 1)
+0128     j = i - sSize1;
+0129     segI(i,1) = circNearestPoint(contour(segI(i,2),:), <span class="keyword">...</span>
+0130         maxOppI2(j), minOppI2(j), contour);
+0131 <span class="keyword">end</span>
+0132 
+0133 <span class="comment">% Order the points from head to tail.</span>
+0134 <span class="comment">% segI(:,1) always goes from head to tail in positive, index increments.</span>
+0135 <span class="comment">% segI(:,2) always goes from head to tail in negative, index increments.</span>
+0136 segI = sortrows(segI);
+0137 
+0138 <span class="comment">% Skeletonize the segments and measure their widths by walking the midline</span>
+0139 <span class="comment">% between their opposing contour sides.</span>
+0140 <span class="comment">% Note: the maximal skeleton length occurs when one side of the contour</span>
+0141 <span class="comment">% contains all of the points (the head and tail are always shared by both</span>
+0142 <span class="comment">% sides).</span>
+0143 skeleton = zeros(cLength, 2); <span class="comment">% pre-allocate memory</span>
+0144 cWidths = zeros(cLength, 1); <span class="comment">% pre-allocate memory</span>
+0145 prevSegI(1:2) = headI;
+0146 sLength = 1;
+0147 <span class="keyword">for</span> i = 1:size(segI, 1)
+0148     
+0149     <span class="comment">% Skeletonize the segment.</span>
+0150     [segment sWidths] = <a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>(prevSegI(1), segI(i,1), 1, <span class="keyword">...</span>
+0151         prevSegI(2), segI(i,2), -1, contour, contour, false);
+0152     skeleton(sLength:(sLength + size(segment, 1) - 1),:) = segment;
+0153     cWidths(sLength:(sLength + size(segment, 1) - 1),:) = sWidths;
+0154     sLength = sLength + size(segment, 1);
+0155     
+0156     <span class="comment">% Advance.</span>
+0157     prevSegI = segI(i,:);
+0158 <span class="keyword">end</span>
+0159 
+0160 <span class="comment">% Skeletonize the last segment.</span>
+0161 [segment sWidths] = <a href="../../../SegWorm/ComputerVision/skeletonize.html" class="code" title="function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross)">skeletonize</a>(prevSegI(1), tailI, 1, <span class="keyword">...</span>
+0162     prevSegI(2), tailI, -1, contour, contour, false);
+0163 skeleton(sLength:(sLength + size(segment, 1) - 1),:) = segment;
+0164 cWidths(sLength:(sLength + size(segment, 1) - 1),:) = sWidths;
+0165 sLength = sLength + size(segment, 1);
+0166 
+0167 <span class="comment">% Collapse any extra memory.</span>
+0168 skeleton(sLength:<span class="keyword">end</span>,:) = [];
+0169 cWidths(sLength:<span class="keyword">end</span>,:) = [];
+0170 
+0171 <span class="comment">% Clean up the rough skeleton.</span>
+0172 skeleton = round(skeleton);
+0173 [skeleton cWidths] = <a href="cleanSkeleton.html" class="code" title="function [cSkeleton cWidths] = cleanSkeleton(skeleton, widths, wormSegSize)">cleanSkeleton</a>(skeleton, cWidths, wormSegSize);
+0174 
+0175 <span class="comment">% Smooth the skeleton.</span>
+0176 <span class="comment">% halfWin = round(wormSegSize / 2);</span>
+0177 <span class="comment">% gWin = gausswin(2 * halfWin + 1);</span>
+0178 <span class="comment">% gWin = gWin / sum(gWin);</span>
+0179 <span class="comment">% preSkeleton(1:halfWin,1) = skeleton(1,1);</span>
+0180 <span class="comment">% preSkeleton(1:halfWin,2) = skeleton(1,2);</span>
+0181 <span class="comment">% postSkeleton(1:halfWin,1) = skeleton(end,1);</span>
+0182 <span class="comment">% postSkeleton(1:halfWin,2) = skeleton(end,2);</span>
+0183 <span class="comment">% skeleton(:,1) = ...</span>
+0184 <span class="comment">%     round(conv([preSkeleton(:,1); skeleton(:,1); postSkeleton(:,1)], gWin, 'valid'));</span>
+0185 <span class="comment">% skeleton(:,2) = ...</span>
+0186 <span class="comment">%     round(conv([preSkeleton(:,2); skeleton(:,2); postSkeleton(:,2)], gWin, 'valid'));</span>
+0187 <span class="comment">%</span>
+0188 <span class="comment">% % Clean up the smoothed skeleton.</span>
+0189 <span class="comment">% skeleton = cleanSkeleton(skeleton);</span>
+0190 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

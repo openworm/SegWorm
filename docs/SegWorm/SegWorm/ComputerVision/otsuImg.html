@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of otsuImg</title>
+  <meta name="keywords" content="otsuImg">
+  <meta name="description" content="OTSUIMG Use the Otsu threshold to binarize an image.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>otsuImg
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>OTSUIMG Use the Otsu threshold to binarize an image.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [bwImg] = otsuImg(img, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">OTSUIMG Use the Otsu threshold to binarize an image.
+
+   [BWIMG] = OTSUIMG(IMG)
+
+   [BWIMG] = OTSUIMG(IMG, ISNORMALIZED)
+
+   [BWIMG] = OTSUIMG(IMG, ISNORMALIZED, STDDEV)
+
+   Input:
+       img          - the image to binarize
+       isNormalized - is the image already normalized (i.e., all pixel
+                      values are between 0 to 1, inclusive)?
+       stdDev       - the standard deviations, from the Otsu threshold's
+                      foreground mean, at which to threshold;
+                      if empty, we threshold at the Otsu threshold.
+
+   Output:
+       bwImg - the otsu-threshold, binarized image</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="video2Diff.html" class="code" title="function video2Diff(videoFile, diffFile, varargin)">video2Diff</a>	VIDEO2DIFF Differentiate a video frame by frame. The difference is</li><li><a href="../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li><li><a href="../../SegWorm/Worms/Video/video2Vignette.html" class="code" title="function vignette = video2Vignette(videoFile, frames, threshold,otsuStdDev, dilatePixels, erodePixels, smoothPixels, varargin)">video2Vignette</a>	VIDEO2VIGNETTE Compute the vignette from a video. Exclude the largest</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [bwImg] = otsuImg(img, varargin)</a>
+0002 <span class="comment">%OTSUIMG Use the Otsu threshold to binarize an image.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [BWIMG] = OTSUIMG(IMG)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [BWIMG] = OTSUIMG(IMG, ISNORMALIZED)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   [BWIMG] = OTSUIMG(IMG, ISNORMALIZED, STDDEV)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Input:</span>
+0011 <span class="comment">%       img          - the image to binarize</span>
+0012 <span class="comment">%       isNormalized - is the image already normalized (i.e., all pixel</span>
+0013 <span class="comment">%                      values are between 0 to 1, inclusive)?</span>
+0014 <span class="comment">%       stdDev       - the standard deviations, from the Otsu threshold's</span>
+0015 <span class="comment">%                      foreground mean, at which to threshold;</span>
+0016 <span class="comment">%                      if empty, we threshold at the Otsu threshold.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   Output:</span>
+0019 <span class="comment">%       bwImg - the otsu-threshold, binarized image</span>
+0020 
+0021 <span class="comment">% Should we normalize the image?</span>
+0022 isNormalized = false;
+0023 <span class="keyword">if</span> ~isempty(varargin)
+0024     isNormalized = varargin{1};
+0025 <span class="keyword">end</span>
+0026 
+0027 <span class="comment">% At how many standard deviations, from the Otsu threshold's foreground</span>
+0028 <span class="comment">% mean, should we threshold?</span>
+0029 stdDev = [];
+0030 <span class="keyword">if</span> length(varargin) &gt; 1
+0031     stdDev = varargin{2};
+0032 <span class="keyword">end</span>
+0033 
+0034 <span class="comment">% Convert the image to grayscale.</span>
+0035 <span class="keyword">if</span> (size(img,3) == 3)
+0036     img = rgb2gray(img);
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="comment">% Normalize the image.</span>
+0040 <span class="keyword">if</span> ~isNormalized
+0041     img = double(img - min(min(img)));
+0042     img = img / max(max(img));
+0043 <span class="keyword">end</span>
+0044 
+0045 <span class="comment">% Compute the Otsu threshold.</span>
+0046 thr = graythresh(img);
+0047 
+0048 <span class="comment">% Adjust the threshold.</span>
+0049 <span class="keyword">if</span> ~isempty(stdDev)
+0050     <span class="keyword">if</span> isinteger(img)
+0051         img = double(img) / 255.0;
+0052     <span class="keyword">end</span>
+0053     foreground = img(img &lt; thr);
+0054     foreground = double(foreground(:));
+0055     thr = mean(foreground) + stdDev * std(foreground);
+0056 <span class="keyword">end</span>
+0057 
+0058 <span class="comment">% Binarize the image.</span>
+0059 bwImg = im2bw(img, thr);
+0060 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

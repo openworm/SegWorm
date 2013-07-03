@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of testGet</title>
+  <meta name="keywords" content="testGet">
+  <meta name="description" content="testGet">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>testGet
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>testGet</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function testGet(plugin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">testGet
+  Script that does some minimal testing of the get functions.  Windows
+  only.
+
+Example:
+  testGet
+
+Copyright (c) 2006 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>	INFO=GET(VR)</li><li><a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>	ADDFRAME  Add video frame to VIDEOWRITER stream.</li><li><a href="../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="../../videoIO/@videoWriter/get.html" class="code" title="function info = get(vw,varargin)">get</a>	INFO=GET(VW)</li><li><a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>	videoWriter class constructor</li><li><a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>	pluginName = defaultVideoIOPlugin(ctor)</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="iprintf.html" class="code" title="function iprintf(varargin)">iprintf</a>	IPRINTF(...)</li><li><a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a>	vrassert(testCondition)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="standardTestBattery.html" class="code" title="function standardTestBattery(plugin)">standardTestBattery</a>	standardTestBattery(plugin)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function testGet(plugin)</a>
+0002 <span class="comment">%testGet</span>
+0003 <span class="comment">%  Script that does some minimal testing of the get functions.  Windows</span>
+0004 <span class="comment">%  only.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%Example:</span>
+0007 <span class="comment">%  testGet</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%Copyright (c) 2006 Gerald Dalley</span>
+0010 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0011 <span class="comment">%when using this library on GNU/Linux).</span>
+0012 
+0013 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>
+0014 
+0015 <span class="keyword">if</span> nargin &lt; 1, plugin = <a href="../../videoIO/defaultVideoIOPlugin.html" class="code" title="function pluginName = defaultVideoIOPlugin(ctor)">defaultVideoIOPlugin</a>; <span class="keyword">end</span>
+0016 
+0017 <span class="keyword">if</span> ispc
+0018   frames = rand(100,100, 10);
+0019 
+0020   <span class="keyword">try</span>
+0021     tmpDir = tempname; mkdir(tmpDir);
+0022 
+0023     codecs = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>([], <span class="string">'codecs'</span>, <span class="string">'plugin'</span>,plugin);
+0024     
+0025     codecA = listdlg(<span class="string">'PromptString'</span>, {<span class="string">'Choose a VfW or '</span>, <span class="string">'DirectShow codec:'</span>}, <span class="keyword">...</span>
+0026       <span class="string">'ListString'</span>, codecs, <span class="string">'SelectionMode'</span>, <span class="string">'single'</span>);
+0027     codecA = codecs{codecA};
+0028     
+0029     fname = fullfile(tmpDir, <span class="string">'testGetA.avi'</span>);
+0030     <span class="keyword">if</span> (strcmpi(codecA,<span class="string">'NONE'</span>) || isempty(codecA))
+0031       vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>(fname, <span class="string">'plugin'</span>,plugin, <span class="string">'codec'</span>,codecA);
+0032     <span class="keyword">else</span>
+0033       vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>(fname, <span class="string">'plugin'</span>,plugin, <span class="string">'showCompressionDialog'</span>,1, <span class="string">'codec'</span>,codecA);
+0034     <span class="keyword">end</span>
+0035     infoA = <a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(vw);
+0036     <span class="keyword">for</span> i=1:size(frames,3), <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, frames(:,:,i)); <span class="keyword">end</span>
+0037     <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw);
+0038     dirA = dir(fname);
+0039     a = fopen(fname);  dataA = fread(a, <span class="string">'uint8'</span>);  fclose(a); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0040 
+0041     codecB = listdlg(<span class="string">'PromptString'</span>, {<span class="string">'Choose a different codec'</span>,<span class="string">'(or configure it differently):'</span>}, <span class="keyword">...</span>
+0042       <span class="string">'ListString'</span>, codecs, <span class="string">'SelectionMode'</span>, <span class="string">'single'</span>);
+0043     codecB = codecs{codecB};
+0044     fname = fullfile(tmpDir, <span class="string">'testGetB.avi'</span>);
+0045     <span class="keyword">if</span> (strcmpi(codecB,<span class="string">'NONE'</span>) || isempty(codecB))
+0046       vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>(fname, <span class="string">'plugin'</span>,plugin, <span class="string">'codec'</span>,codecB);
+0047     <span class="keyword">else</span>
+0048       vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>(fname, <span class="string">'plugin'</span>,plugin, <span class="string">'showCompressionDialog'</span>,1, <span class="string">'codec'</span>,codecB);
+0049     <span class="keyword">end</span>
+0050     infoB = <a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(vw);
+0051     <span class="keyword">if</span> strcmp(infoA.codecParams, infoB.codecParams) &amp;&amp; strcmp(infoA.codec, infoB.codec)
+0052       error(<span class="string">'You were supposed to change either the codec and/or at least one compression parameter.'</span>);
+0053     <span class="keyword">end</span>
+0054     <span class="keyword">for</span> i=1:size(frames,3), <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, frames(:,:,i)); <span class="keyword">end</span>
+0055     <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw);
+0056     dirB = dir(fname);
+0057     b = fopen(fname);  dataB = fread(b, <span class="string">'uint8'</span>);  fclose(b); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0058 
+0059     <span class="keyword">if</span> dirA.bytes == dirB.bytes
+0060       <span class="keyword">if</span> all(a == b)
+0061         error(<span class="string">'The two files are identical.  Try adjusting the compression parameters more.'</span>);
+0062       <span class="keyword">end</span>
+0063     <span class="keyword">end</span>
+0064 
+0065     fname = fullfile(tmpDir, <span class="string">'testGetC.avi'</span>);
+0066     vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>(fname, <span class="string">'plugin'</span>,plugin, <span class="keyword">...</span>
+0067       <span class="string">'codec'</span>,infoA.codec, <span class="string">'codecParams'</span>,infoA.codecParams, <span class="keyword">...</span>
+0068       <span class="string">'width'</span>,infoA.width, <span class="string">'height'</span>,infoA.height);
+0069     infoC = <a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(vw); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0070     <span class="keyword">for</span> i=1:size(frames,3), <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, frames(:,:,i)); <span class="keyword">end</span>
+0071     <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw);
+0072     dirC = dir(fname); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0073     c = fopen(fname);  dataC = fread(c, <span class="string">'uint8'</span>);  fclose(c); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0074 
+0075     <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> strcmp(infoA.codecParams, infoC.codecParams);
+0076     <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> dirA.bytes == dirC.bytes;
+0077     <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> all(dataA == dataC);
+0078 
+0079     rmdir(tmpDir, <span class="string">'s'</span>);
+0080   <span class="keyword">catch</span> <span class="comment">%#ok&lt;CTCH&gt;: backward compatibility</span>
+0081     e = lasterror; <span class="comment">%#ok&lt;LERR&gt;: backward compatibility</span>
+0082     <span class="keyword">try</span> <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw); <span class="keyword">catch</span> <span class="keyword">end</span> <span class="comment">%#ok&lt;CTCH&gt;: backward compatibility</span>
+0083     rmdir(tmpDir, <span class="string">'s'</span>);
+0084     rethrow(e);
+0085   <span class="keyword">end</span>
+0086 <span class="keyword">else</span>
+0087   <a href="iprintf.html" class="code" title="function iprintf(varargin)">iprintf</a>(<span class="string">'skipping testGet on non-Windows boxes'</span>);
+0088 <span class="keyword">end</span>
+0089 
+0090 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,2328 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of multiScaleWorm</title>
+  <meta name="keywords" content="multiScaleWorm">
+  <meta name="description" content="MULTISCALEWORM Differentiate worm data at multiple scales.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>multiScaleWorm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>MULTISCALEWORM Differentiate worm data at multiple scales.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [diffData startFrame endFrame fps useSamples] =multiScaleWorm(wormFile, startFrame, endFrame, useSamples,useFrames, type, scales, isSparse, offMode, isNoisy, htDirMode,isAbsDir, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">MULTISCALEWORM Differentiate worm data at multiple scales.
+
+   [DIFFDATA STARTFRAME ENDFRAME FPS USESAMPLES] =
+       MULTISCALEWORM(WORMFILE, STARTFRAME, ENDFRAME, USESAMPLES,
+                      USEFRAMES, TYPE, SCALES, ISSPARSE, OFFMODE, ISNOISY,
+                      HTDIRMODE, ISABSDIR)
+
+   [DIFFDATA STARTFRAME ENDFRAME FPS USESAMPLES] =
+       MULTISCALEWORM(WORMFILE, STARTFRAME, ENDFRAME, USESAMPLES,
+                      USEFRAMES, TYPE, SCALES, ISSPARSE, OFFMODE, ISNOISY)
+                      HTDIRMODE, ISABSDIR, VENTRALMODE)
+
+   [DIFFDATA STARTFRAME ENDFRAME FPS USESAMPLES] =
+       MULTISCALEWORM(WORMFILE, STARTFRAME, ENDFRAME, USESAMPLES,
+                      USEFRAMES, TYPE, SCALES, ISSPARSE, OFFMODE, ISNOISY)
+                      HTDIRMODE, ISABSDIR, VENTRALMODE, VERBOSE)
+
+   [DIFFDATA STARTFRAME ENDFRAME FPS USESAMPLES] =
+       MULTISCALEWORM(WORMFILE, STARTFRAME, ENDFRAME, USESAMPLES,
+                      USEFRAMES, TYPE, SCALES, ISSPARSE, OFFMODE, ISNOISY,
+                      HTDIRMODE, ISABSDIR, VENTRALMODE, VERBOSE, SHOWDATA)
+
+   Inputs:
+       wormFile   - the name of the file containing normalized worms (see
+                    saveWormFrames). The file format is MAT (Matlab's
+                    '.mat') and contains the following variables:
+                   
+                    samples      = the samples per normalized worm; if
+                                   empty, the worms are in structs
+                    fps          = frames/seconds
+                    firstFrame   = the first frame number (in block1)
+                    lastFrame    = the last frame number (in the last block)
+                    blockSize    = the size of a block
+                    blocks       = the number of blocks
+                    block1       = the first block
+                    ...
+                    blockN       = the N-th (last) block
+
+                    If the data is normalized, the blocks are cell arrays
+                    with following structure (see normWorms):
+
+                    blockN{1}  = status:
+                                 s = segmented
+                                 f = segmentation failed
+                                 m = stage movement
+                                 d = dropped frame
+                    blockN{2}  = vulvaContours
+                    blockN{3}  = nonVulvaContours
+                    blockN{4}  = skeletons
+                    blockN{5}  = angles
+                    blockN{6}  = inOutTouches
+                    blockN{7}  = lengths
+                    blockN{8}  = widths
+                    blockN{9}  = headAreas
+                    blockN{10} = tailAreas
+                    blockN{11} = vulvaAreas
+                    blockN{12} = nonVulvaAreas
+
+                    Otherwise, the blocks are just cell arrays of worm
+                    cells; missing worms are labeled with their frame
+                    status instead:
+
+                    blockN = 1 to, at most, blockSize number of worm cells;
+                             or, for missing worms, their frame status:
+                             f = segmentation failed
+                             m = stage movement
+                             d = dropped frame
+
+       startFrame - the first frame to use; if the value is an integer, we
+                    interpret it as a frame number; if the value is a
+                    float, we interpret it as a time (in seconds);
+                    if empty, we start at the first frame
+       endFrame   - the last frame to use; if the value is an integer, we
+                    interpret it as a frame number; if the value is a
+                    float, we interpret it as a time (in seconds);
+                    if empty, we end at the last frame
+       useSamples - the worm samples to use. Samples can be:
+                    
+                    empty      = use all samples
+                    fractional = the fraction of samples to use
+                    vector     = the samplig points to use
+                    cell array = each cell element is a group of sampling
+                                 points to average together; or, if you
+                                 include just a a single fractional
+                                 element, the worm will be fractionated
+                                 into these groups and each group will be
+                                 averaged; e.g., {1/7} produces 7 averaged
+                                 groups, each is 1/7 the worm
+
+       useFrames  - if not empty, for each frame, is it usable?
+                    The 'use' vector allows one to test replacement
+                    algorithms (e.g., interpolation, nearest neighbor,
+                    etc.), in differentiation, by comparing the results
+                    from real data with tests where elements of this
+                    data have been removed by being declared unusable.
+                    Note: stage movements and failed segmentation are
+                    ALWAYS treated as unusable.
+       type       - the type of algorithm to use when replacing unusable
+                    data samples (e.g., due to stage movements or failed
+                    segmentation). Differentiation is expressed as:
+
+                    dX/dT = -(X1 - X2)/(T1 - T2)
+
+                    type is a 1 or 2 letter string indicating which
+                    method to use when replacing an unusable X1 and/or
+                    X2. If type is 2 characters long:
+
+                    type(1) = X1
+                    type(2) = X2
+
+                    Otherwise, type(1) is used for both X1 and X2. The
+                    methods are as follows:
+
+                    i = linearly interpolate unusable data
+                        (type(2) is ignored)
+                    e = exact match, if data is unusable, the result is NaN
+                    b = backwards nearest neighbor
+                    f = forwards nearest neighbor
+                    n = nearest neighbor
+
+                    Note: the nearest-neighbor type algorithms adjust
+                    the time accordingly. If there is no nearest
+                    neighbor, differentiation results in NaN.
+       scales     - a vector of the scales (in seconds) to use for
+                    spacing X1 from X2
+       isSparse   - is the differentiation sparse? for each scale,
+                    sparse differentiation only calculates the data
+                    differences at multiples of that scale
+       offMode    - the offset mode; in other words, how should the data
+                    be offset relative to the differentiation?
+                    The modes are:
+                    
+                    1 = center the data between the start and end times
+                        of the differentiation scale
+                    2 = place the data at the start time of the
+                        differentiation scale
+                    3 = place the data at the end time of the
+                        differentiation scale
+
+       isNoisy    - should the noise be reduced? If so, differentials less
+                    than the sampling resolution (the Nyquist value of
+                    2 * diagonal microns/pixels) are set to zero.
+       htDirMode  - the head-tail orientation computation mode:
+
+                    1 = the direction between the tail and head endpoints
+                    2 = the direction between points 1/6 inwards from the
+                        tail and head endpoints
+                    3 = the mean direction between all subsequent points
+                        from the tail to the head endpoints
+                    4 = the mean direction between all subsequent points
+                        1/6 inwards from the tail and head endpoints
+
+                    Note: the head-tail orientation is used in signing
+                    velocity and computing velocity direction.
+       isAbsDir   - should the skeleton's velocity direction be shown as
+                    an absolute angle or, relative to the head-tail
+                    orientation at time T1?
+       ventralMode - the ventral side mode:
+
+                     0 = the ventral side is unknown
+                     1 = the ventral side is clockwise
+                     2 = the ventral side is anticlockwise
+
+       verbose    - verbose mode 1 shows the results in figures;
+                    verbose mode 2 adds the histogram;
+                    verbose mode 3 adds the worm path;
+                    verbose mode x.5 adds frame information to the figures
+       showData   - a vector of the data indices to show; if empty, all
+                    the data is shown. The indices are defined as follows:
+
+                    1  = the vulval contour's velocity
+                    2  = the vulval contour's velocity direction
+                    3  = the non-vulval contour's velocity
+                    4  = the non-vulval contour's velocity direction
+                    5  = the skeleton's velocity
+                    6  = the skeleton's velocity direction
+                    7  = the skeleton's angles' derivative
+                    8  = the skeleton's touching point's velocity
+                    9  = the skeleton's length's derivative
+                    10 = the contour's widths' derivative
+                    11 = the head area's derivative
+                    12 = the tail area's derivative
+                    13 = the vulval area's derivative
+                    14 = the non-vulval area's derivative
+
+   Output:
+       diffData   - the data differences at each scale. The first dimension
+                    corresponds to the input data's first dimension. The
+                    second dimension is the data differences at each scale.
+                    Multidimensional data (e.g., point coordinates) is
+                    presented as its vector magnitude (e.g., for point
+                    coordinates, the data is presented as sqrt(dX^2 + dY^2)).
+
+                    The differentiated data is as follows:
+
+                    diffData{1}  = the unscaled frame status:
+                                   s = segmented
+                                   f = segmentation failed
+                                   m = stage movement
+                                   d = dropped frame
+                                   u = unused frame
+                    diffData{2}  = the data's frames at each scale
+                    diffData{3}  = the vulval contour's velocity
+                    diffData{4}  = the vulval contour's velocity direction
+                    diffData{5}  = the non-vulval contour's velocity
+                    diffData{6}  = the non-vulval contour's velocity direction
+                    diffData{7}  = the skeleton's velocity
+                    diffData{8}  = the skeleton's velocity direction
+                    diffData{9}  = the skeleton's angles' derivative
+                    diffData{10} = the skeleton's touching point's velocity
+                    diffData{11} = the skeleton's length's derivative
+                    diffData{12} = the contour's widths' derivative
+                    diffData{13} = the head area's derivative
+                    diffData{14} = the tail area's derivative
+                    diffData{15} = the vulval area's derivative
+                    diffData{16} = the non-vulval area's derivative
+       startFrame - the data's starting frame
+       endFrame   - the data's ending frame
+       useSamples - the data's worm sample indices
+       fps        - the data's frames/seconds
+
+   See also SAVEWORMFRAMES, NORMWORMS, MULTISCALEDIFF</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>	HISTOGRAM Compute the data's histogram.</li><li><a href="../../../SegWorm/Util/multiScaleDiff.html" class="code" title="function [diffData usedFramesI] = multiScaleDiff(data, use, startI,endI, rate, type, scales, isSparse, isAtT1)">multiScaleDiff</a>	MULTISCALEDIFF Differentiate data at multiple scales.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="bendAndSpeedTest.html" class="code" title="">bendAndSpeedTest</a>	Initialize our variables.</li><li><a href="wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li><li><a href="wormPathCurvature2.html" class="code" title="function curvature = wormPathCurvature(wormFile, useSamples, type,scales, varargin)">wormPathCurvature2</a>	WORMDIRECTION Compute the worm path curvature (angle/distance).</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function blockInfo = loadBlock(wormFile, index)</a></li><li><a href="#_sub2" class="code">function [dataInfo blockInfo] = loadData(wormFile, startFrame,</a></li><li><a href="#_sub3" class="code">function data = blocks2Data(blockInfo, startFrame, endFrame,</a></li><li><a href="#_sub4" class="code">function newData = meanData(data, meanSamples)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001           <a name="_sub0" href="#_subfunctions" class="code">function [diffData startFrame endFrame fps useSamples] = </a><span class="keyword">...</span>
+0002     multiScaleWorm(wormFile, startFrame, endFrame, useSamples, <span class="keyword">...</span>
+0003     useFrames, type, scales, isSparse, offMode, isNoisy, htDirMode, <span class="keyword">...</span>
+0004     isAbsDir, varargin)
+0005 <span class="comment">%MULTISCALEWORM Differentiate worm data at multiple scales.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   [DIFFDATA STARTFRAME ENDFRAME FPS USESAMPLES] =</span>
+0008 <span class="comment">%       MULTISCALEWORM(WORMFILE, STARTFRAME, ENDFRAME, USESAMPLES,</span>
+0009 <span class="comment">%                      USEFRAMES, TYPE, SCALES, ISSPARSE, OFFMODE, ISNOISY,</span>
+0010 <span class="comment">%                      HTDIRMODE, ISABSDIR)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   [DIFFDATA STARTFRAME ENDFRAME FPS USESAMPLES] =</span>
+0013 <span class="comment">%       MULTISCALEWORM(WORMFILE, STARTFRAME, ENDFRAME, USESAMPLES,</span>
+0014 <span class="comment">%                      USEFRAMES, TYPE, SCALES, ISSPARSE, OFFMODE, ISNOISY)</span>
+0015 <span class="comment">%                      HTDIRMODE, ISABSDIR, VENTRALMODE)</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   [DIFFDATA STARTFRAME ENDFRAME FPS USESAMPLES] =</span>
+0018 <span class="comment">%       MULTISCALEWORM(WORMFILE, STARTFRAME, ENDFRAME, USESAMPLES,</span>
+0019 <span class="comment">%                      USEFRAMES, TYPE, SCALES, ISSPARSE, OFFMODE, ISNOISY)</span>
+0020 <span class="comment">%                      HTDIRMODE, ISABSDIR, VENTRALMODE, VERBOSE)</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   [DIFFDATA STARTFRAME ENDFRAME FPS USESAMPLES] =</span>
+0023 <span class="comment">%       MULTISCALEWORM(WORMFILE, STARTFRAME, ENDFRAME, USESAMPLES,</span>
+0024 <span class="comment">%                      USEFRAMES, TYPE, SCALES, ISSPARSE, OFFMODE, ISNOISY,</span>
+0025 <span class="comment">%                      HTDIRMODE, ISABSDIR, VENTRALMODE, VERBOSE, SHOWDATA)</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%   Inputs:</span>
+0028 <span class="comment">%       wormFile   - the name of the file containing normalized worms (see</span>
+0029 <span class="comment">%                    saveWormFrames). The file format is MAT (Matlab's</span>
+0030 <span class="comment">%                    '.mat') and contains the following variables:</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%                    samples      = the samples per normalized worm; if</span>
+0033 <span class="comment">%                                   empty, the worms are in structs</span>
+0034 <span class="comment">%                    fps          = frames/seconds</span>
+0035 <span class="comment">%                    firstFrame   = the first frame number (in block1)</span>
+0036 <span class="comment">%                    lastFrame    = the last frame number (in the last block)</span>
+0037 <span class="comment">%                    blockSize    = the size of a block</span>
+0038 <span class="comment">%                    blocks       = the number of blocks</span>
+0039 <span class="comment">%                    block1       = the first block</span>
+0040 <span class="comment">%                    ...</span>
+0041 <span class="comment">%                    blockN       = the N-th (last) block</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">%                    If the data is normalized, the blocks are cell arrays</span>
+0044 <span class="comment">%                    with following structure (see normWorms):</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%                    blockN{1}  = status:</span>
+0047 <span class="comment">%                                 s = segmented</span>
+0048 <span class="comment">%                                 f = segmentation failed</span>
+0049 <span class="comment">%                                 m = stage movement</span>
+0050 <span class="comment">%                                 d = dropped frame</span>
+0051 <span class="comment">%                    blockN{2}  = vulvaContours</span>
+0052 <span class="comment">%                    blockN{3}  = nonVulvaContours</span>
+0053 <span class="comment">%                    blockN{4}  = skeletons</span>
+0054 <span class="comment">%                    blockN{5}  = angles</span>
+0055 <span class="comment">%                    blockN{6}  = inOutTouches</span>
+0056 <span class="comment">%                    blockN{7}  = lengths</span>
+0057 <span class="comment">%                    blockN{8}  = widths</span>
+0058 <span class="comment">%                    blockN{9}  = headAreas</span>
+0059 <span class="comment">%                    blockN{10} = tailAreas</span>
+0060 <span class="comment">%                    blockN{11} = vulvaAreas</span>
+0061 <span class="comment">%                    blockN{12} = nonVulvaAreas</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">%                    Otherwise, the blocks are just cell arrays of worm</span>
+0064 <span class="comment">%                    cells; missing worms are labeled with their frame</span>
+0065 <span class="comment">%                    status instead:</span>
+0066 <span class="comment">%</span>
+0067 <span class="comment">%                    blockN = 1 to, at most, blockSize number of worm cells;</span>
+0068 <span class="comment">%                             or, for missing worms, their frame status:</span>
+0069 <span class="comment">%                             f = segmentation failed</span>
+0070 <span class="comment">%                             m = stage movement</span>
+0071 <span class="comment">%                             d = dropped frame</span>
+0072 <span class="comment">%</span>
+0073 <span class="comment">%       startFrame - the first frame to use; if the value is an integer, we</span>
+0074 <span class="comment">%                    interpret it as a frame number; if the value is a</span>
+0075 <span class="comment">%                    float, we interpret it as a time (in seconds);</span>
+0076 <span class="comment">%                    if empty, we start at the first frame</span>
+0077 <span class="comment">%       endFrame   - the last frame to use; if the value is an integer, we</span>
+0078 <span class="comment">%                    interpret it as a frame number; if the value is a</span>
+0079 <span class="comment">%                    float, we interpret it as a time (in seconds);</span>
+0080 <span class="comment">%                    if empty, we end at the last frame</span>
+0081 <span class="comment">%       useSamples - the worm samples to use. Samples can be:</span>
+0082 <span class="comment">%</span>
+0083 <span class="comment">%                    empty      = use all samples</span>
+0084 <span class="comment">%                    fractional = the fraction of samples to use</span>
+0085 <span class="comment">%                    vector     = the samplig points to use</span>
+0086 <span class="comment">%                    cell array = each cell element is a group of sampling</span>
+0087 <span class="comment">%                                 points to average together; or, if you</span>
+0088 <span class="comment">%                                 include just a a single fractional</span>
+0089 <span class="comment">%                                 element, the worm will be fractionated</span>
+0090 <span class="comment">%                                 into these groups and each group will be</span>
+0091 <span class="comment">%                                 averaged; e.g., {1/7} produces 7 averaged</span>
+0092 <span class="comment">%                                 groups, each is 1/7 the worm</span>
+0093 <span class="comment">%</span>
+0094 <span class="comment">%       useFrames  - if not empty, for each frame, is it usable?</span>
+0095 <span class="comment">%                    The 'use' vector allows one to test replacement</span>
+0096 <span class="comment">%                    algorithms (e.g., interpolation, nearest neighbor,</span>
+0097 <span class="comment">%                    etc.), in differentiation, by comparing the results</span>
+0098 <span class="comment">%                    from real data with tests where elements of this</span>
+0099 <span class="comment">%                    data have been removed by being declared unusable.</span>
+0100 <span class="comment">%                    Note: stage movements and failed segmentation are</span>
+0101 <span class="comment">%                    ALWAYS treated as unusable.</span>
+0102 <span class="comment">%       type       - the type of algorithm to use when replacing unusable</span>
+0103 <span class="comment">%                    data samples (e.g., due to stage movements or failed</span>
+0104 <span class="comment">%                    segmentation). Differentiation is expressed as:</span>
+0105 <span class="comment">%</span>
+0106 <span class="comment">%                    dX/dT = -(X1 - X2)/(T1 - T2)</span>
+0107 <span class="comment">%</span>
+0108 <span class="comment">%                    type is a 1 or 2 letter string indicating which</span>
+0109 <span class="comment">%                    method to use when replacing an unusable X1 and/or</span>
+0110 <span class="comment">%                    X2. If type is 2 characters long:</span>
+0111 <span class="comment">%</span>
+0112 <span class="comment">%                    type(1) = X1</span>
+0113 <span class="comment">%                    type(2) = X2</span>
+0114 <span class="comment">%</span>
+0115 <span class="comment">%                    Otherwise, type(1) is used for both X1 and X2. The</span>
+0116 <span class="comment">%                    methods are as follows:</span>
+0117 <span class="comment">%</span>
+0118 <span class="comment">%                    i = linearly interpolate unusable data</span>
+0119 <span class="comment">%                        (type(2) is ignored)</span>
+0120 <span class="comment">%                    e = exact match, if data is unusable, the result is NaN</span>
+0121 <span class="comment">%                    b = backwards nearest neighbor</span>
+0122 <span class="comment">%                    f = forwards nearest neighbor</span>
+0123 <span class="comment">%                    n = nearest neighbor</span>
+0124 <span class="comment">%</span>
+0125 <span class="comment">%                    Note: the nearest-neighbor type algorithms adjust</span>
+0126 <span class="comment">%                    the time accordingly. If there is no nearest</span>
+0127 <span class="comment">%                    neighbor, differentiation results in NaN.</span>
+0128 <span class="comment">%       scales     - a vector of the scales (in seconds) to use for</span>
+0129 <span class="comment">%                    spacing X1 from X2</span>
+0130 <span class="comment">%       isSparse   - is the differentiation sparse? for each scale,</span>
+0131 <span class="comment">%                    sparse differentiation only calculates the data</span>
+0132 <span class="comment">%                    differences at multiples of that scale</span>
+0133 <span class="comment">%       offMode    - the offset mode; in other words, how should the data</span>
+0134 <span class="comment">%                    be offset relative to the differentiation?</span>
+0135 <span class="comment">%                    The modes are:</span>
+0136 <span class="comment">%</span>
+0137 <span class="comment">%                    1 = center the data between the start and end times</span>
+0138 <span class="comment">%                        of the differentiation scale</span>
+0139 <span class="comment">%                    2 = place the data at the start time of the</span>
+0140 <span class="comment">%                        differentiation scale</span>
+0141 <span class="comment">%                    3 = place the data at the end time of the</span>
+0142 <span class="comment">%                        differentiation scale</span>
+0143 <span class="comment">%</span>
+0144 <span class="comment">%       isNoisy    - should the noise be reduced? If so, differentials less</span>
+0145 <span class="comment">%                    than the sampling resolution (the Nyquist value of</span>
+0146 <span class="comment">%                    2 * diagonal microns/pixels) are set to zero.</span>
+0147 <span class="comment">%       htDirMode  - the head-tail orientation computation mode:</span>
+0148 <span class="comment">%</span>
+0149 <span class="comment">%                    1 = the direction between the tail and head endpoints</span>
+0150 <span class="comment">%                    2 = the direction between points 1/6 inwards from the</span>
+0151 <span class="comment">%                        tail and head endpoints</span>
+0152 <span class="comment">%                    3 = the mean direction between all subsequent points</span>
+0153 <span class="comment">%                        from the tail to the head endpoints</span>
+0154 <span class="comment">%                    4 = the mean direction between all subsequent points</span>
+0155 <span class="comment">%                        1/6 inwards from the tail and head endpoints</span>
+0156 <span class="comment">%</span>
+0157 <span class="comment">%                    Note: the head-tail orientation is used in signing</span>
+0158 <span class="comment">%                    velocity and computing velocity direction.</span>
+0159 <span class="comment">%       isAbsDir   - should the skeleton's velocity direction be shown as</span>
+0160 <span class="comment">%                    an absolute angle or, relative to the head-tail</span>
+0161 <span class="comment">%                    orientation at time T1?</span>
+0162 <span class="comment">%       ventralMode - the ventral side mode:</span>
+0163 <span class="comment">%</span>
+0164 <span class="comment">%                     0 = the ventral side is unknown</span>
+0165 <span class="comment">%                     1 = the ventral side is clockwise</span>
+0166 <span class="comment">%                     2 = the ventral side is anticlockwise</span>
+0167 <span class="comment">%</span>
+0168 <span class="comment">%       verbose    - verbose mode 1 shows the results in figures;</span>
+0169 <span class="comment">%                    verbose mode 2 adds the histogram;</span>
+0170 <span class="comment">%                    verbose mode 3 adds the worm path;</span>
+0171 <span class="comment">%                    verbose mode x.5 adds frame information to the figures</span>
+0172 <span class="comment">%       showData   - a vector of the data indices to show; if empty, all</span>
+0173 <span class="comment">%                    the data is shown. The indices are defined as follows:</span>
+0174 <span class="comment">%</span>
+0175 <span class="comment">%                    1  = the vulval contour's velocity</span>
+0176 <span class="comment">%                    2  = the vulval contour's velocity direction</span>
+0177 <span class="comment">%                    3  = the non-vulval contour's velocity</span>
+0178 <span class="comment">%                    4  = the non-vulval contour's velocity direction</span>
+0179 <span class="comment">%                    5  = the skeleton's velocity</span>
+0180 <span class="comment">%                    6  = the skeleton's velocity direction</span>
+0181 <span class="comment">%                    7  = the skeleton's angles' derivative</span>
+0182 <span class="comment">%                    8  = the skeleton's touching point's velocity</span>
+0183 <span class="comment">%                    9  = the skeleton's length's derivative</span>
+0184 <span class="comment">%                    10 = the contour's widths' derivative</span>
+0185 <span class="comment">%                    11 = the head area's derivative</span>
+0186 <span class="comment">%                    12 = the tail area's derivative</span>
+0187 <span class="comment">%                    13 = the vulval area's derivative</span>
+0188 <span class="comment">%                    14 = the non-vulval area's derivative</span>
+0189 <span class="comment">%</span>
+0190 <span class="comment">%   Output:</span>
+0191 <span class="comment">%       diffData   - the data differences at each scale. The first dimension</span>
+0192 <span class="comment">%                    corresponds to the input data's first dimension. The</span>
+0193 <span class="comment">%                    second dimension is the data differences at each scale.</span>
+0194 <span class="comment">%                    Multidimensional data (e.g., point coordinates) is</span>
+0195 <span class="comment">%                    presented as its vector magnitude (e.g., for point</span>
+0196 <span class="comment">%                    coordinates, the data is presented as sqrt(dX^2 + dY^2)).</span>
+0197 <span class="comment">%</span>
+0198 <span class="comment">%                    The differentiated data is as follows:</span>
+0199 <span class="comment">%</span>
+0200 <span class="comment">%                    diffData{1}  = the unscaled frame status:</span>
+0201 <span class="comment">%                                   s = segmented</span>
+0202 <span class="comment">%                                   f = segmentation failed</span>
+0203 <span class="comment">%                                   m = stage movement</span>
+0204 <span class="comment">%                                   d = dropped frame</span>
+0205 <span class="comment">%                                   u = unused frame</span>
+0206 <span class="comment">%                    diffData{2}  = the data's frames at each scale</span>
+0207 <span class="comment">%                    diffData{3}  = the vulval contour's velocity</span>
+0208 <span class="comment">%                    diffData{4}  = the vulval contour's velocity direction</span>
+0209 <span class="comment">%                    diffData{5}  = the non-vulval contour's velocity</span>
+0210 <span class="comment">%                    diffData{6}  = the non-vulval contour's velocity direction</span>
+0211 <span class="comment">%                    diffData{7}  = the skeleton's velocity</span>
+0212 <span class="comment">%                    diffData{8}  = the skeleton's velocity direction</span>
+0213 <span class="comment">%                    diffData{9}  = the skeleton's angles' derivative</span>
+0214 <span class="comment">%                    diffData{10} = the skeleton's touching point's velocity</span>
+0215 <span class="comment">%                    diffData{11} = the skeleton's length's derivative</span>
+0216 <span class="comment">%                    diffData{12} = the contour's widths' derivative</span>
+0217 <span class="comment">%                    diffData{13} = the head area's derivative</span>
+0218 <span class="comment">%                    diffData{14} = the tail area's derivative</span>
+0219 <span class="comment">%                    diffData{15} = the vulval area's derivative</span>
+0220 <span class="comment">%                    diffData{16} = the non-vulval area's derivative</span>
+0221 <span class="comment">%       startFrame - the data's starting frame</span>
+0222 <span class="comment">%       endFrame   - the data's ending frame</span>
+0223 <span class="comment">%       useSamples - the data's worm sample indices</span>
+0224 <span class="comment">%       fps        - the data's frames/seconds</span>
+0225 <span class="comment">%</span>
+0226 <span class="comment">%   See also SAVEWORMFRAMES, NORMWORMS, MULTISCALEDIFF</span>
+0227 
+0228 <span class="comment">% Where is the ventral side located?</span>
+0229 ventralMode = 0;
+0230 <span class="keyword">if</span> ~isempty(varargin)
+0231     ventralMode = varargin{1};
+0232 <span class="keyword">end</span>
+0233 
+0234 <span class="comment">% Are we showing the data?</span>
+0235 verbose = false;
+0236 <span class="keyword">if</span> length(varargin) &gt; 1
+0237     verbose = varargin{2};
+0238 <span class="keyword">end</span>
+0239 
+0240 <span class="comment">% What data are we showing?</span>
+0241 showData = [];
+0242 <span class="keyword">if</span> length(varargin) &gt; 2
+0243     showData = varargin{3};
+0244 <span class="keyword">end</span>
+0245 
+0246 <span class="comment">% Check the worm file.</span>
+0247 <span class="keyword">if</span> ~exist(wormFile, <span class="string">'file'</span>)
+0248     error(<span class="string">'multiScaleWorm:BadWormFile'</span>, [<span class="string">'Cannot find '''</span> wormFile <span class="string">''''</span>]);
+0249 <span class="keyword">end</span>
+0250 
+0251 <span class="comment">% Are the normalized blocks separate?</span>
+0252 <span class="keyword">global</span> blockFilePath;
+0253 blockFilePath = [];
+0254 load(wormFile, <span class="string">'block1'</span>);
+0255 <span class="keyword">if</span> ~exist(<span class="string">'block1'</span>, <span class="string">'var'</span>)
+0256     
+0257     <span class="comment">% Get the path from the file.</span>
+0258     blockFilePath = fileparts(wormFile);
+0259     
+0260     <span class="comment">% Use the current path.</span>
+0261     <span class="keyword">if</span> isempty(blockFilePath)
+0262         blockFilePath = pwd;
+0263     <span class="keyword">end</span>
+0264     
+0265 <span class="comment">% Clean up memory.</span>
+0266 <span class="keyword">else</span>
+0267     clear(<span class="string">'block1'</span>);
+0268 <span class="keyword">end</span>
+0269 
+0270 <span class="comment">% Determine the variables (the blocks are in separate files).</span>
+0271 <span class="keyword">if</span> ~isempty(blockFilePath)
+0272     
+0273     <span class="comment">% Load the worm information.</span>
+0274     load(wormFile, <span class="string">'SAMPLES'</span>, <span class="string">'myAviInfo'</span>, <span class="string">'pixel2MicronScale'</span>, <span class="keyword">...</span>
+0275         <span class="string">'normBlockList'</span>);
+0276     
+0277     <span class="comment">% Check the variables.</span>
+0278     varName = <span class="string">'SAMPLES'</span>;
+0279     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0280         error(<span class="string">'multiScaleWorm:BadVariable'</span>, <span class="keyword">...</span>
+0281             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0282     <span class="keyword">else</span>
+0283         samples = SAMPLES;
+0284     <span class="keyword">end</span>
+0285     varName = <span class="string">'myAviInfo'</span>;
+0286     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0287         error(<span class="string">'multiScaleWorm:BadVariable'</span>, <span class="keyword">...</span>
+0288             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0289     <span class="keyword">else</span>
+0290         fps = myAviInfo.fps;
+0291     <span class="keyword">end</span>
+0292     varName = <span class="string">'pixel2MicronScale'</span>;
+0293     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0294         error(<span class="string">'multiScaleWorm:BadVariable'</span>, <span class="keyword">...</span>
+0295             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0296     <span class="keyword">end</span>
+0297     varName = <span class="string">'normBlockList'</span>;
+0298     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0299         error(<span class="string">'multiScaleWorm:BadVariable'</span>, <span class="keyword">...</span>
+0300             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0301     <span class="keyword">end</span>
+0302     
+0303     <span class="comment">% Determine the number of blocks.</span>
+0304     blocks = length(normBlockList);
+0305     
+0306     <span class="comment">% Determine the block size.</span>
+0307     load(fullfile(blockFilePath, normBlockList{1}));
+0308     eval([<span class="string">'block = '</span> normBlockList{1} <span class="string">';'</span>]);
+0309     clear(normBlockList{1});
+0310     blockSize = size(block{1}, 2);
+0311     
+0312     <span class="comment">% Determine the first and last frame.</span>
+0313     firstFrame = 0;
+0314     load(fullfile(blockFilePath, normBlockList{end}));
+0315     eval([<span class="string">'block = '</span> normBlockList{end} <span class="string">';'</span>]);
+0316     clear(normBlockList{end});
+0317     lastBlockSize = size(block{1}, 2);
+0318     lastFrame = (blocks - 1) * blockSize + lastBlockSize - 1; 
+0319     clear(<span class="string">'block'</span>);
+0320     
+0321 <span class="comment">% Check the variables (the blocks are in a single file).</span>
+0322 <span class="keyword">else</span>
+0323     
+0324     <span class="comment">% Load the worm information.</span>
+0325     load(wormFile, <span class="string">'samples'</span>, <span class="string">'fps'</span>, <span class="string">'firstFrame'</span>, <span class="string">'lastFrame'</span>, <span class="keyword">...</span>
+0326         <span class="string">'pixel2MicronScale'</span>, <span class="string">'blockSize'</span>, <span class="string">'blocks'</span>);
+0327     
+0328     <span class="comment">% Check the variables.</span>
+0329     varName = <span class="string">'samples'</span>;
+0330     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0331         error(<span class="string">'multiScaleWorm:BadVariable'</span>, <span class="keyword">...</span>
+0332             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0333     <span class="keyword">end</span>
+0334     varName = <span class="string">'fps'</span>;
+0335     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0336         error(<span class="string">'multiScaleWorm:BadVariable'</span>, <span class="keyword">...</span>
+0337             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0338     <span class="keyword">end</span>
+0339     varName = <span class="string">'pixel2MicronScale'</span>;
+0340     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0341         error(<span class="string">'multiScaleWorm:BadVariable'</span>, <span class="keyword">...</span>
+0342             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0343     <span class="keyword">end</span>
+0344     varName = <span class="string">'firstFrame'</span>;
+0345     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0346         error(<span class="string">'multiScaleWorm:BadVariable'</span>, <span class="keyword">...</span>
+0347             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0348     <span class="keyword">end</span>
+0349     varName = <span class="string">'lastFrame'</span>;
+0350     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0351         error(<span class="string">'multiScaleWorm:BadVariable'</span>, <span class="keyword">...</span>
+0352             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0353     <span class="keyword">end</span>
+0354     varName = <span class="string">'blockSize'</span>;
+0355     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0356         error(<span class="string">'multiScaleWorm:BadVariable'</span>, <span class="keyword">...</span>
+0357             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0358     <span class="keyword">end</span>
+0359     varName = <span class="string">'blocks'</span>;
+0360     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0361         error(<span class="string">'multiScaleWorm:BadVariable'</span>, <span class="keyword">...</span>
+0362             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0363     <span class="keyword">end</span>
+0364 <span class="keyword">end</span>
+0365 
+0366 <span class="comment">% The worms must be normalized.</span>
+0367 <span class="keyword">if</span> isempty(samples)
+0368     error(<span class="string">'multiScaleWorm:NotNormalized'</span>, <span class="keyword">...</span>
+0369         [<span class="string">'The worms in  '''</span> wormFile <span class="string">''' are not normalized'</span>]);
+0370 <span class="keyword">end</span>
+0371 
+0372 <span class="comment">% Determine the samples to use.</span>
+0373 meanSamples = [];
+0374 <span class="keyword">if</span> ~isempty(useSamples)
+0375     
+0376     <span class="comment">% Determine the samples to combine.</span>
+0377     <span class="keyword">if</span> iscell(useSamples)
+0378         meanSamples = useSamples;
+0379         useSamples = [];
+0380         
+0381         <span class="comment">% Break the worm up into sample groups.</span>
+0382         <span class="keyword">if</span> length(meanSamples) == 1 &amp;&amp; isscalar(meanSamples{1}) &amp;&amp; <span class="keyword">...</span>
+0383                 meanSamples{1} ~= floor(meanSamples{1})
+0384             
+0385             <span class="comment">% How many samples in each group?</span>
+0386             numSamples = round(samples * meanSamples{1});
+0387             meanSamples = [];
+0388             useSamples = 1:samples;
+0389             startSample = 1;
+0390             endSample = numSamples;
+0391             
+0392             <span class="comment">% Create the sample groups.</span>
+0393             i = 1;
+0394             <span class="keyword">while</span> endSample &lt; samples
+0395                 meanSamples{i} = startSample:endSample;
+0396                 startSample = endSample + 1;
+0397                 endSample = startSample + numSamples - 1;
+0398                 i = i + 1;
+0399             <span class="keyword">end</span>
+0400             
+0401             <span class="comment">% Create the last sample group.</span>
+0402             meanSamples{i} = startSample:samples;
+0403             
+0404         <span class="comment">% Determine which samples we need.</span>
+0405         <span class="keyword">else</span>
+0406             
+0407             <span class="comment">% Which samples are we using?</span>
+0408             <span class="keyword">for</span> i = 1:length(meanSamples)
+0409                 useSamples = union(useSamples, meanSamples{i});
+0410             <span class="keyword">end</span>
+0411             useSamples = sort(useSamples);
+0412             
+0413             <span class="comment">% Are the samples in range?</span>
+0414             <span class="keyword">if</span> useSamples(1) &lt; 1
+0415                 error(<span class="string">'multiScaleWorm:BadSample'</span>, [<span class="string">'Sample '</span> <span class="keyword">...</span>
+0416                     num2str(useSamples(1)) <span class="string">' is out of range'</span>]);
+0417             <span class="keyword">end</span>
+0418             <span class="keyword">if</span> useSamples(end) &gt; samples
+0419                 error(<span class="string">'multiScaleWorm:BadSample'</span>, [<span class="string">'Sample '</span> <span class="keyword">...</span>
+0420                     num2str(useSamples(end)) <span class="string">' is out of range'</span>]);
+0421             <span class="keyword">end</span>
+0422             
+0423             <span class="comment">% Switch the samples to their useSample indices.</span>
+0424             <span class="keyword">for</span> i = 1:length(meanSamples)
+0425                 <span class="keyword">for</span> j = 1:length(meanSamples{i})
+0426                     meanSamples{i}(j) = <span class="keyword">...</span>
+0427                         find(meanSamples{i}(j) == useSamples, 1);
+0428                 <span class="keyword">end</span>
+0429             <span class="keyword">end</span>
+0430         <span class="keyword">end</span>
+0431         
+0432     <span class="comment">% Compute the samples to use.</span>
+0433     <span class="keyword">elseif</span> isscalar(useSamples) &amp;&amp; useSamples ~= floor(useSamples)
+0434         useSampleSize = round(samples * useSamples);
+0435         
+0436         <span class="comment">% Use the middle sample.</span>
+0437         <span class="keyword">if</span> useSampleSize == 1
+0438             useSamples = round((samples + 1) / 2);
+0439             
+0440         <span class="comment">% Compute the sample indices to use.</span>
+0441         <span class="comment">% Note: we offset then scale the existing samples so that they lie</span>
+0442         <span class="comment">% on the interval spanning 0 to 1. Then we divide this interval</span>
+0443         <span class="comment">% into the requested number of new samples where 0 and 1 are,</span>
+0444         <span class="comment">% respectively, the first and last new samples. Finally, we</span>
+0445         <span class="comment">% de-scale and de-offset the interval to obtain the indices to</span>
+0446         <span class="comment">% choose from the exisiting samples.</span>
+0447         <span class="keyword">else</span>
+0448             useSamples = round((samples - 1) * <span class="keyword">...</span>
+0449                 ((0:(useSampleSize - 1)) / (useSampleSize - 1))) + 1;
+0450         <span class="keyword">end</span>
+0451     <span class="keyword">end</span>
+0452         
+0453 <span class="keyword">end</span>
+0454 
+0455 <span class="comment">% Check the starting frame.</span>
+0456 <span class="keyword">if</span> isempty(startFrame)
+0457     startFrame = firstFrame;
+0458 <span class="keyword">elseif</span> startFrame ~= floor(startFrame)
+0459     startFrame = round(startFrame * fps);
+0460 <span class="keyword">end</span>
+0461 <span class="keyword">if</span> startFrame &lt; firstFrame
+0462     error(<span class="string">'multiScaleWorm:StartFrame'</span>, [<span class="string">'The requested starting frame '</span> <span class="keyword">...</span>
+0463         num2str(startFrame) <span class="string">' is less than the first frame '</span> <span class="keyword">...</span>
+0464         num2str(firstFrame) <span class="string">' in '''</span> wormFile <span class="string">''''</span>]);
+0465 <span class="keyword">elseif</span> startFrame &gt; lastFrame
+0466     error(<span class="string">'multiScaleWorm:StartFrame'</span>, [<span class="string">'The requested starting frame '</span> <span class="keyword">...</span>
+0467         num2str(startFrame) <span class="string">' is greater than the last frame '</span> <span class="keyword">...</span>
+0468         num2str(lastFrame) <span class="string">' in '''</span> wormFile <span class="string">''''</span>]);
+0469 <span class="keyword">end</span>
+0470 
+0471 <span class="comment">% Check the ending frame.</span>
+0472 <span class="keyword">if</span> isempty(endFrame)
+0473     endFrame = lastFrame;
+0474 <span class="keyword">elseif</span> endFrame ~= floor(endFrame)
+0475     endFrame = round(endFrame * fps);
+0476 <span class="keyword">end</span>
+0477 <span class="keyword">if</span> endFrame &lt; firstFrame
+0478     error(<span class="string">'multiScaleWorm:EndFrame'</span>, [<span class="string">'The requested ending frame '</span> <span class="keyword">...</span>
+0479         num2str(endFrame) <span class="string">' is less than the first frame '</span> <span class="keyword">...</span>
+0480         num2str(firstFrame) <span class="string">' in '''</span> wormFile <span class="string">''''</span>]);
+0481 <span class="keyword">elseif</span> endFrame &gt; lastFrame
+0482     error(<span class="string">'multiScaleWorm:EndFrame'</span>, [<span class="string">'The requested ending frame '</span> <span class="keyword">...</span>
+0483         num2str(endFrame) <span class="string">' is greater than the last frame '</span> <span class="keyword">...</span>
+0484         num2str(lastFrame) <span class="string">' in '''</span> wormFile <span class="string">''''</span>]);
+0485 <span class="keyword">end</span>
+0486 
+0487 <span class="comment">% Correct the data types.</span>
+0488 startFrame = double(startFrame);
+0489 endFrame = double(endFrame);
+0490 samples = double(samples);
+0491 fps = double(fps);
+0492 firstFrame = double(firstFrame);
+0493 lastFrame = double(lastFrame);
+0494 blockSize = double(blockSize);
+0495 blocks = double(blocks);
+0496 
+0497 <span class="comment">% Are we interpolating the missing data?</span>
+0498 isInterp = false;
+0499 <span class="keyword">if</span> lower(type(1)) == <span class="string">'i'</span>
+0500     isInterp = true;
+0501     type = <span class="string">'ee'</span>;
+0502 <span class="keyword">end</span>
+0503 
+0504 <span class="comment">% Compute the scales.</span>
+0505 scales = round(scales * fps);
+0506 
+0507 <span class="comment">% Check the scales.</span>
+0508 isAtT1 = false;
+0509 <span class="keyword">if</span> isAtT1
+0510     badScalesMask = scales &gt;= endFrame - firstFrame + 1;
+0511 <span class="keyword">else</span>
+0512     badScalesMask = scales &gt;= lastFrame - startFrame + 1;
+0513 <span class="keyword">end</span>
+0514 <span class="keyword">if</span> any(badScalesMask)
+0515     
+0516     <span class="comment">% Remove scales that are too large.</span>
+0517     badScales = scales(badScalesMask);
+0518     scales(badScalesMask) = [];
+0519     <span class="keyword">for</span> i = 1:length(badScales)
+0520         warning(<span class="string">'multiScaleWorm:BadScale'</span>, [<span class="string">'The %.3f second '</span> <span class="keyword">...</span>
+0521             <span class="string">'differentiation cannot be computed as their are an '</span> <span class="keyword">...</span>
+0522             <span class="string">'insufficient number of frames'</span>], badScales(i) / fps);
+0523     <span class="keyword">end</span>
+0524 <span class="keyword">end</span>
+0525 
+0526 <span class="comment">% There are no scales to compute.</span>
+0527 <span class="keyword">if</span> isempty(scales)
+0528     warning(<span class="string">'multiScaleWorm:NoScales'</span>, <span class="keyword">...</span>
+0529         <span class="string">'There are no scales to differentiate'</span>);
+0530     diffData = [];
+0531     <span class="keyword">return</span>;
+0532 <span class="keyword">end</span>
+0533 
+0534 <span class="comment">% Determine the method for computing orientation.</span>
+0535 <span class="keyword">switch</span> htDirMode
+0536     
+0537     <span class="comment">% Use the head and tail end points.</span>
+0538     <span class="keyword">case</span> 1,
+0539         htDirSamples = fliplr([1 samples]);
+0540         <span class="keyword">if</span> ~isempty(useSamples)
+0541             <span class="keyword">if</span> ~any(useSamples == htDirSamples(1)) || <span class="keyword">...</span>
+0542                     ~any(useSamples == htDirSamples(end))
+0543                 htDirSamples = fliplr([1 length(useSamples)]);
+0544                 warning(<span class="string">'multiScaleWorm:Orientation'</span>, <span class="keyword">...</span>
+0545                     [<span class="string">'The samples necessary to compute the head-to-tail '</span> <span class="keyword">...</span>
+0546                     <span class="string">'orientation are not available! Using points '</span> <span class="keyword">...</span>
+0547                     num2str(min(useSamples)) <span class="string">' and '</span> <span class="keyword">...</span>
+0548                     num2str(max(useSamples)) <span class="string">' instead.'</span>]);
+0549                 
+0550                 <span class="comment">% Convert the samples to their subsample index.</span>
+0551             <span class="keyword">else</span>
+0552                 <span class="keyword">for</span> i = 1:length(htDirSamples)
+0553                     htDirSamples(i) = find(htDirSamples(i) == useSamples);
+0554                 <span class="keyword">end</span>
+0555             <span class="keyword">end</span>
+0556         <span class="keyword">end</span>
+0557         
+0558     <span class="comment">% Use the head and tail start points.</span>
+0559     <span class="keyword">case</span> 2,
+0560         htPoint = ceil(samples / 6);
+0561         htDirSamples = fliplr([htPoint, samples - htPoint + 1]);
+0562         <span class="keyword">if</span> ~isempty(useSamples)
+0563             <span class="keyword">if</span> ~any(useSamples == htDirSamples(1)) || <span class="keyword">...</span>
+0564                     ~any(useSamples == htDirSamples(end))
+0565                 htDirSamples = fliplr([1 length(useSamples)]);
+0566                 warning(<span class="string">'multiScaleWorm:Orientation'</span>, <span class="keyword">...</span>
+0567                     [<span class="string">'The samples necessary to compute the head-to-tail '</span> <span class="keyword">...</span>
+0568                     <span class="string">'orientation are not available! Using points '</span> <span class="keyword">...</span>
+0569                     num2str(min(useSamples)) <span class="string">' and '</span> <span class="keyword">...</span>
+0570                     num2str(max(useSamples)) <span class="string">' instead.'</span>]);
+0571                 
+0572                 <span class="comment">% Convert the samples to their subsample index.</span>
+0573             <span class="keyword">else</span>
+0574                 <span class="keyword">for</span> i = 1:length(htDirSamples)
+0575                     htDirSamples(i) = find(htDirSamples(i) == useSamples);
+0576                 <span class="keyword">end</span>
+0577             <span class="keyword">end</span>
+0578         <span class="keyword">end</span>
+0579         
+0580     <span class="comment">% Use the average orientation of the worm.</span>
+0581     <span class="keyword">case</span> 3,
+0582         htDirSamples = fliplr(1:samples);
+0583         <span class="keyword">if</span> ~isempty(useSamples)
+0584             <span class="keyword">if</span> ~any(useSamples == htDirSamples(1)) || <span class="keyword">...</span>
+0585                     ~any(useSamples == htDirSamples(end))
+0586                 htDirSamples = fliplr(1:length(useSamples));
+0587                 warning(<span class="string">'multiScaleWorm:Orientation'</span>, <span class="keyword">...</span>
+0588                     [<span class="string">'The samples necessary to compute the head-to-tail '</span> <span class="keyword">...</span>
+0589                     <span class="string">'orientation are not available! Using all available '</span> <span class="keyword">...</span>
+0590                     <span class="string">'points from '</span> <span class="keyword">...</span>
+0591                     num2str(min(useSamples)) <span class="string">' to '</span> <span class="keyword">...</span>
+0592                     num2str(max(useSamples)) <span class="string">' instead.'</span>]);
+0593                 
+0594                 <span class="comment">% Convert the samples to their subsample index.</span>
+0595             <span class="keyword">else</span>
+0596                 <span class="keyword">for</span> i = 1:length(htDirSamples)
+0597                     htDirSamples(i) = find(htDirSamples(i) == useSamples);
+0598                 <span class="keyword">end</span>
+0599             <span class="keyword">end</span>
+0600         <span class="keyword">end</span>
+0601         
+0602     <span class="comment">% Use the average orientation of the worm midbody.</span>
+0603     <span class="keyword">otherwise</span>,
+0604         htPoint = ceil(samples / 6);
+0605         htDirSamples = fliplr(htPoint:(samples - htPoint + 1));
+0606         <span class="keyword">if</span> ~isempty(useSamples)
+0607             <span class="keyword">if</span> ~any(useSamples == htDirSamples(1)) || <span class="keyword">...</span>
+0608                     ~any(useSamples == htDirSamples(end))
+0609                 htDirSamples = fliplr(1:length(useSamples));
+0610                 warning(<span class="string">'multiScaleWorm:Orientation'</span>, <span class="keyword">...</span>
+0611                     [<span class="string">'The samples necessary to compute the head-to-tail '</span> <span class="keyword">...</span>
+0612                     <span class="string">'orientation are not available! Using all available '</span> <span class="keyword">...</span>
+0613                     <span class="string">'points from '</span> <span class="keyword">...</span>
+0614                     num2str(min(useSamples)) <span class="string">' to '</span> <span class="keyword">...</span>
+0615                     num2str(max(useSamples)) <span class="string">' instead.'</span>]);
+0616                 
+0617                 <span class="comment">% Convert the samples to their subsample index.</span>
+0618             <span class="keyword">else</span>
+0619                 <span class="keyword">for</span> i = 1:length(htDirSamples)
+0620                     htDirSamples(i) = find(htDirSamples(i) == useSamples);
+0621                 <span class="keyword">end</span>
+0622             <span class="keyword">end</span>
+0623         <span class="keyword">end</span>
+0624 <span class="keyword">end</span>
+0625 
+0626 <span class="comment">% Pre-allocate memory.</span>
+0627 noise = 0; <span class="comment">% the noise threshold</span>
+0628 <span class="keyword">if</span> isNoisy
+0629     noise = 2 * sqrt(sum(pixel2MicronScale .^ 2));
+0630 <span class="keyword">end</span>
+0631 dataSize = 16;
+0632 diffData = cell(dataSize,1);
+0633 <span class="keyword">for</span> i = 2:dataSize
+0634     diffData{i} = cell(length(scales),1);
+0635 <span class="keyword">end</span>
+0636 
+0637 <span class="comment">% Differentiate the sparse data.</span>
+0638 blockInfo = []; <span class="comment">% the information for the loaded blocks</span>
+0639 <span class="keyword">if</span> isSparse
+0640 
+0641     <span class="comment">% Load the data.</span>
+0642     <span class="keyword">if</span> isAtT1
+0643         startScaleFrames = max(scales(scales &lt;= startFrame));
+0644         <span class="keyword">if</span> isempty(startScaleFrames)
+0645             startScaleFrames = 0;
+0646         <span class="keyword">end</span>
+0647         endScaleFrames = 0;
+0648     <span class="keyword">else</span>
+0649         startScaleFrames = 0;
+0650         endScaleFrames = max(scales(scales &lt;= (lastFrame - endFrame)));
+0651         <span class="keyword">if</span> isempty(endScaleFrames)
+0652             endScaleFrames = 0;
+0653         <span class="keyword">end</span>
+0654     <span class="keyword">end</span>
+0655     [dataInfo blockInfo] = <a href="#_sub2" class="code" title="subfunction [dataInfo blockInfo] = loadData(wormFile, startFrame, ">loadData</a>(wormFile, <span class="keyword">...</span>
+0656         startFrame - startScaleFrames, endFrame + endScaleFrames, <span class="keyword">...</span>
+0657         firstFrame, blocks, blockSize, blockInfo, useSamples, isInterp);
+0658     
+0659     <span class="comment">% Which frames can we use?</span>
+0660     frameData = dataInfo.data{1}; <span class="comment">% the frame data</span>
+0661     <span class="keyword">if</span> ~isempty(useFrames)
+0662         useDataFrames = useFrames((dataInfo.startUseFrame - <span class="keyword">...</span>
+0663             startFrame + 1):(dataInfo.endUseFrame - startFrame + 1));
+0664         frameData(~useDataFrames) = <span class="string">'u'</span>;
+0665     <span class="keyword">end</span>
+0666     useDataFrames = frameData == <span class="string">'s'</span>;
+0667     frameData = frameData( <span class="keyword">...</span>
+0668         (dataInfo.startDataFrameI + startScaleFrames): <span class="keyword">...</span>
+0669         (dataInfo.endDataFrameI - endScaleFrames));
+0670     
+0671     <span class="comment">% Store the frame data.</span>
+0672     diffData{1} = frameData;
+0673     
+0674     <span class="comment">% Differentiate the normalized worm data.</span>
+0675     [splitDiffData diffDataUsedFramesI] = <span class="keyword">...</span>
+0676         <a href="../../../SegWorm/Util/multiScaleDiff.html" class="code" title="function [diffData usedFramesI] = multiScaleDiff(data, use, startI,endI, rate, type, scales, isSparse, isAtT1)">multiScaleDiff</a>(dataInfo.data(2:end), useDataFrames, <span class="keyword">...</span>
+0677         dataInfo.startDataFrameI + startScaleFrames, <span class="keyword">...</span>
+0678         dataInfo.endDataFrameI - endScaleFrames, 1 / fps, type, scales, <span class="keyword">...</span>
+0679         isSparse, isAtT1);
+0680 
+0681     <span class="comment">% Is there any differentiated data?</span>
+0682     <span class="keyword">if</span> isempty(diffDataUsedFramesI)
+0683         <span class="keyword">return</span>;
+0684     <span class="keyword">end</span>
+0685     
+0686     <span class="comment">% Store the data's frames at each scale.</span>
+0687     <span class="keyword">for</span> j = 1:length(scales)
+0688         <span class="keyword">if</span> ~isempty(diffDataUsedFramesI{j})
+0689             diffData{2}{j} = diffDataUsedFramesI{j} + <span class="keyword">...</span>
+0690                 (dataInfo.startUseFrame - 1);
+0691         <span class="keyword">end</span>
+0692     <span class="keyword">end</span>
+0693     
+0694     <span class="comment">% Compute the data groups.</span>
+0695     <span class="keyword">if</span> ~isempty(meanSamples)
+0696         <span class="keyword">for</span> j = 1:length(splitDiffData)
+0697             <span class="keyword">for</span> k = 1:length(scales)
+0698                 <span class="keyword">if</span> ~isempty(diffDataUsedFramesI{k})
+0699                     <span class="keyword">if</span> size(splitDiffData{j}{k}, 1) &gt; 1
+0700                         splitDiffData{j}{k} = <span class="keyword">...</span>
+0701                             <a href="#_sub4" class="code" title="subfunction newData = meanData(data, meanSamples)">meanData</a>(splitDiffData{j}{k}, meanSamples);
+0702                     <span class="keyword">end</span>
+0703                 <span class="keyword">end</span>
+0704             <span class="keyword">end</span>
+0705         <span class="keyword">end</span>
+0706     <span class="keyword">end</span>
+0707     
+0708     <span class="comment">% Merge the split data.</span>
+0709     dataCellOff = 0;
+0710     diffDataOff = 3;
+0711     block = blockInfo.blocks{1};
+0712     <span class="keyword">for</span> j = 3:(length(block) + 1)
+0713         
+0714         <span class="comment">% Store 2-dimensional data.</span>
+0715         <span class="keyword">if</span> ndims(block{j - 1}) &lt;= 2
+0716             
+0717             <span class="comment">% Advance the split data.</span>
+0718             dataCellOff = dataCellOff + 1;
+0719                 
+0720             <span class="comment">% Store the new data.</span>
+0721             <span class="keyword">for</span> k = 1:length(scales)
+0722                 
+0723                 <span class="comment">% Is there any differentiated data?</span>
+0724                 <span class="keyword">if</span> isempty(diffDataUsedFramesI{k})
+0725                     <span class="keyword">continue</span>;
+0726                 <span class="keyword">end</span>
+0727         
+0728                 <span class="comment">% Store the new data.</span>
+0729                 splitDiffData{dataCellOff}{k} <span class="keyword">...</span>
+0730                     (abs(splitDiffData{dataCellOff}{k}) &lt; noise) = 0;
+0731                 diffData{diffDataOff}{k} = splitDiffData{dataCellOff}{k};
+0732             <span class="keyword">end</span>
+0733             
+0734             <span class="comment">% Advance the merged data.</span>
+0735             diffDataOff = diffDataOff + 1;
+0736             
+0737         <span class="comment">% Compute the magnitude for multi-dimensional data, then store.</span>
+0738         <span class="keyword">else</span>
+0739             
+0740             <span class="comment">% Compute the magnitude.</span>
+0741             <span class="keyword">for</span> k = 1:length(scales)
+0742                 
+0743                 <span class="comment">% Is there any differentiated data?</span>
+0744                 <span class="keyword">if</span> isempty(diffDataUsedFramesI{k})
+0745                     <span class="keyword">continue</span>;
+0746                 <span class="keyword">end</span>
+0747         
+0748                 <span class="comment">% Compute the magnitude.</span>
+0749                 splitDiffData{dataCellOff + 1}{k} <span class="keyword">...</span>
+0750                     (abs(splitDiffData{dataCellOff + 1}{k}) &lt; noise) = 0;
+0751                 diffData{diffDataOff}{k} = <span class="keyword">...</span>
+0752                     splitDiffData{dataCellOff + 1}{k} .^ 2;
+0753                 <span class="keyword">for</span> dim = 2:size(block{j - 1}, 2)
+0754                     splitDiffData{dataCellOff + dim}{k} <span class="keyword">...</span>
+0755                         (abs(splitDiffData{dataCellOff + dim}{k}) &lt; <span class="keyword">...</span>
+0756                         noise) = 0;
+0757                     diffData{diffDataOff}{k} = <span class="keyword">...</span>
+0758                         diffData{diffDataOff}{k} + <span class="keyword">...</span>
+0759                         splitDiffData{dataCellOff + dim}{k} .^ 2;
+0760                 <span class="keyword">end</span>
+0761                 diffData{diffDataOff}{k} = sqrt(diffData{diffDataOff}{k});
+0762                 
+0763                 <span class="comment">% Compute the direction.</span>
+0764                 <span class="keyword">if</span> size(block{j - 1}, 2) == 2
+0765                     diffData{diffDataOff + 1}{k} = <span class="keyword">...</span>
+0766                         atan2(splitDiffData{dataCellOff + 2}{k}, <span class="keyword">...</span>
+0767                         splitDiffData{dataCellOff + 1}{k}) * 180 / pi;
+0768                     
+0769                     <span class="comment">% Sign the magnitude.</span>
+0770                     <span class="keyword">if</span> length(useSamples) ~= 1
+0771                         
+0772                         <span class="comment">% Compute the initial sample orientation.</span>
+0773                         htDirX = <span class="keyword">...</span>
+0774                             mean(diff(dataInfo.data{dataCellOff + 2} <span class="keyword">...</span>
+0775                             (htDirSamples,diffDataUsedFramesI{k}(1,:)), <span class="keyword">...</span>
+0776                             1, 1), 1);
+0777                         htDirY = <span class="keyword">...</span>
+0778                             mean(diff(dataInfo.data{dataCellOff + 3} <span class="keyword">...</span>
+0779                             (htDirSamples,diffDataUsedFramesI{k}(1,:)), <span class="keyword">...</span>
+0780                             1, 1), 1);
+0781                         htDir = atan2(htDirY, htDirX) * 180 / pi;
+0782                         
+0783                         <span class="comment">% Compute the differences in direction.</span>
+0784                         diffDir = zeros(size(diffData{diffDataOff}{k}));
+0785                         <span class="keyword">for</span> l = 1:size(diffDir, 1)
+0786                             diffDir(l,:) = htDir - <span class="keyword">...</span>
+0787                                 diffData{diffDataOff + 1}{k}(l,:);
+0788                         <span class="keyword">end</span>
+0789                         wrap = diffDir &gt;= 180;
+0790                         diffDir(wrap) = diffDir(wrap) - 360;
+0791                         wrap = diffDir &lt;= -180;
+0792                         diffDir(wrap) = diffDir(wrap) + 360;
+0793                         
+0794                         <span class="comment">% Are we computing the absolute direction?</span>
+0795                         <span class="keyword">if</span> ~isAbsDir
+0796                             velocityDir = diffDir;
+0797                             <span class="keyword">if</span> ventralMode &lt; 2 <span class="comment">% + = dorsal direction</span>
+0798                                 velocityDir = -velocityDir;
+0799                             <span class="keyword">end</span>
+0800                             diffData{diffDataOff + 1}{k} = velocityDir;
+0801                         <span class="keyword">end</span>
+0802                         
+0803                         <span class="comment">% Sign the magnitude.</span>
+0804                         negDir = abs(diffDir) &gt; 90;
+0805                         diffData{diffDataOff}{k}(negDir) = <span class="keyword">...</span>
+0806                             -diffData{diffDataOff}{k}(negDir);
+0807                         
+0808                     <span class="keyword">end</span>
+0809                 <span class="keyword">end</span>
+0810             <span class="keyword">end</span>
+0811             
+0812             <span class="comment">% Advance.</span>
+0813             dataCellOff = dataCellOff + size(block{j - 1}, 2);
+0814             <span class="keyword">if</span> size(block{j - 1}, 2) == 2
+0815                 diffDataOff = diffDataOff + 2;
+0816             <span class="keyword">else</span>
+0817                 diffDataOff = diffDataOff + 1;
+0818             <span class="keyword">end</span>
+0819         <span class="keyword">end</span>
+0820     <span class="keyword">end</span>
+0821 
+0822 <span class="comment">% Differentiate the data, in blocks, then merge.</span>
+0823 <span class="keyword">else</span>
+0824     startBlockI = <span class="keyword">...</span><span class="comment"> % the starting block's index</span>
+0825         floor((startFrame - firstFrame) / blockSize) + 1;
+0826     endBlockI = <span class="keyword">...</span><span class="comment"> % the ending block's index</span>
+0827         floor((endFrame - firstFrame) / blockSize) + 1;
+0828     <span class="keyword">for</span> i = startBlockI:endBlockI
+0829         
+0830         <span class="comment">% Compute the data offset in the starting block.</span>
+0831         <span class="keyword">if</span> i == startBlockI
+0832             startDataBlockOffI = startFrame - firstFrame + 1 - <span class="keyword">...</span>
+0833                 ((i - 1) * blockSize);
+0834         <span class="keyword">else</span>
+0835             startDataBlockOffI = 1;
+0836         <span class="keyword">end</span>
+0837         
+0838         <span class="comment">% Compute the data offset in the ending block.</span>
+0839         <span class="keyword">if</span> i == endBlockI
+0840             endDataBlockOffI = endFrame - firstFrame + 1 - <span class="keyword">...</span>
+0841                 ((i - 1) * blockSize);
+0842         <span class="keyword">else</span>
+0843             endDataBlockOffI = blockSize;
+0844         <span class="keyword">end</span>
+0845         
+0846         <span class="comment">% Compute the start and end frames.</span>
+0847         startDataBlockFrame = startDataBlockOffI + <span class="keyword">...</span>
+0848             ((i - 1) * blockSize) + firstFrame - 1;
+0849         endDataBlockFrame = endDataBlockOffI + ((i - 1) * blockSize) <span class="keyword">...</span>
+0850             + firstFrame - 1;
+0851         
+0852         <span class="comment">% Load the data.</span>
+0853         <span class="keyword">if</span> isAtT1
+0854             startScaleFrames = <span class="keyword">...</span>
+0855                 max(scales(scales &lt;= startDataBlockFrame - firstFrame));
+0856             <span class="keyword">if</span> isempty(startScaleFrames)
+0857                 startScaleFrames = 0;
+0858             <span class="keyword">end</span>
+0859             endScaleFrames = 0;
+0860         <span class="keyword">else</span>
+0861             startScaleFrames = 0;
+0862             endScaleFrames = <span class="keyword">...</span>
+0863                 max(scales(scales &lt;= (lastFrame - endDataBlockFrame)));
+0864             <span class="keyword">if</span> isempty(endScaleFrames)
+0865                 endScaleFrames = 0;
+0866             <span class="keyword">end</span>
+0867         <span class="keyword">end</span>
+0868         [dataInfo blockInfo] = <a href="#_sub2" class="code" title="subfunction [dataInfo blockInfo] = loadData(wormFile, startFrame, ">loadData</a>(wormFile, <span class="keyword">...</span>
+0869             startDataBlockFrame - startScaleFrames, <span class="keyword">...</span>
+0870             endDataBlockFrame + endScaleFrames, <span class="keyword">...</span>
+0871             firstFrame, blocks, blockSize, blockInfo, useSamples, isInterp);
+0872         
+0873         <span class="comment">% Which frames can we use?</span>
+0874         blockFrameData = dataInfo.data{1}; <span class="comment">% the frame data for the block</span>
+0875         <span class="keyword">if</span> ~isempty(useFrames)
+0876             useBlockFrames = useFrames((dataInfo.startUseFrame - <span class="keyword">...</span>
+0877                 startFrame + 1):(dataInfo.endUseFrame - startFrame + 1));
+0878             blockFrameData(~useBlockFrames) = <span class="string">'u'</span>;
+0879         <span class="keyword">end</span>
+0880         useBlockFrames = blockFrameData == <span class="string">'s'</span>;
+0881         blockFrameData = blockFrameData( <span class="keyword">...</span>
+0882             (dataInfo.startDataFrameI + startScaleFrames): <span class="keyword">...</span>
+0883             (dataInfo.endDataFrameI - endScaleFrames));
+0884         
+0885         <span class="comment">% Merge the frame data.</span>
+0886         diffData{1}((end + 1):(end + length(blockFrameData))) = <span class="keyword">...</span>
+0887             blockFrameData;
+0888         
+0889         <span class="comment">% Differentiate the normalized worm data.</span>
+0890         [blockDiffData blockDiffDataUsedFramesI] = <span class="keyword">...</span>
+0891             <a href="../../../SegWorm/Util/multiScaleDiff.html" class="code" title="function [diffData usedFramesI] = multiScaleDiff(data, use, startI,endI, rate, type, scales, isSparse, isAtT1)">multiScaleDiff</a>(dataInfo.data(2:end), useBlockFrames, <span class="keyword">...</span>
+0892             dataInfo.startDataFrameI + startScaleFrames, <span class="keyword">...</span>
+0893             dataInfo.endDataFrameI - endScaleFrames, 1 / fps, type, <span class="keyword">...</span>
+0894             scales, isSparse, isAtT1);
+0895         
+0896         <span class="comment">% Was there any data to differentiate?</span>
+0897         <span class="keyword">if</span> isempty(blockDiffDataUsedFramesI)
+0898             <span class="keyword">continue</span>;
+0899         <span class="keyword">end</span>
+0900             
+0901         <span class="comment">% Store the data's frames at each scale.</span>
+0902         <span class="keyword">for</span> j = 1:length(scales)
+0903             <span class="keyword">if</span> ~isempty(blockDiffDataUsedFramesI{j})
+0904                 newData = blockDiffDataUsedFramesI{j};
+0905                 diffData{2}{j}(:,(end + 1):(end + size(newData, 2))) = <span class="keyword">...</span>
+0906                     newData + (dataInfo.startUseFrame - 1);
+0907             <span class="keyword">end</span>
+0908         <span class="keyword">end</span>
+0909         
+0910         <span class="comment">% Compute the data groups.</span>
+0911         <span class="keyword">if</span> ~isempty(meanSamples)
+0912             <span class="keyword">for</span> j = 1:length(blockDiffData)
+0913                 <span class="keyword">for</span> k = 1:length(scales)
+0914                     <span class="keyword">if</span> ~isempty(blockDiffDataUsedFramesI{k})
+0915                         <span class="keyword">if</span> size(blockDiffData{j}{k}, 1) &gt; 1
+0916                             blockDiffData{j}{k} = <span class="keyword">...</span>
+0917                                 <a href="#_sub4" class="code" title="subfunction newData = meanData(data, meanSamples)">meanData</a>(blockDiffData{j}{k}, meanSamples);
+0918                         <span class="keyword">end</span>
+0919                     <span class="keyword">end</span>
+0920                 <span class="keyword">end</span>
+0921             <span class="keyword">end</span>
+0922         <span class="keyword">end</span>
+0923     
+0924         <span class="comment">% Merge the block of split data.</span>
+0925         dataCellOff = 0;
+0926         diffDataOff = 3;
+0927         block = blockInfo.blocks{1};
+0928         <span class="keyword">for</span> j = 3:(length(block) + 1)
+0929             
+0930             <span class="comment">% Merge 2-dimensional data.</span>
+0931             <span class="keyword">if</span> ndims(block{j - 1}) &lt;= 2
+0932                 
+0933                 <span class="comment">% Advance the split data.</span>
+0934                 dataCellOff = dataCellOff + 1;
+0935                 
+0936                 <span class="comment">% Merge the new data.</span>
+0937                 <span class="keyword">for</span> k = 1:length(scales)
+0938                     
+0939                     <span class="comment">% Is there any differentiated data?</span>
+0940                     <span class="keyword">if</span> isempty(blockDiffDataUsedFramesI{k})
+0941                         <span class="keyword">continue</span>;
+0942                     <span class="keyword">end</span>
+0943                     
+0944                     <span class="comment">% Merge the new data.</span>
+0945                     newData = blockDiffData{dataCellOff}{k};
+0946                     newData(abs(newData) &lt; noise) = 0;
+0947                     diffData{diffDataOff}{k} <span class="keyword">...</span>
+0948                         (:,(end + 1):(end + size(newData, 2))) = newData;
+0949                 <span class="keyword">end</span>
+0950                 
+0951                 <span class="comment">% Advance the merged data.</span>
+0952                 diffDataOff = diffDataOff + 1;
+0953             
+0954             <span class="comment">% Compute the magnitude for multi-dimensional data, then merge.</span>
+0955             <span class="keyword">else</span>
+0956                 
+0957                 <span class="comment">% Compute the magnitude and merge the new data.</span>
+0958                 <span class="keyword">for</span> k = 1:length(scales)
+0959                     
+0960                     <span class="comment">% Is there any differentiated data?</span>
+0961                     <span class="keyword">if</span> isempty(blockDiffDataUsedFramesI{k})
+0962                         <span class="keyword">continue</span>;
+0963                     <span class="keyword">end</span>
+0964                     
+0965                     <span class="comment">% Compute the magnitude</span>
+0966                     blockDiffData{dataCellOff + 1}{k} <span class="keyword">...</span>
+0967                         (abs(blockDiffData{dataCellOff + 1}{k}) &lt; <span class="keyword">...</span>
+0968                         noise) = 0;
+0969                     newData = blockDiffData{dataCellOff + 1}{k} .^ 2;
+0970                     <span class="keyword">for</span> dim = 2:size(block{j - 1}, 2)
+0971                         blockDiffData{dataCellOff + 1}{k} <span class="keyword">...</span>
+0972                             (abs(blockDiffData{dataCellOff + dim}{k}) &lt; <span class="keyword">...</span>
+0973                             noise) = 0;
+0974                         newData = newData + <span class="keyword">...</span>
+0975                             blockDiffData{dataCellOff + dim}{k} .^ 2;
+0976                     <span class="keyword">end</span>
+0977                     newData = sqrt(newData);
+0978                     
+0979                     <span class="comment">% Compute the direction.</span>
+0980                     <span class="keyword">if</span> size(block{j - 1}, 2) == 2
+0981                         diffData{diffDataOff + 1}{k} <span class="keyword">...</span>
+0982                             (:,(end + 1):(end + size(newData, 2))) = <span class="keyword">...</span>
+0983                             atan2(blockDiffData{dataCellOff + 2}{k}, <span class="keyword">...</span>
+0984                             blockDiffData{dataCellOff + 1}{k}) * 180 / pi;
+0985                         
+0986                         <span class="comment">% Sign the magnitude.</span>
+0987                         <span class="keyword">if</span> length(useSamples) ~= 1
+0988                             
+0989                             <span class="comment">% Compute the initial sample orientation.</span>
+0990                             htDirX = <span class="keyword">...</span>
+0991                                 mean(diff( <span class="keyword">...</span>
+0992                                 dataInfo.data{dataCellOff + 2} <span class="keyword">...</span>
+0993                                 (htDirSamples, <span class="keyword">...</span>
+0994                                 blockDiffDataUsedFramesI{k}(1,:)), <span class="keyword">...</span>
+0995                                 1, 1), 1);
+0996                             htDirY = <span class="keyword">...</span>
+0997                                 mean(diff( <span class="keyword">...</span>
+0998                                 dataInfo.data{dataCellOff + 3} <span class="keyword">...</span>
+0999                                 (htDirSamples, <span class="keyword">...</span>
+1000                                 blockDiffDataUsedFramesI{k}(1,:)), <span class="keyword">...</span>
+1001                                 1, 1), 1);
+1002                             htDir = atan2(htDirY, htDirX) * 180 / pi;
+1003                             
+1004                             <span class="comment">% Compute the differences in direction.</span>
+1005                             diffDir = zeros(size(newData));
+1006                             <span class="keyword">for</span> l = 1:size(diffDir, 1)
+1007                                 diffDir(l,:) = htDir - <span class="keyword">...</span>
+1008                                     diffData{diffDataOff + 1}{k} <span class="keyword">...</span>
+1009                                     (l,(end - size(newData, 2) + 1):end);
+1010                             <span class="keyword">end</span>
+1011                             wrap = diffDir &gt;= 180;
+1012                             diffDir(wrap) = diffDir(wrap) - 360;
+1013                             wrap = diffDir &lt;= -180;
+1014                             diffDir(wrap) = diffDir(wrap) + 360;
+1015                             
+1016                             <span class="comment">% Are we computing the absolute direction?</span>
+1017                             <span class="keyword">if</span> ~isAbsDir
+1018                                 velocityDir = diffDir;
+1019                                 <span class="keyword">if</span> ventralMode &lt; 2 <span class="comment">% + = dorsal direction</span>
+1020                                     velocityDir = -velocityDir;
+1021                                 <span class="keyword">end</span>
+1022                                 diffData{diffDataOff + 1}{k} <span class="keyword">...</span>
+1023                                     (:,(end - size(newData, 2) + 1):end) = <span class="keyword">...</span>
+1024                                     velocityDir;
+1025                             <span class="keyword">end</span>
+1026                             
+1027                             <span class="comment">% Sign the magnitude.</span>
+1028                             negDir = abs(diffDir) &gt; 90;
+1029                             newData(negDir) = -newData(negDir);
+1030                         <span class="keyword">end</span>
+1031                     <span class="keyword">end</span>
+1032 
+1033                     <span class="comment">% Store the signed magnitude.</span>
+1034                     diffData{diffDataOff}{k}(:,(end + 1): <span class="keyword">...</span>
+1035                         (end + size(newData, 2))) = newData;
+1036                 <span class="keyword">end</span>
+1037                 
+1038                 <span class="comment">% Advance.</span>
+1039                 dataCellOff = dataCellOff + size(block{j - 1}, 2);
+1040                 <span class="keyword">if</span> size(block{j - 1}, 2) == 2
+1041                     diffDataOff = diffDataOff + 2;
+1042                 <span class="keyword">else</span>
+1043                     diffDataOff = diffDataOff + 1;
+1044                 <span class="keyword">end</span>
+1045             <span class="keyword">end</span>
+1046         <span class="keyword">end</span>
+1047     <span class="keyword">end</span>
+1048 <span class="keyword">end</span>
+1049 
+1050 <span class="comment">% Offset the data to the correct time.</span>
+1051 <span class="keyword">switch</span> offMode
+1052     
+1053     <span class="comment">% Offset the data to the center of the differentiated scale.</span>
+1054     <span class="keyword">case</span> 1
+1055         <span class="keyword">for</span> j = 1:length(scales)
+1056             offStart = round((scales(j) + 1) / 2);
+1057             offEnd = scales(j) - offStart;
+1058             <span class="keyword">for</span> i = 2:length(diffData)
+1059                 tmp = nan(size(diffData{i}{j}));
+1060                 tmp(:,(1 + offStart):(end - offEnd)) = <span class="keyword">...</span>
+1061                     diffData{i}{j}(:,1:(end - scales(j)));
+1062                 diffData{i}{j} = tmp;
+1063             <span class="keyword">end</span>
+1064         <span class="keyword">end</span>
+1065         
+1066         <span class="comment">% Offset the data to the start of the differentiated scale.</span>
+1067     <span class="keyword">case</span> 2
+1068         <span class="keyword">for</span> j = 1:length(scales)
+1069             <span class="keyword">for</span> i = 2:length(diffData)
+1070                 tmp = nan(size(diffData{i}{j}));
+1071                 tmp(:,1:(end - scales(j))) = <span class="keyword">...</span>
+1072                     diffData{i}{j}(:,1:(end - scales(j)));
+1073                 diffData{i}{j} = tmp;
+1074             <span class="keyword">end</span>
+1075         <span class="keyword">end</span>
+1076         
+1077         <span class="comment">% Offset the data to the end of the differentiated scale.</span>
+1078     <span class="keyword">case</span> 3
+1079         <span class="keyword">for</span> j = 1:length(scales)
+1080             <span class="keyword">for</span> i = 2:length(diffData)
+1081                 tmp = nan(size(diffData{i}{j}));
+1082                 tmp(:,(1 + scales(j)):end) = <span class="keyword">...</span>
+1083                     diffData{i}{j}(:,1:(end - scales(j)));
+1084                 diffData{i}{j} = tmp;
+1085             <span class="keyword">end</span>
+1086         <span class="keyword">end</span>
+1087         
+1088     <span class="keyword">otherwise</span>
+1089         warning(<span class="string">'multiScaleWorm:OffsetMode'</span>, <span class="keyword">...</span>
+1090             [<span class="string">'Offset mode &quot;'</span> num2str(offMode) <span class="keyword">...</span>
+1091             <span class="string">'&quot; is an unknown mode. Using mode 1 (offset to the '</span> <span class="keyword">...</span>
+1092             <span class="string">'center of the differentiated scale) instead.'</span>]);
+1093 <span class="keyword">end</span>
+1094 
+1095 <span class="comment">% Clear the global variable link.</span>
+1096 clear blockFilePath;
+1097 
+1098 <span class="comment">% Show the results in a figure.</span>
+1099 <span class="keyword">if</span> verbose
+1100     
+1101     <span class="comment">% What data are we showing?</span>
+1102     <span class="keyword">if</span> isempty(showData)
+1103         showData = 1:14;
+1104     <span class="keyword">end</span>
+1105     
+1106     <span class="comment">% Construct the figure titles.</span>
+1107     titles = { <span class="keyword">...</span>
+1108         <span class="string">'Vulval Contour Velocity'</span>, <span class="keyword">...</span>
+1109         <span class="string">'Vulval Contour Velocity Direction'</span>, <span class="keyword">...</span>
+1110         <span class="string">'Non-Vulval Contour Velocity'</span>, <span class="keyword">...</span>
+1111         <span class="string">'Non-Vulval Contour Velocity Direction'</span>, <span class="keyword">...</span>
+1112         <span class="string">'Skeleton Velocity'</span>, <span class="keyword">...</span>
+1113         <span class="string">'Skeleton Velocity Direction'</span>, <span class="keyword">...</span>
+1114         <span class="string">'Skeleton Angle Change'</span>, <span class="keyword">...</span>
+1115         <span class="string">'Skeleton Touching Points Velocity'</span>, <span class="keyword">...</span>
+1116         <span class="string">'Skeleton Length Change'</span>, <span class="keyword">...</span>
+1117         <span class="string">'Contour Width Change'</span>, <span class="keyword">...</span>
+1118         <span class="string">'Head Area Change'</span>, <span class="keyword">...</span>
+1119         <span class="string">'Tail Area Change'</span>, <span class="keyword">...</span>
+1120         <span class="string">'Vulval-Side Area Change'</span>, <span class="keyword">...</span>
+1121         <span class="string">'Non-Vulval-Side Area Change'</span>};
+1122     
+1123     <span class="comment">% Construct the figure y-axis labels.</span>
+1124     yLabels = { <span class="keyword">...</span>
+1125         <span class="string">'Microns / Second'</span>, <span class="keyword">...</span>
+1126         <span class="string">'Orientation Angle (degrees)'</span>, <span class="keyword">...</span>
+1127         <span class="string">'Microns / Second'</span>, <span class="keyword">...</span>
+1128         <span class="string">'Orientation Angle (degrees)'</span>, <span class="keyword">...</span>
+1129         <span class="string">'Microns / Second'</span>, <span class="keyword">...</span>
+1130         <span class="string">'Orientation Angle (degrees)'</span>, <span class="keyword">...</span>
+1131         <span class="string">'\Delta Bend Angle (degrees)'</span>, <span class="keyword">...</span>
+1132         <span class="string">'\Delta Microns'</span>, <span class="keyword">...</span>
+1133         <span class="string">'\Delta Microns'</span>, <span class="keyword">...</span>
+1134         <span class="string">'\Delta Microns'</span>, <span class="keyword">...</span>
+1135         <span class="string">'\Delta Microns Squared'</span>, <span class="keyword">...</span>
+1136         <span class="string">'\Delta Microns Squared'</span>, <span class="keyword">...</span>
+1137         <span class="string">'\Delta Microns Squared'</span>, <span class="keyword">...</span>
+1138         <span class="string">'\Delta Microns Squared'</span>};
+1139     
+1140     <span class="comment">% Construct the figure scales.</span>
+1141     scaleStrings = cell(length(scales),1);
+1142     <span class="keyword">for</span> i = 1:length(scales)
+1143         <span class="keyword">if</span> scales(i) &lt; fps
+1144             scaleStrings{i} = [<span class="string">'Scale =  '</span> <span class="keyword">...</span>
+1145                 num2str(round(1000 * scales(i) / fps)) <span class="keyword">...</span>
+1146                 <span class="string">' milliseconds'</span>];
+1147         <span class="keyword">else</span>
+1148             scaleStrings{i} = [<span class="string">'Scale = '</span> <span class="keyword">...</span>
+1149                 num2str(scales(i) / fps, <span class="string">'%0.2f'</span>) <span class="string">' seconds'</span>];
+1150         <span class="keyword">end</span>
+1151     <span class="keyword">end</span>
+1152     
+1153     <span class="comment">% Construct the frame infomation legend.</span>
+1154     legends = { <span class="keyword">...</span>
+1155         <span class="string">'Unused Frames'</span>, <span class="keyword">...</span>
+1156         <span class="string">'Segmentation Failures'</span>, <span class="keyword">...</span>
+1157         <span class="string">'Stage Movements'</span>, <span class="keyword">...</span>
+1158         <span class="string">'Dropped Frames'</span>};
+1159     
+1160     <span class="comment">% Construct the data legend.</span>
+1161     dataLegends = legends;
+1162     dataLegends{end + 1} = <span class="string">'Data'</span>;
+1163     
+1164     <span class="comment">% Compute the samples to use.</span>
+1165     <span class="keyword">if</span> isempty(useSamples)
+1166         useSamples = 1:samples;
+1167     <span class="keyword">end</span>
+1168     
+1169     <span class="comment">% Pre-allocate memory.</span>
+1170     sampleLegends = legends;
+1171     <span class="keyword">if</span> isempty(sampleLegends)
+1172         legendsOff = 0;
+1173         <span class="keyword">if</span> isempty(meanSamples)
+1174             sampleLegends = cell(length(useSamples),1);
+1175         <span class="keyword">else</span>
+1176             sampleLegends = cell(length(meanSamples),1);
+1177         <span class="keyword">end</span>
+1178         
+1179     <span class="comment">% Append the worm samples legend.</span>
+1180     <span class="keyword">else</span>
+1181         legendsOff = length(sampleLegends);
+1182         <span class="keyword">if</span> isempty(meanSamples)
+1183             sampleLegends((legendsOff + 1): <span class="keyword">...</span>
+1184                 (legendsOff + length(useSamples))) = <span class="keyword">...</span>
+1185                 cell(length(useSamples),1);
+1186         <span class="keyword">else</span>
+1187             sampleLegends((legendsOff + 1): <span class="keyword">...</span>
+1188                 (legendsOff + length(meanSamples))) = <span class="keyword">...</span>
+1189                 cell(length(meanSamples),1);
+1190         <span class="keyword">end</span>
+1191     <span class="keyword">end</span>
+1192     
+1193     <span class="comment">% Construct the worm samples legend.</span>
+1194     <span class="keyword">if</span> isempty(meanSamples)
+1195         
+1196         <span class="comment">% Label the samples.</span>
+1197         <span class="keyword">for</span> i = 1:length(useSamples)
+1198             
+1199             <span class="comment">% Label the head.</span>
+1200             <span class="keyword">if</span> useSamples(i) == 1
+1201                 sampleLegends{legendsOff + i} = <span class="string">'Head'</span>;
+1202                 
+1203             <span class="comment">% Label the tail.</span>
+1204             <span class="keyword">elseif</span> useSamples(i) == samples
+1205                 sampleLegends{legendsOff + i} = <span class="string">'Tail'</span>;
+1206                 
+1207             <span class="comment">% Label the middle.</span>
+1208             <span class="keyword">elseif</span> useSamples(i) == (samples + 1) / 2
+1209                 sampleLegends{legendsOff + i} = <span class="string">'Middle'</span>;
+1210                 
+1211             <span class="comment">% Label the fractional point.</span>
+1212             <span class="keyword">else</span>
+1213                 sampleLegends{legendsOff + i} = <span class="keyword">...</span>
+1214                     [num2str((useSamples(i) - 1) / (samples - 1), <span class="keyword">...</span>
+1215                     <span class="string">'%0.2f'</span>) <span class="string">' of the worm'</span>];
+1216             <span class="keyword">end</span>
+1217         <span class="keyword">end</span>
+1218         
+1219     <span class="comment">% Label the groups of samples.</span>
+1220     <span class="keyword">else</span>
+1221         <span class="keyword">for</span> i = 1:length(meanSamples)
+1222             
+1223             <span class="comment">% Compute the group samples and their spacing.</span>
+1224             groupSamples = useSamples(sort(meanSamples{i}));
+1225             groupDiffs = diff(groupSamples);
+1226             groupDiffsI = find(groupDiffs ~= 1);
+1227             
+1228             <span class="comment">% Record the only sample.</span>
+1229             <span class="keyword">if</span> length(groupSamples) == 1
+1230                 legendStr = <span class="keyword">...</span>
+1231                     num2str((groupSamples(1) - 1) / (samples - 1), <span class="keyword">...</span>
+1232                     <span class="string">'%0.2f'</span>);
+1233                 
+1234             <span class="comment">% Record a continuous sample.</span>
+1235             <span class="keyword">elseif</span> isempty(groupDiffsI)
+1236                 legendStr = <span class="keyword">...</span>
+1237                     [num2str((groupSamples(1) - 1) / (samples - 1), <span class="keyword">...</span>
+1238                     <span class="string">'%0.2f'</span>) <span class="string">'-'</span> <span class="keyword">...</span>
+1239                     num2str((groupSamples(end) - 1) / (samples - 1), <span class="keyword">...</span>
+1240                     <span class="string">'%0.2f'</span>)];
+1241                 
+1242             <span class="comment">% Record the samples.</span>
+1243             <span class="keyword">else</span>
+1244                 legendStr = [];
+1245                 prevSample = groupSamples(1) - 1;
+1246                 <span class="keyword">for</span> k = 1:length(groupDiffsI)
+1247                     
+1248                     <span class="comment">% Place a comma between discontinuities.</span>
+1249                     <span class="keyword">if</span> k &gt; 1
+1250                         legendStr = [legendStr <span class="string">','</span> ];
+1251                     <span class="keyword">end</span>
+1252                     
+1253                     <span class="comment">% Record the lone sample.</span>
+1254                     sample = groupSamples(groupDiffsI(k));
+1255                     <span class="keyword">if</span> groupDiffsI(k) == prevSample + 1
+1256                         legendStr = [legendStr <span class="keyword">...</span>
+1257                             num2str((sample - 1) / (samples - 1), <span class="keyword">...</span>
+1258                             <span class="string">'%0.2f'</span>)];
+1259                         
+1260                     <span class="comment">% Record the continuous sequence.</span>
+1261                     <span class="keyword">else</span>
+1262                         prevSample = prevSample + 1;
+1263                         legendStr = [legendStr <span class="keyword">...</span>
+1264                             num2str((prevSample - 1) / (samples - 1), <span class="keyword">...</span>
+1265                             <span class="string">'%0.2f'</span>) <span class="string">'-'</span> <span class="keyword">...</span>
+1266                             num2str((sample - 1) / (samples - 1), <span class="keyword">...</span>
+1267                             <span class="string">'%0.2f'</span>)];
+1268                     <span class="keyword">end</span>
+1269                     
+1270                     <span class="comment">% Advance.</span>
+1271                     prevSample = sample;
+1272                 <span class="keyword">end</span>
+1273             
+1274                 <span class="comment">% Record the last sample.</span>
+1275                 legendStr = [legendStr <span class="string">','</span> ];
+1276                 sample = groupSamples(end);
+1277                 
+1278                 <span class="comment">% Record the lone sample.</span>
+1279                 <span class="keyword">if</span> groupDiffs(end) &gt; 1
+1280                     legendStr = [legendStr <span class="keyword">...</span>
+1281                         num2str((sample - 1) / (samples - 1), <span class="keyword">...</span>
+1282                         <span class="string">'%0.2f'</span>)];
+1283                     
+1284                 <span class="comment">% Record the continuous sequence.</span>
+1285                 <span class="keyword">else</span>
+1286                     prevSample = prevSample + 1;
+1287                     legendStr = [legendStr <span class="keyword">...</span>
+1288                         num2str((prevSample - 1) / (samples - 1), <span class="keyword">...</span>
+1289                         <span class="string">'%0.2f'</span>) <span class="string">'-'</span> <span class="keyword">...</span>
+1290                         num2str((sample - 1) / (samples - 1), <span class="keyword">...</span>
+1291                         <span class="string">'%0.2f'</span>)];
+1292                 <span class="keyword">end</span>
+1293             <span class="keyword">end</span>
+1294             
+1295             <span class="comment">% Record the legend.</span>
+1296             sampleLegends{legendsOff + i} = [legendStr <span class="string">' of the worm'</span>];
+1297         <span class="keyword">end</span>
+1298     <span class="keyword">end</span>
+1299     
+1300     <span class="comment">% Construct the figures.</span>
+1301     <span class="keyword">for</span> i = (showData + 2)
+1302         
+1303         <span class="comment">% Skip the skeleton touching points' velocity.</span>
+1304         <span class="keyword">if</span> i == 10
+1305             <span class="keyword">continue</span>;
+1306         <span class="keyword">end</span>
+1307         
+1308         <span class="comment">% Open a big figure.</span>
+1309         figure(<span class="string">'OuterPosition'</span>, [50 -50 1280 960]);
+1310         
+1311         <span class="comment">% Plot the data at each scale.</span>
+1312         <span class="keyword">for</span> j = 1:length(scales)
+1313             
+1314             <span class="comment">% Compute the x-axis time.</span>
+1315             <span class="keyword">if</span> isSparse
+1316                 timeX = (startFrame:scales(j):endFrame) / fps;
+1317             <span class="keyword">else</span>
+1318                 timeX = (startFrame:endFrame) / fps;
+1319             <span class="keyword">end</span>
+1320                 
+1321             <span class="comment">% Plot the data and frame information.</span>
+1322             <span class="keyword">if</span> verbose - floor(verbose) == 0.5
+1323                 
+1324                 <span class="comment">% Compute the data range.</span>
+1325                 minData = min(diffData{i}{j}(:));
+1326                 maxData = max(diffData{i}{j}(:));
+1327                 
+1328                 <span class="comment">% Setup the data plot.</span>
+1329                 h = subplot(length(scales), 1, j);
+1330                 set(zoom(h), <span class="string">'Motion'</span>, <span class="string">'horizontal'</span>, <span class="string">'Enable'</span>, <span class="string">'on'</span>);
+1331                 hold on;
+1332                 
+1333                 <span class="comment">% Plot the data and frame information on the same axis.</span>
+1334                 dataScale = (maxData - minData) * .999999999;
+1335                 frameX = startFrame:endFrame;
+1336                 [ax h1 h2] = plotyy(frameX, <span class="keyword">...</span>
+1337                     (diffData{1} == <span class="string">'u'</span>) * dataScale + minData, <span class="keyword">...</span>
+1338                     timeX, diffData{i}{j});
+1339                 set(ax(2), <span class="string">'XAxisLocation'</span>, <span class="string">'top'</span>);
+1340                 set(h1, <span class="string">'Color'</span>, <span class="string">'y'</span>);
+1341                 <span class="keyword">if</span> size(diffData{i}{j}, 1) == 1
+1342                     set(h2, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+1343                 <span class="keyword">end</span>
+1344                 <span class="keyword">if</span> 0 &amp;&amp; any(i == [4 6 8])
+1345                     set(h2, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>);
+1346                     set(h2, <span class="string">'Marker'</span>, <span class="string">'.'</span>);
+1347                 <span class="keyword">end</span>
+1348                 
+1349                 <span class="comment">% Setup the data axes numbering.</span>
+1350                 linkaxes(ax, <span class="string">'y'</span>);
+1351                 <span class="keyword">if</span> length(frameX) &gt; 1
+1352                     
+1353                     <span class="comment">% Frames.</span>
+1354                     xlim(ax(1), [frameX(1), frameX(end)]);
+1355                     
+1356                     <span class="comment">% Seconds.</span>
+1357                     xlim(ax(2), [frameX(1) / fps, frameX(end) / fps]);
+1358                 <span class="keyword">end</span>
+1359                 <span class="keyword">if</span> minData ~= maxData
+1360                     
+1361                     <span class="comment">% Differentiation data.</span>
+1362                     ylim(ax(1), [minData maxData]);
+1363                     
+1364                     <span class="comment">% Frame data.</span>
+1365                     set(ax(1), <span class="string">'YTick'</span>, minData:(dataScale / 5):maxData);
+1366                 <span class="keyword">end</span>
+1367                 set(ax(2), <span class="string">'YTick'</span>, []);
+1368                 
+1369                 <span class="comment">% Setup the data axes labels.</span>
+1370                 xlabel(ax(1), <span class="string">'Frame'</span>);
+1371                 ylabel(ax(1), yLabels{i - 2});
+1372                 xlabel(ax(2), <span class="string">'Time (seconds)'</span>);
+1373                 title(ax(2), [titles{i - 2} <span class="string">' ('</span> scaleStrings{j} <span class="string">')'</span>]);
+1374                 
+1375                 <span class="comment">% Plot the failed frames.</span>
+1376                 plot(ax(1), frameX, <span class="keyword">...</span>
+1377                     (diffData{1} == <span class="string">'f'</span>) * dataScale + minData, <span class="string">'m'</span>);
+1378                 
+1379                 <span class="comment">% Plot the stage movements.</span>
+1380                 plot(ax(1), frameX, <span class="keyword">...</span>
+1381                     (diffData{1} == <span class="string">'m'</span>) * dataScale + minData, <span class="string">'g'</span>);
+1382                 
+1383                 <span class="comment">% Plot the dropped frames.</span>
+1384                 plot(ax(1), frameX, <span class="keyword">...</span>
+1385                     (diffData{1} == <span class="string">'d'</span>) * dataScale + minData, <span class="string">'c'</span>);
+1386                 
+1387                 <span class="comment">% Setup the data legend.</span>
+1388                 <span class="keyword">if</span> i &gt; 10 &amp;&amp; i ~= 12
+1389                     legend(dataLegends, <span class="string">'Location'</span>, <span class="string">'NorthEast'</span>);
+1390                 <span class="keyword">else</span>
+1391                     legend(sampleLegends, <span class="string">'Location'</span>, <span class="string">'NorthEast'</span>);
+1392                 <span class="keyword">end</span>
+1393                 
+1394             <span class="comment">% Plot the data.</span>
+1395             <span class="keyword">else</span>
+1396                 
+1397                 <span class="comment">% Setup the data plot.</span>
+1398                 h = subplot(length(scales), 1, j);
+1399                 set(zoom(h), <span class="string">'Motion'</span>, <span class="string">'horizontal'</span>, <span class="string">'Enable'</span>, <span class="string">'on'</span>);
+1400                 hold on;
+1401                 
+1402                 <span class="comment">% Plot the data.</span>
+1403                 <span class="keyword">if</span> size(diffData{i}{j}, 1) == 1
+1404                     h = plot(timeX, diffData{i}{j}, <span class="string">'k'</span>);
+1405                 <span class="keyword">else</span>
+1406                     h = plot(timeX, diffData{i}{j});
+1407                 <span class="keyword">end</span>
+1408                 <span class="keyword">if</span> 0 &amp;&amp; any(i == [4 6 8])
+1409                     set(h, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>);
+1410                     set(h, <span class="string">'Marker'</span>, <span class="string">'.'</span>);
+1411                 <span class="keyword">end</span>
+1412                 
+1413                 <span class="comment">% Setup the data axes numbering.</span>
+1414                 <span class="keyword">if</span> startFrame ~= endFrame
+1415                     xlim([startFrame / fps, endFrame / fps]);
+1416                 <span class="keyword">end</span>
+1417                 
+1418                 <span class="comment">% Setup the data labels.</span>
+1419                 title([titles{i - 2} <span class="string">' ('</span> scaleStrings{j} <span class="string">')'</span>]);
+1420                 xlabel(<span class="string">'Time (seconds)'</span>);
+1421                 ylabel(yLabels{i - 2});
+1422                 
+1423                 <span class="comment">% Setup the data legend.</span>
+1424                 <span class="keyword">if</span> i &gt; 10 &amp;&amp; i ~= 12
+1425                     legend(dataLegends(5:end), <span class="string">'Location'</span>, <span class="string">'NorthEast'</span>);
+1426                 <span class="keyword">else</span>
+1427                     legend(sampleLegends(5:end), <span class="string">'Location'</span>, <span class="string">'NorthEast'</span>);
+1428                 <span class="keyword">end</span>
+1429             <span class="keyword">end</span>
+1430         <span class="keyword">end</span>
+1431         
+1432         <span class="comment">% Plot the histogram.</span>
+1433         <span class="keyword">if</span> verbose &gt; 1.5
+1434             
+1435             <span class="comment">% Open a big figure.</span>
+1436             figure(<span class="string">'OuterPosition'</span>, [50 -50 1280 960]);
+1437             
+1438             <span class="comment">% Plot the histogram at each scale.</span>
+1439             <span class="keyword">for</span> j = 1:length(scales)
+1440                 
+1441                 <span class="comment">% Compute the data range.</span>
+1442                 minData = min(diffData{i}{j}(:));
+1443                 maxData = max(diffData{i}{j}(:));
+1444                 
+1445                 <span class="comment">% Compute the x-axis time.</span>
+1446                 <span class="keyword">if</span> isSparse
+1447                     timeX = (startFrame:scales(j):endFrame) / fps;
+1448                 <span class="keyword">else</span>
+1449                     timeX = (startFrame:endFrame) / fps;
+1450                 <span class="keyword">end</span>
+1451                 
+1452                 <span class="comment">% Setup the histogram plot.</span>
+1453                 h = subplot(length(scales), 1, j);
+1454                 set(zoom(h), <span class="string">'Motion'</span>, <span class="string">'horizontal'</span>, <span class="string">'Enable'</span>, <span class="string">'on'</span>);
+1455                 
+1456                 <span class="comment">% Plot the histogram.</span>
+1457                 <span class="keyword">if</span> sign(minData) == sign(maxData)
+1458                     bins = linspace(minData, maxData, sqrt(length(timeX)));
+1459                 <span class="keyword">else</span> <span class="comment">% align the bins with 0</span>
+1460                     binWidth = (maxData - minData) / sqrt(length(timeX));
+1461                     minBins = binWidth:binWidth:(abs(minData) + binWidth);
+1462                     maxBins = 0:binWidth:(maxData + binWidth);
+1463                     bins = [-fliplr(minBins) maxBins];
+1464                 <span class="keyword">end</span>
+1465                 <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a> = histc(diffData{i}{j}', bins);
+1466                 plot(bins, <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>);
+1467                 <span class="comment">%hist(diffData{i}{j}', sqrt(length(timeX)));</span>
+1468                 xlim([minData maxData]);
+1469                 
+1470                 <span class="comment">% Setup the histogram labels.</span>
+1471                 title([titles{i - 2} <span class="string">' Histogram ('</span> scaleStrings{j} <span class="string">')'</span>]);
+1472                 xlabel(yLabels{i - 2});
+1473                 ylabel(<span class="string">'Counts'</span>);
+1474                 
+1475                 <span class="comment">% Setup the histogram legend.</span>
+1476                 <span class="keyword">if</span> i &gt; 10 &amp;&amp; i ~= 12
+1477                     legend(dataLegends(5:end), <span class="string">'Location'</span>, <span class="string">'NorthEast'</span>);
+1478                 <span class="keyword">else</span>
+1479                     legend(sampleLegends(5:end), <span class="string">'Location'</span>, <span class="string">'NorthEast'</span>);
+1480                 <span class="keyword">end</span>
+1481             <span class="keyword">end</span>
+1482         <span class="keyword">end</span>
+1483         
+1484         <span class="comment">% Plot the worm's path.</span>
+1485         <span class="keyword">if</span> verbose &gt; 2.5  &amp;&amp; isempty(meanSamples)
+1486             
+1487             <span class="comment">% Are we using the contour or skeleton?</span>
+1488             <span class="keyword">if</span> i - 2 &lt;= 2
+1489                 bodyBlockI = 2;
+1490                 wormPathString = <span class="string">'Vulval Contour Path'</span>;
+1491             <span class="keyword">elseif</span> i - 2 &lt;= 4
+1492                 bodyBlockI = 3;
+1493                 wormPathString = <span class="string">'Non-Vulval Contour Path'</span>;
+1494             <span class="keyword">else</span>
+1495                 bodyBlockI = 4;
+1496                 wormPathString = <span class="string">'Skeleton Path'</span>;
+1497             <span class="keyword">end</span>
+1498             
+1499             <span class="comment">% Find the middle.</span>
+1500             bodySampleI = [];
+1501             bodySampleTitles = [];
+1502             middleSample = round((samples + 1) / 2);
+1503             [~, middleI] = min(abs(useSamples - middleSample));
+1504             bodySampleI(1) = middleI;
+1505             <span class="keyword">if</span> useSamples(middleI) == middleSample
+1506                 bodySampleTitles{1} = <span class="string">'Middle'</span>;
+1507             <span class="keyword">else</span>
+1508                 <span class="keyword">if</span> useSamples(middleI) == 1
+1509                     bodySampleTitles{1} = <span class="string">'Head'</span>;
+1510                 <span class="keyword">elseif</span>  useSamples(middleI) == samples
+1511                     bodySampleTitles{1} = <span class="string">'Tail'</span>;
+1512                 <span class="keyword">else</span>
+1513                     bodySampleTitles{1} = <span class="keyword">...</span>
+1514                         [num2str(round(((useSamples(middleI) - 1) / <span class="keyword">...</span>
+1515                         (samples - 1)) * 100)) <span class="string">'% From The Head'</span>];
+1516                 <span class="keyword">end</span>
+1517             <span class="keyword">end</span>
+1518             
+1519             <span class="comment">% Find the head and tail.</span>
+1520             <span class="keyword">if</span> i &lt; 9
+1521                 
+1522                 <span class="comment">% Find the head.</span>
+1523                 headI = find(useSamples == 1, 1);
+1524                 k = 2;
+1525                 <span class="keyword">if</span> ~isempty(headI) &amp;&amp; headI ~= middleI
+1526                     bodySampleI(k) = headI;
+1527                     bodySampleTitles{k} = <span class="string">'Head'</span>;
+1528                     k = k + 1;
+1529                 <span class="keyword">end</span>
+1530                 
+1531                 <span class="comment">% Find the tail.</span>
+1532                 tailI = find(useSamples == samples, 1);
+1533                 <span class="keyword">if</span> ~isempty(tailI) &amp;&amp; tailI ~= middleI
+1534                     bodySampleI(k) = tailI;
+1535                     bodySampleTitles{k} = <span class="string">'Tail'</span>;
+1536                 <span class="keyword">end</span>
+1537                 
+1538             <span class="comment">% Find points 1/6 from the head and tail.</span>
+1539             <span class="keyword">elseif</span> i == 9 || i == 12
+1540                 
+1541                 <span class="comment">% Find the head.</span>
+1542                 headSample = round((samples + 1) / 6);
+1543                 [~, headI] = min(abs(useSamples - headSample));
+1544                 k = 2;
+1545                 <span class="keyword">if</span> useSamples(headI) == 1
+1546                     bodySampleI(k) = headI;
+1547                     bodySampleTitles{k} = <span class="string">'Head'</span>;
+1548                     k = k + 1;
+1549                 <span class="keyword">elseif</span> headI ~= middleI
+1550                     bodySampleI(k) = headI;
+1551                     bodySampleTitles{k} = <span class="keyword">...</span>
+1552                         [num2str(round(((useSamples(headI) - 1) / <span class="keyword">...</span>
+1553                         (samples - 1)) * 100)) <span class="string">'% From The Head'</span>];
+1554                     k = k + 1;
+1555                 <span class="keyword">end</span>
+1556                 
+1557                 <span class="comment">% Find the tail.</span>
+1558                 tailSample = round((samples + 1) * (5 / 6));
+1559                 [~, tailI] = min(abs(useSamples - tailSample));
+1560                 <span class="keyword">if</span> useSamples(tailI) == samples
+1561                     bodySampleI(k) = tailI;
+1562                     bodySampleTitles{k} = <span class="string">'Tail'</span>;
+1563                 <span class="keyword">elseif</span> tailI ~= middleI
+1564                     bodySampleI(k) = tailI;
+1565                     bodySampleTitles{k} = <span class="keyword">...</span>
+1566                         [num2str(round(((useSamples(tailI) - 1) / <span class="keyword">...</span>
+1567                         (samples - 1)) * 100)) <span class="string">'% From The Head'</span>];
+1568                 <span class="keyword">end</span>
+1569                 
+1570             <span class="comment">% The data applies to the entire worm.</span>
+1571             <span class="keyword">else</span>
+1572                 bodySampleTitles{1} = <span class="string">'Worm'</span>;
+1573             <span class="keyword">end</span>
+1574             
+1575             <span class="comment">% Plot the worm's path at each scale.</span>
+1576             <span class="keyword">if</span> length(bodySampleI) &gt; 1
+1577                 plotRows = 2;
+1578                 plotCols = 2;
+1579             <span class="keyword">else</span>
+1580                 plotRows = 1;
+1581                 plotCols = 2;
+1582             <span class="keyword">end</span>
+1583             <span class="keyword">for</span> j = 1:length(scales)
+1584                 
+1585                 <span class="comment">% Get the locations.</span>
+1586                 frames = diffData{2}{j}(2,:);
+1587                 frameBlocks = floor(double(frames - firstFrame) / <span class="keyword">...</span>
+1588                     blockSize) + 1;
+1589                 locations = zeros(length(useSamples),2,length(frames));
+1590                 lengths = zeros(length(frames),1);
+1591                 off = 1;
+1592                 <span class="keyword">for</span> k = frameBlocks(1):frameBlocks(end)
+1593                     blockInfo = <a href="#_sub1" class="code" title="subfunction blockInfo = loadBlock(wormFile, index)">loadBlock</a>(wormFile, k);
+1594                     framesI = frames(frameBlocks == k) - firstFrame + <span class="keyword">...</span>
+1595                         1 - ((k - 1) * blockSize);
+1596                     locations(:,:,off:(off + length(framesI) - 1)) = <span class="keyword">...</span>
+1597                         blockInfo.blocks{1}{bodyBlockI} <span class="keyword">...</span>
+1598                         (useSamples,:,framesI);
+1599                     lengths(off:(off + length(framesI) - 1)) = <span class="keyword">...</span>
+1600                         blockInfo.blocks{1}{7}(framesI);
+1601                     off = off + length(framesI);
+1602                 <span class="keyword">end</span>
+1603                 
+1604                 <span class="comment">% Open a big figure.</span>
+1605                 figure(<span class="string">'OuterPosition'</span>, [50 -50 1280 960]);
+1606             
+1607                 <span class="comment">% Plot the worm's path.</span>
+1608                 ax = zeros(1 + length(bodySampleI),1);
+1609                 ax(1) = subplot(plotRows, plotCols, 1);
+1610                 hold on;
+1611                 x = squeeze(locations(:,1,:));
+1612                 y = squeeze(locations(:,2,:));
+1613                 <span class="keyword">if</span> length(useSamples) == 1
+1614                     x = x';
+1615                     y = y';
+1616                 <span class="keyword">end</span>
+1617                 colors = lines(length(useSamples));
+1618                 <span class="keyword">for</span> k = 1:length(useSamples)
+1619                     quiver(x(k,1:end-1), y(k,1:end-1), <span class="keyword">...</span>
+1620                         diff(x(k,:)), diff(y(k,:)), 0, <span class="string">'Color'</span>, <span class="keyword">...</span>
+1621                         colors(k,:));
+1622                 <span class="keyword">end</span>
+1623                 
+1624                 <span class="comment">% Plot the path's start and end.</span>
+1625                 k = middleI;
+1626                 text(x(k,1), y(k,1), <span class="keyword">...</span>
+1627                     [<span class="string">'\bf\leftarrow\color{black}Start'</span>], <span class="keyword">...</span>
+1628                     <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+1629                     <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>);
+1630                 text(x(k,end), y(k,end), <span class="keyword">...</span>
+1631                     [<span class="string">'\bf\leftarrow\color{black}End'</span>], <span class="keyword">...</span>
+1632                     <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+1633                     <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>);
+1634                 
+1635                 <span class="comment">% Label the axes.</span>
+1636                 xlabel(<span class="string">'X Location (Microns)'</span>);
+1637                 ylabel(<span class="string">'Y Location (Microns)'</span>);
+1638                 time = round((endFrame - startFrame) / fps);
+1639                 timeString = [<span class="string">'(Time = '</span> num2str(time) <span class="string">' seconds, '</span> <span class="keyword">...</span>
+1640                     scaleStrings{j} <span class="string">')'</span>];
+1641                 title({wormPathString, timeString});
+1642                 legend(sampleLegends(5:end), <span class="string">'Location'</span>, <span class="string">'Best'</span>);
+1643                 
+1644                 <span class="comment">% Plot the worm length.</span>
+1645                 minX = min(x(:));
+1646                 maxX = max(x(:));
+1647                 minY = min(y(:));
+1648                 maxY = max(y(:));
+1649                 meanLength = round(nanmean(lengths));
+1650                 offset = meanLength / 4;
+1651                 xLength = minX - [offset, offset + meanLength];
+1652                 yLength = minY - [offset, offset];
+1653                 plot(xLength, yLength, <span class="string">'-ko'</span>, <span class="string">'LineWidth'</span>, 2, <span class="keyword">...</span>
+1654                     <span class="string">'MarkerFaceColor'</span>, <span class="string">'g'</span>);
+1655                 text(xLength(1), yLength(1), <span class="keyword">...</span>
+1656                     [<span class="string">'   \color{red}\leftarrow\color{black}   '</span> <span class="keyword">...</span>
+1657                     <span class="string">'Mean Worm Length = \color{red}'</span> <span class="keyword">...</span>
+1658                     num2str(meanLength) <span class="string">' microns'</span>], <span class="keyword">...</span>
+1659                     <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+1660                     <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>);
+1661                 
+1662                 <span class="comment">% Fix the axes.</span>
+1663                 axis equal;
+1664                 xlim([xLength(2) - offset, maxX + offset])
+1665                 ylim([yLength(2) - offset, maxY + offset])
+1666                 
+1667                 <span class="comment">% Plot the middle head and tail.</span>
+1668                 z = diffData{i}{j};
+1669                 minZ = min(diffData{i}{j}(:));
+1670                 maxZ = max(diffData{i}{j}(:));
+1671                 <span class="keyword">for</span> k = 1:length(bodySampleI)
+1672                     
+1673                     <span class="comment">% Plot the path.</span>
+1674                     ax(k + 1) = subplot(plotRows, plotCols, k + 1);
+1675                     hold on;
+1676                     quiver(x(bodySampleI(k),1:end-1), <span class="keyword">...</span>
+1677                         y(bodySampleI(k),1:end-1), <span class="keyword">...</span>
+1678                         diff(x(bodySampleI(k),:)), <span class="keyword">...</span>
+1679                         diff(y(bodySampleI(k),:)), 0, <span class="string">'Color'</span>, <span class="string">'k'</span>);
+1680                     <span class="keyword">if</span> i &lt; 10 || i == 12
+1681                         scatter(x(bodySampleI(k),:), <span class="keyword">...</span>
+1682                             y(bodySampleI(k),:), 3, z(bodySampleI(k),:), <span class="keyword">...</span>
+1683                             <span class="string">'filled'</span>);
+1684                     <span class="keyword">else</span>
+1685                         scatter(x(bodySampleI(k),:), <span class="keyword">...</span>
+1686                             y(bodySampleI(k),:), 3, z, <span class="string">'filled'</span>);
+1687                     <span class="keyword">end</span>
+1688                     h = colorbar;
+1689                     caxis([minZ maxZ]);
+1690                     set(get(h, <span class="string">'YLabel'</span>), <span class="string">'String'</span>, titles{i - 2});
+1691                     xlabel(<span class="string">'X Location (Microns)'</span>);
+1692                     ylabel(<span class="string">'Y Location (Microns)'</span>);
+1693                     title({[bodySampleTitles{k} <span class="string">' Path'</span>], timeString});
+1694                     
+1695                     <span class="comment">% Plot the path's start and end.</span>
+1696                     text(x(bodySampleI(k),1), y(bodySampleI(k),1), <span class="keyword">...</span>
+1697                         <span class="string">'\bf\leftarrow\color{black}Start'</span>, <span class="keyword">...</span>
+1698                         <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+1699                         <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>);
+1700                     text(x(bodySampleI(k),end), y(bodySampleI(k),end), <span class="keyword">...</span>
+1701                         <span class="string">'\bf\leftarrow\color{black}End'</span>, <span class="keyword">...</span>
+1702                         <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+1703                         <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>);
+1704                     
+1705                     <span class="comment">% Plot the worm length.</span>
+1706                     hold on;
+1707                     plot(xLength, yLength, <span class="string">'-ko'</span>, <span class="string">'LineWidth'</span>, 2, <span class="keyword">...</span>
+1708                         <span class="string">'MarkerFaceColor'</span>, <span class="string">'g'</span>);
+1709                     text(xLength(1), yLength(1), <span class="keyword">...</span>
+1710                         [<span class="string">'   \color{red}\leftarrow\color{black}   '</span> <span class="keyword">...</span>
+1711                         <span class="string">'Mean Worm Length = \color{red}'</span> <span class="keyword">...</span>
+1712                         num2str(meanLength) <span class="string">' microns'</span>], <span class="keyword">...</span>
+1713                         <span class="string">'HorizontalAlignment'</span>, <span class="string">'left'</span>, <span class="keyword">...</span>
+1714                         <span class="string">'VerticalAlignment'</span>, <span class="string">'middle'</span>);
+1715                     axis equal;
+1716                 <span class="keyword">end</span>
+1717                 
+1718                 <span class="comment">% Link the axes.</span>
+1719                 linkaxes(ax);
+1720                 axis equal;
+1721                 xlim([xLength(2) - offset, maxX + offset])
+1722                 ylim([yLength(2) - offset, maxY + offset])
+1723             <span class="keyword">end</span>
+1724         <span class="keyword">end</span>
+1725     <span class="keyword">end</span>
+1726 <span class="keyword">end</span>
+1727 <span class="keyword">end</span>
+1728 
+1729 <span class="comment">% Load a block by index.</span>
+1730 <a name="_sub1" href="#_subfunctions" class="code">function blockInfo = loadBlock(wormFile, index)</a>
+1731 
+1732 <span class="comment">% Load the block.</span>
+1733 <span class="keyword">global</span> blockFilePath;
+1734 block = [];
+1735 <span class="keyword">if</span> ~isempty(blockFilePath)
+1736     blockName = [<span class="string">'normBlock'</span> num2str(index)];
+1737     load(fullfile(blockFilePath, blockName), blockName);
+1738 <span class="keyword">else</span>
+1739     blockName = [<span class="string">'block'</span> num2str(index)];
+1740     load(wormFile, blockName);
+1741 <span class="keyword">end</span>
+1742 eval([<span class="string">'block = '</span> blockName <span class="string">';'</span>]);
+1743 
+1744 <span class="comment">% Organize the block information.</span>
+1745 blockInfo = struct(<span class="string">'index'</span>, index, <span class="string">'blocks'</span>, {{block}});
+1746 <span class="keyword">end</span>
+1747 
+1748 <span class="comment">% Load data by index.</span>
+1749 <a name="_sub2" href="#_subfunctions" class="code">function [dataInfo blockInfo] = loadData(wormFile, startFrame, </a><span class="keyword">...</span>
+1750     endFrame, firstFrame, lastBlockI, blockSize, blockInfo, useSamples, <span class="keyword">...</span>
+1751     isInterp)
+1752 
+1753 <span class="comment">% Load the starting block.</span>
+1754 startBlockI = floor(double(startFrame - firstFrame) / blockSize) + 1;
+1755 <span class="keyword">if</span> isempty(blockInfo)
+1756     blockInfo = <a href="#_sub1" class="code" title="subfunction blockInfo = loadBlock(wormFile, index)">loadBlock</a>(wormFile, startBlockI);
+1757 <span class="keyword">end</span>
+1758 
+1759 <span class="comment">% Find the starting block.</span>
+1760 <span class="keyword">if</span> startBlockI &gt;= blockInfo.index &amp;&amp; <span class="keyword">...</span>
+1761         startBlockI &lt;= blockInfo.index + length(blockInfo.blocks) - 1
+1762     startBlock = blockInfo.blocks{startBlockI - blockInfo.index + 1};
+1763     newBlockInfo = struct(<span class="string">'index'</span>, startBlockI, <span class="string">'blocks'</span>, {{startBlock}});
+1764     
+1765 <span class="comment">% Load the starting block.</span>
+1766 <span class="keyword">else</span>
+1767     newBlockInfo = <a href="#_sub1" class="code" title="subfunction blockInfo = loadBlock(wormFile, index)">loadBlock</a>(wormFile, startBlockI);
+1768     startBlock = newBlockInfo.blocks{1};
+1769 <span class="keyword">end</span>
+1770 
+1771 <span class="comment">% Search for a usable starting index.</span>
+1772 startUseI = startFrame - firstFrame + 1 - ((startBlockI - 1) * blockSize);
+1773 <span class="keyword">while</span> startBlock{1}(startUseI) ~= <span class="string">'s'</span>
+1774     
+1775     <span class="comment">% Search in the previous block.</span>
+1776     <span class="keyword">if</span> startUseI &lt;= 1
+1777         
+1778         <span class="comment">% We're at the first block.</span>
+1779         <span class="keyword">if</span> startBlockI &lt;= 1
+1780             <span class="keyword">break</span>;
+1781             
+1782         <span class="comment">% Find the previous block in the list of loaded blocks.</span>
+1783         <span class="keyword">elseif</span> startBlockI &gt; blockInfo.index &amp;&amp; <span class="keyword">...</span>
+1784                 startBlockI &lt;= blockInfo.index + length(blockInfo.blocks)
+1785             
+1786             <span class="comment">% Find the new starting block.</span>
+1787             startBlock =  blockInfo.blocks{startBlockI - blockInfo.index};
+1788             startBlockI = startBlockI - 1;
+1789             startUseI = blockSize;
+1790             
+1791             <span class="comment">% Copy the list of new blocks.</span>
+1792             newBlocks = cell(length(newBlockInfo.blocks) + 1,1);
+1793             <span class="keyword">for</span> i = 1:length(newBlockInfo.blocks)
+1794                 newBlocks{i + 1} = newBlockInfo.blocks{i};
+1795             <span class="keyword">end</span>
+1796             
+1797             <span class="comment">% Update the list of new blocks.</span>
+1798             newBlockInfo.index = startBlockI;
+1799             newBlocks{1} = startBlock;
+1800             newBlockInfo.blocks = newBlocks;
+1801             
+1802         <span class="comment">% Load the previous block.</span>
+1803         <span class="keyword">else</span>
+1804             
+1805             <span class="comment">% Load the new starting block.</span>
+1806             startBlockI = startBlockI - 1;
+1807             startBlockInfo = <a href="#_sub1" class="code" title="subfunction blockInfo = loadBlock(wormFile, index)">loadBlock</a>(wormFile, startBlockI);
+1808             startBlock = startBlockInfo.blocks{1};
+1809             startUseI = blockSize;
+1810             
+1811             <span class="comment">% Copy the list of new blocks.</span>
+1812             newBlocks = cell(length(newBlockInfo.blocks) + 1,1);
+1813             <span class="keyword">for</span> i = 1:length(newBlockInfo.blocks)
+1814                 newBlocks{i + 1} = newBlockInfo.blocks{i};
+1815             <span class="keyword">end</span>
+1816             
+1817             <span class="comment">% Update the list of new blocks.</span>
+1818             newBlockInfo.index = startBlockI;
+1819             newBlocks{1} = startBlockInfo.blocks{1};
+1820             newBlockInfo.blocks = newBlocks;
+1821         <span class="keyword">end</span>
+1822         
+1823     <span class="comment">% Go backwards.</span>
+1824     <span class="keyword">else</span>
+1825         startUseI = startUseI - 1;
+1826     <span class="keyword">end</span>
+1827 <span class="keyword">end</span>
+1828 
+1829 <span class="comment">% Find any missing blocks.</span>
+1830 endBlockI = floor((endFrame - firstFrame) / blockSize) + 1;
+1831 newEndBlockI = newBlockInfo.index + length(newBlockInfo.blocks) - 1;
+1832 missingBlocks = endBlockI - newEndBlockI;
+1833 <span class="keyword">if</span> missingBlocks &gt; 0
+1834     
+1835     <span class="comment">% Copy the list of new blocks.</span>
+1836     newBlocks = cell(length(newBlockInfo.blocks) + missingBlocks,1);
+1837     <span class="keyword">for</span> i = 1:length(newBlockInfo.blocks)
+1838         newBlocks{i} = newBlockInfo.blocks{i};
+1839     <span class="keyword">end</span>
+1840 
+1841     <span class="comment">% Copy any missing blocks from the the list of loaded blocks.</span>
+1842     maxStartBlockI = max(newEndBlockI + 1, blockInfo.index);
+1843     oldEndBlockI = blockInfo.index + length(blockInfo.blocks) - 1;
+1844     minEndBlockI = min(endBlockI, oldEndBlockI);
+1845     offset = blockInfo.index - newBlockInfo.index;
+1846     <span class="keyword">for</span> i = (maxStartBlockI - blockInfo.index + 1): <span class="keyword">...</span>
+1847             (minEndBlockI - blockInfo.index + 1)
+1848         newBlocks{i + offset} = blockInfo.blocks{i};
+1849     <span class="keyword">end</span>
+1850     
+1851     <span class="comment">% Load any remaining, missing blocks.</span>
+1852     <span class="keyword">for</span> i = 1:length(newBlocks)
+1853         <span class="keyword">if</span> isempty(newBlocks{i})
+1854             missingBlockInfo = <a href="#_sub1" class="code" title="subfunction blockInfo = loadBlock(wormFile, index)">loadBlock</a>(wormFile, <span class="keyword">...</span>
+1855                 newBlockInfo.index + i - 1);
+1856             newBlocks{i} = missingBlockInfo.blocks{1};
+1857         <span class="keyword">end</span>
+1858     <span class="keyword">end</span>
+1859     newBlockInfo.blocks = newBlocks;
+1860 <span class="keyword">end</span>
+1861 
+1862 <span class="comment">% Search for a usable ending index.</span>
+1863 endBlock = newBlockInfo.blocks{end};
+1864 endUseI = endFrame - firstFrame + 1 - ((endBlockI - 1) * blockSize);
+1865 <span class="keyword">while</span> endBlock{1}(endUseI) ~= <span class="string">'s'</span>
+1866     
+1867     <span class="comment">% Search in the next block.</span>
+1868     <span class="keyword">if</span> endUseI &gt;= length(endBlock{1})
+1869         
+1870         <span class="comment">% We're at the last block.</span>
+1871         <span class="keyword">if</span> endBlockI &gt;= lastBlockI
+1872             <span class="keyword">break</span>;
+1873             
+1874         <span class="comment">% Find the next block in the list of loaded blocks.</span>
+1875         <span class="keyword">elseif</span> endBlockI + 1 &gt; blockInfo.index &amp;&amp; <span class="keyword">...</span>
+1876                 endBlockI + 2 &lt;= blockInfo.index + length(blockInfo.blocks)
+1877             
+1878             <span class="comment">% Update the list of new blocks.</span>
+1879             endBlockI = endBlockI + 1;
+1880             newBlockInfo.blocks{end + 1} = <span class="keyword">...</span>
+1881                 blockInfo.blocks{endBlockI - blockInfo.index + 1};
+1882             endBlock = newBlockInfo.blocks{end};
+1883             endUseI = 1;
+1884             
+1885         <span class="comment">% Load the next block.</span>
+1886         <span class="keyword">else</span>
+1887             
+1888             <span class="comment">% Update the list of new blocks.</span>
+1889             endBlockI = endBlockI + 1;
+1890             endBlockInfo = <a href="#_sub1" class="code" title="subfunction blockInfo = loadBlock(wormFile, index)">loadBlock</a>(wormFile, endBlockI);
+1891             newBlockInfo.blocks{end + 1} = endBlockInfo.blocks{1};
+1892             endBlock = newBlockInfo.blocks{end};
+1893             endUseI = 1;
+1894         <span class="keyword">end</span>
+1895         
+1896     <span class="comment">% Go forwards.</span>
+1897     <span class="keyword">else</span>
+1898         endUseI = endUseI + 1;
+1899     <span class="keyword">end</span>
+1900 <span class="keyword">end</span>
+1901 
+1902 <span class="comment">% Construct the data.</span>
+1903 startUseFrame = <span class="keyword">...</span><span class="comment"> % the starting usable frame number</span>
+1904     startUseI + ((startBlockI - 1) * blockSize) + firstFrame - 1;
+1905 endUseFrame = <span class="keyword">...</span><span class="comment"> % the ending usable frame number</span>
+1906     endUseI + ((endBlockI - 1) * blockSize) + firstFrame - 1;
+1907 blockInfo = newBlockInfo;
+1908 data = <a href="#_sub3" class="code" title="subfunction data = blocks2Data(blockInfo, startFrame, endFrame, ">blocks2Data</a>(blockInfo, startUseFrame, endUseFrame, firstFrame, <span class="keyword">...</span>
+1909     blockSize, useSamples); <span class="comment">% the data split into matrices of samples x time</span>
+1910 
+1911 <span class="comment">% Interpolate the missing data.</span>
+1912 <span class="keyword">if</span> isInterp
+1913     isData = data{1} == <span class="string">'s'</span>;
+1914     dataI = find(isData);
+1915     interpI = find(~isData);
+1916     <span class="keyword">if</span> ~isempty(interpI) &amp;&amp; length(dataI) &gt; 1
+1917         <span class="keyword">for</span> i = 2:length(data)
+1918             <span class="keyword">for</span> j = 1:size(data{i}, 1)
+1919                 <span class="keyword">if</span> ~all(isnan(data{i}(j,dataI)))
+1920                     data{i}(j,interpI) = <span class="keyword">...</span>
+1921                         interp1(dataI, data{i}(j,dataI), interpI, <span class="string">'linear'</span>);
+1922                 <span class="keyword">end</span>
+1923             <span class="keyword">end</span>
+1924         <span class="keyword">end</span>
+1925     <span class="keyword">end</span>
+1926 <span class="keyword">end</span>
+1927 
+1928 <span class="comment">% Organize the data information.</span>
+1929 startFrameI = startFrame - startUseFrame + 1;
+1930 endFrameI = endFrame - startUseFrame + 1;
+1931 dataInfo = struct(<span class="string">'startUseFrame'</span>, startUseFrame, <span class="keyword">...</span>
+1932     <span class="string">'endUseFrame'</span>, endUseFrame, <span class="string">'startDataFrameI'</span>, startFrameI, <span class="keyword">...</span>
+1933     <span class="string">'endDataFrameI'</span>, endFrameI, <span class="string">'data'</span>, {data});
+1934 <span class="keyword">end</span>
+1935 
+1936 <span class="comment">% Convert a block into differentiable data.</span>
+1937 <a name="_sub3" href="#_subfunctions" class="code">function data = blocks2Data(blockInfo, startFrame, endFrame, </a><span class="keyword">...</span>
+1938     firstFrame, blockSize, useSamples)
+1939 
+1940 <span class="comment">% Compute the size of the data.</span>
+1941 dataSize = endFrame - startFrame + 1;
+1942 
+1943 <span class="comment">% Pre-allocate memory.</span>
+1944 dataCells = 0; <span class="comment">% the current number of data cells</span>
+1945 block = blockInfo.blocks{1}; <span class="comment">% a block of data</span>
+1946 data = [];
+1947 <span class="keyword">for</span> i = 1:length(block)
+1948     
+1949     <span class="comment">% Compute the new cells.</span>
+1950     <span class="keyword">if</span> ndims(block{i}) &lt;= 2
+1951         newDataCells = 1;
+1952     <span class="keyword">else</span>
+1953         newDataCells = size(block{i}, 2);
+1954     <span class="keyword">end</span>
+1955     
+1956     <span class="comment">% Compute the new rows.</span>
+1957     newDataRows = size(block{i}, 1);
+1958     <span class="keyword">if</span> newDataRows &gt; 1 &amp;&amp; ~isempty(useSamples)
+1959         newDataRows = length(useSamples);
+1960     <span class="keyword">end</span>
+1961         
+1962     <span class="comment">% Allocate memory.</span>
+1963     dataNaNs = [];
+1964     dataNaNs(newDataRows,1:dataSize) = NaN;
+1965     <span class="keyword">for</span> j = 1:newDataCells
+1966         data{dataCells + j} = dataNaNs;
+1967     <span class="keyword">end</span>
+1968     
+1969     <span class="comment">% Advance.</span>
+1970     dataCells = dataCells + newDataCells;
+1971 <span class="keyword">end</span>
+1972 
+1973 <span class="comment">% Split the data into 2 dimensions, then merge it into singles matrices of</span>
+1974 <span class="comment">% samples x time.</span>
+1975 startBlockI = <span class="keyword">...</span><span class="comment"> % the starting block's index</span>
+1976     floor((startFrame - firstFrame) / blockSize) + 1;
+1977 endBlockI = <span class="keyword">...</span><span class="comment"> % the ending block's index</span>
+1978     floor((endFrame - firstFrame) / blockSize) + 1;
+1979 startBlockInfoI = <span class="keyword">...</span><span class="comment"> % the starting block's index in the info struct</span>
+1980     blockInfo.index - startBlockI + 1;
+1981 endBlockInfoI = <span class="keyword">...</span><span class="comment"> % the ending block's index in the info struct</span>
+1982     startBlockInfoI + endBlockI - startBlockI;
+1983 dataOff = 1; <span class="comment">% the merged data offset</span>
+1984 <span class="keyword">for</span> i = startBlockInfoI:endBlockInfoI
+1985     
+1986     <span class="comment">% Compute the starting offset in the current block.</span>
+1987     <span class="keyword">if</span> i == startBlockInfoI
+1988         startBlockOffI = startFrame - firstFrame + 1 - <span class="keyword">...</span>
+1989             ((startBlockI - 1) * blockSize);
+1990     <span class="keyword">else</span>
+1991         startBlockOffI = 1;
+1992     <span class="keyword">end</span>
+1993     
+1994     <span class="comment">% Compute the ending offset in the current block.</span>
+1995     <span class="keyword">if</span> i == endBlockInfoI
+1996         endBlockOffI = endFrame - firstFrame + 1 - <span class="keyword">...</span>
+1997             ((endBlockI - 1) * blockSize);
+1998     <span class="keyword">else</span>
+1999         endBlockOffI = blockSize;
+2000     <span class="keyword">end</span>
+2001     
+2002     <span class="comment">% Split the data into 2 dimensions, then merge it.</span>
+2003     newDataOff = <span class="keyword">...</span><span class="comment"> % the current block's new data offset in the merged </span>
+2004         <span class="keyword">...</span><span class="comment">          % data matrix</span>
+2005         dataOff + endBlockOffI - startBlockOffI;
+2006     block = blockInfo.blocks{i}; <span class="comment">% the current block</span>
+2007     dataCellOff = 0; <span class="comment">% the merged data cell offset</span>
+2008     <span class="keyword">for</span> j = 1:length(block)
+2009         
+2010         <span class="comment">% Merge 2-dimensional data.</span>
+2011         <span class="keyword">if</span> ndims(block{j}) &lt;= 2
+2012             
+2013             <span class="comment">% Advance.</span>
+2014             dataCellOff = dataCellOff + 1;
+2015             
+2016             <span class="comment">% Use all samples (or we're only sampling once per frame).</span>
+2017             <span class="keyword">if</span> isempty(useSamples) || size(block{j}, 1) &lt;= 1
+2018                 data{dataCellOff}(:,dataOff:newDataOff) = <span class="keyword">...</span>
+2019                     block{j}(:,startBlockOffI:endBlockOffI);
+2020                 
+2021             <span class="comment">% Only use the specified sampling points.</span>
+2022             <span class="keyword">else</span>
+2023                 data{dataCellOff}(:,dataOff:newDataOff) = <span class="keyword">...</span>
+2024                     block{j}(useSamples,startBlockOffI:endBlockOffI);
+2025             <span class="keyword">end</span>
+2026             
+2027         <span class="comment">% Split multi-dimensional data, then merge it as 2-dimensional data.</span>
+2028         <span class="keyword">else</span>
+2029             <span class="keyword">for</span> k = 1:size(block{j}, 2)
+2030                 
+2031                 <span class="comment">% Use all samples (or we're only sampling once per frame).</span>
+2032                 <span class="keyword">if</span> isempty(useSamples) || size(block{j}, 1) &lt;= 1
+2033                     data{dataCellOff + k}(:,dataOff:newDataOff) = <span class="keyword">...</span>
+2034                         block{j}(:,k,startBlockOffI:endBlockOffI);
+2035                     
+2036                 <span class="comment">% Only use the specified sampling points.</span>
+2037                 <span class="keyword">else</span>
+2038                     data{dataCellOff + k}(:,dataOff:newDataOff) = <span class="keyword">...</span>
+2039                         block{j}(useSamples,k, startBlockOffI:endBlockOffI);
+2040                 <span class="keyword">end</span>
+2041             <span class="keyword">end</span>
+2042             
+2043             <span class="comment">% Advance.</span>
+2044             dataCellOff = dataCellOff + k;
+2045         <span class="keyword">end</span>
+2046     <span class="keyword">end</span>
+2047     
+2048     <span class="comment">% Advance.</span>
+2049     dataOff = newDataOff + 1;
+2050 <span class="keyword">end</span>
+2051 <span class="keyword">end</span>
+2052 
+2053 <span class="comment">% Compute the data mean for the sample groups.</span>
+2054 <a name="_sub4" href="#_subfunctions" class="code">function newData = meanData(data, meanSamples)</a>
+2055 newData(1:length(meanSamples),1:size(data,2)) = NaN;
+2056 <span class="keyword">for</span> i = 1:length(meanSamples)
+2057     newData(i,:) = nanmean(data(meanSamples{i},:), 1);
+2058 <span class="keyword">end</span>
+2059 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

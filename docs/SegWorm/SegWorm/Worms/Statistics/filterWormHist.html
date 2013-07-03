@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of filterWormHist</title>
+  <meta name="keywords" content="filterWormHist">
+  <meta name="description" content="FILTERWORMHIST Filter worm features to meet specific criteria.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>filterWormHist
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>FILTERWORMHIST Filter worm features to meet specific criteria.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function isUsed = filterWormHist(hist, filt) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FILTERWORMHIST Filter worm features to meet specific criteria.
+
+   ISUSED = FILTERWORMHIST(HIST, FILT)
+
+   Inputs:
+       hist - the worm histogram
+       filt - the filtering criteria; a structure with any of the fields:
+
+              featuresI = the feature indices (see WORMDATAINFO)
+              minThr    = the minimum feature value (optional)
+              maxThr    = the maximum feature value (optional)
+              indices   = the sub indices for the features (optional)
+              subFields = the subFields for the features (optional)
+
+   Outputs:
+       isUsed - for each worm, did it meet the criteria?
+
+ See also WORMDATAINFO, <a href="worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">WORM2HISTOGRAM</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>	GETSTRUCTFIELD Get a field in a structure.</li><li><a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>	WORMDATAINFO Get information for computing the worm data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Printing/worm2TOCOntologyTIF.html" class="code" title="function [filename pages] = worm2TOCOntologyTIF(filename, worm, wormName,varargin)">worm2TOCOntologyTIF</a>	WORM2TOCONTOLOGYTIF Save worm details to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>	WORM2DETAILSTIF Save worm details to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2pathTIF.html" class="code" title="function [filename pages] = worm2pathTIF(filename, worm, wormName, varargin)">worm2pathTIF</a>	WORM2PATHTIF Save worm information to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2summaryTIF.html" class="code" title="function [filename pages] = worm2summaryTIF(filename, worm, wormName,varargin)">worm2summaryTIF</a>	WORM2SUMMARYTIF Save a worm summary to a TIF.</li><li><a href="worm2StatsInfo.html" class="code" title="function worm2StatsInfo(filename, wormFiles, varargin)">worm2StatsInfo</a>	WORM2STATSINFO Compute worm statistics information and save it to a file.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function isUsed = filterWormHist(hist, filt)</a>
+0002 <span class="comment">%FILTERWORMHIST Filter worm features to meet specific criteria.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   ISUSED = FILTERWORMHIST(HIST, FILT)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       hist - the worm histogram</span>
+0008 <span class="comment">%       filt - the filtering criteria; a structure with any of the fields:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%              featuresI = the feature indices (see WORMDATAINFO)</span>
+0011 <span class="comment">%              minThr    = the minimum feature value (optional)</span>
+0012 <span class="comment">%              maxThr    = the maximum feature value (optional)</span>
+0013 <span class="comment">%              indices   = the sub indices for the features (optional)</span>
+0014 <span class="comment">%              subFields = the subFields for the features (optional)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   Outputs:</span>
+0017 <span class="comment">%       isUsed - for each worm, did it meet the criteria?</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% See also WORMDATAINFO, WORM2HISTOGRAM</span>
+0020 
+0021 <span class="comment">% Check the filter.</span>
+0022 isUsed = true(hist.morphology.length.histogram.sets.samples, 1);
+0023 <span class="keyword">if</span> isempty(filt)
+0024     <span class="keyword">return</span>;
+0025 <span class="keyword">end</span>
+0026 
+0027 <span class="comment">% Unpack the features.</span>
+0028 featuresI = filt.featuresI;
+0029 <span class="keyword">if</span> isempty(featuresI)
+0030     <span class="keyword">return</span>;
+0031 <span class="keyword">end</span>
+0032 
+0033 <span class="comment">% Unpack the thresholds.</span>
+0034 minThrs = [];
+0035 maxThrs = [];
+0036 <span class="keyword">if</span> isfield(filt, <span class="string">'minThrs'</span>)
+0037     minThrs = filt.minThrs;
+0038 <span class="keyword">end</span>
+0039 <span class="keyword">if</span> isfield(filt, <span class="string">'maxThrs'</span>)
+0040     maxThrs = filt.maxThrs;
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="comment">% Check the the thresholds.</span>
+0044 <span class="keyword">if</span> isempty(minThrs) &amp;&amp; isempty(maxThrs)
+0045     <span class="keyword">return</span>;
+0046 <span class="keyword">elseif</span> isempty(minThrs) 
+0047     minThrs = nan(length(featuresI), 1);
+0048 <span class="keyword">elseif</span> isempty(maxThrs) 
+0049     maxThrs = nan(length(featuresI), 1);
+0050 <span class="keyword">end</span>
+0051 
+0052 <span class="comment">% Unpack the indices and subFields</span>
+0053 <span class="keyword">if</span> isfield(filt, <span class="string">'indices'</span>)
+0054     indices = filt.indices;
+0055 <span class="keyword">else</span>
+0056     indices = ones(length(featuresI), 1);
+0057 <span class="keyword">end</span>
+0058 <span class="keyword">if</span> isfield(filt, <span class="string">'subFields'</span>)
+0059     subFields = filt.subFields;
+0060 <span class="keyword">else</span>
+0061     subFields = cell(length(featuresI), 1);
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="comment">% Filter the features.</span>
+0065 info = <a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>();
+0066 <span class="keyword">for</span> i = 1:length(featuresI)
+0067     
+0068     <span class="comment">% Get the data.</span>
+0069     feature = info(featuresI(i));
+0070     data = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(hist, feature.field);
+0071     data = data(indices(i));
+0072     <span class="keyword">if</span> ~isempty(subFields{i})
+0073         data = getStruct(data, subFields{i});
+0074     <span class="keyword">end</span>
+0075     data = data.histogram;
+0076     
+0077     <span class="comment">% Filter the data.</span>
+0078     <span class="keyword">for</span> j = 1:length(isUsed)
+0079         values = data.bins(data.data.counts(j,:) &gt; 0);
+0080         <span class="keyword">if</span> ~isempty(values) &amp;&amp; <span class="keyword">...</span>
+0081                 (min(values) &lt; minThrs(i) || max(values) &gt; maxThrs(i))
+0082             isUsed(j) = false;
+0083         <span class="keyword">end</span>
+0084     <span class="keyword">end</span>
+0085 <span class="keyword">end</span>
+0086 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

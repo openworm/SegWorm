@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoread</title>
+  <meta name="keywords" content="videoread">
+  <meta name="description" content="VIDEOREAD Read an video file in a mannter compatible with Matlab's">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>videoread
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>VIDEOREAD Read an video file in a mannter compatible with Matlab's</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function mov=videoread(fname,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">VIDEOREAD Read an video file in a mannter compatible with Matlab's
+          built-in AVIREAD function, but using a videoReader object to do
+          the work instead.  
+
+   #######################################################################
+   #  PERFORMANCE WARNING: Many users will be much better off using a    #
+   #  videoReader object instead of calling this function.  If you are   #
+   #  reading a long video that will not fit in memory, you could read   #
+   #  in a chunk of frames at a time.  Unfortunately, this will result   #
+   #  in O(N^2) performance cost and/or possible seek misalignments.     #
+   #  Consider streaming the frames in using a videoReader object        #
+   #  instead.                                                           #
+   #######################################################################
+
+
+   MOV=VIDEOREAD(FNAME)
+     Read the video file FNAME into the Matlab movie structure MOV.  MOV
+     has two fields, &quot;cdata&quot; and &quot;colormap&quot;.  Since all videoReader
+     plugins currently output 24-bit images in all cases, colormap will
+     always be blank.    
+
+   MOV=VIDEOREAD(FNAME,VRARGS)
+     The same as MOV=VIDEOREAD(FNAME), but VRARGS are passed to the 
+     videoReader constructor.  VRARGS should be a cell array of arguments.
+
+   MOV=VIDEOREAD(FNAME,INDEX)
+     Reads only the frame(s) specified by INDEX.  INDEX can be a single
+     index or an array of indices into the video stream, where the first
+     frame is  number one.  IMPORTANT NOTES: If you use videoReader
+     directly, it assumes  frames start at 0, not 1.  We use 1-indexing
+     here in VIDEOREAD to maximize  compatibility with MathWork's AVIREAD.  
+     Also, if you find yourself making several calls to VIDEOREAD to 
+     extract different portions of the file and/or if the number of 
+     frames is large, consider using videoReader directly instead of this 
+     wrapper function.
+
+   MOV=VIDEOREAD(FNAME,VRARGS,INDEX)
+     The same as MOV=VIDEOREAD(FNAME,INDEX), but VRARGS are passed to the 
+     videoReader constructor.  VRARGS should be a cell array of arguments.  
+
+ Examples:
+   mov = videoread(fullfile(videoIODir, 'tests/numbers.uncompressed.avi'));
+   mov = videoread(fullfile(videoIODir, 'tests/numbers.uncompressed.avi'), 1:10);
+   mov = videoread(fullfile(videoIODir, 'tests/numbers.wmv3.avi'), {'DirectShow'});
+
+ SEE ALSO:
+   videoReader
+   <a href="buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>
+
+Copyright (c) 2006 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>	INFO=GET(VR)</li><li><a href="../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>	FRAME=GETFRAME(VR)</li><li><a href="../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>	WORKED=NEXT(VR)</li><li><a href="../videoIO/@videoReader/seek.html" class="code" title="function worked = seek(vr,fnum)">seek</a>	WORKED=SEEK(VR,FNUM)</li><li><a href="../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="../videoIO/@videoWriter/get.html" class="code" title="function info = get(vw,varargin)">get</a>	INFO=GET(VW)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../videoIO/tests/testVideoRead.html" class="code" title="">testVideoRead</a>	testVideoRead</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function mov=videoread(fname,varargin)</a>
+0002 <span class="comment">%VIDEOREAD Read an video file in a mannter compatible with Matlab's</span>
+0003 <span class="comment">%          built-in AVIREAD function, but using a videoReader object to do</span>
+0004 <span class="comment">%          the work instead.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   #######################################################################</span>
+0007 <span class="comment">%   #  PERFORMANCE WARNING: Many users will be much better off using a    #</span>
+0008 <span class="comment">%   #  videoReader object instead of calling this function.  If you are   #</span>
+0009 <span class="comment">%   #  reading a long video that will not fit in memory, you could read   #</span>
+0010 <span class="comment">%   #  in a chunk of frames at a time.  Unfortunately, this will result   #</span>
+0011 <span class="comment">%   #  in O(N^2) performance cost and/or possible seek misalignments.     #</span>
+0012 <span class="comment">%   #  Consider streaming the frames in using a videoReader object        #</span>
+0013 <span class="comment">%   #  instead.                                                           #</span>
+0014 <span class="comment">%   #######################################################################</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   MOV=VIDEOREAD(FNAME)</span>
+0018 <span class="comment">%     Read the video file FNAME into the Matlab movie structure MOV.  MOV</span>
+0019 <span class="comment">%     has two fields, &quot;cdata&quot; and &quot;colormap&quot;.  Since all videoReader</span>
+0020 <span class="comment">%     plugins currently output 24-bit images in all cases, colormap will</span>
+0021 <span class="comment">%     always be blank.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   MOV=VIDEOREAD(FNAME,VRARGS)</span>
+0024 <span class="comment">%     The same as MOV=VIDEOREAD(FNAME), but VRARGS are passed to the</span>
+0025 <span class="comment">%     videoReader constructor.  VRARGS should be a cell array of arguments.</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%   MOV=VIDEOREAD(FNAME,INDEX)</span>
+0028 <span class="comment">%     Reads only the frame(s) specified by INDEX.  INDEX can be a single</span>
+0029 <span class="comment">%     index or an array of indices into the video stream, where the first</span>
+0030 <span class="comment">%     frame is  number one.  IMPORTANT NOTES: If you use videoReader</span>
+0031 <span class="comment">%     directly, it assumes  frames start at 0, not 1.  We use 1-indexing</span>
+0032 <span class="comment">%     here in VIDEOREAD to maximize  compatibility with MathWork's AVIREAD.</span>
+0033 <span class="comment">%     Also, if you find yourself making several calls to VIDEOREAD to</span>
+0034 <span class="comment">%     extract different portions of the file and/or if the number of</span>
+0035 <span class="comment">%     frames is large, consider using videoReader directly instead of this</span>
+0036 <span class="comment">%     wrapper function.</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%   MOV=VIDEOREAD(FNAME,VRARGS,INDEX)</span>
+0039 <span class="comment">%     The same as MOV=VIDEOREAD(FNAME,INDEX), but VRARGS are passed to the</span>
+0040 <span class="comment">%     videoReader constructor.  VRARGS should be a cell array of arguments.</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% Examples:</span>
+0043 <span class="comment">%   mov = videoread(fullfile(videoIODir, 'tests/numbers.uncompressed.avi'));</span>
+0044 <span class="comment">%   mov = videoread(fullfile(videoIODir, 'tests/numbers.uncompressed.avi'), 1:10);</span>
+0045 <span class="comment">%   mov = videoread(fullfile(videoIODir, 'tests/numbers.wmv3.avi'), {'DirectShow'});</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">% SEE ALSO:</span>
+0048 <span class="comment">%   videoReader</span>
+0049 <span class="comment">%   buildVideoIO</span>
+0050 <span class="comment">%</span>
+0051 <span class="comment">%Copyright (c) 2006 Gerald Dalley</span>
+0052 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0053 <span class="comment">%when using this library on GNU/Linux).</span>
+0054 
+0055 <span class="keyword">if</span> nargin==1,
+0056   vrargs = {};
+0057 <span class="keyword">elseif</span> nargin==2,
+0058   <span class="keyword">if</span> (iscell(varargin{1})),
+0059     vrargs = varargin{1};
+0060   <span class="keyword">else</span>
+0061     vrargs = {};
+0062     index  = varargin{1};
+0063   <span class="keyword">end</span>
+0064 <span class="keyword">elseif</span> nargin==3,
+0065   vrargs = varargin{1};
+0066   index  = varargin{2};
+0067 <span class="keyword">end</span>
+0068 
+0069 vr = <a href="../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(fname, vrargs{:});
+0070 <span class="keyword">if</span> ~(exist(<span class="string">'index'</span>,<span class="string">'var'</span>)),
+0071   info = <a href="../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>(vr);
+0072   index = (0:info.numFrames-1); <span class="comment">% 0-indexed</span>
+0073 <span class="keyword">else</span>
+0074   index = index - 1; <span class="comment">% to 0-indexed</span>
+0075 <span class="keyword">end</span>
+0076 
+0077 mov = struct;
+0078 currFrame = -1;
+0079 <span class="keyword">if</span> (size(index)&gt;0)
+0080   <span class="comment">% index supplied or deduced from file</span>
+0081   <span class="keyword">for</span> i=1:length(index)
+0082     f = index(i);
+0083     <span class="keyword">if</span> (f == currFrame+1)
+0084       <span class="keyword">if</span> ~<a href="../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr), error(<span class="string">'Could not advance to frame %d\n'</span>, f+1); <span class="keyword">end</span>
+0085     <span class="keyword">else</span>
+0086       <span class="keyword">if</span> ~<a href="../videoIO/@videoReader/seek.html" class="code" title="function worked = seek(vr,fnum)">seek</a>(vr, f), error(<span class="string">'Could not seek to frame %d\n'</span>, f+1); <span class="keyword">end</span>
+0087     <span class="keyword">end</span>
+0088     currFrame = f;
+0089     mov(i).cdata = <a href="../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr);
+0090     mov(i).colormap = [];
+0091   <span class="keyword">end</span>
+0092 <span class="keyword">else</span>
+0093   <span class="comment">% no index was supplied and we could not deduce the number of frames</span>
+0094   <span class="comment">% in the video.</span>
+0095   i=1;
+0096   <span class="keyword">while</span> <a href="../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr)
+0097     mov(i).cdata = <a href="../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr);
+0098     mov(i).colormap = [];
+0099     i = i+1;
+0100   <span class="keyword">end</span>
+0101 <span class="keyword">end</span>
+0102 
+0103 vr = <a href="../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr); <span class="comment">%#ok&lt;NASGU&gt; -- it's a good habit to assign back for now</span>
+0104</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

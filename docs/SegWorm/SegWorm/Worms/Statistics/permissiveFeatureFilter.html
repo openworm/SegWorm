@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of permissiveFeatureFilter</title>
+  <meta name="keywords" content="permissiveFeatureFilter">
+  <meta name="description" content="PERMISSIVEFEATUREFILTER Get a permissive filter for worm features:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>permissiveFeatureFilter
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>PERMISSIVEFEATUREFILTER Get a permissive filter for worm features:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function filter = permissiveFeatureFilter() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PERMISSIVEFEATUREFILTER Get a permissive filter for worm features:
+ 250   &lt; Length        &lt; 2000
+ 25    &lt; Midbody Width &lt; 200
+ -1000 &lt; Midbody Speed &lt; 1000
+
+   FILTER = PERMISSIVEFEATUREFILTER()
+
+   Output:
+       filter - a permissive filter to identify usable worm experiments
+
+ See also <a href="filterWormHist.html" class="code" title="function isUsed = filterWormHist(hist, filt)">FILTERWORMHIST</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function filter = permissiveFeatureFilter()</a>
+0002 <span class="comment">%PERMISSIVEFEATUREFILTER Get a permissive filter for worm features:</span>
+0003 <span class="comment">% 250   &lt; Length        &lt; 2000</span>
+0004 <span class="comment">% 25    &lt; Midbody Width &lt; 200</span>
+0005 <span class="comment">% -1000 &lt; Midbody Speed &lt; 1000</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   FILTER = PERMISSIVEFEATUREFILTER()</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Output:</span>
+0010 <span class="comment">%       filter - a permissive filter to identify usable worm experiments</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% See also FILTERWORMHIST</span>
+0013 
+0014 <span class="comment">% Construct a permissive filter for worm experiments.</span>
+0015 filter = [];
+0016 filter.featuresI = [ <span class="keyword">...</span>
+0017     1 <span class="keyword">...</span><span class="comment"> % length</span>
+0018     3 <span class="keyword">...</span><span class="comment"> % midbody width</span>
+0019     35]; <span class="comment">% midbody speed</span>
+0020 filter.minThrs = [ <span class="keyword">...</span>
+0021     250 <span class="keyword">...</span><span class="comment"> % length</span>
+0022     25 <span class="keyword">...</span><span class="comment"> % midbody width</span>
+0023     -1000 ]; <span class="comment">% midbody speed</span>
+0024 filter.maxThrs = [ <span class="keyword">...</span>
+0025     2000 <span class="keyword">...</span><span class="comment"> % length</span>
+0026     200 <span class="keyword">...</span><span class="comment"> % midbody width</span>
+0027     1000 ]; <span class="comment">% midbody speed</span>
+0028 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

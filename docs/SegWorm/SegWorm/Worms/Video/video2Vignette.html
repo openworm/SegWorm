@@ -1,0 +1,503 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of video2Vignette</title>
+  <meta name="keywords" content="video2Vignette">
+  <meta name="description" content="VIDEO2VIGNETTE Compute the vignette from a video. Exclude the largest">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Video -->
+<h1>video2Vignette
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>VIDEO2VIGNETTE Compute the vignette from a video. Exclude the largest</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function vignette = video2Vignette(videoFile, frames, threshold,otsuStdDev, dilatePixels, erodePixels, smoothPixels, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">VIDEO2VIGNETTE Compute the vignette from a video. Exclude the largest
+   dark, connected component (i.e., exclude the worm). And, exlcude frames
+   where the largest dark, connected component touches an edge (i.e.,
+   exclude the vignette).
+
+   VIGNETTE = VIDEO2VIGNETTE(VIDEOFILE, FRAMES, THRESHOLD, OTSUSTDDEV, 
+                             DILATEPIXELS, ERODEPIXELS, SMOOTHPIXELS)
+
+   VIGNETTE = VIDEO2VIGNETTE(VIDEOFILE, FRAMES, THRESHOLD, OTSUSTDDEV, 
+                             DILATEPIXELS, ERODEPIXELS, SMOOTHPIXELS,
+                             VIGNETTEFILE)
+
+   VIGNETTE = VIDEO2VIGNETTE(VIDEOFILE, FRAMES, THRESHOLD, OTSUSTDDEV,
+                             DILATEPIXELS, ERODEPIXELS, SMOOTHPIXELS,
+                             VIGNETTEFILE, INFOFILE)
+
+   VIGNETTE = VIDEO2VIGNETTE(VIDEOFILE, FRAMES, THRESHOLD, OTSUSTDDEV, 
+                             DILATEPIXELS, ERODEPIXELS, SMOOTHPIXELS,
+                             VIGNETTEFILE, INFOFILE, LOGFILE, DIFFFILE)
+
+   VIGNETTE = VIDEO2VIGNETTE(VIDEOFILE, FRAMES, THRESHOLD, OTSUSTDDEV, 
+                             DILATEPIXELS, ERODEPIXELS, SMOOTHPIXELS,
+                             VIGNETTEFILE, INFOFILE, LOGFILE, DIFFFILE,
+                             IMPRINTSIZETHR, IMPRINTINTENSITYTHR,
+                             IMPRINTDILATEPIXELS, IMPRINTNEIGHBORAVG)
+
+   Inputs:
+       videoFile    - the name of the video for computing the vignette
+       frames       - the frames for computing the vignette;
+                      if empty, all frames are used
+                      Note 1: video frame indexing begins at 0
+                      Note 2: if the infoFile, logFile, and diffFile are
+                      defined, we use the stage movement frames instead
+       threshold    - the threshold for binarizing the image; this
+                      threshold is between 0-1.0 or 0-255 (black to
+                      white); if empty, we use the Otsu threshold instead
+                      Note: if the infoFile is defined, we use the
+                      user-defined threshold instead
+       otsuStdDev   - if we are thresholding using the Otsu method, this
+                      value is the standard deviations, from the Otsu
+                      threshold's foreground mean, at which to threshold;
+                      if empty, we threshold at the Otsu threshold
+                      Note: if the infoFile is defined, we use the
+                      user-defined threshold instead
+       dilatePixels - the number of neighboring pixels to use for
+                      dilating the lagest connected component; if empty,
+                      the largest connected component isn't dilated
+       erodePixels  - the number of neighboring pixels to use for
+                      eroding the lagest connected component; if empty,
+                      the largest connected component isn't eroded
+       smoothPixels - the number of neighboring pixels to use for
+                      gaussian smoothing the vignette; if empty, the
+                      vignette isn't smoothed
+       vignetteFile - the name of the file in which to store the vignette;
+                      if empty, the vignette isn't stored
+       infoFile     - the XML file with the experiment information
+       logFile      - the CSV file with the stage locations
+       diffFile     - the MAT file with the video differentiation
+       imprintSizeThr      - the size threshold for removing any worm
+                             imprints in the vignette
+       imprintIntensityThr - the intensity threshold for removing any worm
+                             imprints in the vignette; the default is 0
+                             (the intensity is centered near 0)
+       imprintDilatePixels - the number of neighboring pixels to use for
+                             dilating the worm imprint; if empty, the worm
+                             imprint isn't dilated
+       imprintNeighborAvg  - the number of neighboring pixels to use in
+                             determining the imprint's replacement value.
+                             The mean of the imprint's bordering pixels,
+                             at this width, determines the imprint's
+                             replacement value.
+
+   Output:
+       vignette - the video's vignette</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/otsuImg.html" class="code" title="function [bwImg] = otsuImg(img, varargin)">otsuImg</a>	OTSUIMG Use the Otsu threshold to binarize an image.</li><li><a href="../../../SegWorm/Util/xmlReadTag.html" class="code" title="function values = xmlReadTag(xml, tag)">xmlReadTag</a>	XMLREADTAG Read a tag from an XML document.</li><li><a href="../../../SegWorm/Worms/StageMovement/findStageMovement.html" class="code" title="function [frames movesI locations] =findStageMovement(infoFile, logFile, diffFile, verbose, varargin)">findStageMovement</a>	FINDSTAGEMOVEMENT Find stage movements in a worm experiment.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function vignette = video2Vignette(videoFile, frames, threshold, </a><span class="keyword">...</span>
+0002     otsuStdDev, dilatePixels, erodePixels, smoothPixels, varargin)
+0003 <span class="comment">%VIDEO2VIGNETTE Compute the vignette from a video. Exclude the largest</span>
+0004 <span class="comment">%   dark, connected component (i.e., exclude the worm). And, exlcude frames</span>
+0005 <span class="comment">%   where the largest dark, connected component touches an edge (i.e.,</span>
+0006 <span class="comment">%   exclude the vignette).</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   VIGNETTE = VIDEO2VIGNETTE(VIDEOFILE, FRAMES, THRESHOLD, OTSUSTDDEV,</span>
+0009 <span class="comment">%                             DILATEPIXELS, ERODEPIXELS, SMOOTHPIXELS)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   VIGNETTE = VIDEO2VIGNETTE(VIDEOFILE, FRAMES, THRESHOLD, OTSUSTDDEV,</span>
+0012 <span class="comment">%                             DILATEPIXELS, ERODEPIXELS, SMOOTHPIXELS,</span>
+0013 <span class="comment">%                             VIGNETTEFILE)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   VIGNETTE = VIDEO2VIGNETTE(VIDEOFILE, FRAMES, THRESHOLD, OTSUSTDDEV,</span>
+0016 <span class="comment">%                             DILATEPIXELS, ERODEPIXELS, SMOOTHPIXELS,</span>
+0017 <span class="comment">%                             VIGNETTEFILE, INFOFILE)</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   VIGNETTE = VIDEO2VIGNETTE(VIDEOFILE, FRAMES, THRESHOLD, OTSUSTDDEV,</span>
+0020 <span class="comment">%                             DILATEPIXELS, ERODEPIXELS, SMOOTHPIXELS,</span>
+0021 <span class="comment">%                             VIGNETTEFILE, INFOFILE, LOGFILE, DIFFFILE)</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   VIGNETTE = VIDEO2VIGNETTE(VIDEOFILE, FRAMES, THRESHOLD, OTSUSTDDEV,</span>
+0024 <span class="comment">%                             DILATEPIXELS, ERODEPIXELS, SMOOTHPIXELS,</span>
+0025 <span class="comment">%                             VIGNETTEFILE, INFOFILE, LOGFILE, DIFFFILE,</span>
+0026 <span class="comment">%                             IMPRINTSIZETHR, IMPRINTINTENSITYTHR,</span>
+0027 <span class="comment">%                             IMPRINTDILATEPIXELS, IMPRINTNEIGHBORAVG)</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   Inputs:</span>
+0030 <span class="comment">%       videoFile    - the name of the video for computing the vignette</span>
+0031 <span class="comment">%       frames       - the frames for computing the vignette;</span>
+0032 <span class="comment">%                      if empty, all frames are used</span>
+0033 <span class="comment">%                      Note 1: video frame indexing begins at 0</span>
+0034 <span class="comment">%                      Note 2: if the infoFile, logFile, and diffFile are</span>
+0035 <span class="comment">%                      defined, we use the stage movement frames instead</span>
+0036 <span class="comment">%       threshold    - the threshold for binarizing the image; this</span>
+0037 <span class="comment">%                      threshold is between 0-1.0 or 0-255 (black to</span>
+0038 <span class="comment">%                      white); if empty, we use the Otsu threshold instead</span>
+0039 <span class="comment">%                      Note: if the infoFile is defined, we use the</span>
+0040 <span class="comment">%                      user-defined threshold instead</span>
+0041 <span class="comment">%       otsuStdDev   - if we are thresholding using the Otsu method, this</span>
+0042 <span class="comment">%                      value is the standard deviations, from the Otsu</span>
+0043 <span class="comment">%                      threshold's foreground mean, at which to threshold;</span>
+0044 <span class="comment">%                      if empty, we threshold at the Otsu threshold</span>
+0045 <span class="comment">%                      Note: if the infoFile is defined, we use the</span>
+0046 <span class="comment">%                      user-defined threshold instead</span>
+0047 <span class="comment">%       dilatePixels - the number of neighboring pixels to use for</span>
+0048 <span class="comment">%                      dilating the lagest connected component; if empty,</span>
+0049 <span class="comment">%                      the largest connected component isn't dilated</span>
+0050 <span class="comment">%       erodePixels  - the number of neighboring pixels to use for</span>
+0051 <span class="comment">%                      eroding the lagest connected component; if empty,</span>
+0052 <span class="comment">%                      the largest connected component isn't eroded</span>
+0053 <span class="comment">%       smoothPixels - the number of neighboring pixels to use for</span>
+0054 <span class="comment">%                      gaussian smoothing the vignette; if empty, the</span>
+0055 <span class="comment">%                      vignette isn't smoothed</span>
+0056 <span class="comment">%       vignetteFile - the name of the file in which to store the vignette;</span>
+0057 <span class="comment">%                      if empty, the vignette isn't stored</span>
+0058 <span class="comment">%       infoFile     - the XML file with the experiment information</span>
+0059 <span class="comment">%       logFile      - the CSV file with the stage locations</span>
+0060 <span class="comment">%       diffFile     - the MAT file with the video differentiation</span>
+0061 <span class="comment">%       imprintSizeThr      - the size threshold for removing any worm</span>
+0062 <span class="comment">%                             imprints in the vignette</span>
+0063 <span class="comment">%       imprintIntensityThr - the intensity threshold for removing any worm</span>
+0064 <span class="comment">%                             imprints in the vignette; the default is 0</span>
+0065 <span class="comment">%                             (the intensity is centered near 0)</span>
+0066 <span class="comment">%       imprintDilatePixels - the number of neighboring pixels to use for</span>
+0067 <span class="comment">%                             dilating the worm imprint; if empty, the worm</span>
+0068 <span class="comment">%                             imprint isn't dilated</span>
+0069 <span class="comment">%       imprintNeighborAvg  - the number of neighboring pixels to use in</span>
+0070 <span class="comment">%                             determining the imprint's replacement value.</span>
+0071 <span class="comment">%                             The mean of the imprint's bordering pixels,</span>
+0072 <span class="comment">%                             at this width, determines the imprint's</span>
+0073 <span class="comment">%                             replacement value.</span>
+0074 <span class="comment">%</span>
+0075 <span class="comment">%   Output:</span>
+0076 <span class="comment">%       vignette - the video's vignette</span>
+0077 
+0078 <span class="comment">% Are we saving the vignette to a file?</span>
+0079 vignetteFile = [];
+0080 <span class="keyword">if</span> ~isempty(varargin)
+0081     vignetteFile = varargin{1};
+0082 <span class="keyword">end</span>
+0083 
+0084 <span class="comment">% Are we using the user-defined threshold?</span>
+0085 <span class="keyword">if</span> length(varargin) &gt; 1
+0086     
+0087     <span class="comment">% Read the threshold configuration.</span>
+0088     infoFile = varargin{2};
+0089     xml = xmlread(infoFile);
+0090     boundary = lower(strtrim(<a href="../../../SegWorm/Util/xmlReadTag.html" class="code" title="function values = xmlReadTag(xml, tag)">xmlReadTag</a>(xml, <span class="keyword">...</span>
+0091         <span class="string">'configuration.info.tracker.boundary.type'</span>)));
+0092     isAuto = lower(strtrim(<a href="../../../SegWorm/Util/xmlReadTag.html" class="code" title="function values = xmlReadTag(xml, tag)">xmlReadTag</a>(xml, <span class="keyword">...</span>
+0093         <span class="string">'configuration.info.tracker.algorithm.threshold.auto.on'</span>)));
+0094     
+0095     <span class="comment">% Read the threshold.</span>
+0096     threshold = [];
+0097     otsuStdDev = [];
+0098     <span class="keyword">if</span> (isequal(boundary, <span class="string">'centroid'</span>) || isequal(boundary, <span class="string">'both'</span>))
+0099         <span class="keyword">if</span> isequal(isAuto, <span class="string">'false'</span>)
+0100             threshold = str2double(<a href="../../../SegWorm/Util/xmlReadTag.html" class="code" title="function values = xmlReadTag(xml, tag)">xmlReadTag</a>(xml, <span class="keyword">...</span>
+0101                 <span class="string">'configuration.info.tracker.algorithm.threshold.manual'</span>));
+0102         <span class="keyword">else</span>
+0103             otsuStdDev = -str2double(<a href="../../../SegWorm/Util/xmlReadTag.html" class="code" title="function values = xmlReadTag(xml, tag)">xmlReadTag</a>(xml, [<span class="string">'configuration.'</span> <span class="keyword">...</span>
+0104                 <span class="string">'info.tracker.algorithm.threshold.auto.deviation'</span>]));
+0105         <span class="keyword">end</span>
+0106     <span class="keyword">end</span>
+0107 <span class="keyword">end</span>
+0108 
+0109 <span class="comment">% Are we using the stage movement frames?</span>
+0110 <span class="keyword">if</span> isempty(frames) &amp;&amp; length(varargin) &gt; 3
+0111     
+0112     <span class="comment">% Find the stage movements.</span>
+0113     logFile = varargin{3};
+0114     diffFile = varargin{4};
+0115     [moveFrames, ~, ~] = <a href="../../../SegWorm/Worms/StageMovement/findStageMovement.html" class="code" title="function [frames movesI locations] =findStageMovement(infoFile, logFile, diffFile, verbose, varargin)">findStageMovement</a>(infoFile, logFile, diffFile, 0);
+0116     frames = find(moveFrames) - 1;
+0117 <span class="keyword">end</span>
+0118 
+0119 <span class="comment">% Are we removing the worm imprint from the vignette?</span>
+0120 imprintSizeThr = [];
+0121 <span class="keyword">if</span> length(varargin) &gt; 4
+0122     
+0123     <span class="comment">% Determine the worm imprint size threshold.</span>
+0124     imprintSizeThr = varargin{5};
+0125     
+0126     <span class="comment">% Determine the worm imprint intensity threshold.</span>
+0127     imprintIntensityThr = 0;
+0128     <span class="keyword">if</span> length(varargin) &gt; 5
+0129         imprintIntensityThr = varargin{6};
+0130     <span class="keyword">end</span>
+0131     
+0132     <span class="comment">% Determine the worm imprint dilation.</span>
+0133     imprintDilatePixels = 5;
+0134     <span class="keyword">if</span> length(varargin) &gt; 6
+0135         imprintDilatePixels = varargin{7};
+0136     <span class="keyword">end</span>
+0137     
+0138     <span class="comment">% Determine the width of the imprint's neighboring border to use</span>
+0139     <span class="comment">% in computing imprint's the replacement value.</span>
+0140     imprintNeighborAvg = 5;
+0141     <span class="keyword">if</span> length(varargin) &gt; 7
+0142         imprintNeighborAvg = varargin{8};
+0143     <span class="keyword">end</span>
+0144 <span class="keyword">end</span>
+0145 
+0146 <span class="comment">% Open the video and get its information.</span>
+0147 <span class="keyword">if</span> ispc()
+0148     vr = videoReader(videoFile, <span class="string">'plugin'</span>, <span class="string">'DirectShow'</span>);
+0149 <span class="keyword">else</span>
+0150     vr = videoReader(videoFile, <span class="string">'plugin'</span>, <span class="string">'ffmpegDirect'</span>);
+0151 <span class="keyword">end</span>
+0152 fps = get(vr, <span class="string">'fps'</span>);
+0153 height = get(vr, <span class="string">'height'</span>);
+0154 width = get(vr, <span class="string">'width'</span>);
+0155 imgSize = height * width;
+0156 imgNWCorner = imgSize - height + 1;
+0157 
+0158 <span class="comment">% Is the video grayscale?</span>
+0159 <span class="comment">% Note: if there's no difference between the red and green channel, we</span>
+0160 <span class="comment">% consider all 3 RGB channels identical grayscale images.</span>
+0161 isGray = false;
+0162 isVideoFrame = next(vr);
+0163 <span class="keyword">if</span> isVideoFrame
+0164     img = getframe(vr);
+0165     <span class="keyword">if</span> max(max(abs(img(:,:,1) - img(:,:,2)))) == 0
+0166         isGray = true;
+0167     <span class="keyword">end</span>
+0168 <span class="keyword">end</span>
+0169 
+0170 <span class="comment">% Check the frames.</span>
+0171 <span class="keyword">if</span> isempty(frames)
+0172     frames = 0:(get(vr, <span class="string">'numFrames'</span>) - 1);
+0173 <span class="keyword">end</span>
+0174 
+0175 <span class="comment">% Check the threshold.</span>
+0176 <span class="keyword">if</span> threshold &gt; 1
+0177     threshold = double(threshold) / 255.0;
+0178 <span class="keyword">end</span>
+0179 
+0180 <span class="comment">% Create the dilation disk.</span>
+0181 dilateDisk = [];
+0182 <span class="keyword">if</span> dilatePixels &gt; 0
+0183     dilateDisk = strel(<span class="string">'disk'</span>, dilatePixels);
+0184 <span class="keyword">end</span>
+0185 
+0186 <span class="comment">% Create the erosion disk.</span>
+0187 erodeDisk = [];
+0188 <span class="keyword">if</span> erodePixels &gt; 0
+0189     erodeDisk = strel(<span class="string">'disk'</span>, erodePixels);
+0190 <span class="keyword">end</span>
+0191 
+0192 <span class="comment">% Pre-allocate memory.</span>
+0193 trueImg = true(height, width);
+0194 vignette = double(zeros(height, width));
+0195 numVignetteFrames = 0;
+0196 
+0197 <span class="comment">% Average the video frames.</span>
+0198 frames = unique(sort(frames));
+0199 frame = 0;
+0200 <span class="keyword">for</span> i = 1:length(frames)
+0201     
+0202     <span class="comment">% Step to the next video frame.</span>
+0203     <span class="keyword">if</span> frames(i) - frame == 1
+0204         next(vr);
+0205         timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0206         frame = round(timestamp * fps);
+0207         
+0208     <span class="comment">% Seek the next video frame.</span>
+0209     <span class="keyword">elseif</span> frames(i) &gt; frame
+0210         
+0211         <span class="comment">% Find the requested frame.</span>
+0212         <span class="comment">% Note: seek is inaccurate.</span>
+0213         seek(vr, frames(i));
+0214         timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0215         
+0216         <span class="comment">% We overshot the requested frame.</span>
+0217         j = frames(i);
+0218         <span class="keyword">while</span> j &gt; 0 &amp;&amp; round(timestamp * fps) &gt; frames(i)
+0219             j = j - 1;
+0220             seek(vr, j);
+0221             timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0222         <span class="keyword">end</span>
+0223         
+0224         <span class="comment">% We undershot the requested frame.</span>
+0225         isNextFrame = true;
+0226         <span class="keyword">while</span> isNextFrame &amp;&amp; round(timestamp * fps) &lt; frames(i)
+0227             isNextFrame = next(vr);
+0228             timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0229         <span class="keyword">end</span>
+0230         frame = round(timestamp * fps);
+0231     <span class="keyword">end</span>
+0232     
+0233     <span class="comment">% The frame is missing.</span>
+0234     <span class="keyword">if</span> frames(i) ~= frame
+0235         <span class="keyword">continue</span>;
+0236     <span class="keyword">end</span>
+0237     
+0238     <span class="comment">% Get the video frame and convert it to grayscale.</span>
+0239     <span class="keyword">if</span> isGray
+0240         img = getframe(vr);
+0241         img = img(:,:,1);
+0242     <span class="keyword">else</span>
+0243         img = rgb2gray(getframe(vr));
+0244     <span class="keyword">end</span>
+0245     
+0246     <span class="comment">% Binarize the image.</span>
+0247     <span class="keyword">if</span> isempty(threshold)
+0248         bImg = <a href="../../../SegWorm/ComputerVision/otsuImg.html" class="code" title="function [bwImg] = otsuImg(img, varargin)">otsuImg</a>(img, true, otsuStdDev);
+0249     <span class="keyword">else</span>
+0250         bImg = im2bw(img, threshold);
+0251     <span class="keyword">end</span>
+0252     
+0253     <span class="comment">% Find the worm.</span>
+0254     bImg = ~bImg;
+0255     cc = bwconncomp(bImg);
+0256     <span class="keyword">if</span> ~isempty(cc.PixelIdxList)
+0257         lengths = cellfun(@numel, cc.PixelIdxList);
+0258         [~, ccMaxI] = max(lengths, [], 2);
+0259         
+0260         <span class="comment">% Use the largest connected component.</span>
+0261         wormPixels = cc.PixelIdxList{ccMaxI};
+0262         
+0263         <span class="comment">% The largest connected component must not any of the edges.</span>
+0264         <span class="keyword">if</span> ~any(wormPixels &lt;= height) &amp;&amp; <span class="keyword">...</span><span class="comment"> % east</span>
+0265                 ~any(wormPixels &gt;= imgNWCorner) &amp;&amp; <span class="keyword">...</span><span class="comment"> % west</span>
+0266                 ~any(mod(wormPixels, height) == 0) &amp;&amp; <span class="keyword">...</span><span class="comment"> % south</span>
+0267                 ~any(mod(wormPixels - 1, height) == 0) <span class="comment">% north</span>
+0268             
+0269             <span class="comment">% Create a mask of the worm.</span>
+0270             <span class="keyword">if</span> isempty(dilateDisk) &amp;&amp; isempty(erodeDisk)
+0271                 mask = trueImg;
+0272                 mask(wormPixels) = false;
+0273                 
+0274             <span class="comment">% Create a mask of the worm and dilate then erode it.</span>
+0275             <span class="keyword">else</span>
+0276                 
+0277                 <span class="comment">% Create a mask of the worm.</span>
+0278                 <span class="comment">% Note: the mask is reversed, the worm is the background.</span>
+0279                 mask = trueImg;
+0280                 mask(wormPixels) = false;
+0281                 
+0282                 <span class="comment">% Dilate the worm.</span>
+0283                 <span class="comment">% Note: we erode the foreground to dilate the worm.</span>
+0284                 <span class="keyword">if</span> ~isempty(dilateDisk)
+0285                     mask = imerode(mask, dilateDisk);
+0286                 <span class="keyword">end</span>
+0287                 
+0288                 <span class="comment">% Erode the worm.</span>
+0289                 <span class="comment">% Note: we dilate the background to erode the worm.</span>
+0290                 <span class="keyword">if</span> ~isempty(erodeDisk)
+0291                     mask = imdilate(mask, erodeDisk);
+0292                 <span class="keyword">end</span>
+0293             <span class="keyword">end</span>
+0294             
+0295             <span class="comment">% Add the masked vignette.</span>
+0296             vignette(mask) = vignette(mask) + double(img(mask)) - <span class="keyword">...</span>
+0297                 mean(img(mask));
+0298             numVignetteFrames = numVignetteFrames + 1;
+0299         <span class="keyword">end</span>
+0300     <span class="keyword">end</span>
+0301 <span class="keyword">end</span>
+0302 
+0303 <span class="comment">% Clean up.</span>
+0304 close(vr);
+0305 
+0306 <span class="comment">% Do we have enough frames?</span>
+0307 <span class="keyword">if</span> numVignetteFrames &lt; 2
+0308     warning(<span class="string">'video2Vignette:frames'</span>, <span class="keyword">...</span>
+0309         <span class="string">'The vignette was computed using %d frames'</span>, numVignetteFrames);
+0310 <span class="keyword">end</span>
+0311 
+0312 <span class="comment">% Average the vignette.</span>
+0313 <span class="keyword">if</span> numVignetteFrames &gt; 0
+0314     vignette = vignette / numVignetteFrames;
+0315 <span class="keyword">else</span>
+0316     vignette(:) = NaN;
+0317 <span class="keyword">end</span>
+0318 
+0319 <span class="comment">% Remove any final worm imprint.</span>
+0320 <span class="keyword">if</span> imprintSizeThr &gt; 0
+0321     
+0322     <span class="comment">% Threshold the vignette.</span>
+0323     bVigImg = vignette &lt; imprintIntensityThr;
+0324     
+0325     <span class="comment">% Find any worm imprint.</span>
+0326     cc = bwconncomp(bVigImg);
+0327     <span class="keyword">if</span> ~isempty(cc.PixelIdxList)
+0328         lengths = cellfun(@numel, cc.PixelIdxList);
+0329         [~, orderI] = sort(lengths, <span class="string">'descend'</span>);
+0330         
+0331         <span class="comment">% The largest connected component must not any of the edges.</span>
+0332         i = 1;
+0333         wormPixels = cc.PixelIdxList{orderI(i)};
+0334         <span class="keyword">while</span> i &lt; length(orderI) &amp;&amp; <span class="keyword">...</span>
+0335                 lengths(orderI(i)) &gt; imprintSizeThr &amp;&amp; <span class="keyword">...</span><span class="comment"> % size threshold</span>
+0336                 (any(wormPixels &lt;= height) || <span class="keyword">...</span><span class="comment"> % east</span>
+0337                 any(wormPixels &gt;= imgNWCorner) || <span class="keyword">...</span><span class="comment"> % west</span>
+0338                 any(mod(wormPixels, height) == 0) || <span class="keyword">...</span><span class="comment"> % south</span>
+0339                 any(mod(wormPixels - 1, height) == 0)) <span class="comment">% north</span>
+0340             i = i + 1;
+0341             wormPixels = cc.PixelIdxList{orderI(i)};
+0342         <span class="keyword">end</span>
+0343         
+0344         <span class="comment">% We found a worm imprint.</span>
+0345         <span class="keyword">if</span> i &lt; length(orderI) &amp;&amp; lengths(orderI(i)) &gt; imprintSizeThr
+0346             
+0347             <span class="comment">% Create a mask of the worm imprint.</span>
+0348             imprintMask = false(height, width);
+0349             imprintMask(wormPixels) = true;
+0350             
+0351             <span class="comment">% Dilate the worm imprint.</span>
+0352             <span class="keyword">if</span> imprintDilatePixels &gt; 0
+0353                 imprintDilateDisk = strel(<span class="string">'disk'</span>, imprintDilatePixels);
+0354                 imprintMask = imdilate(imprintMask, imprintDilateDisk);
+0355             <span class="keyword">end</span>
+0356             
+0357             <span class="comment">% Measure the non-imprint neighbors.</span>
+0358             neighborDilateDisk = strel(<span class="string">'disk'</span>, imprintNeighborAvg);
+0359             neighborMask = imprintMask;
+0360             neighborMask = imdilate(neighborMask, neighborDilateDisk);
+0361             neighborMask(imprintMask) = false;
+0362             neighborValue = nanmean(vignette(neighborMask));
+0363             
+0364             <span class="comment">% Remove the imprint.</span>
+0365             vignette(imprintMask) = neighborValue;
+0366         <span class="keyword">end</span>
+0367     <span class="keyword">end</span>
+0368 <span class="keyword">end</span>
+0369 
+0370 <span class="comment">% Smooth the vignette.</span>
+0371 <span class="keyword">if</span> smoothPixels &gt; 1
+0372     blurWin = gausswin(smoothPixels);
+0373     blurWin = blurWin * blurWin';
+0374     blurWin = blurWin / sum(blurWin(:));
+0375     vignette = conv2(vignette, blurWin, <span class="string">'same'</span>);
+0376 <span class="keyword">end</span>
+0377 
+0378 <span class="comment">% Write the vignette.</span>
+0379 <span class="keyword">if</span> ~isempty(vignetteFile)
+0380     fid = fopen(vignetteFile, <span class="string">'w'</span>);
+0381     fwrite(fid, vignette', <span class="string">'int32'</span>, 0, <span class="string">'b'</span>);
+0382     fclose(fid);
+0383 <span class="keyword">end</span>
+0384 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

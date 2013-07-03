@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotWormPathTime</title>
+  <meta name="keywords" content="plotWormPathTime">
+  <meta name="description" content="PLOTWORMPATHTIME Plot the worm path integral.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>plotWormPathTime
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>PLOTWORMPATHTIME Plot the worm path integral.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function plotWormPathTime(arena, time, titleName, axisName, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOTWORMPATHTIME Plot the worm path integral.
+
+   PLOTWORMPATHTIME(ARENA, TIME, TITLENAME, AXISNAME)
+
+   PLOTWORMPATHTIME(ARENA, TIME, TITLENAME, AXISNAME, ISSTATS)
+
+   Inputs:
+       arena - a struct of the arena/path size with subfields:
+
+               height = the arena height
+                        (for the matrix of time spent at each point)
+               width  = the arena width
+                        (for the matrix of time spent at each point)
+
+               min:
+                  x = the path location of the arena's minimum x coordinate
+                  y = the path location of the arena's minimum y coordinate
+
+               max:
+                  x = the path location of the arena's maximum x coordinate
+                  y = the path location of the arena's maximum y coordinate
+
+       times - a struct of the time spent on the path with subfields:
+
+               indices = the indices for the non-zero time points in the
+                         arena matrix
+               times   = the non-zero time point values (in seconds)
+                         corresponding to the arena matrix indices
+
+       titleName - the title for the figure
+       axisName  - the name to label the path axes
+       isStats   - are we showing the summary statistics in the X label?
+                   the default is yes (true)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Features/wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%PLOTWORMPATHTIME Plot the worm path integral.</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   PLOTWORMPATHTIME(ARENA, TIME, TITLENAME, AXISNAME)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   PLOTWORMPATHTIME(ARENA, TIME, TITLENAME, AXISNAME, ISSTATS)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Inputs:</span>
+0008 <span class="comment">%       arena - a struct of the arena/path size with subfields:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%               height = the arena height</span>
+0011 <span class="comment">%                        (for the matrix of time spent at each point)</span>
+0012 <span class="comment">%               width  = the arena width</span>
+0013 <span class="comment">%                        (for the matrix of time spent at each point)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%               min:</span>
+0016 <span class="comment">%                  x = the path location of the arena's minimum x coordinate</span>
+0017 <span class="comment">%                  y = the path location of the arena's minimum y coordinate</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%               max:</span>
+0020 <span class="comment">%                  x = the path location of the arena's maximum x coordinate</span>
+0021 <span class="comment">%                  y = the path location of the arena's maximum y coordinate</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%       times - a struct of the time spent on the path with subfields:</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%               indices = the indices for the non-zero time points in the</span>
+0026 <span class="comment">%                         arena matrix</span>
+0027 <span class="comment">%               times   = the non-zero time point values (in seconds)</span>
+0028 <span class="comment">%                         corresponding to the arena matrix indices</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%       titleName - the title for the figure</span>
+0031 <span class="comment">%       axisName  - the name to label the path axes</span>
+0032 <span class="comment">%       isStats   - are we showing the summary statistics in the X label?</span>
+0033 <span class="comment">%                   the default is yes (true)</span>
+0034 <a name="_sub0" href="#_subfunctions" class="code">function plotWormPathTime(arena, time, titleName, axisName, varargin)</a>
+0035 
+0036 <span class="comment">% Are we showing summary statistics?</span>
+0037 isStats = true;
+0038 <span class="keyword">if</span> ~isempty(varargin)
+0039     isStats = varargin{1};
+0040 <span class="keyword">end</span>
+0041 
+0042 <span class="comment">% Construct the path integral image.</span>
+0043 img = zeros(arena.height, arena.width);
+0044 img(time.indices) = time.times;
+0045 
+0046 <span class="comment">% Show the image.</span>
+0047 imgHandle = <span class="keyword">...</span>
+0048     imagesc([arena.min.x, arena.max.x], [arena.max.y, arena.min.y], img);
+0049 axis image;
+0050 set(get(imgHandle, <span class="string">'Parent'</span>), <span class="string">'YDir'</span>, <span class="string">'normal'</span>);
+0051 
+0052 <span class="comment">% Label the figure.</span>
+0053 <span class="keyword">if</span> isStats
+0054     meanStr = [<span class="string">'Mean = '</span> num2str(nanmean(time.times)) <span class="string">' seconds'</span>];
+0055     stdStr = [<span class="string">'Std Dev = '</span> num2str(nanstd(time.times)) <span class="string">' seconds'</span>];
+0056     title({titleName, meanStr, stdStr});
+0057 <span class="keyword">else</span>
+0058     title(titleName);
+0059 <span class="keyword">end</span>
+0060 xlabel([<span class="string">'X '</span> axisName]);
+0061 ylabel([<span class="string">'Y '</span> axisName]);
+0062 
+0063 <span class="comment">% Label the figure values.</span>
+0064 colorbarHandle = colorbar;
+0065 caxis([min(time.times), max(time.times)]);
+0066 set(get(colorbarHandle, <span class="string">'YLabel'</span>), <span class="string">'String'</span>, <span class="string">'Time (seconds)'</span>);
+0067 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

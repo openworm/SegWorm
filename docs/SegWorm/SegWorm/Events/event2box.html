@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of event2box</title>
+  <meta name="keywords" content="event2box">
+  <meta name="description" content="EVENT2BOX Convert an event to a box (for plotting with PLOTEVENT).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Events -->
+<h1>event2box
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>EVENT2BOX Convert an event to a box (for plotting with PLOTEVENT).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [box state] = event2box(state, prevEvent, event, nextEvent) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">EVENT2BOX Convert an event to a box (for plotting with PLOTEVENT).
+
+   [BOX STATE] = EVENT2BOX(STATE, PREVEVENT, EVENT, NEXTEVENT)
+
+   Inputs:
+       state     - the function state (persists across function calls);
+                   a struct with the fields:
+
+                   fieldName      = the name of the event field to use
+                   height         = the event height; if empty, the box is
+                                    as high as the event's field value
+                   width          = the event width; if empty, the box is
+                                    as wide as the event frames
+                                    Note: when plotting disproportionate
+                                    events it is best to use a width of 0.
+                   isInterEvent   = does the box correspond to an inter
+                                    event (i.e. the time between the
+                                    current event and the next event)?
+                   evalFieldNames = the names of the fields to evaluate;
+                                    if any of the functions returns false
+                                    when evaluating a field, the box is
+                                    returned full of NaNs and, therefore,
+                                    not shown; if empty, none of the
+                                    fields are evaluated
+                   evalFieldFuncs = the functions for evaluating the
+                                    evalFieldNames; the functions must be
+                                    of the form:
+
+                                    LOGICAL = EVALFIELDFUNC(FIELDVALUE)
+
+       prevEvent - the previous event, if one exists
+       event     - the current event
+       nextEvent - the next event, if one exists
+
+   Outputs:
+       box   - a box represent the event (xy coordinates x vertices)
+       state - the function state (persists across function calls)
+
+ See also <a href="plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">PLOTEVENT</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="plotEvent.html" class="code" title="function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps,titleName, yAxisName, eventNames, event2box, states, colors, varargin)">plotEvent</a>	PLOTEVENT Plot a time series of events.</li><li><a href="../../SegWorm/Worms/Features/wormEvents.html" class="code" title="">wormEvents</a>	% Compute the multi-scale worm.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [box state] = event2box(state, prevEvent, event, nextEvent)</a>
+0002 <span class="comment">%EVENT2BOX Convert an event to a box (for plotting with PLOTEVENT).</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [BOX STATE] = EVENT2BOX(STATE, PREVEVENT, EVENT, NEXTEVENT)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       state     - the function state (persists across function calls);</span>
+0008 <span class="comment">%                   a struct with the fields:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%                   fieldName      = the name of the event field to use</span>
+0011 <span class="comment">%                   height         = the event height; if empty, the box is</span>
+0012 <span class="comment">%                                    as high as the event's field value</span>
+0013 <span class="comment">%                   width          = the event width; if empty, the box is</span>
+0014 <span class="comment">%                                    as wide as the event frames</span>
+0015 <span class="comment">%                                    Note: when plotting disproportionate</span>
+0016 <span class="comment">%                                    events it is best to use a width of 0.</span>
+0017 <span class="comment">%                   isInterEvent   = does the box correspond to an inter</span>
+0018 <span class="comment">%                                    event (i.e. the time between the</span>
+0019 <span class="comment">%                                    current event and the next event)?</span>
+0020 <span class="comment">%                   evalFieldNames = the names of the fields to evaluate;</span>
+0021 <span class="comment">%                                    if any of the functions returns false</span>
+0022 <span class="comment">%                                    when evaluating a field, the box is</span>
+0023 <span class="comment">%                                    returned full of NaNs and, therefore,</span>
+0024 <span class="comment">%                                    not shown; if empty, none of the</span>
+0025 <span class="comment">%                                    fields are evaluated</span>
+0026 <span class="comment">%                   evalFieldFuncs = the functions for evaluating the</span>
+0027 <span class="comment">%                                    evalFieldNames; the functions must be</span>
+0028 <span class="comment">%                                    of the form:</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%                                    LOGICAL = EVALFIELDFUNC(FIELDVALUE)</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%       prevEvent - the previous event, if one exists</span>
+0033 <span class="comment">%       event     - the current event</span>
+0034 <span class="comment">%       nextEvent - the next event, if one exists</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%   Outputs:</span>
+0037 <span class="comment">%       box   - a box represent the event (xy coordinates x vertices)</span>
+0038 <span class="comment">%       state - the function state (persists across function calls)</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% See also PLOTEVENT</span>
+0041 
+0042 <span class="comment">% Initialize the variables.</span>
+0043 box = nan(2,4);
+0044 
+0045 <span class="comment">% Evaluate the event field(s).</span>
+0046 evalFieldNames = state.evalFieldNames;
+0047 <span class="keyword">if</span> ~isempty(state.evalFieldNames)
+0048     
+0049     <span class="comment">% Evaluate the event field.</span>
+0050     evalFieldFuncs = state.evalFieldFuncs;
+0051     <span class="keyword">if</span> ~iscell(evalFieldNames)
+0052         <span class="keyword">if</span> ~evalFieldFuncs(event.(evalFieldNames))
+0053             <span class="keyword">return</span>;
+0054         <span class="keyword">end</span>
+0055         
+0056     <span class="comment">% Evaluate the event fields.</span>
+0057     <span class="keyword">else</span>
+0058         <span class="keyword">for</span> i = 1:length(evalFieldNames)
+0059             func = evalFieldFuncs{i};
+0060             <span class="keyword">if</span> ~func(event.(evalFieldNames{i}))
+0061                 <span class="keyword">return</span>;
+0062             <span class="keyword">end</span>
+0063         <span class="keyword">end</span>
+0064     <span class="keyword">end</span>
+0065 <span class="keyword">end</span>
+0066     
+0067 <span class="comment">% Compute the inter-event box.</span>
+0068 <span class="keyword">if</span> state.isInterEvent
+0069     <span class="keyword">if</span> ~isempty(nextEvent) &amp;&amp; nextEvent.start &gt; event.end + 1
+0070         
+0071         <span class="comment">% Draw an event-height box.</span>
+0072         <span class="keyword">if</span> isempty(state.height)
+0073             eventY = event.(state.fieldName);
+0074             
+0075         <span class="comment">% Draw the specified box height.</span>
+0076         <span class="keyword">else</span>
+0077             eventY = state.height;
+0078         <span class="keyword">end</span>
+0079         
+0080         <span class="comment">% Draw an event-wide box.</span>
+0081         <span class="keyword">if</span> isempty(state.width)
+0082             eventX = [event.end + 1, nextEvent.start - 1];
+0083             
+0084         <span class="comment">% Draw the specified box width.</span>
+0085         <span class="keyword">else</span>
+0086             eventX = [event.end + 1, event.end + 1 + state.width];
+0087         <span class="keyword">end</span>
+0088         
+0089         <span class="comment">% Draw the box.</span>
+0090         box(1,:) = [eventX, fliplr(eventX)];
+0091         box(2,:) = [0, 0, eventY, eventY];
+0092     <span class="keyword">end</span>
+0093     
+0094 <span class="comment">% Compute the event box.</span>
+0095 <span class="keyword">else</span>
+0096     
+0097     <span class="comment">% Draw an event-height box.</span>
+0098     <span class="keyword">if</span> isempty(state.height)
+0099         eventY = event.(state.fieldName);
+0100         
+0101         <span class="comment">% Draw the specified box height.</span>
+0102     <span class="keyword">else</span>
+0103         eventY = state.height;
+0104     <span class="keyword">end</span>
+0105     
+0106     <span class="comment">% Draw an event-wide box.</span>
+0107     <span class="keyword">if</span> isempty(state.width)
+0108         eventX = [event.start, event.end];
+0109         
+0110         <span class="comment">% Draw the specified box width.</span>
+0111     <span class="keyword">else</span>
+0112         eventX = [event.start, event.start + state.width];
+0113     <span class="keyword">end</span>
+0114     
+0115     <span class="comment">% Draw the box.</span>
+0116     box(1,:) = [eventX, fliplr(eventX)];
+0117     box(2,:) = [0, 0, eventY, eventY];
+0118 <span class="keyword">end</span>
+0119 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

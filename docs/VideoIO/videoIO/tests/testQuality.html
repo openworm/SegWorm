@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of testQuality</title>
+  <meta name="keywords" content="testQuality">
+  <meta name="description" content="testQuality">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>testQuality
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>testQuality</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function testQuality(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">testQuality
+   This function attempts to figure out what codecs support the quality
+   constructor parameter (see videoWriter.m).  To do so, we try encoding a
+   short video clip with various quality values and see if the resulting
+   file sizes differ (if so, then quality is supported).  We do this for
+   each codec and print the results to the screen.
+
+testQuality(pluginName)
+   Run the tests with a manually-specified videoWriter plugin (see
+   videoWriter.m).
+
+Examples:
+  testQuality               % use default plugin
+  testQuality ffmpegPopen2  % linux &amp; similar
+  testQuality ffmpegDirect  % ...if system's gcc is compatible w/ Matlab's
+  testQuality DirectShow    % Windows
+
+ SEE ALSO:
+   buildVideoIO
+   videoWriter
+   <a href="testBitRate.html" class="code" title="function testBitRate(varargin)">testBitRate</a>
+   <a href="testGopSize.html" class="code" title="function testGopSize(varargin)">testGopSize</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>	ADDFRAME  Add video frame to VIDEOWRITER stream.</li><li><a href="../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>	videoWriter class constructor</li><li><a href="../../videoIO/clearVideoIO.html" class="code" title="function clearVideoIO(varargin)">clearVideoIO</a>	clearVideoIO</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="iprintf.html" class="code" title="function iprintf(varargin)">iprintf</a>	IPRINTF(...)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="standardTestBattery.html" class="code" title="function standardTestBattery(plugin)">standardTestBattery</a>	standardTestBattery(plugin)</li><li><a href="testVfw.html" class="code" title="">testVfw</a>	testVfw</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function sz = encode(tmpDir, pluginSpec, codec, quality, frames)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function testQuality(varargin)</a>
+0002 <span class="comment">%testQuality</span>
+0003 <span class="comment">%   This function attempts to figure out what codecs support the quality</span>
+0004 <span class="comment">%   constructor parameter (see videoWriter.m).  To do so, we try encoding a</span>
+0005 <span class="comment">%   short video clip with various quality values and see if the resulting</span>
+0006 <span class="comment">%   file sizes differ (if so, then quality is supported).  We do this for</span>
+0007 <span class="comment">%   each codec and print the results to the screen.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%testQuality(pluginName)</span>
+0010 <span class="comment">%   Run the tests with a manually-specified videoWriter plugin (see</span>
+0011 <span class="comment">%   videoWriter.m).</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%Examples:</span>
+0014 <span class="comment">%  testQuality               % use default plugin</span>
+0015 <span class="comment">%  testQuality ffmpegPopen2  % linux &amp; similar</span>
+0016 <span class="comment">%  testQuality ffmpegDirect  % ...if system's gcc is compatible w/ Matlab's</span>
+0017 <span class="comment">%  testQuality DirectShow    % Windows</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% SEE ALSO:</span>
+0020 <span class="comment">%   buildVideoIO</span>
+0021 <span class="comment">%   videoWriter</span>
+0022 <span class="comment">%   testBitRate</span>
+0023 <span class="comment">%   testGopSize</span>
+0024 <span class="comment">%</span>
+0025 
+0026 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>;
+0027 
+0028 <span class="keyword">if</span> nargin &lt; 1
+0029   pluginSpec = {}; <span class="comment">% use default</span>
+0030 <span class="keyword">else</span>
+0031   pluginSpec = {<span class="string">'plugin'</span>, varargin{1}};
+0032 <span class="keyword">end</span>
+0033 
+0034 width = 352; height = 288; 
+0035 nFrames = 25; <span class="comment">% This is usually enough to tell, adjust higher at will</span>
+0036 
+0037 qualitySupported = <span class="string">'quality supported'</span>;
+0038 qualityIgnored   = <span class="string">'quality ignored'</span>;
+0039 CantEncode       = <span class="string">'unable to encode'</span>;
+0040 Skipped          = <span class="string">'skipped'</span>; <span class="comment">% known compatability problems</span>
+0041 
+0042 <span class="comment">% Generate some frames that have enough structure that there's a point in</span>
+0043 <span class="comment">% not keyframing every frame but some noise so that there's some incentive</span>
+0044 <span class="comment">% to keyframe every once in a while.</span>
+0045 frames = zeros(height, width, nFrames);
+0046 frames(:,:,1)   = rand(height, width, 1);
+0047 <span class="keyword">for</span> i=2:nFrames
+0048   frames(:,:,i) = max(min(<span class="keyword">...</span>
+0049     [frames(:,5:<span class="keyword">end</span>,i-1) frames(:,1:4,i-1)] + <span class="keyword">...</span>
+0050     randn(height, width, 1)*25/255, <span class="keyword">...</span>
+0051     1), 0);
+0052 <span class="keyword">end</span>
+0053 
+0054 <span class="keyword">try</span> 
+0055   w = warning; warning off; <span class="comment">%#ok&lt;WNOFF&gt;</span>
+0056   tmpDir = tempname; mkdir(tmpDir);
+0057   
+0058   codecs = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>([],<span class="string">'codecs'</span>,pluginSpec{:});
+0059   qualities = [0,10000];
+0060   <a href="iprintf.html" class="code" title="function iprintf(varargin)">iprintf</a>(<span class="string">'     codec encoding time quality supported   sizes'</span>);
+0061   <a href="iprintf.html" class="code" title="function iprintf(varargin)">iprintf</a>(<span class="string">'---------- ------------- -----------------   -----'</span>);
+0062   <span class="keyword">for</span> c=1:length(codecs)
+0063     codec = codecs{c};
+0064     status = CantEncode;
+0065     tic;  
+0066     <span class="keyword">try</span>
+0067       sz = zeros(size(qualities));
+0068 
+0069       <span class="keyword">if</span> (strcmpi(codec, <span class="string">'CFHD'</span>))
+0070         <span class="comment">% Right now (13 Nov 2007), the CineForm HD codec does not play well</span>
+0071         <span class="comment">% with Matlab.  If an encoder license has not been purchased, it will</span>
+0072         <span class="comment">% crash some versions of Matlab.  Remove this conditional if you</span>
+0073         <span class="comment">% have purchased an encoder license.</span>
+0074         status = Skipped;
+0075         throw;
+0076       <span class="keyword">end</span>
+0077 
+0078       <span class="keyword">for</span> gi = 1:length(qualities)
+0079         quality = qualities(gi);
+0080         sz(gi) = <a href="#_sub1" class="code" title="subfunction sz = encode(tmpDir, pluginSpec, codec, quality, frames)">encode</a>(tmpDir, pluginSpec, codec, quality, frames);
+0081       <span class="keyword">end</span>
+0082       
+0083       <span class="keyword">if</span> all(sz(1:end-1) == sz(2:end))
+0084         status = qualityIgnored;
+0085       <span class="keyword">else</span>
+0086         status = qualitySupported;
+0087       <span class="keyword">end</span>
+0088     <span class="keyword">catch</span>
+0089       <a href="../../videoIO/clearVideoIO.html" class="code" title="function clearVideoIO(varargin)">clearVideoIO</a> <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>;
+0090     <span class="keyword">end</span>
+0091     encodingTime = toc;
+0092     
+0093     <a href="iprintf.html" class="code" title="function iprintf(varargin)">iprintf</a>(<span class="string">'%10s %10ds   %17s   %s'</span>, <span class="keyword">...</span>
+0094       codec, ceil(encodingTime), status, num2str(sz));
+0095   <span class="keyword">end</span>
+0096   
+0097   pause(1);
+0098   <span class="keyword">try</span> rmdir(tmpDir, <span class="string">'s'</span>); <span class="keyword">catch</span> <span class="keyword">end</span>
+0099   warning(w);
+0100 <span class="keyword">catch</span>
+0101   warning(w);
+0102   <span class="keyword">try</span> rmdir(tmpDir, <span class="string">'s'</span>); <span class="keyword">catch</span> <span class="keyword">end</span>
+0103   rethrow(lasterror);
+0104 <span class="keyword">end</span>
+0105 
+0106 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>;
+0107 
+0108 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0109 <a name="_sub1" href="#_subfunctions" class="code">function sz = encode(tmpDir, pluginSpec, codec, quality, frames)</a>
+0110 <span class="comment">%sz = encode(tmpDir, pluginSpec, codec, quality, frames)</span>
+0111 <span class="comment">%   encode the frames, return its size, and cleanup our messes</span>
+0112 
+0113 <span class="keyword">try</span>
+0114   filename = fullfile(tmpDir, sprintf(<span class="string">'testQuality_%s_%04d.avi'</span>, codec, quality));
+0115   vw = <a href="../../videoIO/@videoWriter/videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>(filename, pluginSpec{:}, <span class="keyword">...</span>
+0116     <span class="string">'quality'</span>,quality, <span class="string">'codec'</span>,codec, <span class="string">'width'</span>,size(frames,2), <span class="keyword">...</span>
+0117     <span class="string">'height'</span>,size(frames,1)); 
+0118   <span class="keyword">for</span> i=1:size(frames,3), 
+0119     <a href="../../videoIO/@videoWriter/addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>(vw, frames(:,:,i)); 
+0120   <span class="keyword">end</span>
+0121   <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw);
+0122   d = dir(filename);
+0123   sz = d.bytes;
+0124   delete(filename);
+0125 <span class="keyword">catch</span>
+0126   e = lasterror;
+0127   <span class="keyword">try</span> <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vw); <span class="keyword">catch</span> <span class="keyword">end</span>
+0128   delete(filename);
+0129   rethrow(e);
+0130 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

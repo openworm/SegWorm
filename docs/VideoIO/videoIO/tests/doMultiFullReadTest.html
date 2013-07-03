@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of doMultiFullReadTest</title>
+  <meta name="keywords" content="doMultiFullReadTest">
+  <meta name="description" content="DOMULTIFULLREADTEST(...)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>doMultiFullReadTest
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>DOMULTIFULLREADTEST(...)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function doMultiFullReadTest(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">DOMULTIFULLREADTEST(...)
+  First we read the entire specified file into memory.  Then we attempt to
+  simultaneously read the same file in using two videoReader objects.
+  This tests thread and video handle management issues.
+
+  Any arguments given are passed directly to the videoReader constructor.
+
+Examples:
+  doMultiFullReadTest numbers.uncompressed.avi
+  doMultiFullReadTest numbers.uncompressed.avi ffmpegPopen2  % linux &amp; similar
+  doMultiFullReadTest numbers.uncompressed.avi ffmpegDirect  % ...if system's gcc is compatible w/ Matlab's
+  doMultiFullReadTest numbers.uncompressed.avi DirectShow    % Windows
+
+Copyright (c) 2006 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>	FRAME=GETFRAME(VR)</li><li><a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>	WORKED=NEXT(VR)</li><li><a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="assertSimilarImages.html" class="code" title="function assertSimilarImages(a,b)  %#ok<INUSD>">assertSimilarImages</a>	assertSimilarImages(a,b)</li><li><a href="doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>	IMAGES=DOFULLREAD(...)</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="imageDiff.html" class="code" title="function d=imageDiff(a,b)">imageDiff</a>	d=imageDiff(a,b)</li><li><a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a>	vrassert(testCondition)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="doMultiFullReadTestOnAllLoadables.html" class="code" title="function doMultiFullReadTestOnAllLoadables(varargin)">doMultiFullReadTestOnAllLoadables</a>	DOMULTIFULLREADTESTONALLLOADABLES(...)</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function out = ilookup(images,i)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function doMultiFullReadTest(varargin)</a>
+0002 <span class="comment">%DOMULTIFULLREADTEST(...)</span>
+0003 <span class="comment">%  First we read the entire specified file into memory.  Then we attempt to</span>
+0004 <span class="comment">%  simultaneously read the same file in using two videoReader objects.</span>
+0005 <span class="comment">%  This tests thread and video handle management issues.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Any arguments given are passed directly to the videoReader constructor.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%Examples:</span>
+0010 <span class="comment">%  doMultiFullReadTest numbers.uncompressed.avi</span>
+0011 <span class="comment">%  doMultiFullReadTest numbers.uncompressed.avi ffmpegPopen2  % linux &amp; similar</span>
+0012 <span class="comment">%  doMultiFullReadTest numbers.uncompressed.avi ffmpegDirect  % ...if system's gcc is compatible w/ Matlab's</span>
+0013 <span class="comment">%  doMultiFullReadTest numbers.uncompressed.avi DirectShow    % Windows</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%Copyright (c) 2006 Gerald Dalley</span>
+0016 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0017 <span class="comment">%when using this library on GNU/Linux).</span>
+0018 
+0019 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>(<span class="string">'&gt;&gt;&gt; %s(''%s'',...)'</span>, mfilename, varargin{1});
+0020 images = <a href="doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>(varargin{:});
+0021 <span class="keyword">if</span> (size(images,3) &gt; 1) <span class="comment">% skip single-frame videos</span>
+0022   <span class="comment">% make sure first two frames have different data (makes sure next is</span>
+0023   <span class="comment">% working)</span>
+0024   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> any(images(:,:,1) ~= images(:,:,2));
+0025 
+0026   <span class="comment">% read from multiple videos at the same time</span>
+0027   vr1 = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(varargin{:});
+0028   vr2 = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(varargin{:});
+0029   i = 1;
+0030   <span class="keyword">while</span> (<a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr1) &amp;&amp; <a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr2))
+0031     i1 = <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr1); i1 = uint8(sum(double(i1), 3) / size(i1,3));
+0032     i2 = <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr2); i2 = uint8(sum(double(i2), 3) / size(i2,3));
+0033     
+0034     <span class="comment">% Do the &quot;same&quot; images really look the same?</span>
+0035     <span class="comment">% We must tolerate some differences because some decoders (quite a</span>
+0036     <span class="comment">% few, actually) do not always decode the same frame exactly the same</span>
+0037     <span class="comment">% every time.</span>
+0038     <a href="assertSimilarImages.html" class="code" title="function assertSimilarImages(a,b)  %#ok<INUSD>">assertSimilarImages</a>(i1,i2);
+0039     <a href="assertSimilarImages.html" class="code" title="function assertSimilarImages(a,b)  %#ok<INUSD>">assertSimilarImages</a>(images(:,:,i), i1);
+0040     
+0041     <span class="comment">% As a secondary check, we make sure that &quot;same&quot; images are more</span>
+0042     <span class="comment">% similar than &quot;different&quot; ones.</span>
+0043     errThisFrame = <a href="imageDiff.html" class="code" title="function d=imageDiff(a,b)">imageDiff</a>(<a href="#_sub1" class="code" title="subfunction out = ilookup(images,i)">ilookup</a>(images,i),   i1);
+0044     errNextFrame = <a href="imageDiff.html" class="code" title="function d=imageDiff(a,b)">imageDiff</a>(<a href="#_sub1" class="code" title="subfunction out = ilookup(images,i)">ilookup</a>(images,i+1), i1);
+0045     errPrevFrame = <a href="imageDiff.html" class="code" title="function d=imageDiff(a,b)">imageDiff</a>(<a href="#_sub1" class="code" title="subfunction out = ilookup(images,i)">ilookup</a>(images,i-1), i1);
+0046     <span class="keyword">if</span> errPrevFrame &gt; 2 || errThisFrame &gt; 2 || errNextFrame &gt; 2
+0047         <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> errThisFrame &lt; errNextFrame;
+0048         <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> errThisFrame &lt; errPrevFrame;
+0049     <span class="keyword">end</span>
+0050     
+0051     errThisFrame = <a href="imageDiff.html" class="code" title="function d=imageDiff(a,b)">imageDiff</a>(<a href="#_sub1" class="code" title="subfunction out = ilookup(images,i)">ilookup</a>(images,i),   i2);
+0052     errNextFrame = <a href="imageDiff.html" class="code" title="function d=imageDiff(a,b)">imageDiff</a>(<a href="#_sub1" class="code" title="subfunction out = ilookup(images,i)">ilookup</a>(images,i+1), i2);
+0053     errPrevFrame = <a href="imageDiff.html" class="code" title="function d=imageDiff(a,b)">imageDiff</a>(<a href="#_sub1" class="code" title="subfunction out = ilookup(images,i)">ilookup</a>(images,i-1), i2);
+0054     <span class="keyword">if</span> errPrevFrame &gt; 2 || errThisFrame &gt; 2 || errNextFrame &gt; 2
+0055         <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> errThisFrame &lt; errNextFrame;
+0056         <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> errThisFrame &lt; errPrevFrame;
+0057     <span class="keyword">end</span>
+0058     
+0059     i = i + 1;
+0060   <span class="keyword">end</span>
+0061   vr1 = <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr1); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0062   vr2 = <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr2); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0063 <span class="keyword">end</span>
+0064 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>(<span class="string">'&lt;&lt;&lt; doMultiFullReadTest(''%s'',...)'</span>, varargin{1});
+0065 
+0066 <span class="comment">%------------------------------------------------------</span>
+0067 <a name="_sub1" href="#_subfunctions" class="code">function out = ilookup(images,i) </a>
+0068 out = images(:,:,mod(i-1,size(images,3))+1);</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

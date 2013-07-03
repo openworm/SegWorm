@@ -1,0 +1,294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoReader_imread</title>
+  <meta name="keywords" content="videoReader_imread">
+  <meta name="description" content="videoReader_imread">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>videoReader_imread
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>videoReader_imread</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [out,out2] = videoReader_imread(cmd, handle, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">videoReader_imread
+  This is a videoReader plugin that uses Matlab's IMREAD function to
+  read individual images from disks as if they were video frames.  
+
+  This function provides the documentation and implementation for the
+  plugin.  Users should not call this function directly.  Instead they
+  should use the videoReader constructor and specify the 'imread'
+  plugin.
+
+  vr = videoReader(FILEPATTERN,'imread',...)
+  vr = videoReader(FILEPATTERN,...,'plugin','imread',...)
+     Indexes a set of image files so they can be accessed via the
+     videoReader interface.  FILEPATTERN may either use wildcards,
+     e.g. 'mydir/*.png' or it may use a sprintf-like '%d' string,
+     e.g. 'mydir/%04d.png'.  The wildcard or sprintf substitution must 
+     be in the filename, not in a directory name (e.g. neither
+     'mydir/%04d/pic.png' nor 'mydir/*/pic.png' is allowed).
+
+     For sprintf strings, we assume that the substituted number is the
+     frame number.  Currently, only non-negative numbers are supported.
+     Only frames that are found when the open command is executed can 
+     be read.  If one seeks to a frame number that does not correspond
+     to a file on disk, GETFRAME will treat it as a dropped frame and
+     silently return an empty matrix, [].
+
+     For wildcard strings, all files matching the pattern are examined
+     and they are sorted in alphabetic order.  The alphabetically-first
+     frame is used as frame 0.  Only frames that are found when the
+     open command is executed can be read.
+
+     Both the percent character (%) and wildcards (?,*) cannot appear 
+     in the same file pattern at the present time (e.g. 
+     'mydir/*/%04d.png' is not allowed).  The percent character may
+     appear at most once (e.g. 'mydir/%04d_%04d.png' is not allowed). 
+    
+     At this time, no optional constructor arguments are allowed.
+
+     This plugin is implemented as an M-file, so no compilation is
+     required. 
+
+ EXAMPLE:
+     % make a few video frames -- a rotating gradient
+     for i=1:10
+       frame = repmat(mod([0:99]/99 + (i-1)/10, 1), [75,1]);
+       imwrite(frame, sprintf('%04d.jpg', i));
+     end
+
+     % read in the video and show it as a movie
+     vr = videoReader('%04d.jpg', 'plugin','imread');
+     for i=1:10
+       seek(vr,i);
+       imshow(getframe(vr));
+       title(sprintf('frame %d', i));
+       pause(1);
+     end
+     vr = close(vr);
+
+ SEE ALSO:
+     imread
+     videoReader
+     <a href="videoReader_load.html" class="code" title="function [out,out2] = videoReader_load(cmd, handle, varargin)">videoReader_load</a>
+     <a href="videoReader_matrix.html" class="code" title="function [out,out2] = videoReader_matrix(cmd, handle, varargin)">videoReader_matrix</a>
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details
+(especially when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../videoIO/private/getFileList.html" class="code" title="function [dirname,filenames] = getFileList(filepattern)">getFileList</a>	[dirname,filenames] = getFileList(filepattern)</li><li><a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>	HANDLEMANAGER</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [out,out2] = videoReader_imread(cmd, handle, varargin)</a>
+0002 <span class="comment">%videoReader_imread</span>
+0003 <span class="comment">%  This is a videoReader plugin that uses Matlab's IMREAD function to</span>
+0004 <span class="comment">%  read individual images from disks as if they were video frames.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%  This function provides the documentation and implementation for the</span>
+0007 <span class="comment">%  plugin.  Users should not call this function directly.  Instead they</span>
+0008 <span class="comment">%  should use the videoReader constructor and specify the 'imread'</span>
+0009 <span class="comment">%  plugin.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%  vr = videoReader(FILEPATTERN,'imread',...)</span>
+0012 <span class="comment">%  vr = videoReader(FILEPATTERN,...,'plugin','imread',...)</span>
+0013 <span class="comment">%     Indexes a set of image files so they can be accessed via the</span>
+0014 <span class="comment">%     videoReader interface.  FILEPATTERN may either use wildcards,</span>
+0015 <span class="comment">%     e.g. 'mydir/*.png' or it may use a sprintf-like '%d' string,</span>
+0016 <span class="comment">%     e.g. 'mydir/%04d.png'.  The wildcard or sprintf substitution must</span>
+0017 <span class="comment">%     be in the filename, not in a directory name (e.g. neither</span>
+0018 <span class="comment">%     'mydir/%04d/pic.png' nor 'mydir/*/pic.png' is allowed).</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%     For sprintf strings, we assume that the substituted number is the</span>
+0021 <span class="comment">%     frame number.  Currently, only non-negative numbers are supported.</span>
+0022 <span class="comment">%     Only frames that are found when the open command is executed can</span>
+0023 <span class="comment">%     be read.  If one seeks to a frame number that does not correspond</span>
+0024 <span class="comment">%     to a file on disk, GETFRAME will treat it as a dropped frame and</span>
+0025 <span class="comment">%     silently return an empty matrix, [].</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%     For wildcard strings, all files matching the pattern are examined</span>
+0028 <span class="comment">%     and they are sorted in alphabetic order.  The alphabetically-first</span>
+0029 <span class="comment">%     frame is used as frame 0.  Only frames that are found when the</span>
+0030 <span class="comment">%     open command is executed can be read.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%     Both the percent character (%) and wildcards (?,*) cannot appear</span>
+0033 <span class="comment">%     in the same file pattern at the present time (e.g.</span>
+0034 <span class="comment">%     'mydir/*/%04d.png' is not allowed).  The percent character may</span>
+0035 <span class="comment">%     appear at most once (e.g. 'mydir/%04d_%04d.png' is not allowed).</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%     At this time, no optional constructor arguments are allowed.</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%     This plugin is implemented as an M-file, so no compilation is</span>
+0040 <span class="comment">%     required.</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% EXAMPLE:</span>
+0043 <span class="comment">%     % make a few video frames -- a rotating gradient</span>
+0044 <span class="comment">%     for i=1:10</span>
+0045 <span class="comment">%       frame = repmat(mod([0:99]/99 + (i-1)/10, 1), [75,1]);</span>
+0046 <span class="comment">%       imwrite(frame, sprintf('%04d.jpg', i));</span>
+0047 <span class="comment">%     end</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%     % read in the video and show it as a movie</span>
+0050 <span class="comment">%     vr = videoReader('%04d.jpg', 'plugin','imread');</span>
+0051 <span class="comment">%     for i=1:10</span>
+0052 <span class="comment">%       seek(vr,i);</span>
+0053 <span class="comment">%       imshow(getframe(vr));</span>
+0054 <span class="comment">%       title(sprintf('frame %d', i));</span>
+0055 <span class="comment">%       pause(1);</span>
+0056 <span class="comment">%     end</span>
+0057 <span class="comment">%     vr = close(vr);</span>
+0058 <span class="comment">%</span>
+0059 <span class="comment">% SEE ALSO:</span>
+0060 <span class="comment">%     imread</span>
+0061 <span class="comment">%     videoReader</span>
+0062 <span class="comment">%     videoReader_load</span>
+0063 <span class="comment">%     videoReader_matrix</span>
+0064 <span class="comment">%</span>
+0065 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0066 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details</span>
+0067 <span class="comment">%(especially when using this library on GNU/Linux).</span>
+0068 
+0069 <span class="comment">% We use private/handleManager under the covers to map handles to objects.</span>
+0070 
+0071 <span class="keyword">if</span> strcmp(cmd, <span class="string">'close'</span>),
+0072   <span class="comment">%........................................................................</span>
+0073   <span class="comment">% CLOSE COMMAND</span>
+0074   <span class="keyword">if</span> ~isempty(varargin)
+0075     error(<span class="string">'The &quot;close&quot; command does not take any optional arguments'</span>);
+0076   <span class="keyword">end</span>
+0077   <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle, <span class="string">'close'</span>);
+0078   
+0079 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'getframe'</span>)
+0080   <span class="comment">%........................................................................</span>
+0081   <span class="comment">% GETFRAME COMMAND</span>
+0082   <span class="keyword">if</span> ~isempty(varargin)
+0083     error(<span class="string">'The &quot;getframe&quot; command does not take any optional arguments'</span>);
+0084   <span class="keyword">end</span>
+0085   obj     = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle);
+0086   dirname = obj.dirname;
+0087   fname   = obj.filenames{obj.currFrame+1};
+0088   <span class="keyword">try</span>
+0089     out = imread(fullfile(dirname, fname));
+0090   <span class="keyword">catch</span>
+0091     out = [];
+0092   <span class="keyword">end</span>
+0093   
+0094 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'get'</span>)
+0095   <span class="comment">%........................................................................</span>
+0096   <span class="comment">% GET COMMAND</span>
+0097   <span class="keyword">if</span> ~isempty(varargin)
+0098     error(<span class="string">'The &quot;get&quot; command does not take any optional arguments'</span>);
+0099   <span class="keyword">end</span>
+0100   obj                 = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle);
+0101   info                = obj.info;
+0102   info.currFrame      = obj.currFrame;
+0103   info.approxFrameNum = obj.currFrame;
+0104   out                 = fieldnames(info);
+0105   out2                = struct2cell(info);
+0106   
+0107 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'next'</span>)
+0108   <span class="comment">%........................................................................</span>
+0109   <span class="comment">% NEXT COMMAND</span>
+0110   <span class="keyword">if</span> ~isempty(varargin)
+0111     error(<span class="string">'The &quot;next&quot; command does not take any optional arguments'</span>);
+0112   <span class="keyword">end</span>
+0113   obj = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle);
+0114   obj.currFrame = obj.currFrame + 1;
+0115   <span class="keyword">if</span> obj.currFrame &lt; obj.info.numFrames
+0116     out = int32(1);
+0117   <span class="keyword">else</span>
+0118     out = int32(0);
+0119   <span class="keyword">end</span>
+0120   <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle, obj);
+0121   
+0122 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'open'</span>)
+0123   <span class="comment">%........................................................................</span>
+0124   <span class="comment">% OPEN COMMAND</span>
+0125   
+0126   <span class="keyword">if</span> length(varargin)&gt;1
+0127     error([<span class="string">'No optional arguments are supported for the &quot;open&quot; command are '</span><span class="keyword">...</span>
+0128            <span class="string">'supported for the imread plugin'</span>]); 
+0129   <span class="keyword">end</span>
+0130   
+0131   filepattern = varargin{1};
+0132   [dirname, filenames] = <a href="../videoIO/private/getFileList.html" class="code" title="function [dirname,filenames] = getFileList(filepattern)">getFileList</a>(filepattern);
+0133   
+0134   img = imread(fullfile(dirname, filenames{end}));
+0135 
+0136   obj = struct;
+0137   obj.currFrame = -1;
+0138   obj.dirname   = dirname;
+0139   obj.filenames = filenames;
+0140   obj.info = struct(<span class="keyword">...</span>
+0141       <span class="string">'url'</span>,                varargin{1}, <span class="keyword">...</span>
+0142       <span class="string">'fps'</span>,               -1, <span class="keyword">...</span>
+0143       <span class="string">'height'</span>,             size(img,1), <span class="keyword">...</span>
+0144       <span class="string">'width'</span>,              size(img,2), <span class="keyword">...</span>
+0145       <span class="string">'numFrames'</span>,          length(filenames), <span class="keyword">...</span>
+0146       <span class="string">'fourcc'</span>,             <span class="string">''</span>,<span class="keyword">...</span>
+0147       <span class="string">'nHiddenFinalFrames'</span>, 0);
+0148   out = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>([], obj);
+0149   
+0150 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'seek'</span>)
+0151   <span class="comment">%........................................................................</span>
+0152   <span class="comment">% SEEK COMMAND</span>
+0153   <span class="keyword">if</span> length(varargin) ~= 1
+0154     error(<span class="string">'The &quot;seek&quot; command takes exactly one argument'</span>);
+0155   <span class="keyword">end</span>
+0156   obj           = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle);
+0157   obj.currFrame = varargin{1};
+0158   <span class="keyword">if</span> obj.currFrame &lt; obj.info.numFrames 
+0159     out = int32(1);
+0160   <span class="keyword">else</span>
+0161     out = int32(0);
+0162   <span class="keyword">end</span>
+0163   <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle, obj);
+0164   
+0165 <span class="keyword">elseif</span> strcmp(cmd, <span class="string">'step'</span>)
+0166   <span class="comment">%........................................................................</span>
+0167   <span class="comment">% STEP COMMAND</span>
+0168   <span class="keyword">if</span> length(varargin) ~= 1
+0169     error(<span class="string">'The &quot;step&quot; command takes exactly one argument'</span>);
+0170   <span class="keyword">end</span>
+0171   obj = <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle);
+0172   obj.currFrame = obj.currFrame + varargin{1};
+0173   <span class="keyword">if</span> obj.currFrame &lt; obj.info.numFrames 
+0174     out = int32(1);
+0175   <span class="keyword">else</span>
+0176     out = int32(0);
+0177   <span class="keyword">end</span>
+0178   <a href="../videoIO/private/handleManager.html" class="code" title="function [out] = handleManager(varargin)">handleManager</a>(handle, obj);
+0179   
+0180 <span class="keyword">else</span>
+0181   error([<span class="string">'Unrecognized command: &quot;'</span> cmd <span class="string">'&quot;'</span>]);
+0182 <span class="keyword">end</span>
+0183</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

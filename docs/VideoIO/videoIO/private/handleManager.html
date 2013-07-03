@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of handleManager</title>
+  <meta name="keywords" content="handleManager">
+  <meta name="description" content="HANDLEMANAGER">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html private -->
+<h1>handleManager
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>HANDLEMANAGER</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [out] = handleManager(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">HANDLEMANAGER
+  This function encapsulates the management of a global mapping of
+  integer handles to arbitrary Matlab objects.  This allows
+  pass-by-reference mutable objects.  
+
+  Limitations and caveats:
+   * Matlab 2008a adds a handle-based object system to the M language.
+     If your application will be exclusively using 2008a or later, use
+     the official system instead of this one.
+   * This system circumvents Matlab's garbage collection, so users must
+     explicitly close handles or they will continue to consume memory.   
+   * Most operations are linear in the number of open handles.  The
+     implementation is simple and reasonably performant for small
+     numbers of objects, but something more sophisticated is needed for
+     very large numbers of open handles (1e3? 1e6?).
+
+newHandle = handleManager([], instanceData)
+  Create: creates a new handle and associates it with the given instance
+          data.
+
+handleManager(handle, instanceData)
+  Update: reassociates a handle with new instance data
+
+instanceData = handleManager(handle)
+  Get: retrieves the instance data given a handle
+
+handleManager(handle,'close')
+  Close: closes a handle</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/videoReader_concat.html" class="code" title="function [out,out2] = videoReader_concat(cmd, handle, varargin)">videoReader_concat</a>	videoReader_concat</li><li><a href="../../videoIO/videoReader_imread.html" class="code" title="function [out,out2] = videoReader_imread(cmd, handle, varargin)">videoReader_imread</a>	videoReader_imread</li><li><a href="../../videoIO/videoReader_load.html" class="code" title="function [out,out2] = videoReader_load(cmd, handle, varargin)">videoReader_load</a>	videoReader_load</li><li><a href="../../videoIO/videoReader_matrix.html" class="code" title="function [out,out2] = videoReader_matrix(cmd, handle, varargin)">videoReader_matrix</a>	[...] = videoReader_matrix(cmd, handle, varargin)</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function i = validateHandle(handle,handles)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [out] = handleManager(varargin)</a>
+0002 <span class="comment">%HANDLEMANAGER</span>
+0003 <span class="comment">%  This function encapsulates the management of a global mapping of</span>
+0004 <span class="comment">%  integer handles to arbitrary Matlab objects.  This allows</span>
+0005 <span class="comment">%  pass-by-reference mutable objects.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Limitations and caveats:</span>
+0008 <span class="comment">%   * Matlab 2008a adds a handle-based object system to the M language.</span>
+0009 <span class="comment">%     If your application will be exclusively using 2008a or later, use</span>
+0010 <span class="comment">%     the official system instead of this one.</span>
+0011 <span class="comment">%   * This system circumvents Matlab's garbage collection, so users must</span>
+0012 <span class="comment">%     explicitly close handles or they will continue to consume memory.</span>
+0013 <span class="comment">%   * Most operations are linear in the number of open handles.  The</span>
+0014 <span class="comment">%     implementation is simple and reasonably performant for small</span>
+0015 <span class="comment">%     numbers of objects, but something more sophisticated is needed for</span>
+0016 <span class="comment">%     very large numbers of open handles (1e3? 1e6?).</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%newHandle = handleManager([], instanceData)</span>
+0019 <span class="comment">%  Create: creates a new handle and associates it with the given instance</span>
+0020 <span class="comment">%          data.</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%handleManager(handle, instanceData)</span>
+0023 <span class="comment">%  Update: reassociates a handle with new instance data</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%instanceData = handleManager(handle)</span>
+0026 <span class="comment">%  Get: retrieves the instance data given a handle</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%handleManager(handle,'close')</span>
+0029 <span class="comment">%  Close: closes a handle</span>
+0030 
+0031 <span class="comment">% Registry of data.  Each HANDLES entry is a handle ID.  the</span>
+0032 <span class="comment">% corresponding entry in INSTANCES is its corresponding data.  When a new</span>
+0033 <span class="comment">% handle is created, its value will be NEXTHANDLE.  We initialize</span>
+0034 <span class="comment">% NEXTHANDLE with NOW to discourage people from thinking they start with 0</span>
+0035 <span class="keyword">persistent</span> nextHandle handles instances;
+0036 <span class="keyword">if</span> isempty(nextHandle)
+0037   nextHandle = int32(now);           <span class="comment">% handle to use for the next open command</span>
+0038   handles    = int32(zeros(0,0));    <span class="comment">% list of currently-active handles</span>
+0039   instances  = {};                   <span class="comment">% The actual object instances</span>
+0040 <span class="keyword">end</span>
+0041 
+0042 <span class="keyword">if</span> nargin==2 &amp;&amp; isempty(varargin{1})
+0043   <span class="comment">% newHandle = handleManager([], instanceData)</span>
+0044   i            = length(handles)+1;
+0045   handles(i)   = nextHandle;
+0046   out          = nextHandle;
+0047   nextHandle   = int32(double(nextHandle)+1);
+0048   instances{i} = varargin{2};
+0049   
+0050 <span class="keyword">elseif</span> nargin==2 &amp;&amp; (~ischar(varargin{2}) || ~strcmpi(<span class="string">'close'</span>,varargin{2}))
+0051   <span class="comment">% handleManager(handle, instanceData)</span>
+0052   i            = <a href="#_sub1" class="code" title="subfunction i = validateHandle(handle,handles)">validateHandle</a>(varargin{1},handles);
+0053   instances{i} = varargin{2};
+0054   
+0055 <span class="keyword">elseif</span> nargin==1
+0056   <span class="comment">% instanceData = handleManager(handle)</span>
+0057   i   = <a href="#_sub1" class="code" title="subfunction i = validateHandle(handle,handles)">validateHandle</a>(varargin{1},handles);
+0058   out = instances{i};
+0059   
+0060 <span class="keyword">elseif</span> nargin==2 &amp;&amp; ischar(varargin{2}) &amp;&amp; strcmpi(<span class="string">'close'</span>,varargin{2})
+0061   <span class="comment">% handleManager(handle,'close')</span>
+0062   i         = <a href="#_sub1" class="code" title="subfunction i = validateHandle(handle,handles)">validateHandle</a>(varargin{1},handles);
+0063   handles   = handles([1:i-1, i+1:end]);
+0064   instances = {instances{[1:i-1, i+1:end]}};
+0065   
+0066 <span class="keyword">else</span>
+0067   error(<span class="string">'Invalid arguments'</span>);
+0068 <span class="keyword">end</span>
+0069   
+0070 <span class="comment">%--------------------------------------------</span>
+0071 <a name="_sub1" href="#_subfunctions" class="code">function i = validateHandle(handle,handles)</a>
+0072 [tst,i] = ismember(handle,handles);
+0073 <span class="keyword">if</span> ~tst
+0074   error(<span class="string">'Invalid handle: %d'</span>, handle);
+0075 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

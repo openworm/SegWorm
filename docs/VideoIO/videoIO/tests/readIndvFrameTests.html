@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of readIndvFrameTests</title>
+  <meta name="keywords" content="readIndvFrameTests">
+  <meta name="description" content="readIndvFrameTests(plugin,ext,...)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>readIndvFrameTests
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>readIndvFrameTests(plugin,ext,...)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function readIndvFrameTests(plugin,ext,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">readIndvFrameTests(plugin,ext,...)
+  This function is like readTests, but it has been customized to work
+  with videoReader plugins that work on individual frame numbers.  Reads
+  in data produced by EXTRACTFRAMES.
+
+         plugin: which plugin to use (must be specified)
+            ext: extension ('png' or 'mat') to read
+  other args...: are passed to the videoReader constructor, as-is.
+
+Examples:
+  readIndvFrameTests('load','mat');
+  readIndvFrameTests('imread','png');</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../videoIO/@videoReader/seek.html" class="code" title="function worked = seek(vr,fnum)">seek</a>	WORKED=SEEK(VR,FNUM)</li><li><a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="doPreciseSeekTests.html" class="code" title="function doPreciseSeekTests(varargin)">doPreciseSeekTests</a>	DOPRECISESEEKTESTS(...)</li><li><a href="extractFrames.html" class="code" title="">extractFrames</a>	Script to create the frames/ subdirectory.  The data in that directory is</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a>	vrassert(testCondition)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="testLoadAndImread.html" class="code" title="function testLoadAndImread">testLoadAndImread</a>	testLoadAndImread</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function readIndvFrameTests(plugin,ext,varargin)</a>
+0002 <span class="comment">%readIndvFrameTests(plugin,ext,...)</span>
+0003 <span class="comment">%  This function is like readTests, but it has been customized to work</span>
+0004 <span class="comment">%  with videoReader plugins that work on individual frame numbers.  Reads</span>
+0005 <span class="comment">%  in data produced by EXTRACTFRAMES.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%         plugin: which plugin to use (must be specified)</span>
+0008 <span class="comment">%            ext: extension ('png' or 'mat') to read</span>
+0009 <span class="comment">%  other args...: are passed to the videoReader constructor, as-is.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%Examples:</span>
+0012 <span class="comment">%  readIndvFrameTests('load','mat');</span>
+0013 <span class="comment">%  readIndvFrameTests('imread','png');</span>
+0014 
+0015 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>
+0016 
+0017 <span class="keyword">if</span> nargin &lt; 2, 
+0018   error <span class="string">'too few arguments'</span>;
+0019 <span class="keyword">end</span>
+0020 
+0021 <span class="comment">% generate the data, if needed</span>
+0022 <a href="extractFrames.html" class="code" title="">extractFrames</a>; 
+0023 
+0024 <span class="comment">% sprintf-style</span>
+0025 <a href="doPreciseSeekTests.html" class="code" title="function doPreciseSeekTests(varargin)">doPreciseSeekTests</a>([<span class="string">'frames/numbers.%04d.'</span> ext], plugin, varargin{:});
+0026 
+0027 <span class="comment">% wildcard style</span>
+0028 <a href="doPreciseSeekTests.html" class="code" title="function doPreciseSeekTests(varargin)">doPreciseSeekTests</a>([<span class="string">'frames/numbers.*.'</span> ext], plugin, varargin{:});
+0029 
+0030 <span class="comment">% cause an exception in the .m file</span>
+0031 vr = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>([<span class="string">'frames/numbers.*.'</span> ext], plugin, varargin{:});
+0032 <span class="keyword">try</span>
+0033   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/seek.html" class="code" title="function worked = seek(vr,fnum)">seek</a>(vr, struct(<span class="string">'abc'</span>, sparse(10)));
+0034   error(<span class="string">'The previous seek command should have failed'</span>);
+0035   <span class="comment">%vr = close(vr);</span>
+0036 <span class="keyword">catch</span>
+0037   vr = <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr); <span class="comment">%#ok&lt;NASGU&gt;</span>
+0038 <span class="keyword">end</span>
+0039 
+0040 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

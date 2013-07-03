@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of standardWormFilter</title>
+  <meta name="keywords" content="standardWormFilter">
+  <meta name="description" content="STANDARDWORMFILTER Get a filter for standard worm experiments (roughly 15">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>standardWormFilter
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>STANDARDWORMFILTER Get a filter for standard worm experiments (roughly 15</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function filter = standardWormFilter() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">STANDARDWORMFILTER Get a filter for standard worm experiments (roughly 15
+minute-long videos with 20 or more frames/seconds, 2/3  or more of the
+frames segmented, and performed from Monday to Friday 8am to 5pm).
+
+   FILTER = STANDARDWORMFILTER()
+
+   Output:
+       filter - a filter to identify standard worm experiments
+
+ See also <a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">FILTERWORMINFO</a>, <a href="permissiveWormFilter.html" class="code" title="function filter = permissiveWormFilter()">PERMISSIVEWORMFILTER</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="findControls.html" class="code" title="">findControls</a>	Initialize the control info.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function filter = standardWormFilter()</a>
+0002 <span class="comment">%STANDARDWORMFILTER Get a filter for standard worm experiments (roughly 15</span>
+0003 <span class="comment">%minute-long videos with 20 or more frames/seconds, 2/3  or more of the</span>
+0004 <span class="comment">%frames segmented, and performed from Monday to Friday 8am to 5pm).</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   FILTER = STANDARDWORMFILTER()</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Output:</span>
+0009 <span class="comment">%       filter - a filter to identify standard worm experiments</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% See also FILTERWORMINFO, PERMISSIVEWORMFILTER</span>
+0012 
+0013 <span class="comment">% Construct a filter for standard worm experiments.</span>
+0014 filter = [];
+0015 filter.minFPS = 20;    <span class="comment">% &gt;= 20 frames/seconds</span>
+0016 filter.minTime = 840;  <span class="comment">% &gt;= 14 minutes</span>
+0017 filter.maxTime = 960;  <span class="comment">% &lt;= 16 minutes</span>
+0018 filter.minRatio = 2/3; <span class="comment">% &gt;= 2/3 of the video frames segmented</span>
+0019 filter.days = 1:5;     <span class="comment">% performed Monday to Friday</span>
+0020 filter.hours = 8:16;   <span class="comment">% performed 8am to 5pm</span>
+0021 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

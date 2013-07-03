@@ -1,0 +1,466 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of cleanWorm2</title>
+  <meta name="keywords" content="cleanWorm2">
+  <meta name="description" content="CLEANWORM2 Clean up the worm contour by connecting any splits ends.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Segmentation -->
+<h1>cleanWorm2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>CLEANWORM2 Clean up the worm contour by connecting any splits ends.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function contour = cleanWorm2(contour, wormSegSize) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CLEANWORM2 Clean up the worm contour by connecting any splits ends.
+
+   CONTOUR = CLEANWORM2(CONTOUR, WORMSEGSIZE)
+
+   Inputs:
+       contour     - the clockwise, circularly-connected worm contour.
+       wormSegSize - the size (in contour points) of a worm segment.
+                     Note: The worm's contour is roughly divided into 50
+                     segments of musculature (i.e., hinges that represent
+                     degrees of freedom).
+                     Warning: before cleaning, the length of the contour
+                     can vary significantly: from 1/4 its correct size, if
+                     the worm is coiled up with its head and tail touching 
+                     its body, 180 degrees apart on the coil; to 2 times
+                     its correct size, if the head and tail are both split
+                     by invaginations that reach 1/4 into its body.
+                     Additionally, there are various permutations in
+                     between these extremes. Therefore, we use carefully
+                     chosen approximations that are fail-safe to within a
+                     large margin. Moreover, we use several other tricks
+                     to ensure we don't incorrectly heal false worm splits
+                     (e.g., we check for a sharp concavity before joining
+                     sharp convexities). But, we remain labile in extreme
+                     cases (e.g., omega bends where the head and tail are
+                     very proximal).
+
+   Output:
+       contour - the cleaned up worm contour.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>	CIRCCURVATURE Compute the curvature for a clockwise, circularly-connected</li><li><a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>	CIRCCONV Convolve the circularly connected vector a with b.</li><li><a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>	MAXPEAKSCIRCDIST Find the maximum peaks in a circular vector. The peaks</li><li><a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>	MINPEAKSCIRCDIST Find the minimum peaks in a circular vector. The peaks</li><li><a href="cleanContour.html" class="code" title="function [cContour] = cleanContour(contour)">cleanContour</a>	CLEANCONTOUR Clean an 8-connected, circularly-connected contour by</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function contour = cleanWorm2(contour, wormSegSize)</a>
+0002 <span class="comment">%CLEANWORM2 Clean up the worm contour by connecting any splits ends.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   CONTOUR = CLEANWORM2(CONTOUR, WORMSEGSIZE)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       contour     - the clockwise, circularly-connected worm contour.</span>
+0008 <span class="comment">%       wormSegSize - the size (in contour points) of a worm segment.</span>
+0009 <span class="comment">%                     Note: The worm's contour is roughly divided into 50</span>
+0010 <span class="comment">%                     segments of musculature (i.e., hinges that represent</span>
+0011 <span class="comment">%                     degrees of freedom).</span>
+0012 <span class="comment">%                     Warning: before cleaning, the length of the contour</span>
+0013 <span class="comment">%                     can vary significantly: from 1/4 its correct size, if</span>
+0014 <span class="comment">%                     the worm is coiled up with its head and tail touching</span>
+0015 <span class="comment">%                     its body, 180 degrees apart on the coil; to 2 times</span>
+0016 <span class="comment">%                     its correct size, if the head and tail are both split</span>
+0017 <span class="comment">%                     by invaginations that reach 1/4 into its body.</span>
+0018 <span class="comment">%                     Additionally, there are various permutations in</span>
+0019 <span class="comment">%                     between these extremes. Therefore, we use carefully</span>
+0020 <span class="comment">%                     chosen approximations that are fail-safe to within a</span>
+0021 <span class="comment">%                     large margin. Moreover, we use several other tricks</span>
+0022 <span class="comment">%                     to ensure we don't incorrectly heal false worm splits</span>
+0023 <span class="comment">%                     (e.g., we check for a sharp concavity before joining</span>
+0024 <span class="comment">%                     sharp convexities). But, we remain labile in extreme</span>
+0025 <span class="comment">%                     cases (e.g., omega bends where the head and tail are</span>
+0026 <span class="comment">%                     very proximal).</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%   Output:</span>
+0029 <span class="comment">%       contour - the cleaned up worm contour.</span>
+0030 
+0031 <span class="comment">% Compute the contour's curvature on a small scale.</span>
+0032 angles = <a href="../../../SegWorm/ComputerVision/circCurvature.html" class="code" title="function angles = circCurvature(points, edgeLength, varargin)">circCurvature</a>(contour, wormSegSize);
+0033 
+0034 <span class="comment">% On a small scale, noise causes contour imperfections that shift an angle</span>
+0035 <span class="comment">% from its correct location. Therefore, blurring angles by averaging them</span>
+0036 <span class="comment">% with their neighbors can localize them better.</span>
+0037 blurLength = ceil(wormSegSize / 2);
+0038 blurWin(1:blurLength) = 1 / blurLength;
+0039 mAngles = <a href="../../../SegWorm/Util/circConv.html" class="code" title="function [c] = circConv(a, b)">circConv</a>(angles, blurWin);
+0040 
+0041 <span class="comment">% Is the worm contour split at the head and/or tail?</span>
+0042 <span class="comment">% Note: often the head and tail have light colored internals that, when</span>
+0043 <span class="comment">% binarized, split the head and/or tail into two or more pieces.</span>
+0044 <span class="comment">% Note 2: We don't use the blurred angles for concavities. Unfortunately,</span>
+0045 <span class="comment">% blurring can erase high-frequency minima. Moreover, we don't need</span>
+0046 <span class="comment">% any improvements in localizing these concavities.</span>
+0047 [maxP maxI] = <a href="../../../SegWorm/Util/maxPeaksCircDist.html" class="code" title="function [peaks indices] = maxPeaksCircDist(x, dist, varargin)">maxPeaksCircDist</a>(mAngles, wormSegSize);
+0048 [minP minI] = <a href="../../../SegWorm/Util/minPeaksCircDist.html" class="code" title="function [peaks indices] = minPeaksCircDist(x, dist, varargin)">minPeaksCircDist</a>(angles, wormSegSize);
+0049 maxI = maxI(maxP &gt; 60);
+0050 minI = minI(minP &lt; -90);
+0051 
+0052 <span class="comment">% How close, on the contour, are the neighboring sharp convexities?</span>
+0053 maxD = [];
+0054 <span class="keyword">if</span> length(maxI) &gt; 1
+0055     maxD = [diff(maxI); (maxI(1) + length(mAngles) - maxI(end))];
+0056 <span class="keyword">end</span>
+0057 
+0058 <span class="comment">% Do we have multiple sharp convexities (potential contour splits) that are</span>
+0059 <span class="comment">% nearby on the contour and/or, nearby in distance and separated by a sharp</span>
+0060 <span class="comment">% concavity?</span>
+0061 nearSize = 2 * wormSegSize; <span class="comment">% a nearby distance</span>
+0062 nearScale = .3; <span class="comment">% a nearby location on the contour (relative to its size)</span>
+0063 <span class="keyword">if</span> ~isempty(maxD) &amp;&amp; (any(maxD &lt;= nearSize) || ~isempty(minI))
+0064     
+0065     <span class="comment">% Connect sharp convexities that are nearby on the contour and/or,</span>
+0066     <span class="comment">% nearby in distance and separated by a sharp concavity.</span>
+0067     <span class="comment">% Note: the worm's width is approximately the size of a muscle segment.</span>
+0068     <span class="comment">% Binarization may yield a split with diagonally-offset, forking</span>
+0069     <span class="comment">% convexities. Therefore, 2 segments is a good size to bound the</span>
+0070     <span class="comment">% distance between nearby, split convexities.</span>
+0071     <span class="comment">% Note 2: the connections are organized as the vector triplet:</span>
+0072     <span class="comment">% [startContourIndex endContourIndex isWrapping]</span>
+0073     <span class="comment">% Contour points between startContourIndex and endContourIndex are removed.</span>
+0074     conns = zeros(length(maxI), 3); <span class="comment">% the connections (pre-allocate memory)</span>
+0075     connsI = 1; <span class="comment">% the current index for connections</span>
+0076     <span class="keyword">for</span> i = 1:(length(maxI) - 1);
+0077         
+0078         <span class="comment">% Are there any sharp convexities nearby?</span>
+0079         connected = false; <span class="comment">% did we connect?</span>
+0080         <span class="keyword">for</span> j = (i + 1):length(maxI)
+0081             <span class="keyword">if</span> sqrt(sum((contour(maxI(i),:) - contour(maxI(j),:)) .^ 2)) &lt;= nearSize
+0082 
+0083                 <span class="comment">% Which side is shorter?</span>
+0084                 <span class="comment">% Side1 is continuous and goes from start (iI) to end (jI)</span>
+0085                 <span class="comment">% in positive, index increments.</span>
+0086                 <span class="comment">% Side2 wraps and always goes from start (iI) to end (jI)</span>
+0087                 <span class="comment">% in negative, index increments.</span>
+0088                 cLength = size(contour, 1);
+0089                 iI = maxI(i);
+0090                 jI = maxI(j);
+0091                 dSide1 = jI - iI;
+0092                 dSide2 = iI + cLength - jI;
+0093                 
+0094                 <span class="comment">% The continuous side is shorter.</span>
+0095                 <span class="keyword">if</span> dSide1 &lt; dSide2 &amp;&amp; dSide1 / cLength &lt; nearScale
+0096 
+0097                     <span class="comment">% Is the convexity nearby on the contour.</span>
+0098                     connect = false;
+0099                     <span class="keyword">if</span> dSide1 &lt;= nearSize
+0100                         connect = true;
+0101                         
+0102                     <span class="comment">% Is there a concavity separating us on our shorter,</span>
+0103                     <span class="comment">% continuous side?</span>
+0104                     <span class="keyword">else</span>
+0105                         <span class="keyword">for</span> k = 1:length(minI)
+0106                             <span class="keyword">if</span> minI(k) &gt; iI &amp;&amp; minI(k) &lt; jI
+0107                                 connect = true;
+0108                                 <span class="keyword">break</span>;
+0109                             <span class="keyword">end</span>
+0110                         <span class="keyword">end</span>
+0111                     <span class="keyword">end</span>
+0112                     
+0113                     <span class="comment">% Connect the convexities.</span>
+0114                     <span class="keyword">if</span> connect
+0115                         
+0116                         <span class="comment">% Add the connection.</span>
+0117                         <span class="keyword">if</span> ~connected
+0118                             conns(connsI,:) = [iI jI 0];
+0119                             connected = true;
+0120                             
+0121                         <span class="comment">% Extend the existing, continuous connection.</span>
+0122                         <span class="keyword">elseif</span> ~conns(connsI,3)
+0123                             conns(connsI,1) = min(iI, conns(connsI,1));
+0124                             conns(connsI,2) = max(jI, conns(connsI,2));
+0125                             connected = true;
+0126                             
+0127                         <span class="comment">% Extend the beginning of the existing, wrapped connection.</span>
+0128                         <span class="keyword">elseif</span> iI &gt;= conns(connsI,1)
+0129                             conns(connsI,1) = min(iI, conns(connsI,1));
+0130                             connected = true;
+0131                             
+0132                         <span class="comment">% Extend the end of the existing, wrapped connection.</span>
+0133                         <span class="keyword">else</span>
+0134                             conns(connsI,2) = max(jI, conns(connsI,2));
+0135                             connected = true;
+0136                         <span class="keyword">end</span>
+0137 <span class="comment">%                         ['Connecting ' num2str(maxI(i)) ' and ' num2str(maxI(j)) ...</span>
+0138 <span class="comment">%                             ' with ' num2str(minI(k)) ' in between.']</span>
+0139                     <span class="keyword">end</span>
+0140                     
+0141                 <span class="comment">% The wrapping side is shorter so check it instead.</span>
+0142                 <span class="keyword">elseif</span> dSide2 / cLength &lt; nearScale
+0143                     <span class="comment">% Is the convexity nearby on the contour.</span>
+0144                     connect = false;
+0145                     <span class="keyword">if</span> dSide2 &lt;= nearSize
+0146                         connect = true;
+0147                         
+0148                     <span class="comment">% Is there a concavity separating us on our shorter,</span>
+0149                     <span class="comment">% continuous side?</span>
+0150                     <span class="keyword">else</span>
+0151                         <span class="keyword">for</span> k = 1:length(minI)
+0152                             <span class="keyword">if</span> minI(k) &lt; iI || minI(k) &gt; jI
+0153                                 connect = true;
+0154                                 <span class="keyword">break</span>;
+0155                             <span class="keyword">end</span>
+0156                         <span class="keyword">end</span>
+0157                     <span class="keyword">end</span>
+0158                     
+0159                     <span class="comment">% Connect the convexities.</span>
+0160                     <span class="keyword">if</span> connect
+0161                         
+0162                         <span class="comment">% Add the connection.</span>
+0163                         <span class="keyword">if</span> ~connected
+0164                             conns(connsI,:) = [jI iI 1];
+0165                             connected = true;
+0166                             
+0167                         <span class="comment">% Extend the existing, wrapped connection.</span>
+0168                         <span class="keyword">elseif</span> conns(connsI,3)
+0169                             conns(connsI,1) = min(jI, conns(connsI,1));
+0170                             conns(connsI,2) = max(iI, conns(connsI,2));
+0171                             connected = true;
+0172                             
+0173                         <span class="comment">% Wrap the continuous connection and extend the end.</span>
+0174                         <span class="keyword">elseif</span> iI &gt;= conns(connsI,1)
+0175                             conns(connsI,1) = jI;
+0176                             conns(connsI,2) = max(iI, conns(connsI,2));
+0177                             conns(connsI,3) = 1;
+0178                             connected = true;
+0179                             
+0180                         <span class="comment">% Wrap the continuous connection and extend the beginning.</span>
+0181                         <span class="keyword">elseif</span> jI &lt;= conns(connsI,2)
+0182                             conns(connsI,1) = min(jI, conns(connsI,1));
+0183                             conns(connsI,2) = iI;
+0184                             conns(connsI,3) = 1;
+0185                             connected = true;
+0186                         <span class="keyword">end</span>
+0187 <span class="comment">%                         ['Connecting ' num2str(maxI(i)) ' and ' num2str(maxI(j)) ...</span>
+0188 <span class="comment">%                             ' with ' num2str(minI(k)) ' in between.']</span>
+0189                     <span class="keyword">end</span>
+0190                 <span class="keyword">end</span>
+0191             <span class="keyword">end</span>
+0192         <span class="keyword">end</span>
+0193         
+0194         <span class="comment">% Advance.</span>
+0195         <span class="keyword">if</span> connected
+0196             connsI = connsI + 1;
+0197         <span class="keyword">end</span>
+0198     <span class="keyword">end</span>
+0199     
+0200     <span class="comment">% Collapse any extra memory.</span>
+0201     conns(connsI:<span class="keyword">end</span>,:) = [];
+0202     
+0203     <span class="comment">% Clean up the contour.</span>
+0204     <span class="keyword">if</span> ~isempty(conns)
+0205         
+0206         <span class="comment">% Connect the connections.</span>
+0207         prevConnsSize = size(conns, 1);
+0208         newConnsI = 1; <span class="comment">% the current index for new connections</span>
+0209         <span class="keyword">while</span> newConnsI &lt; prevConnsSize
+0210             newConns = zeros(size(conns)); <span class="comment">% the new connections (pre-allocate memory)</span>
+0211             newConnsI = 1;
+0212             <span class="keyword">for</span> i = 1:size(conns, 1)
+0213                 connected = false; <span class="comment">% have we made any connections?</span>
+0214                 <span class="keyword">for</span> j = (i + 1):size(conns, 1)
+0215                     
+0216                     <span class="comment">% Are both connections continuous?</span>
+0217                     <span class="keyword">if</span> ~conns(i,3)
+0218                         <span class="keyword">if</span> ~conns(j,3)
+0219                             
+0220                             <span class="comment">% Does connection j intersect i?</span>
+0221                             <span class="keyword">if</span> conns(i,2) - conns(i,1) &gt;= conns(j,2) - conns(j,1)
+0222                                 <span class="keyword">if</span> (conns(i,1) &lt;= conns(j,1) &amp;&amp; conns(i,2) &gt;= conns(j,1)) <span class="keyword">...</span>
+0223                                         || (conns(i,1) &lt;= conns(j,2) &amp;&amp; conns(i,2) &gt;= conns(j,2))
+0224                                     
+0225                                     <span class="comment">% Take the union of connections i and j.</span>
+0226                                     newConns(newConnsI,:) = <span class="keyword">...</span>
+0227                                         [ min(conns(i,1), conns(j,1)) <span class="keyword">...</span>
+0228                                           max(conns(i,2), conns(j,2)) <span class="keyword">...</span>
+0229                                           0 ];
+0230                                     newConnsI = newConnsI + 1;
+0231                                     connected = true;
+0232                                 <span class="keyword">end</span>
+0233                                 
+0234                             <span class="comment">% Does connection i intersect j?</span>
+0235                             <span class="keyword">else</span>
+0236                                 <span class="keyword">if</span> (conns(i,1) &gt;= conns(j,1) &amp;&amp; conns(i,1) &lt;= conns(j,2)) <span class="keyword">...</span>
+0237                                         || (conns(i,2) &gt;= conns(j,1) &amp;&amp; conns(i,2) &lt;= conns(j,2))
+0238 
+0239                                     <span class="comment">% Take the union of connections i and j.</span>
+0240                                     newConns(newConnsI,:) = <span class="keyword">...</span>
+0241                                         [ min(conns(i,1), conns(j,1)) <span class="keyword">...</span>
+0242                                           max(conns(i,2), conns(j,2)) <span class="keyword">...</span>
+0243                                           0 ];
+0244                                     newConnsI = newConnsI + 1;
+0245                                     connected = true;
+0246                                 <span class="keyword">end</span>
+0247                             <span class="keyword">end</span>
+0248                             
+0249                         <span class="comment">% Connection j wraps.</span>
+0250                         <span class="keyword">else</span>
+0251                             
+0252                             <span class="comment">% Add connection i to the beginning of j.</span>
+0253                             justConnected = false; <span class="comment">% did we just connect?</span>
+0254                             <span class="keyword">if</span> conns(i,2) &gt;= conns(j,1)
+0255                                 newConns(newConnsI,:) = <span class="keyword">...</span>
+0256                                     [ min(conns(i,1), conns(j,1))
+0257                                       conns(j,2)
+0258                                       1 ];
+0259                                 newConnsI = newConnsI + 1;
+0260                                 connected = true;
+0261                                 justConnected = true;
+0262                             <span class="keyword">end</span>
+0263                             
+0264                             <span class="comment">% Add connection i to the end of j.</span>
+0265                             <span class="keyword">if</span> conns(i,1) &lt;= conns(j,2)
+0266                                 <span class="keyword">if</span> justConnected
+0267                                     newConns(newConnsI - 1,2) = <span class="keyword">...</span>
+0268                                         max(conns(i,2), conns(j,2));
+0269                                 <span class="keyword">else</span>
+0270                                     newConns(newConnsI,:) = <span class="keyword">...</span>
+0271                                         [ conns(j,1)
+0272                                           max(conns(i,2), conns(j,2))
+0273                                           1 ];
+0274                                     newConnsI = newConnsI + 1;
+0275                                     connected = true;
+0276                                 <span class="keyword">end</span>
+0277                             <span class="keyword">end</span>
+0278                         <span class="keyword">end</span>
+0279                         
+0280                     <span class="comment">% Are both connections wrapping?</span>
+0281                     <span class="keyword">else</span>
+0282                         <span class="keyword">if</span> conns(j,3)
+0283                             
+0284                             <span class="comment">% Take the union of connections i and j.</span>
+0285                             newConns(newConnsI,:) = <span class="keyword">...</span>
+0286                                 [ min(conns(i,1), conns(j,1)) <span class="keyword">...</span>
+0287                                   max(conns(i,2), conns(j,2)) <span class="keyword">...</span>
+0288                                   1 ];
+0289                             newConnsI = newConnsI + 1;
+0290                             connected = true;
+0291                               
+0292                         <span class="comment">% Connection j is continuous.</span>
+0293                         <span class="keyword">else</span>
+0294                             
+0295                             <span class="comment">% Add connection j to the beginning of i.</span>
+0296                             justConnected = false; <span class="comment">% did we just connect?</span>
+0297                             <span class="keyword">if</span> conns(i,1) &lt;= conns(j,2)
+0298                                 newConns(newConnsI,:) = <span class="keyword">...</span>
+0299                                     [ min(conns(i,1), conns(j,1))
+0300                                       conns(i,2)
+0301                                       1 ];
+0302                                 newConnsI = newConnsI + 1;
+0303                                 connected = true;
+0304                                 justConnected = true;
+0305                             <span class="keyword">end</span>
+0306                             
+0307                             <span class="comment">% Add connection j to the end of i.</span>
+0308                             <span class="keyword">if</span> conns(i,2) &gt;= conns(j,1)
+0309                                 <span class="keyword">if</span> justConnected
+0310                                     newConns(newConnsI - 1,2) = <span class="keyword">...</span>
+0311                                         max(conns(i,2), conns(j,2));
+0312                                 <span class="keyword">else</span>
+0313                                     newConns(newConnsI,:) = <span class="keyword">...</span>
+0314                                         [ conns(i,1)
+0315                                           max(conns(i,2), conns(j,2))
+0316                                           1 ];
+0317                                     newConnsI = newConnsI + 1;
+0318                                     connected = true;
+0319                                 <span class="keyword">end</span>
+0320                             <span class="keyword">end</span>
+0321                         <span class="keyword">end</span>
+0322                     <span class="keyword">end</span>
+0323                 <span class="keyword">end</span>
+0324                 
+0325                 <span class="comment">% Add the connection.</span>
+0326                 <span class="keyword">if</span> ~connected
+0327                     newConns(newConnsI,:) = conns(i,:);
+0328                     newConnsI = newConnsI + 1;
+0329                 <span class="keyword">end</span>
+0330             <span class="keyword">end</span>
+0331             
+0332             <span class="comment">% Collapse any extra memory.</span>
+0333             newConns(newConnsI:<span class="keyword">end</span>,:) = [];
+0334             
+0335             <span class="comment">% Have we made any new connections?</span>
+0336             prevConnsSize = size(conns, 1);
+0337             conns = newConns;
+0338         <span class="keyword">end</span>
+0339         
+0340         <span class="comment">% Connect the contour splits.</span>
+0341         <span class="keyword">for</span> i = 1:size(conns, 1)
+0342             
+0343             <span class="comment">% Connect the continuous contour split.</span>
+0344             <span class="keyword">if</span> ~conns(i,3)
+0345                 minI = conns(i,1);
+0346                 maxI = conns(i,2);
+0347                 minP = contour(minI,:);
+0348                 maxP = contour(maxI,:);
+0349                 points = maxI - minI + 1;
+0350                 contour(minI:maxI,1) = round(linspace(minP(1), maxP(1), points));
+0351                 contour(minI:maxI,2) = round(linspace(minP(2), maxP(2), points));
+0352                 
+0353             <span class="comment">% Connect the wrapping contour split.</span>
+0354             <span class="keyword">else</span>
+0355                 minI = conns(i,2);
+0356                 maxI = conns(i,1);
+0357                 minP = contour(minI,:);
+0358                 maxP = contour(maxI,:);
+0359                 points = minI + size(contour, 1) - maxI + 1;
+0360                 interPoints(:,1) = linspace(maxP(1), minP(1), points);
+0361                 interPoints(:,2) = linspace(maxP(2), minP(2), points);
+0362                 contour(maxI:<span class="keyword">end</span>,:) = round(interPoints(1:(end - minI),:));
+0363                 contour(1:minI,:) = round(interPoints((end - minI + 1):<span class="keyword">end</span>,:));
+0364             <span class="keyword">end</span>
+0365         <span class="keyword">end</span>
+0366         
+0367         <span class="comment">% Clean up the contour.</span>
+0368         contour = <a href="cleanContour.html" class="code" title="function [cContour] = cleanContour(contour)">cleanContour</a>(contour);
+0369     <span class="keyword">end</span>
+0370 <span class="keyword">end</span>
+0371 
+0372 <span class="comment">% Anti alias the contour.</span>
+0373 keep = 1:size(contour, 1); <span class="comment">% points to keep</span>
+0374 i = 1;
+0375 endI = size(contour, 1) - 1;
+0376 <span class="keyword">while</span> i &lt; endI
+0377     
+0378     <span class="comment">% Smooth any stairs.</span>
+0379     nextI = i + 2;
+0380     <span class="keyword">if</span> abs(contour(i,1) - contour(nextI,1)) &lt;= 1 &amp;&amp; <span class="keyword">...</span>
+0381             abs(contour(i,2) - contour(nextI,2)) &lt;= 1
+0382         keep(i + 1) = nan;
+0383         
+0384         <span class="comment">% Advance.</span>
+0385         i = nextI;
+0386     <span class="keyword">else</span>
+0387     
+0388         <span class="comment">% Advance.</span>
+0389         i = i + 1;
+0390     <span class="keyword">end</span>
+0391 <span class="keyword">end</span>
+0392 contour = contour(~isnan(keep),:);
+0393 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

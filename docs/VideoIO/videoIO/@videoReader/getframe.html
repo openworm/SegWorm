@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getframe</title>
+  <meta name="keywords" content="getframe">
+  <meta name="description" content="FRAME=GETFRAME(VR)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html @videoReader -->
+<h1>getframe
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>FRAME=GETFRAME(VR)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function frame = getframe(vr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FRAME=GETFRAME(VR)
+  Returns the current frame that has been read in from video VR.  Calling
+  GETFRAME does not automatically advance the current frame so the user
+  must first call NEXT, STEP, or SEEK before calling GETFRAME the
+  first time.  This makes it easy to write loops such as the example...
+
+  Example:
+    vr = videoReader(...);
+    while (next(vr))
+      img = getframe(vr);
+      % ...do something...
+    end
+    vr = close(vr);
+
+SEE ALSO
+  <a href="videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>
+  videoReader/get
+  videoReader/getnext
+  videoReader/next
+  videoReader/seek
+  videoReader/step
+
+Copyright (c) 2006 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="getnext.html" class="code" title="function frame = getnext(vr)">getnext</a>	FRAME=GETNEXT(VR)</li><li><a href="../../videoIO/contrib/videoPlayer/videoPlayer.html" class="code" title="function vp = videoPlayer(varargin)">videoPlayer</a>	function vp = videoPlayer(varargin)</li><li><a href="../../videoIO/tests/addFrameDemo.html" class="code" title="function addFrameDemo">addFrameDemo</a>	addFrameDemo</li><li><a href="../../videoIO/tests/analyzeNumFinalHiddenFrames.html" class="code" title="">analyzeNumFinalHiddenFrames</a>	analyzeNumFinalHiddenFrames</li><li><a href="../../videoIO/tests/concatReadTests.html" class="code" title="function concatReadTests(plugin)">concatReadTests</a>	concatReadTests</li><li><a href="../../videoIO/tests/divxSeekExpmt.html" class="code" title="function divxSeekExpmt">divxSeekExpmt</a>	divxSeekExpmt</li><li><a href="../../videoIO/tests/doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>	IMAGES=DOFULLREAD(...)</li><li><a href="../../videoIO/tests/doMultiFullReadTest.html" class="code" title="function doMultiFullReadTest(varargin)">doMultiFullReadTest</a>	DOMULTIFULLREADTEST(...)</li><li><a href="../../videoIO/tests/doPreciseSeekTests.html" class="code" title="function doPreciseSeekTests(varargin)">doPreciseSeekTests</a>	DOPRECISESEEKTESTS(...)</li><li><a href="../../videoIO/tests/getLoadableFiles.html" class="code" title="function [loadables,nonloadables,errors] = getLoadableFiles(varargin)">getLoadableFiles</a>	loadables = getLoadableFiles(...)</li><li><a href="../../videoIO/tests/longWriteTest.html" class="code" title="function longWriteTest(plugin, readerPlugin)">longWriteTest</a>	longWriteTests(plugin)</li><li><a href="../../videoIO/tests/testMatrix.html" class="code" title="function testMatrix">testMatrix</a>	testMatrix</li><li><a href="../../videoIO/tests/writeTests.html" class="code" title="function writeTests(plugin, readerPlugin)">writeTests</a>	writeTests(plugin)</li><li><a href="../../videoIO/videoReader_concat.html" class="code" title="function [out,out2] = videoReader_concat(cmd, handle, varargin)">videoReader_concat</a>	videoReader_concat</li><li><a href="../../videoIO/videoread.html" class="code" title="function mov=videoread(fname,varargin)">videoread</a>	VIDEOREAD Read an video file in a mannter compatible with Matlab's</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function frame = getframe(vr)</a>
+0002 <span class="comment">%FRAME=GETFRAME(VR)</span>
+0003 <span class="comment">%  Returns the current frame that has been read in from video VR.  Calling</span>
+0004 <span class="comment">%  GETFRAME does not automatically advance the current frame so the user</span>
+0005 <span class="comment">%  must first call NEXT, STEP, or SEEK before calling GETFRAME the</span>
+0006 <span class="comment">%  first time.  This makes it easy to write loops such as the example...</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%  Example:</span>
+0009 <span class="comment">%    vr = videoReader(...);</span>
+0010 <span class="comment">%    while (next(vr))</span>
+0011 <span class="comment">%      img = getframe(vr);</span>
+0012 <span class="comment">%      % ...do something...</span>
+0013 <span class="comment">%    end</span>
+0014 <span class="comment">%    vr = close(vr);</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%SEE ALSO</span>
+0017 <span class="comment">%  videoReader</span>
+0018 <span class="comment">%  videoReader/get</span>
+0019 <span class="comment">%  videoReader/getnext</span>
+0020 <span class="comment">%  videoReader/next</span>
+0021 <span class="comment">%  videoReader/seek</span>
+0022 <span class="comment">%  videoReader/step</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%Copyright (c) 2006 Gerald Dalley</span>
+0025 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0026 <span class="comment">%when using this library on GNU/Linux).</span>
+0027 
+0028 frame = feval(vr.plugin, <span class="string">'getframe'</span>, vr.handle);
+0029</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

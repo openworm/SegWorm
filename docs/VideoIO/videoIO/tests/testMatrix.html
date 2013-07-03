@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of testMatrix</title>
+  <meta name="keywords" content="testMatrix">
+  <meta name="description" content="testMatrix">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html tests -->
+<h1>testMatrix
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>testMatrix</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function testMatrix </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">testMatrix
+  Runs platform-independent tests using the 'matrix' videoReader
+  plugin. 
+
+Example:
+  testMatrix
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>	VR=CLOSE(VR)</li><li><a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>	FRAME=GETFRAME(VR)</li><li><a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>	WORKED=NEXT(VR)</li><li><a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>	videoReader class constructor</li><li><a href="../../videoIO/@videoWriter/close.html" class="code" title="function vw = close(vw)">close</a>	VW=CLOSE(VW)</li><li><a href="extractFrames.html" class="code" title="">extractFrames</a>	Script to create the frames/ subdirectory.  The data in that directory is</li><li><a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>	IENTER(...)</li><li><a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>	IEXIT(...)</li><li><a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a>	vrassert(testCondition)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="testAll.html" class="code" title="">testAll</a>	testAll</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function testMatrix</a>
+0002 <span class="comment">%testMatrix</span>
+0003 <span class="comment">%  Runs platform-independent tests using the 'matrix' videoReader</span>
+0004 <span class="comment">%  plugin.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%Example:</span>
+0007 <span class="comment">%  testMatrix</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0010 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0011 <span class="comment">%when using this library on GNU/Linux).</span>
+0012 
+0013 <a href="ienter.html" class="code" title="function ienter(varargin)">ienter</a>;
+0014 
+0015 <span class="comment">% generate the data, if needed</span>
+0016 <a href="extractFrames.html" class="code" title="">extractFrames</a>; 
+0017 
+0018 load matrix3d.mat matrix3d N;
+0019 load matrix4d.mat matrix4d;
+0020 
+0021 vr3   = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(matrix3d, <span class="string">'matrix'</span>);
+0022 vr3f  = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(<span class="string">'matrix3d.mat'</span>, <span class="string">'matrix'</span>);
+0023 vr3b  = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(<span class="string">'matrixBoth.mat'</span>, <span class="string">'matrix'</span>, <span class="string">'varname'</span>,<span class="string">'matrix3d'</span>);
+0024 vr4   = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(matrix4d, <span class="string">'matrix'</span>);
+0025 vr4f  = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(<span class="string">'matrix4d.mat'</span>, <span class="string">'matrix'</span>);
+0026 vr4b  = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(<span class="string">'matrixBoth.mat'</span>, <span class="string">'matrix'</span>, <span class="string">'varname'</span>,<span class="string">'matrix4d'</span>);
+0027 vrb   = <a href="../../videoIO/@videoReader/videoReader.html" class="code" title="function vr = videoReader(url, varargin)">videoReader</a>(<span class="string">'matrixBoth.mat'</span>, <span class="string">'matrix'</span>);
+0028 
+0029 <span class="keyword">for</span> i=0:N-1
+0030   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr3);
+0031   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr3f);
+0032   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr3b);
+0033   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr4);
+0034   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr4f);
+0035   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vr4b);
+0036   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> <a href="../../videoIO/@videoReader/next.html" class="code" title="function worked = next(vr)">next</a>(vrb);
+0037   
+0038   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> all(all(matrix3d(:,:,i+1) == <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr3)));
+0039   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> all(all(matrix3d(:,:,i+1) == <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr3f)));
+0040   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> all(all(matrix3d(:,:,i+1) == <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr3b)));
+0041   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> all(all(all(matrix4d(:,:,:,i+1) == <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr4))));
+0042   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> all(all(all(matrix4d(:,:,:,i+1) == <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr4f))));
+0043   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> all(all(all(matrix4d(:,:,:,i+1) == <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vr4b))));
+0044   <a href="vrassert.html" class="code" title="function vrassert(varargin)">vrassert</a> all(all(all(matrix4d(:,:,:,i+1) == <a href="../../videoIO/@videoReader/getframe.html" class="code" title="function frame = getframe(vr)">getframe</a>(vrb))));
+0045 <span class="keyword">end</span>
+0046 
+0047 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr3);
+0048 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr3f);
+0049 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr3b);
+0050 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr4);
+0051 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr4f);
+0052 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vr4b);
+0053 <a href="../../videoIO/@videoReader/close.html" class="code" title="function vr = close(vr)">close</a>(vrb);
+0054 
+0055 <a href="iexit.html" class="code" title="function iexit(varargin)">iexit</a>;</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

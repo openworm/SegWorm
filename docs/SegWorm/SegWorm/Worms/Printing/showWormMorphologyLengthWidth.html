@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of showWormMorphologyLengthWidth</title>
+  <meta name="keywords" content="showWormMorphologyLengthWidth">
+  <meta name="description" content="SHOWWORMMORPHOLOGYLENGTHWIDTH Show the worm length and width morphology.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>showWormMorphologyLengthWidth
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>SHOWWORMMORPHOLOGYLENGTHWIDTH Show the worm length and width morphology.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [saveFile pages] = showWormMorphologyLengthWidth(worm, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SHOWWORMMORPHOLOGYLENGTHWIDTH Show the worm length and width morphology.
+
+   [SAVEFILE PAGES] = SHOWWORMMORPHOLOGYLENGTHWIDTH(WORM)
+
+   [SAVEFILE PAGES] = SHOWWORMMORPHOLOGYLENGTHWIDTH(WORM, FILEPREFIX)
+
+   [SAVEFILE PAGES] = SHOWWORMMORPHOLOGYLENGTHWIDTH(WORM, FILEPREFIX, PAGE)
+
+   [SAVEFILE PAGES] = SHOWWORMMORPHOLOGYLENGTHWIDTH(WORM, FILEPREFIX, PAGE,
+                                                    ISCLOSE)
+
+   Inputs:
+       worm        - the worm to show
+       filePrefix  - the file prefix for saving the figure;
+                     if empty, the figure is not saved
+       page        - the page number;
+                     if empty, the page number is not shown
+       isClose     - shoud we close the figure after saving it?
+                     when saving the figure, the default is yes (true)
+                     otherwise, the default is no (false)
+
+   Output:
+       saveFile - the file containing the saved figure;
+                  if empty, the figure was not saved
+       pages    - the number of pages in the figure file
+
+   See WORMORGANIZATION, SHOWORMMORPHOLOGY</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>	HISTOGRAM Compute the data's histogram.</li><li><a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>	PLOTHISTOGRAM Plot a histogram(s) of data.</li><li><a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>	STR2COLORS Convert a string of colors to RGB values.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="showWormMorphology.html" class="code" title="function [saveFile pages] = showWormMorphology(worm, varargin)">showWormMorphology</a>	SHOWWORMMORPHOLOGY Show the worm morphology.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [saveFile pages] = showWormMorphologyLengthWidth(worm, varargin)</a>
+0002 <span class="comment">%SHOWWORMMORPHOLOGYLENGTHWIDTH Show the worm length and width morphology.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORMMORPHOLOGYLENGTHWIDTH(WORM)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORMMORPHOLOGYLENGTHWIDTH(WORM, FILEPREFIX)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORMMORPHOLOGYLENGTHWIDTH(WORM, FILEPREFIX, PAGE)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   [SAVEFILE PAGES] = SHOWWORMMORPHOLOGYLENGTHWIDTH(WORM, FILEPREFIX, PAGE,</span>
+0011 <span class="comment">%                                                    ISCLOSE)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Inputs:</span>
+0014 <span class="comment">%       worm        - the worm to show</span>
+0015 <span class="comment">%       filePrefix  - the file prefix for saving the figure;</span>
+0016 <span class="comment">%                     if empty, the figure is not saved</span>
+0017 <span class="comment">%       page        - the page number;</span>
+0018 <span class="comment">%                     if empty, the page number is not shown</span>
+0019 <span class="comment">%       isClose     - shoud we close the figure after saving it?</span>
+0020 <span class="comment">%                     when saving the figure, the default is yes (true)</span>
+0021 <span class="comment">%                     otherwise, the default is no (false)</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   Output:</span>
+0024 <span class="comment">%       saveFile - the file containing the saved figure;</span>
+0025 <span class="comment">%                  if empty, the figure was not saved</span>
+0026 <span class="comment">%       pages    - the number of pages in the figure file</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%   See WORMORGANIZATION, SHOWORMMORPHOLOGY</span>
+0029 
+0030 <span class="comment">% Pad the title when saving the figure.</span>
+0031 <span class="comment">% Note: Matlab has a bug that cuts off the title when saving figures.</span>
+0032 pages = 0;
+0033 titlePad = [];
+0034 <span class="keyword">if</span> ~isempty(varargin) &amp;&amp; ~isempty(varargin{1})
+0035     pages = 1;
+0036     titlePad = <span class="string">'          '</span>;
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="comment">% Determine the locomotion modes.</span>
+0040 motionMode = worm.locomotion.motion.mode;
+0041 motionModes = { <span class="keyword">...</span>
+0042     1, <span class="keyword">...</span>
+0043     0, <span class="keyword">...</span>
+0044     -1};
+0045 motionNames = { <span class="keyword">...</span>
+0046     <span class="string">'Forward'</span>, <span class="keyword">...</span>
+0047     <span class="string">'Paused'</span>, <span class="keyword">...</span>
+0048     <span class="string">'Backward'</span>};
+0049 
+0050 
+0051 
+0052 <span class="comment">%% Show the length.</span>
+0053 
+0054 <span class="comment">% Create a figure.</span>
+0055 h = figure;
+0056 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1]);
+0057 hold on;
+0058 
+0059 <span class="comment">% Show the worm length.</span>
+0060 subplot(2, 3, 1);
+0061 hold on;
+0062 resolutions = 2;
+0063 histData = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(worm.morphology.length, resolutions);
+0064 titleName = [<span class="string">'WORM LENGTH'</span> titlePad];
+0065 xAxisName = <span class="string">'Length (microns)'</span>;
+0066 dataNames = {<span class="string">'Length'</span>};
+0067 histColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, 0);
+0068 statColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'r'</span>, -0.1);
+0069 <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, titleName, xAxisName, dataNames, <span class="keyword">...</span>
+0070     histColors, statColors);
+0071 
+0072 <span class="comment">% Show the forward/paused/backward worm length.</span>
+0073 subplot(2, 3, 4);
+0074 hold on;
+0075 samplesAll = histData.allData.samples;
+0076 meanAll = histData.allData.mean;
+0077 stdDevAll = histData.allData.stdDev;
+0078 dataAll = worm.morphology.length;
+0079 histData(1:end) = [];
+0080 <span class="keyword">for</span> i = 1:length(motionModes)
+0081     histData(i) = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(dataAll(motionMode == motionModes{i}), <span class="keyword">...</span>
+0082         resolutions);
+0083 <span class="keyword">end</span>
+0084 titleName = [<span class="string">'WORM LENGTH (N = '</span> num2str(samplesAll) <span class="keyword">...</span>
+0085     <span class="string">', MEAN = '</span> num2str(meanAll) <span class="keyword">...</span>
+0086     <span class="string">', S.D. = '</span> num2str(stdDevAll) <span class="string">')'</span> titlePad];
+0087 xAxisName = <span class="string">'Length (microns)'</span>;
+0088 dataNames = cell(length(motionModes),1);
+0089 <span class="keyword">for</span> i = 1:length(motionModes)
+0090     dataNames{i} = [motionNames{i} <span class="string">' Length'</span>];
+0091 <span class="keyword">end</span>
+0092 histColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'rkb'</span>, 0);
+0093 statColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'rkb'</span>, -0.1);
+0094 <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, titleName, xAxisName, dataNames, <span class="keyword">...</span>
+0095     histColors, statColors);
+0096 
+0097 
+0098 
+0099 <span class="comment">%% Show the width.</span>
+0100 
+0101 <span class="comment">% Show the worm width.</span>
+0102 subplot(2, 3, 2);
+0103 hold on;
+0104 segNames = {
+0105     <span class="string">'head'</span>, <span class="keyword">...</span>
+0106     <span class="string">'midbody'</span>, <span class="keyword">...</span>
+0107     <span class="string">'tail'</span>};
+0108 resolutions = .5;
+0109 histData(1:end) = [];
+0110 dataNames = cell(length(segNames), 1);
+0111 <span class="keyword">for</span> i = 1:length(segNames)
+0112     histData(i) = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(worm.morphology.width.(segNames{i}), <span class="keyword">...</span>
+0113         resolutions);
+0114     dataNames{i} = [upper(segNames{i}(1)) segNames{i}(2:end) <span class="string">' Width'</span>];
+0115 <span class="keyword">end</span>
+0116 samples = histData(1).allData.samples;
+0117 titleName = [<span class="string">'WORM WIDTH (N = '</span> num2str(samples) <span class="string">')'</span> titlePad];
+0118 xAxisName = <span class="string">'Width (microns)'</span>;
+0119 histColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'mkc'</span>, 0);
+0120 statColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'mkc'</span>, -0.1);
+0121 <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, titleName, xAxisName, dataNames, <span class="keyword">...</span>
+0122     histColors, statColors, 1, 0);
+0123 
+0124 <span class="comment">% Show the forward/paused/backward worm width.</span>
+0125 histDataAll = histData;
+0126 dataAllNames = dataNames;
+0127 dataNames = cell(length(motionModes),1);
+0128 <span class="keyword">for</span> i = 1:length(motionModes)
+0129     dataNames{i} = [motionNames{i} <span class="string">' Width'</span>];
+0130 <span class="keyword">end</span>
+0131 locations = {
+0132     3, <span class="keyword">...</span>
+0133     5, <span class="keyword">...</span>
+0134     6};
+0135 resolutions = .5;
+0136 histColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'rkb'</span>, 0);
+0137 statColors = <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'rkb'</span>, -0.1);
+0138 <span class="keyword">for</span> i = 1:length(segNames)
+0139     subplot(2, 3, locations{i});
+0140     hold on;
+0141     histData(1:end) = [];
+0142     <span class="keyword">for</span> j = 1:length(motionModes)
+0143         data = worm.morphology.width.(segNames{i});
+0144         histData(j) = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(data(motionMode == motionModes{j}), <span class="keyword">...</span>
+0145             resolutions);
+0146     <span class="keyword">end</span>
+0147     samplesAll = histDataAll(i).allData.samples;
+0148     meanAll = histDataAll(i).allData.mean;
+0149     stdDevAll = histDataAll(i).allData.stdDev;
+0150     titleName = [<span class="string">'WORM '</span> upper(dataAllNames{i}) <span class="keyword">...</span><span class="comment">.</span>
+0151         <span class="string">' (N = '</span> num2str(samplesAll) <span class="keyword">...</span>
+0152         <span class="string">', MEAN = '</span> num2str(meanAll) <span class="keyword">...</span>
+0153         <span class="string">', S.D. = '</span> num2str(stdDevAll) <span class="string">')'</span> titlePad];
+0154     xAxisName = [dataAllNames{i} <span class="string">' (microns)'</span>];
+0155     <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(histData, titleName, xAxisName, dataNames, <span class="keyword">...</span>
+0156         histColors, statColors);
+0157 <span class="keyword">end</span>
+0158 
+0159 
+0160 
+0161 <span class="comment">%% Save the figure to a file.</span>
+0162 saveFile = [];
+0163 <span class="keyword">if</span> ~isempty(varargin) &amp;&amp; ~isempty(varargin{1})
+0164     
+0165     <span class="comment">% Construct the title.</span>
+0166     figureTitle = <span class="string">'MORPHOLOGY: LENGTH AND WIDTH'</span>;
+0167     <span class="keyword">if</span> length(varargin) &gt; 1 &amp;&amp; ~isempty(varargin{2})
+0168         figureTitle = [<span class="string">'&lt;html&gt;&lt;b&gt;Page '</span> num2str(varargin{2}) <span class="string">' &amp;rarr; '</span> <span class="keyword">...</span>
+0169             figureTitle <span class="string">'&lt;/b&gt;&lt;/html&gt;'</span>];
+0170     <span class="keyword">else</span>
+0171         figureTitle = [<span class="string">'&lt;html&gt;&lt;b&gt;'</span> figureTitle <span class="string">'&lt;/b&gt;&lt;/html&gt;'</span>];
+0172     <span class="keyword">end</span>
+0173     
+0174     <span class="comment">% Add the title.</span>
+0175     titlePosition = [0, 0, length(figureTitle), 2];
+0176     uicontrol(<span class="string">'units'</span>, <span class="string">'characters'</span>, <span class="string">'String'</span>, figureTitle, <span class="keyword">...</span>
+0177         <span class="string">'Position'</span>, titlePosition);
+0178 
+0179     <span class="comment">% Save the figure.</span>
+0180     saveFile = [varargin{1} <span class="string">'_morphology_length_width.pdf'</span>];
+0181     saveFigure(h, saveFile);
+0182     
+0183     <span class="comment">% Close the figure.</span>
+0184     <span class="keyword">if</span> length(varargin) &lt; 3 || isempty(varargin{3}) || varargin{3}
+0185         close(h);
+0186     <span class="keyword">end</span>
+0187 <span class="keyword">end</span>
+0188 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

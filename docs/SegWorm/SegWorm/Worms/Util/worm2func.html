@@ -1,0 +1,817 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of worm2func</title>
+  <meta name="keywords" content="worm2func">
+  <meta name="description" content="WORM2FUNC Apply a function to worm data (normalized within blocks).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Util -->
+<h1>worm2func
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORM2FUNC Apply a function to worm data (normalized within blocks).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function data = worm2func(func, state, wormFile, startFrame, endFrame,backScale, frontScale, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORM2FUNC Apply a function to worm data (normalized within blocks).
+
+   DATA = WORM2FUNC(FUNC, STATE, WORMFILE, STARTFRAME, ENDFRAME,
+                    BACKSCALE, FRONTSCALE)
+
+   DATA = WORM2FUNC(FUNC, STATE, WORMFILE, STARTFRAME, ENDFRAME,
+                    BACKSCALE, FRONTSCALE, ISEXTENDED)
+
+   Inputs:
+       func       - the function to apply per data block;
+                    this function must follow the form:
+
+                    [DATA STATE] = FUNC(DATABLOCKINFO, STATE)
+
+                    DATA = the function output per block
+                    DATABLOCKINFO is a struct with fields:
+                    data            = a superset containing the current
+                                      data block, extended by the scale in
+                                      the front, with both the back and
+                                      front then extended to the next
+                                      available segmented frames or the
+                                      end of the data if these are not
+                                      available; see &quot;wormFile&quot; below for
+                                      an explanation of the data format
+                    state           = the function state
+                    startFrame      = the frame number for the starting
+                                      frame of the data superset
+                    startDataFrame  = the frame number for the starting
+                                      frame in the block
+                    startDataFrameI = the index into the data superset for
+                                      the starting frame in the block
+                    endFrame        = the frame number for the ending
+                                      frame of the data superset
+                    endDataFrame    = the frame number for the ending
+                                      frame in the block
+                    endDataFrameI   = the index into the data superset for
+                                      the ending frame in the block
+                    fps             = the data frames/seconds
+
+       wormFile   - the name of the file containing normalized worms (see
+                    saveWormFrames). The file format is MAT (Matlab's
+                    '.mat') and contains the following variables:
+                   
+                    samples      = the samples per normalized worm; if
+                                   empty, the worms are in structs
+                    fps          = frames/seconds
+                    firstFrame   = the first frame number (in block1)
+                    lastFrame    = the last frame number (in the last block)
+                    blockSize    = the size of a block
+                    blocks       = the number of blocks
+                    block1       = the first block
+                    ...
+                    blockN       = the N-th (last) block
+
+                    If the data is normalized, the blocks are cell arrays
+                    with following structure (see normWorms):
+
+                    blockN{1}  = status:
+                                 s = segmented
+                                 f = segmentation failed
+                                 m = stage movement
+                                 d = dropped frame
+                    blockN{2}  = vulvaContours
+                    blockN{3}  = nonVulvaContours
+                    blockN{4}  = skeletons
+                    blockN{5}  = angles
+                    blockN{6}  = inOutTouches
+                    blockN{7}  = lengths
+                    blockN{8}  = widths
+                    blockN{9}  = headAreas
+                    blockN{10} = tailAreas
+                    blockN{11} = vulvaAreas
+                    blockN{12} = nonVulvaAreas
+
+                    Otherwise, the blocks are just cell arrays of worm
+                    cells; missing worms are labeled with their frame
+                    status instead:
+
+                    blockN = 1 to, at most, blockSize number of worm cells;
+                             or, for missing worms, their frame status:
+                             f = segmentation failed
+                             m = stage movement
+                             d = dropped frame
+
+       startFrame - the first frame to use;
+                    if empty, we start at the first frame
+       endFrame   - the last frame to use;
+                    if empty, we end at the last frame
+       backScale  - the back end time scale required by the function;
+                    this scale is used to ensure that, for each data block
+                    to which the function is applied:
+
+                    1. The first frame in the data block has been extended
+                       backward by the scale or to the start of the data
+                       if there is insufficient data to accomodate the
+                       extension.
+                    2. The first and last frames of the data block have
+                       been extended to either the next segmented frames
+                       or they represent, respectively, the first and/or
+                       last frames of all the data.
+       frontScale - the front end time scale required by the function;
+                    this scale is used to ensure that, for each data block
+                    to which the function is applied:
+
+                    1. The last frame in the data block has been extended
+                       by the scale or to the end of the data if there is
+                       insufficient data to accomodate the extension.
+                    2. The first and last frames of the data block have
+                       been extended to either the next segmented frames
+                       or they represent, respectively, the first and/or
+                       last frames of all the data.
+
+       isExtended - are the back and front of the data extended to the
+                    next segmented frame? If true, the first and last
+                    frames of the data block are extended to either the
+                    next segmented frames or they represent, respectively,
+                    the first and/or last frames of all the data. The
+                    default is true.
+
+   Output:
+       data - the function output per block
+
+   See also SAVEWORMVIDEOFRAMES, <a href="normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">NORMWORMS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Features/testBendFunc.html" class="code" title="function bends = testBendFunc(verbose)">testBendFunc</a>	TESTBENDFUNC Test worm2func as well as the values used in wormBends.</li><li><a href="../../../SegWorm/Worms/Features/wormBends.html" class="code" title="function bends = wormBends(wormFile, varargin)">wormBends</a>	WORMBENDS Compute the temporal bending frequency at the nose, head,</li><li><a href="catWormData.html" class="code" title="function data = catWormData(wormFile, varargin)">catWormData</a>	CATWORMBLOCKS Concatenate the worm data.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [dataInfo blockInfo] = loadData(wormFile, fps, startFrame,</a></li><li><a href="#_sub2" class="code">function blockInfo = loadBlock(wormFile, index)</a></li><li><a href="#_sub3" class="code">function subset = dataSubset(data, startI, endI)</a></li><li><a href="#_sub4" class="code">function data = catData(varargin)</a></li><li><a href="#_sub5" class="code">function dims = normDataDims(index)</a></li><li><a href="#_sub6" class="code">function dataLength = normDataLength()</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function data = worm2func(func, state, wormFile, startFrame, endFrame, </a><span class="keyword">...</span>
+0002     backScale, frontScale, varargin)
+0003 <span class="comment">%WORM2FUNC Apply a function to worm data (normalized within blocks).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   DATA = WORM2FUNC(FUNC, STATE, WORMFILE, STARTFRAME, ENDFRAME,</span>
+0006 <span class="comment">%                    BACKSCALE, FRONTSCALE)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   DATA = WORM2FUNC(FUNC, STATE, WORMFILE, STARTFRAME, ENDFRAME,</span>
+0009 <span class="comment">%                    BACKSCALE, FRONTSCALE, ISEXTENDED)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Inputs:</span>
+0012 <span class="comment">%       func       - the function to apply per data block;</span>
+0013 <span class="comment">%                    this function must follow the form:</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%                    [DATA STATE] = FUNC(DATABLOCKINFO, STATE)</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%                    DATA = the function output per block</span>
+0018 <span class="comment">%                    DATABLOCKINFO is a struct with fields:</span>
+0019 <span class="comment">%                    data            = a superset containing the current</span>
+0020 <span class="comment">%                                      data block, extended by the scale in</span>
+0021 <span class="comment">%                                      the front, with both the back and</span>
+0022 <span class="comment">%                                      front then extended to the next</span>
+0023 <span class="comment">%                                      available segmented frames or the</span>
+0024 <span class="comment">%                                      end of the data if these are not</span>
+0025 <span class="comment">%                                      available; see &quot;wormFile&quot; below for</span>
+0026 <span class="comment">%                                      an explanation of the data format</span>
+0027 <span class="comment">%                    state           = the function state</span>
+0028 <span class="comment">%                    startFrame      = the frame number for the starting</span>
+0029 <span class="comment">%                                      frame of the data superset</span>
+0030 <span class="comment">%                    startDataFrame  = the frame number for the starting</span>
+0031 <span class="comment">%                                      frame in the block</span>
+0032 <span class="comment">%                    startDataFrameI = the index into the data superset for</span>
+0033 <span class="comment">%                                      the starting frame in the block</span>
+0034 <span class="comment">%                    endFrame        = the frame number for the ending</span>
+0035 <span class="comment">%                                      frame of the data superset</span>
+0036 <span class="comment">%                    endDataFrame    = the frame number for the ending</span>
+0037 <span class="comment">%                                      frame in the block</span>
+0038 <span class="comment">%                    endDataFrameI   = the index into the data superset for</span>
+0039 <span class="comment">%                                      the ending frame in the block</span>
+0040 <span class="comment">%                    fps             = the data frames/seconds</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">%       wormFile   - the name of the file containing normalized worms (see</span>
+0043 <span class="comment">%                    saveWormFrames). The file format is MAT (Matlab's</span>
+0044 <span class="comment">%                    '.mat') and contains the following variables:</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%                    samples      = the samples per normalized worm; if</span>
+0047 <span class="comment">%                                   empty, the worms are in structs</span>
+0048 <span class="comment">%                    fps          = frames/seconds</span>
+0049 <span class="comment">%                    firstFrame   = the first frame number (in block1)</span>
+0050 <span class="comment">%                    lastFrame    = the last frame number (in the last block)</span>
+0051 <span class="comment">%                    blockSize    = the size of a block</span>
+0052 <span class="comment">%                    blocks       = the number of blocks</span>
+0053 <span class="comment">%                    block1       = the first block</span>
+0054 <span class="comment">%                    ...</span>
+0055 <span class="comment">%                    blockN       = the N-th (last) block</span>
+0056 <span class="comment">%</span>
+0057 <span class="comment">%                    If the data is normalized, the blocks are cell arrays</span>
+0058 <span class="comment">%                    with following structure (see normWorms):</span>
+0059 <span class="comment">%</span>
+0060 <span class="comment">%                    blockN{1}  = status:</span>
+0061 <span class="comment">%                                 s = segmented</span>
+0062 <span class="comment">%                                 f = segmentation failed</span>
+0063 <span class="comment">%                                 m = stage movement</span>
+0064 <span class="comment">%                                 d = dropped frame</span>
+0065 <span class="comment">%                    blockN{2}  = vulvaContours</span>
+0066 <span class="comment">%                    blockN{3}  = nonVulvaContours</span>
+0067 <span class="comment">%                    blockN{4}  = skeletons</span>
+0068 <span class="comment">%                    blockN{5}  = angles</span>
+0069 <span class="comment">%                    blockN{6}  = inOutTouches</span>
+0070 <span class="comment">%                    blockN{7}  = lengths</span>
+0071 <span class="comment">%                    blockN{8}  = widths</span>
+0072 <span class="comment">%                    blockN{9}  = headAreas</span>
+0073 <span class="comment">%                    blockN{10} = tailAreas</span>
+0074 <span class="comment">%                    blockN{11} = vulvaAreas</span>
+0075 <span class="comment">%                    blockN{12} = nonVulvaAreas</span>
+0076 <span class="comment">%</span>
+0077 <span class="comment">%                    Otherwise, the blocks are just cell arrays of worm</span>
+0078 <span class="comment">%                    cells; missing worms are labeled with their frame</span>
+0079 <span class="comment">%                    status instead:</span>
+0080 <span class="comment">%</span>
+0081 <span class="comment">%                    blockN = 1 to, at most, blockSize number of worm cells;</span>
+0082 <span class="comment">%                             or, for missing worms, their frame status:</span>
+0083 <span class="comment">%                             f = segmentation failed</span>
+0084 <span class="comment">%                             m = stage movement</span>
+0085 <span class="comment">%                             d = dropped frame</span>
+0086 <span class="comment">%</span>
+0087 <span class="comment">%       startFrame - the first frame to use;</span>
+0088 <span class="comment">%                    if empty, we start at the first frame</span>
+0089 <span class="comment">%       endFrame   - the last frame to use;</span>
+0090 <span class="comment">%                    if empty, we end at the last frame</span>
+0091 <span class="comment">%       backScale  - the back end time scale required by the function;</span>
+0092 <span class="comment">%                    this scale is used to ensure that, for each data block</span>
+0093 <span class="comment">%                    to which the function is applied:</span>
+0094 <span class="comment">%</span>
+0095 <span class="comment">%                    1. The first frame in the data block has been extended</span>
+0096 <span class="comment">%                       backward by the scale or to the start of the data</span>
+0097 <span class="comment">%                       if there is insufficient data to accomodate the</span>
+0098 <span class="comment">%                       extension.</span>
+0099 <span class="comment">%                    2. The first and last frames of the data block have</span>
+0100 <span class="comment">%                       been extended to either the next segmented frames</span>
+0101 <span class="comment">%                       or they represent, respectively, the first and/or</span>
+0102 <span class="comment">%                       last frames of all the data.</span>
+0103 <span class="comment">%       frontScale - the front end time scale required by the function;</span>
+0104 <span class="comment">%                    this scale is used to ensure that, for each data block</span>
+0105 <span class="comment">%                    to which the function is applied:</span>
+0106 <span class="comment">%</span>
+0107 <span class="comment">%                    1. The last frame in the data block has been extended</span>
+0108 <span class="comment">%                       by the scale or to the end of the data if there is</span>
+0109 <span class="comment">%                       insufficient data to accomodate the extension.</span>
+0110 <span class="comment">%                    2. The first and last frames of the data block have</span>
+0111 <span class="comment">%                       been extended to either the next segmented frames</span>
+0112 <span class="comment">%                       or they represent, respectively, the first and/or</span>
+0113 <span class="comment">%                       last frames of all the data.</span>
+0114 <span class="comment">%</span>
+0115 <span class="comment">%       isExtended - are the back and front of the data extended to the</span>
+0116 <span class="comment">%                    next segmented frame? If true, the first and last</span>
+0117 <span class="comment">%                    frames of the data block are extended to either the</span>
+0118 <span class="comment">%                    next segmented frames or they represent, respectively,</span>
+0119 <span class="comment">%                    the first and/or last frames of all the data. The</span>
+0120 <span class="comment">%                    default is true.</span>
+0121 <span class="comment">%</span>
+0122 <span class="comment">%   Output:</span>
+0123 <span class="comment">%       data - the function output per block</span>
+0124 <span class="comment">%</span>
+0125 <span class="comment">%   See also SAVEWORMVIDEOFRAMES, NORMWORMS</span>
+0126 
+0127 <span class="comment">% Are we extending the back and front of the data blocks to the next</span>
+0128 <span class="comment">% segmented frames?</span>
+0129 isExtended = true;
+0130 <span class="keyword">if</span> ~isempty(varargin)
+0131     isExtended = varargin{1};
+0132 <span class="keyword">end</span>
+0133 
+0134 <span class="comment">% Check the worm file.</span>
+0135 <span class="keyword">if</span> ~exist(wormFile, <span class="string">'file'</span>)
+0136     error(<span class="string">'multiScaleWorm:BadWormFile'</span>, [<span class="string">'Cannot find '''</span> wormFile <span class="string">''''</span>]);
+0137 <span class="keyword">end</span>
+0138 
+0139 <span class="comment">% Are the normalized blocks separate?</span>
+0140 <span class="keyword">global</span> blockFilePath;
+0141 blockFilePath = [];
+0142 load(wormFile, <span class="string">'block1'</span>);
+0143 <span class="keyword">if</span> ~exist(<span class="string">'block1'</span>, <span class="string">'var'</span>)
+0144     
+0145     <span class="comment">% Get the path from the file.</span>
+0146     blockFilePath = fileparts(wormFile);
+0147     
+0148     <span class="comment">% Use the current path.</span>
+0149     <span class="keyword">if</span> isempty(blockFilePath)
+0150         blockFilePath = pwd;
+0151     <span class="keyword">end</span>
+0152     
+0153 <span class="comment">% Clean up memory.</span>
+0154 <span class="keyword">else</span>
+0155     clear(<span class="string">'block1'</span>);
+0156 <span class="keyword">end</span>
+0157 
+0158 <span class="comment">% Determine the variables (the blocks are in separate files).</span>
+0159 <span class="keyword">if</span> ~isempty(blockFilePath)
+0160     
+0161     <span class="comment">% Load the worm information.</span>
+0162     load(wormFile, <span class="string">'SAMPLES'</span>, <span class="string">'myAviInfo'</span>, <span class="string">'pixel2MicronScale'</span>, <span class="keyword">...</span>
+0163         <span class="string">'normBlockList'</span>);
+0164     
+0165     <span class="comment">% Check the variables.</span>
+0166     varName = <span class="string">'SAMPLES'</span>;
+0167     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0168         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0169             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0170     <span class="keyword">else</span>
+0171         samples = SAMPLES;
+0172     <span class="keyword">end</span>
+0173     varName = <span class="string">'myAviInfo'</span>;
+0174     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0175         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0176             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0177     <span class="keyword">else</span>
+0178         fps = myAviInfo.fps;
+0179     <span class="keyword">end</span>
+0180     varName = <span class="string">'pixel2MicronScale'</span>;
+0181     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0182         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0183             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0184     <span class="keyword">end</span>
+0185     varName = <span class="string">'normBlockList'</span>;
+0186     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0187         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0188             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0189     <span class="keyword">end</span>
+0190     
+0191     <span class="comment">% Determine the number of blocks.</span>
+0192     blocks = length(normBlockList);
+0193     
+0194     <span class="comment">% Determine the block size.</span>
+0195     load(fullfile(blockFilePath, normBlockList{1}));
+0196     eval([<span class="string">'block = '</span> normBlockList{1} <span class="string">';'</span>]);
+0197     clear(normBlockList{1});
+0198     blockSize = size(block{1}, 2);
+0199     
+0200     <span class="comment">% Determine the first and last frame.</span>
+0201     firstFrame = 0;
+0202     load(fullfile(blockFilePath, normBlockList{end}));
+0203     eval([<span class="string">'block = '</span> normBlockList{end} <span class="string">';'</span>]);
+0204     clear(normBlockList{end});
+0205     lastBlockSize = size(block{1}, 2);
+0206     lastFrame = (blocks - 1) * blockSize + lastBlockSize - 1; 
+0207     clear(<span class="string">'block'</span>);
+0208     
+0209 <span class="comment">% Check the variables (the blocks are in a single file).</span>
+0210 <span class="keyword">else</span>
+0211     
+0212     <span class="comment">% Load the worm information.</span>
+0213     load(wormFile, <span class="string">'samples'</span>, <span class="string">'fps'</span>, <span class="string">'firstFrame'</span>, <span class="string">'lastFrame'</span>, <span class="keyword">...</span>
+0214         <span class="string">'pixel2MicronScale'</span>, <span class="string">'blockSize'</span>, <span class="string">'blocks'</span>);
+0215     
+0216     <span class="comment">% Check the variables.</span>
+0217     varName = <span class="string">'samples'</span>;
+0218     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0219         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0220             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0221     <span class="keyword">end</span>
+0222     varName = <span class="string">'fps'</span>;
+0223     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0224         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0225             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0226     <span class="keyword">end</span>
+0227     varName = <span class="string">'pixel2MicronScale'</span>;
+0228     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0229         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0230             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0231     <span class="keyword">end</span>
+0232     varName = <span class="string">'firstFrame'</span>;
+0233     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0234         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0235             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0236     <span class="keyword">end</span>
+0237     varName = <span class="string">'lastFrame'</span>;
+0238     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0239         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0240             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0241     <span class="keyword">end</span>
+0242     varName = <span class="string">'blockSize'</span>;
+0243     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0244         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0245             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0246     <span class="keyword">end</span>
+0247     varName = <span class="string">'blocks'</span>;
+0248     <span class="keyword">if</span> ~exist(varName, <span class="string">'var'</span>)
+0249         error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0250             [<span class="string">'Cannot load '''</span> varName <span class="string">''' from '''</span> wormFile <span class="string">''''</span>]);
+0251     <span class="keyword">end</span>
+0252 <span class="keyword">end</span>
+0253 
+0254 <span class="comment">% The worms must be normalized.</span>
+0255 <span class="keyword">if</span> isempty(samples)
+0256     error(<span class="string">'worm2func:NotNormalized'</span>, <span class="keyword">...</span>
+0257         [<span class="string">'The worms in  '''</span> wormFile <span class="string">''' are not normalized'</span>]);
+0258 <span class="keyword">end</span>
+0259 
+0260 <span class="comment">% Check the starting frame.</span>
+0261 <span class="keyword">if</span> isempty(startFrame)
+0262     startFrame = firstFrame;
+0263 <span class="keyword">end</span>
+0264 <span class="keyword">if</span> startFrame &lt; firstFrame
+0265     error(<span class="string">'worm2func:StartFrame'</span>, [<span class="string">'The requested starting frame '</span> <span class="keyword">...</span>
+0266         num2str(startFrame) <span class="string">' is less than the first frame '</span> <span class="keyword">...</span>
+0267         num2str(firstFrame) <span class="string">' in '''</span> wormFile <span class="string">''''</span>]);
+0268 <span class="keyword">elseif</span> startFrame &gt; lastFrame
+0269     error(<span class="string">'worm2func:StartFrame'</span>, [<span class="string">'The requested starting frame '</span> <span class="keyword">...</span>
+0270         num2str(startFrame) <span class="string">' is greater than the last frame '</span> <span class="keyword">...</span>
+0271         num2str(lastFrame) <span class="string">' in '''</span> wormFile <span class="string">''''</span>]);
+0272 <span class="keyword">end</span>
+0273 
+0274 <span class="comment">% Check the ending frame.</span>
+0275 <span class="keyword">if</span> isempty(endFrame)
+0276     endFrame = lastFrame;
+0277 <span class="keyword">end</span>
+0278 <span class="keyword">if</span> endFrame &lt; firstFrame
+0279     error(<span class="string">'worm2func:EndFrame'</span>, [<span class="string">'The requested ending frame '</span> <span class="keyword">...</span>
+0280         num2str(endFrame) <span class="string">' is less than the first frame '</span> <span class="keyword">...</span>
+0281         num2str(firstFrame) <span class="string">' in '''</span> wormFile <span class="string">''''</span>]);
+0282 <span class="keyword">elseif</span> endFrame &gt; lastFrame
+0283     error(<span class="string">'worm2func:EndFrame'</span>, [<span class="string">'The requested ending frame '</span> <span class="keyword">...</span>
+0284         num2str(endFrame) <span class="string">' is greater than the last frame '</span> <span class="keyword">...</span>
+0285         num2str(lastFrame) <span class="string">' in '''</span> wormFile <span class="string">''''</span>]);
+0286 <span class="keyword">end</span>
+0287 
+0288 <span class="comment">% Correct the data types.</span>
+0289 startFrame = double(startFrame);
+0290 endFrame = double(endFrame);
+0291 fps = double(fps);
+0292 firstFrame = double(firstFrame);
+0293 lastFrame = double(lastFrame);
+0294 blockSize = double(blockSize);
+0295 blocks = double(blocks);
+0296 
+0297 <span class="comment">% Compute the scales.</span>
+0298 <span class="keyword">if</span> isempty(backScale) || backScale &lt; 0
+0299     backScale = 0;
+0300 <span class="keyword">end</span>
+0301 backScale = round(backScale * fps);
+0302 <span class="keyword">if</span> isempty(frontScale) || frontScale &lt; 0
+0303     frontScale = 0;
+0304 <span class="keyword">end</span>
+0305 frontScale = round(frontScale * fps);
+0306 
+0307 <span class="comment">% Apply the function to the data.</span>
+0308 blockInfo = []; <span class="comment">% the information for the loaded blocks</span>
+0309 startBlockI = <span class="keyword">...</span><span class="comment"> % the starting block's index</span>
+0310     floor((startFrame - firstFrame) / blockSize) + 1;
+0311 endBlockI = <span class="keyword">...</span><span class="comment"> % the ending block's index</span>
+0312     floor((endFrame - firstFrame) / blockSize) + 1;
+0313 data = cell(endBlockI - startBlockI + 1, 1);
+0314 <span class="keyword">for</span> i = startBlockI:endBlockI
+0315     
+0316     <span class="comment">% Compute the data offset in the starting block.</span>
+0317     <span class="keyword">if</span> i == startBlockI
+0318         startDataBlockOffI = startFrame - firstFrame + 1 - <span class="keyword">...</span>
+0319             ((i - 1) * blockSize);
+0320     <span class="keyword">else</span>
+0321         startDataBlockOffI = 1;
+0322     <span class="keyword">end</span>
+0323     
+0324     <span class="comment">% Compute the data offset in the ending block.</span>
+0325     <span class="keyword">if</span> i == endBlockI
+0326         endDataBlockOffI = endFrame - firstFrame + 1 - <span class="keyword">...</span>
+0327             ((i - 1) * blockSize);
+0328     <span class="keyword">else</span>
+0329         endDataBlockOffI = blockSize;
+0330     <span class="keyword">end</span>
+0331     
+0332     <span class="comment">% Compute the start and end frames.</span>
+0333     startDataBlockFrame = startDataBlockOffI + <span class="keyword">...</span>
+0334         ((i - 1) * blockSize) + firstFrame - 1;
+0335     endDataBlockFrame = endDataBlockOffI + ((i - 1) * blockSize) <span class="keyword">...</span>
+0336         + firstFrame - 1;
+0337     
+0338     <span class="comment">% Load the data.</span>
+0339     backScaleFrames = min(backScale, startDataBlockFrame);
+0340     frontScaleFrames = min(frontScale, lastFrame - endDataBlockFrame);
+0341     [dataInfo blockInfo] = <a href="#_sub1" class="code" title="subfunction [dataInfo blockInfo] = loadData(wormFile, fps, startFrame, ">loadData</a>(wormFile, fps, <span class="keyword">...</span>
+0342         startDataBlockFrame, endDataBlockFrame, backScaleFrames, <span class="keyword">...</span>
+0343         frontScaleFrames, isExtended, firstFrame, blocks, blockSize, <span class="keyword">...</span>
+0344         blockInfo);
+0345     
+0346     <span class="comment">% Apply the function.</span>
+0347     [data{i - startBlockI + 1} state] = func(dataInfo, state);
+0348 <span class="keyword">end</span>
+0349 <span class="keyword">end</span>
+0350 
+0351 <span class="comment">% Load data by index.</span>
+0352 <a name="_sub1" href="#_subfunctions" class="code">function [dataInfo blockInfo] = loadData(wormFile, fps, startFrame, </a><span class="keyword">...</span>
+0353     endFrame, backScale, frontScale, isExtended, firstFrame, <span class="keyword">...</span>
+0354     lastBlockI, blockSize, blockInfo)
+0355 
+0356 <span class="comment">% Compute the start frame.</span>
+0357 startFrame = startFrame - backScale;
+0358 
+0359 <span class="comment">% Compute the end frame.</span>
+0360 endFrame = endFrame + frontScale;
+0361 
+0362 <span class="comment">% Load the starting block.</span>
+0363 startBlockI = floor(double(startFrame - firstFrame) / blockSize) + 1;
+0364 <span class="keyword">if</span> isempty(blockInfo)
+0365     blockInfo = <a href="#_sub2" class="code" title="subfunction blockInfo = loadBlock(wormFile, index)">loadBlock</a>(wormFile, startBlockI);
+0366 <span class="keyword">end</span>
+0367 
+0368 <span class="comment">% Find the starting block.</span>
+0369 <span class="keyword">if</span> startBlockI &gt;= blockInfo.index &amp;&amp; <span class="keyword">...</span>
+0370         startBlockI &lt;= blockInfo.index + length(blockInfo.blocks) - 1
+0371     startBlock = blockInfo.blocks{startBlockI - blockInfo.index + 1};
+0372     newBlockInfo = struct(<span class="string">'index'</span>, startBlockI, <span class="string">'blocks'</span>, {{startBlock}});
+0373     
+0374 <span class="comment">% Load the starting block.</span>
+0375 <span class="keyword">else</span>
+0376     newBlockInfo = <a href="#_sub2" class="code" title="subfunction blockInfo = loadBlock(wormFile, index)">loadBlock</a>(wormFile, startBlockI);
+0377     startBlock = newBlockInfo.blocks{1};
+0378 <span class="keyword">end</span>
+0379 
+0380 <span class="comment">% Search for a usable starting index.</span>
+0381 startUseI = startFrame - firstFrame + 1 - ((startBlockI - 1) * blockSize);
+0382 <span class="keyword">if</span> isExtended
+0383     <span class="keyword">while</span> startBlock{1}(startUseI) ~= <span class="string">'s'</span>
+0384         
+0385         <span class="comment">% Search in the previous block.</span>
+0386         <span class="keyword">if</span> startUseI &lt;= 1
+0387             
+0388             <span class="comment">% We're at the first block.</span>
+0389             <span class="keyword">if</span> startBlockI &lt;= 1
+0390                 <span class="keyword">break</span>;
+0391                 
+0392                 <span class="comment">% Find the previous block in the list of loaded blocks.</span>
+0393             <span class="keyword">elseif</span> startBlockI &gt; blockInfo.index &amp;&amp; <span class="keyword">...</span>
+0394                     startBlockI &lt;= blockInfo.index + length(blockInfo.blocks)
+0395                 
+0396                 <span class="comment">% Find the new starting block.</span>
+0397                 startBlock =  blockInfo.blocks{startBlockI - blockInfo.index};
+0398                 startBlockI = startBlockI - 1;
+0399                 startUseI = blockSize;
+0400                 
+0401                 <span class="comment">% Copy the list of new blocks.</span>
+0402                 newBlocks = cell(length(newBlockInfo.blocks) + 1,1);
+0403                 <span class="keyword">for</span> i = 1:length(newBlockInfo.blocks)
+0404                     newBlocks{i + 1} = newBlockInfo.blocks{i};
+0405                 <span class="keyword">end</span>
+0406                 
+0407                 <span class="comment">% Update the list of new blocks.</span>
+0408                 newBlockInfo.index = startBlockI;
+0409                 newBlocks{1} = startBlock;
+0410                 newBlockInfo.blocks = newBlocks;
+0411                 
+0412                 <span class="comment">% Load the previous block.</span>
+0413             <span class="keyword">else</span>
+0414                 
+0415                 <span class="comment">% Load the new starting block.</span>
+0416                 startBlockI = startBlockI - 1;
+0417                 startBlockInfo = <a href="#_sub2" class="code" title="subfunction blockInfo = loadBlock(wormFile, index)">loadBlock</a>(wormFile, startBlockI);
+0418                 startBlock = startBlockInfo.blocks{1};
+0419                 startUseI = blockSize;
+0420                 
+0421                 <span class="comment">% Copy the list of new blocks.</span>
+0422                 newBlocks = cell(length(newBlockInfo.blocks) + 1,1);
+0423                 <span class="keyword">for</span> i = 1:length(newBlockInfo.blocks)
+0424                     newBlocks{i + 1} = newBlockInfo.blocks{i};
+0425                 <span class="keyword">end</span>
+0426                 
+0427                 <span class="comment">% Update the list of new blocks.</span>
+0428                 newBlockInfo.index = startBlockI;
+0429                 newBlocks{1} = startBlockInfo.blocks{1};
+0430                 newBlockInfo.blocks = newBlocks;
+0431             <span class="keyword">end</span>
+0432             
+0433             <span class="comment">% Go backwards.</span>
+0434         <span class="keyword">else</span>
+0435             startUseI = startUseI - 1;
+0436         <span class="keyword">end</span>
+0437     <span class="keyword">end</span>
+0438 <span class="keyword">end</span>
+0439 
+0440 <span class="comment">% Find any missing blocks.</span>
+0441 endBlockI = floor((endFrame - firstFrame) / blockSize) + 1;
+0442 newEndBlockI = newBlockInfo.index + length(newBlockInfo.blocks) - 1;
+0443 missingBlocks = endBlockI - newEndBlockI;
+0444 <span class="keyword">if</span> missingBlocks &gt; 0
+0445     
+0446     <span class="comment">% Copy the list of new blocks.</span>
+0447     newBlocks = cell(length(newBlockInfo.blocks) + missingBlocks,1);
+0448     <span class="keyword">for</span> i = 1:length(newBlockInfo.blocks)
+0449         newBlocks{i} = newBlockInfo.blocks{i};
+0450     <span class="keyword">end</span>
+0451 
+0452     <span class="comment">% Copy any missing blocks from the the list of loaded blocks.</span>
+0453     maxStartBlockI = max(newEndBlockI + 1, blockInfo.index);
+0454     oldEndBlockI = blockInfo.index + length(blockInfo.blocks) - 1;
+0455     minEndBlockI = min(endBlockI, oldEndBlockI);
+0456     offset = blockInfo.index - newBlockInfo.index;
+0457     <span class="keyword">for</span> i = (maxStartBlockI - blockInfo.index + 1): <span class="keyword">...</span>
+0458             (minEndBlockI - blockInfo.index + 1)
+0459         newBlocks{i + offset} = blockInfo.blocks{i};
+0460     <span class="keyword">end</span>
+0461     
+0462     <span class="comment">% Load any remaining, missing blocks.</span>
+0463     <span class="keyword">for</span> i = 1:length(newBlocks)
+0464         <span class="keyword">if</span> isempty(newBlocks{i})
+0465             missingBlockInfo = <a href="#_sub2" class="code" title="subfunction blockInfo = loadBlock(wormFile, index)">loadBlock</a>(wormFile, <span class="keyword">...</span>
+0466                 newBlockInfo.index + i - 1);
+0467             newBlocks{i} = missingBlockInfo.blocks{1};
+0468         <span class="keyword">end</span>
+0469     <span class="keyword">end</span>
+0470     newBlockInfo.blocks = newBlocks;
+0471 <span class="keyword">end</span>
+0472 
+0473 <span class="comment">% Search for a usable ending index.</span>
+0474 endBlock = newBlockInfo.blocks{end};
+0475 endUseI = endFrame - firstFrame + 1 - ((endBlockI - 1) * blockSize);
+0476 <span class="keyword">if</span> isExtended
+0477     <span class="keyword">while</span> endBlock{1}(endUseI) ~= <span class="string">'s'</span>
+0478         
+0479         <span class="comment">% Search in the next block.</span>
+0480         <span class="keyword">if</span> endUseI &gt;= length(endBlock{1})
+0481             
+0482             <span class="comment">% We're at the last block.</span>
+0483             <span class="keyword">if</span> endBlockI &gt;= lastBlockI
+0484                 <span class="keyword">break</span>;
+0485                 
+0486                 <span class="comment">% Find the next block in the list of loaded blocks.</span>
+0487             <span class="keyword">elseif</span> endBlockI + 1 &gt; blockInfo.index &amp;&amp; <span class="keyword">...</span>
+0488                     endBlockI + 2 &lt;= blockInfo.index + length(blockInfo.blocks)
+0489                 
+0490                 <span class="comment">% Update the list of new blocks.</span>
+0491                 endBlockI = endBlockI + 1;
+0492                 newBlockInfo.blocks{end + 1} = <span class="keyword">...</span>
+0493                     blockInfo.blocks{endBlockI - blockInfo.index + 1};
+0494                 endBlock = newBlockInfo.blocks{end};
+0495                 endUseI = 1;
+0496                 
+0497                 <span class="comment">% Load the next block.</span>
+0498             <span class="keyword">else</span>
+0499                 
+0500                 <span class="comment">% Update the list of new blocks.</span>
+0501                 endBlockI = endBlockI + 1;
+0502                 endBlockInfo = <a href="#_sub2" class="code" title="subfunction blockInfo = loadBlock(wormFile, index)">loadBlock</a>(wormFile, endBlockI);
+0503                 newBlockInfo.blocks{end + 1} = endBlockInfo.blocks{1};
+0504                 endBlock = newBlockInfo.blocks{end};
+0505                 endUseI = 1;
+0506             <span class="keyword">end</span>
+0507             
+0508             <span class="comment">% Go forwards.</span>
+0509         <span class="keyword">else</span>
+0510             endUseI = endUseI + 1;
+0511         <span class="keyword">end</span>
+0512     <span class="keyword">end</span>
+0513 <span class="keyword">end</span>
+0514 
+0515 <span class="comment">% Construct the data.</span>
+0516 startUseFrame = <span class="keyword">...</span><span class="comment"> % the starting usable frame number</span>
+0517     startUseI + ((startBlockI - 1) * blockSize) + firstFrame - 1;
+0518 endUseFrame = <span class="keyword">...</span><span class="comment"> % the ending usable frame number</span>
+0519     endUseI + ((endBlockI - 1) * blockSize) + firstFrame - 1;
+0520 blockInfo = newBlockInfo;
+0521 <span class="keyword">if</span> startBlockI == endBlockI
+0522     data = blockInfo.blocks{startBlockI - blockInfo.index  + 1};
+0523     data = <a href="#_sub3" class="code" title="subfunction subset = dataSubset(data, startI, endI)">dataSubset</a>(data, startUseI, endUseI);
+0524 <span class="keyword">else</span>
+0525     startData = blockInfo.blocks{startBlockI - blockInfo.index  + 1};
+0526     startData = <a href="#_sub3" class="code" title="subfunction subset = dataSubset(data, startI, endI)">dataSubset</a>(startData, startUseI, []);
+0527     midData = [];
+0528     <span class="keyword">for</span> i = (startBlockI + 1):(endBlockI - 1)
+0529         midData = <a href="#_sub4" class="code" title="subfunction data = catData(varargin)">catData</a>(midData, <span class="keyword">...</span>
+0530             blockInfo.blocks{i - blockInfo.index  + 1});
+0531     <span class="keyword">end</span>
+0532     endData = blockInfo.blocks{endBlockI - blockInfo.index  + 1};
+0533     endData = <a href="#_sub3" class="code" title="subfunction subset = dataSubset(data, startI, endI)">dataSubset</a>(endData, 1, endUseI);
+0534     data = <a href="#_sub4" class="code" title="subfunction data = catData(varargin)">catData</a>(startData, midData, endData);
+0535 <span class="keyword">end</span>
+0536 
+0537 <span class="comment">% Organize the data information.</span>
+0538 startFrameI = startFrame + backScale - startUseFrame + 1;
+0539 endFrameI = endFrame - frontScale - startUseFrame + 1;
+0540 dataInfo = struct( <span class="keyword">...</span>
+0541     <span class="string">'startFrame'</span>, startUseFrame, <span class="keyword">...</span>
+0542     <span class="string">'startDataFrame'</span>, startFrame + backScale, <span class="keyword">...</span>
+0543     <span class="string">'startDataFrameI'</span>, startFrameI, <span class="keyword">...</span>
+0544     <span class="string">'endFrame'</span>, endUseFrame, <span class="keyword">...</span>
+0545     <span class="string">'endDataFrame'</span>, endFrame - frontScale, <span class="keyword">...</span>
+0546     <span class="string">'endDataFrameI'</span>, endFrameI, <span class="keyword">...</span>
+0547     <span class="string">'data'</span>, {data}, <span class="keyword">...</span>
+0548     <span class="string">'fps'</span>, fps);
+0549 <span class="keyword">end</span>
+0550 
+0551 <span class="comment">% Load a block by index.</span>
+0552 <a name="_sub2" href="#_subfunctions" class="code">function blockInfo = loadBlock(wormFile, index)</a>
+0553 
+0554 <span class="comment">% Load the block.</span>
+0555 <span class="keyword">global</span> blockFilePath;
+0556 block = [];
+0557 <span class="keyword">if</span> ~isempty(blockFilePath)
+0558     blockName = [<span class="string">'normBlock'</span> num2str(index)];
+0559     load(fullfile(blockFilePath, blockName), blockName);
+0560 <span class="keyword">else</span>
+0561     blockName = [<span class="string">'block'</span> num2str(index)];
+0562     load(wormFile, blockName);
+0563 <span class="keyword">end</span>
+0564 eval([<span class="string">'block = '</span> blockName <span class="string">';'</span>]);
+0565 
+0566 <span class="comment">% Organize the block information.</span>
+0567 blockInfo = struct(<span class="string">'index'</span>, index, <span class="string">'blocks'</span>, {{block}});
+0568 <span class="keyword">end</span>
+0569 
+0570 <span class="comment">% Extract a subset of the data.</span>
+0571 <a name="_sub3" href="#_subfunctions" class="code">function subset = dataSubset(data, startI, endI)</a>
+0572 
+0573 <span class="comment">% Fix the start and end indices.</span>
+0574 <span class="keyword">if</span> isempty(startI)
+0575     startI = 1;
+0576 <span class="keyword">end</span>
+0577 <span class="keyword">if</span> isempty(endI)
+0578     endI = length(data{1});
+0579 <span class="keyword">end</span>
+0580 
+0581 <span class="comment">% Extract the subset of the data.</span>
+0582 subset = cell(length(data), 1);
+0583 <span class="keyword">for</span> i = 1:length(data)
+0584     <span class="keyword">switch</span> <a href="#_sub5" class="code" title="subfunction dims = normDataDims(index)">normDataDims</a>(i)
+0585         <span class="keyword">case</span> 2
+0586             subset{i} = data{i}(:,startI:endI);
+0587         <span class="keyword">case</span> 3
+0588             subset{i} = data{i}(:,:,startI:endI);
+0589         <span class="keyword">otherwise</span>
+0590             error(<span class="string">'worm2func:BadVariable'</span>, [<span class="string">'Data cell '</span> <span class="keyword">...</span>
+0591                 num2str(i) <span class="string">' has inappropropriate dimensionality'</span>]);
+0592     <span class="keyword">end</span>
+0593 <span class="keyword">end</span>
+0594 <span class="keyword">end</span>
+0595 
+0596 <span class="comment">% Concatenate the data.</span>
+0597 <a name="_sub4" href="#_subfunctions" class="code">function data = catData(varargin)</a>
+0598 
+0599 <span class="comment">% We only have 1 data block.</span>
+0600 data = cell(<a href="#_sub6" class="code" title="subfunction dataLength = normDataLength()">normDataLength</a>(), 1);
+0601 <span class="keyword">if</span> length(varargin) == 1
+0602     data = varargin{1};
+0603 
+0604 <span class="comment">% Concatenate the data blocks.</span>
+0605 <span class="keyword">elseif</span> length(varargin) &gt; 1
+0606     <span class="keyword">for</span> i = 1:length(varargin)
+0607         <span class="keyword">if</span> ~isempty(varargin{i})
+0608             
+0609             <span class="comment">% Save the first data block.</span>
+0610             <span class="keyword">if</span> isempty(data)
+0611                 data = varargin{i};
+0612                 
+0613             <span class="comment">% Concatenate the data block.</span>
+0614             <span class="keyword">else</span>
+0615                 <span class="keyword">for</span> j = 1:length(data)
+0616                     <span class="keyword">switch</span> <a href="#_sub5" class="code" title="subfunction dims = normDataDims(index)">normDataDims</a>(j)
+0617                         <span class="keyword">case</span> 2
+0618                             data{j} = cat(2, data{j}, varargin{i}{j});
+0619                         <span class="keyword">case</span> 3
+0620                             data{j} = cat(3, data{j}, varargin{i}{j});
+0621                         <span class="keyword">otherwise</span>
+0622                             error(<span class="string">'worm2func:BadVariable'</span>, <span class="keyword">...</span>
+0623                                 [<span class="string">'Data cell '</span> num2str(i) <span class="keyword">...</span>
+0624                                 <span class="string">' has inappropropriate dimensionality'</span>]);
+0625                     <span class="keyword">end</span>
+0626                 <span class="keyword">end</span>
+0627             <span class="keyword">end</span>
+0628         <span class="keyword">end</span>
+0629     <span class="keyword">end</span>
+0630 <span class="keyword">end</span>
+0631 <span class="keyword">end</span>
+0632 
+0633 
+0634 <span class="comment">% How many dimensions does this normed data cell element have?</span>
+0635 <a name="_sub5" href="#_subfunctions" class="code">function dims = normDataDims(index)</a>
+0636 dims = [];
+0637 <span class="keyword">if</span> index &gt;= 2 &amp;&amp; index &lt;= 4
+0638     dims = 3;
+0639 <span class="keyword">elseif</span> index &lt;= <a href="#_sub6" class="code" title="subfunction dataLength = normDataLength()">normDataLength</a>()
+0640     dims = 2;
+0641 <span class="keyword">end</span>
+0642 <span class="keyword">end</span>
+0643 
+0644 <span class="comment">% How many elements are in our normed data cell array?</span>
+0645 <a name="_sub6" href="#_subfunctions" class="code">function dataLength = normDataLength()</a>
+0646 dataLength = 12;
+0647 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

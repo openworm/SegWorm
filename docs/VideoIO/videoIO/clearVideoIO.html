@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of clearVideoIO</title>
+  <meta name="keywords" content="clearVideoIO">
+  <meta name="description" content="clearVideoIO">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>clearVideoIO
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>clearVideoIO</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function clearVideoIO(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">clearVideoIO
+   Removes all videoIO plugin mex functions from memory.  The mex
+   functions perform whatever cleanup is necessary and possible to release
+   system resources (file locks, threads, memory, etc.) and close any open
+   files (so that videoWriter files are not corrupted).
+
+clearVideoIO('videoReader')
+   Only clears the videoReader plugins.
+
+clearVideoIO('videoWriter')
+   Only clears the videoWriter plugins.
+
+clearVideoIO('echo')
+   Only clears the echo plugins (Linux only).
+
+Example:
+   clearVideoIO;
+
+SEE ALSO:
+   buildVideoReader
+   videoReader
+   <a href="videoread.html" class="code" title="function mov=videoread(fname,varargin)">videoread</a>
+   videoWriter</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>	buildVideoIO</li><li><a href="../videoIO/tests/testBitRate.html" class="code" title="function testBitRate(varargin)">testBitRate</a>	testBitRate</li><li><a href="../videoIO/tests/testGopSize.html" class="code" title="function testGopSize(varargin)">testGopSize</a>	testGopSize</li><li><a href="../videoIO/tests/testQuality.html" class="code" title="function testQuality(varargin)">testQuality</a>	testQuality</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function clearVideoIO(varargin)</a>
+0002 <span class="comment">%clearVideoIO</span>
+0003 <span class="comment">%   Removes all videoIO plugin mex functions from memory.  The mex</span>
+0004 <span class="comment">%   functions perform whatever cleanup is necessary and possible to release</span>
+0005 <span class="comment">%   system resources (file locks, threads, memory, etc.) and close any open</span>
+0006 <span class="comment">%   files (so that videoWriter files are not corrupted).</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%clearVideoIO('videoReader')</span>
+0009 <span class="comment">%   Only clears the videoReader plugins.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%clearVideoIO('videoWriter')</span>
+0012 <span class="comment">%   Only clears the videoWriter plugins.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%clearVideoIO('echo')</span>
+0015 <span class="comment">%   Only clears the echo plugins (Linux only).</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%Example:</span>
+0018 <span class="comment">%   clearVideoIO;</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%SEE ALSO:</span>
+0021 <span class="comment">%   buildVideoReader</span>
+0022 <span class="comment">%   videoReader</span>
+0023 <span class="comment">%   videoread</span>
+0024 <span class="comment">%   videoWriter</span>
+0025 
+0026 <span class="keyword">if</span> nargin == 0
+0027   clearReaders = 1;
+0028   clearWriters = 1;
+0029   clearEcho    = 1;
+0030 <span class="keyword">else</span>
+0031   clearReaders = 0;
+0032   clearWriters = 0;
+0033   clearEcho    = 0;
+0034   <span class="keyword">for</span> i=1:nargin
+0035     <span class="keyword">if</span> strcmp(varargin{i}, <span class="string">'videoReader'</span>), clearReaders = 1; <span class="keyword">end</span>
+0036     <span class="keyword">if</span> strcmp(varargin{i}, <span class="string">'videoWriter'</span>), clearWriters = 1; <span class="keyword">end</span>
+0037     <span class="keyword">if</span> strcmp(varargin{i}, <span class="string">'echo'</span>),        clearEcho    = 1; <span class="keyword">end</span>
+0038   <span class="keyword">end</span>
+0039 <span class="keyword">end</span>
+0040 
+0041 [m,mex] = inmem;
+0042 toClear = {};
+0043 <span class="keyword">for</span> i=1:length(mex)
+0044   x = mex{i};
+0045   <span class="keyword">if</span> <span class="keyword">...</span>
+0046       (clearReaders &amp;&amp; ~isempty(strfind(x,<span class="string">'videoReader_'</span>))) || <span class="keyword">...</span>
+0047       (clearWriters &amp;&amp; ~isempty(strfind(x,<span class="string">'videoWriter_'</span>))) || <span class="keyword">...</span>
+0048       (clearEcho    &amp;&amp; ~isempty(strfind(x,<span class="string">'echo'</span>)))
+0049     toClear{end+1} = x; <span class="comment">%#ok&lt;AGROW&gt; (isn't going to grow too much)</span>
+0050   <span class="keyword">end</span>
+0051 <span class="keyword">end</span>
+0052 <span class="keyword">if</span> (~isempty(toClear))
+0053   clear(toClear{:});
+0054 <span class="keyword">end</span>
+0055 !make clean</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

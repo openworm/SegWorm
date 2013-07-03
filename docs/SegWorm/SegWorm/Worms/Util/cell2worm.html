@@ -1,0 +1,312 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of cell2worm</title>
+  <meta name="keywords" content="cell2worm">
+  <meta name="description" content="CELL2WORM Convert a cell array to a worm struct.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Util -->
+<h1>cell2worm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>CELL2WORM Convert a cell array to a worm struct.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm = cell2worm(worm) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CELL2WORM Convert a cell array to a worm struct.
+
+   WORM = CELL2WORM(WORM)
+
+   Input:
+       worm - the worm information organized in a cell array
+
+   Output:
+       worm - the worm information organized in a structure
+              This structure contains 8 sub-structures,
+              6 sub-sub-structures, and 4 sub-sub-sub-structures:
+
+              * Video *
+              video = {frame}
+
+              * Contour *
+              contour = {pixels, touchI, inI, outI, angles, headI, tailI,
+                         chainCodeLengths}
+
+              * Skeleton *
+              skeleton = {pixels, touchI, inI, outI, inOutI, angles,
+                          length, chainCodeLengths, widths}
+
+              Note: positive skeleton angles bulge towards the side
+              clockwise from the worm's head (unless the worm is flipped).
+
+              * Head *
+              head = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              head.bounds{contour.left (indices for [start end]),
+                          contour.right (indices for [start end]),
+                          skeleton indices for [start end]}
+
+              * Tail *
+              tail = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              tail.bounds{contour.left (indices for [start end]),
+                          contour.right (indices for [start end]),
+                          skeleton indices for [start end]}
+
+              * Left Side (Counter Clockwise from the Head) *
+              left = {bounds, pixels, area,
+                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              left.bounds{contour (indices for [start end]),
+                          skeleton (indices for [start end])}
+
+              * Right Side (Clockwise from the Head) *
+              right = {bounds, pixels, area,
+                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+              right.bounds{contour (indices for [start end]),
+                           skeleton (indices for [start end])}
+
+              * Orientation *
+              orientation = {head, vulva}
+              orientation.head = {isFlipped,
+                                  confidence.head, confidence.tail}
+              orientation.vulva = {isClockwiseFromHead,
+                                  confidence.vulva, confidence.nonVulva}
+
+   See also <a href="worm2cell.html" class="code" title="function worm = worm2cell(worm)">WORM2CELL</a>, <a href="worm2struct.html" class="code" title="function worm = worm2struct(frame,cPixels, cTouchI, cInI, cOutI, cAngles, cHeadI, cTailI, cCCLengths,sPixels, sTouchI, sInI, sOutI, sInOutI, sAngles,sLength, sCCLengths, sWidths,hlcBounds, hrcBounds, hsBounds, hPixels, hArea, hCDF, hStdev,tlcBounds, trcBounds, tsBounds, tPixels, tArea, tCDF, tStdev,lcBounds, lsBounds, lPixels, lArea, lCDF, lStdev,rcBounds, rsBounds, rPixels, rArea, rCDF, rStdev,isHeadTailFlipped, hConfidence, tConfidence,isVulvaClockwiseFromHead, vConfidence, nvConfidence)">WORM2STRUCT</a>, SEGWORM</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="norm2Worm.html" class="code" title="function worm = norm2Worm(frame, vulvaContour, nonVulvaContour,skeleton, skeletonAngles, inOutTouch, skeletonLength, widths,headArea, tailArea, vulvaArea, nonVulvaArea,origin, pixel2MicronScale, rotation, worm)">norm2Worm</a>	NORM2WORM Convert normalized worm information into a worm structure.</li><li><a href="normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">normWorms</a>	NORMWORMS Normalize the worms' information to a standard, compact set.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm = cell2worm(worm)</a>
+0002 <span class="comment">%CELL2WORM Convert a cell array to a worm struct.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   WORM = CELL2WORM(WORM)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Input:</span>
+0007 <span class="comment">%       worm - the worm information organized in a cell array</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Output:</span>
+0010 <span class="comment">%       worm - the worm information organized in a structure</span>
+0011 <span class="comment">%              This structure contains 8 sub-structures,</span>
+0012 <span class="comment">%              6 sub-sub-structures, and 4 sub-sub-sub-structures:</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%              * Video *</span>
+0015 <span class="comment">%              video = {frame}</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%              * Contour *</span>
+0018 <span class="comment">%              contour = {pixels, touchI, inI, outI, angles, headI, tailI,</span>
+0019 <span class="comment">%                         chainCodeLengths}</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%              * Skeleton *</span>
+0022 <span class="comment">%              skeleton = {pixels, touchI, inI, outI, inOutI, angles,</span>
+0023 <span class="comment">%                          length, chainCodeLengths, widths}</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%              Note: positive skeleton angles bulge towards the side</span>
+0026 <span class="comment">%              clockwise from the worm's head (unless the worm is flipped).</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%              * Head *</span>
+0029 <span class="comment">%              head = {bounds, pixels, area,</span>
+0030 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0031 <span class="comment">%              head.bounds{contour.left (indices for [start end]),</span>
+0032 <span class="comment">%                          contour.right (indices for [start end]),</span>
+0033 <span class="comment">%                          skeleton indices for [start end]}</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%              * Tail *</span>
+0036 <span class="comment">%              tail = {bounds, pixels, area,</span>
+0037 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0038 <span class="comment">%              tail.bounds{contour.left (indices for [start end]),</span>
+0039 <span class="comment">%                          contour.right (indices for [start end]),</span>
+0040 <span class="comment">%                          skeleton indices for [start end]}</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">%              * Left Side (Counter Clockwise from the Head) *</span>
+0043 <span class="comment">%              left = {bounds, pixels, area,</span>
+0044 <span class="comment">%                      cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0045 <span class="comment">%              left.bounds{contour (indices for [start end]),</span>
+0046 <span class="comment">%                          skeleton (indices for [start end])}</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%              * Right Side (Clockwise from the Head) *</span>
+0049 <span class="comment">%              right = {bounds, pixels, area,</span>
+0050 <span class="comment">%                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0051 <span class="comment">%              right.bounds{contour (indices for [start end]),</span>
+0052 <span class="comment">%                           skeleton (indices for [start end])}</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%              * Orientation *</span>
+0055 <span class="comment">%              orientation = {head, vulva}</span>
+0056 <span class="comment">%              orientation.head = {isFlipped,</span>
+0057 <span class="comment">%                                  confidence.head, confidence.tail}</span>
+0058 <span class="comment">%              orientation.vulva = {isClockwiseFromHead,</span>
+0059 <span class="comment">%                                  confidence.vulva, confidence.nonVulva}</span>
+0060 <span class="comment">%</span>
+0061 <span class="comment">%   See also WORM2CELL, WORM2STRUCT, SEGWORM</span>
+0062 
+0063 <span class="comment">% Does the worm cell array have enough elements?</span>
+0064 <span class="keyword">if</span> size(worm, 1) ~= 8
+0065     error(<span class="string">'cell2worm:BadWorm'</span>, <span class="keyword">...</span>
+0066         <span class="string">'The worm cell array must have 6 elements'</span>);
+0067 <span class="keyword">end</span>
+0068 
+0069 <span class="comment">% Convert the video information.</span>
+0070 <span class="keyword">if</span> size(worm{1}, 1) ~= 1
+0071     error(<span class="string">'cell2worm:BadVideoInfo'</span>, <span class="keyword">...</span>
+0072         <span class="string">'The worm video information cell array (worm{1}) must have 1 element'</span>);
+0073 <span class="keyword">end</span>
+0074 video = cell2struct(worm{1}, <span class="string">'frame'</span>, 1);
+0075 
+0076 <span class="comment">% Convert the contour.</span>
+0077 <span class="keyword">if</span> size(worm{2}, 1) ~= 8
+0078     error(<span class="string">'cell2worm:BadContour'</span>, <span class="keyword">...</span>
+0079         <span class="string">'The worm contour cell array (worm{2}) must have 8 elements'</span>);
+0080 <span class="keyword">end</span>
+0081 contour = cell2struct(worm{2}, <span class="keyword">...</span>
+0082     {<span class="string">'pixels'</span>, <span class="keyword">...</span>
+0083      <span class="string">'touchI'</span>, <span class="keyword">...</span>
+0084      <span class="string">'inI'</span>, <span class="keyword">...</span>
+0085      <span class="string">'outI'</span>, <span class="keyword">...</span>
+0086      <span class="string">'angles'</span>, <span class="keyword">...</span>
+0087      <span class="string">'headI'</span>, <span class="keyword">...</span>
+0088      <span class="string">'tailI'</span>, <span class="keyword">...</span>
+0089      <span class="string">'chainCodeLengths'</span>}, 1);
+0090 
+0091 <span class="comment">% Convert the skeleton.</span>
+0092 <span class="keyword">if</span> size(worm{3}, 1) ~= 9
+0093     error(<span class="string">'cell2worm:BadSkeleton'</span>, <span class="keyword">...</span>
+0094         <span class="string">'The worm skeleton cell array (worm{3}) must have 9 elements'</span>);
+0095 <span class="keyword">end</span>
+0096 skeleton = cell2struct(worm{3}, <span class="keyword">...</span>
+0097     {<span class="string">'pixels'</span>, <span class="keyword">...</span>
+0098      <span class="string">'touchI'</span>, <span class="keyword">...</span>
+0099      <span class="string">'inI'</span>, <span class="keyword">...</span>
+0100      <span class="string">'outI'</span>, <span class="keyword">...</span>
+0101      <span class="string">'inOutI'</span>, <span class="keyword">...</span>
+0102      <span class="string">'angles'</span>, <span class="keyword">...</span>
+0103      <span class="string">'length'</span>, <span class="keyword">...</span>
+0104      <span class="string">'chainCodeLengths'</span>, <span class="keyword">...</span>
+0105      <span class="string">'widths'</span>}, 1);
+0106 
+0107 <span class="comment">% Convert the head.</span>
+0108 <span class="keyword">if</span> size(worm{4}, 1) ~= 5
+0109     error(<span class="string">'cell2worm:BadHead'</span>, <span class="keyword">...</span>
+0110         <span class="string">'The worm head cell array (worm{4}) must have 4 elements'</span>);
+0111 <span class="keyword">end</span>
+0112 <span class="keyword">if</span> size(worm{4}{1}, 1) ~= 2
+0113     error(<span class="string">'cell2worm:BadHeadBounds'</span>, <span class="keyword">...</span>
+0114         <span class="string">'The worm head bounds cell array (worm{4}{1}) must have 2 elements'</span>);
+0115 <span class="keyword">end</span>
+0116 <span class="keyword">if</span> size(worm{4}{1}{1}, 1) ~= 2
+0117     error(<span class="string">'cell2worm:BadHeadContour'</span>, <span class="keyword">...</span>
+0118         <span class="string">'The worm head contour cell array (worm{4}{1}{1}) must have 2 elements'</span>);
+0119 <span class="keyword">end</span>
+0120 hContour = cell2struct(worm{4}{1}{1}, {<span class="string">'left'</span>, <span class="string">'right'</span>}, 1);
+0121 hBounds = struct(<span class="string">'contour'</span>, hContour, <span class="string">'skeleton'</span>, worm{4}{1}{2});
+0122 head = struct(<span class="string">'bounds'</span>, hBounds, <span class="string">'pixels'</span>, worm{4}{2}, <span class="keyword">...</span>
+0123     <span class="string">'area'</span>, worm{4}{3}, <span class="string">'cdf'</span>, worm{4}{4}, <span class="string">'stdev'</span>, worm{4}{5});
+0124 
+0125 <span class="comment">% Convert the tail.</span>
+0126 <span class="keyword">if</span> size(worm{5}, 1) ~= 5
+0127     error(<span class="string">'cell2worm:BadTail'</span>, <span class="keyword">...</span>
+0128         <span class="string">'The worm tail cell array (worm{5}) must have 4 elements'</span>);
+0129 <span class="keyword">end</span>
+0130 <span class="keyword">if</span> size(worm{5}{1}, 1) ~= 2
+0131     error(<span class="string">'cell2worm:BadTailBounds'</span>, <span class="keyword">...</span>
+0132         <span class="string">'The worm tail bounds cell array (worm{5}{1}) must have 2 elements'</span>);
+0133 <span class="keyword">end</span>
+0134 <span class="keyword">if</span> size(worm{5}{1}{1}, 1) ~= 2
+0135     error(<span class="string">'cell2worm:BadTailContour'</span>, <span class="keyword">...</span>
+0136         <span class="string">'The worm tail contour cell array (worm{5}{1}{1}) must have 2 elements'</span>);
+0137 <span class="keyword">end</span>
+0138 tContour = cell2struct(worm{5}{1}{1}, {<span class="string">'left'</span>, <span class="string">'right'</span>}, 1);
+0139 tBounds = struct(<span class="string">'contour'</span>, tContour, <span class="string">'skeleton'</span>, worm{5}{1}{2});
+0140 tail = struct(<span class="string">'bounds'</span>, tBounds, <span class="string">'pixels'</span>, worm{5}{2}, <span class="keyword">...</span>
+0141     <span class="string">'area'</span>, worm{5}{3}, <span class="string">'cdf'</span>, worm{5}{4}, <span class="string">'stdev'</span>, worm{5}{5});
+0142 
+0143 <span class="comment">% Convert the worm's left side.</span>
+0144 <span class="keyword">if</span> size(worm{6}, 1) ~= 5
+0145     error(<span class="string">'cell2worm:BadLeftSide'</span>, <span class="keyword">...</span>
+0146         <span class="string">'The worm left-side cell array (worm{6}) must have 4 elements'</span>);
+0147 <span class="keyword">end</span>
+0148 <span class="keyword">if</span> size(worm{6}{1}, 1) ~= 2
+0149     error(<span class="string">'cell2worm:BadLeftSideBounds'</span>, <span class="keyword">...</span>
+0150         <span class="string">'The worm left-side bounds cell array (worm{6}{1}) must have 2 elements'</span>);
+0151 <span class="keyword">end</span>
+0152 lBounds = cell2struct(worm{6}{1}, {<span class="string">'contour'</span>, <span class="string">'skeleton'</span>}, 1);
+0153 left = struct(<span class="string">'bounds'</span>, lBounds, <span class="string">'pixels'</span>, worm{6}{2}, <span class="keyword">...</span>
+0154     <span class="string">'area'</span>, worm{6}{3}, <span class="string">'cdf'</span>, worm{6}{4}, <span class="string">'stdev'</span>, worm{6}{5});
+0155 
+0156 <span class="comment">% Convert the worm's right side.</span>
+0157 <span class="keyword">if</span> size(worm{7}, 1) ~= 5
+0158     error(<span class="string">'cell2worm:BadRightSide'</span>, <span class="keyword">...</span>
+0159         <span class="string">'The worm right-side cell array (worm{7}) must have 4 elements'</span>);
+0160 <span class="keyword">end</span>
+0161 <span class="keyword">if</span> size(worm{7}{1}, 1) ~= 2
+0162     error(<span class="string">'cell2worm:BadRightSideBounds'</span>, <span class="keyword">...</span>
+0163         <span class="string">'The worm right-side bounds cell array (worm{7}{1}) must have 2 elements'</span>);
+0164 <span class="keyword">end</span>
+0165 rBounds = cell2struct(worm{7}{1}, {<span class="string">'contour'</span>, <span class="string">'skeleton'</span>}, 1);
+0166 right = struct(<span class="string">'bounds'</span>, rBounds, <span class="string">'pixels'</span>, worm{7}{2}, <span class="keyword">...</span>
+0167     <span class="string">'area'</span>, worm{7}{3}, <span class="string">'cdf'</span>, worm{7}{4}, <span class="string">'stdev'</span>, worm{7}{5});
+0168 
+0169 <span class="comment">% Convert the worm's orientation.</span>
+0170 <span class="keyword">if</span> size(worm{8}, 1) ~= 2
+0171     error(<span class="string">'cell2worm:BadOrientation'</span>, <span class="keyword">...</span>
+0172         <span class="string">'The worm orientation cell array (worm{8}) must have 2 elements'</span>);
+0173 <span class="keyword">end</span>
+0174 <span class="keyword">if</span> size(worm{8}{1}, 1) ~= 2
+0175     error(<span class="string">'cell2worm:BadOrientationHead'</span>, <span class="keyword">...</span>
+0176         [<span class="string">'The worm orientation head cell array '</span> <span class="keyword">...</span>
+0177          <span class="string">'(worm{8}{1}) must have 2 elements'</span>]);
+0178 <span class="keyword">end</span>
+0179 <span class="keyword">if</span> size(worm{8}{1}{2}, 1) ~= 2
+0180     error(<span class="string">'cell2worm:BadOrientationHeadConfidence'</span>, <span class="keyword">...</span>
+0181         [<span class="string">'The worm orientation head confidence cell array '</span> <span class="keyword">...</span>
+0182          <span class="string">'(worm{8}{1}{2}) must have 2 elements'</span>]);
+0183 <span class="keyword">end</span>
+0184 <span class="keyword">if</span> size(worm{8}{2}, 1) ~= 2
+0185     error(<span class="string">'cell2worm:BadOrientationVulva'</span>, <span class="keyword">...</span>
+0186         [<span class="string">'The worm orientation vulva cell array '</span> <span class="keyword">...</span>
+0187          <span class="string">'(worm{8}{2}) must have 2 elements'</span>]);
+0188 <span class="keyword">end</span>
+0189 <span class="keyword">if</span> size(worm{8}{2}{2}, 1) ~= 2
+0190     error(<span class="string">'cell2worm:BadOrientationVulvaConfidence'</span>, <span class="keyword">...</span>
+0191         [<span class="string">'The worm orientation vulva confidence cell array '</span> <span class="keyword">...</span>
+0192          <span class="string">'(worm{8}{2}{2}) must have 2 elements'</span>]);
+0193 <span class="keyword">end</span>
+0194 hConfidence = cell2struct(worm{8}{1}{2}, {<span class="string">'head'</span>, <span class="string">'tail'</span>}, 1);
+0195 hOrientation = struct(<span class="string">'isFlipped'</span>, worm{8}{1}{1}, <span class="keyword">...</span>
+0196     <span class="string">'confidence'</span>, hConfidence);
+0197 vConfidence = cell2struct(worm{8}{2}{2}, {<span class="string">'vulva'</span>, <span class="string">'nonVulva'</span>}, 1);
+0198 vOrientation = struct(<span class="string">'isClockwiseFromHead'</span>, worm{8}{2}{1}, <span class="keyword">...</span>
+0199     <span class="string">'confidence'</span>, vConfidence);
+0200 orientation = struct(<span class="string">'head'</span>, hOrientation, <span class="string">'vulva'</span>, vOrientation);
+0201 
+0202 <span class="comment">% Convert the worm.</span>
+0203 worm = struct(<span class="string">'video'</span>, video, <span class="string">'contour'</span>, contour, <span class="string">'skeleton'</span>, skeleton, <span class="keyword">...</span>
+0204     <span class="string">'head'</span>, head, <span class="string">'tail'</span>, tail, <span class="string">'left'</span>, left, <span class="string">'right'</span>, right, <span class="keyword">...</span>
+0205     <span class="string">'orientation'</span>, orientation);
+0206 <span class="keyword">end</span>
+0207</pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

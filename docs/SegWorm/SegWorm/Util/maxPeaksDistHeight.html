@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of maxPeaksDistHeight</title>
+  <meta name="keywords" content="maxPeaksDistHeight">
+  <meta name="description" content="MAXPEAKSDISTHEIGHT Find the maximum peaks in a vector. The peaks are">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>maxPeaksDistHeight
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>MAXPEAKSDISTHEIGHT Find the maximum peaks in a vector. The peaks are</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [peaks indices] = maxPeaksDistHeight(x, dist, height) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">MAXPEAKSDISTHEIGHT Find the maximum peaks in a vector. The peaks are
+   separated by, at least, the given distance unless interrupted and are, at least, the given
+   height.
+
+   [PEAKS INDICES] = MAXPEAKSDISTHEIGHT(X, DIST, HEIGHT)
+
+   Input:
+       x      - the vector to search for maximum peaks
+       dist   - the minimum distance between peaks
+       height - the minimu height for peaks
+
+   Output:
+       peaks   - the maximum peaks
+       indices - the indices for the peaks</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/StageMovement/findStageMovement.html" class="code" title="function [frames movesI locations] =findStageMovement(infoFile, logFile, diffFile, verbose, varargin)">findStageMovement</a>	FINDSTAGEMOVEMENT Find stage movements in a worm experiment.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [peaks indices] = maxPeaksDistHeight(x, dist, height)</a>
+0002 <span class="comment">%MAXPEAKSDISTHEIGHT Find the maximum peaks in a vector. The peaks are</span>
+0003 <span class="comment">%   separated by, at least, the given distance unless interrupted and are, at least, the given</span>
+0004 <span class="comment">%   height.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [PEAKS INDICES] = MAXPEAKSDISTHEIGHT(X, DIST, HEIGHT)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Input:</span>
+0009 <span class="comment">%       x      - the vector to search for maximum peaks</span>
+0010 <span class="comment">%       dist   - the minimum distance between peaks</span>
+0011 <span class="comment">%       height - the minimu height for peaks</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Output:</span>
+0014 <span class="comment">%       peaks   - the maximum peaks</span>
+0015 <span class="comment">%       indices - the indices for the peaks</span>
+0016 
+0017 <span class="comment">% Is the vector larger than the search window?</span>
+0018 winSize = 2 * dist + 1;
+0019 <span class="keyword">if</span> length(x) &lt; winSize
+0020     [peaks indices] = max(x);
+0021     <span class="keyword">if</span> peaks &lt; height
+0022         peaks = [];
+0023         indices = [];
+0024     <span class="keyword">end</span>
+0025     <span class="keyword">return</span>;
+0026 <span class="keyword">end</span>
+0027 
+0028 <span class="comment">% Initialize the peaks and indices.</span>
+0029 wins = ceil(length(x) / winSize);
+0030 peaks = zeros(wins, 1); <span class="comment">% pre-allocate memory</span>
+0031 indices = zeros(wins, 1); <span class="comment">% pre-allocate memory</span>
+0032 
+0033 <span class="comment">% Search for peaks.</span>
+0034 im = []; <span class="comment">% the last maxima index</span>
+0035 ip = []; <span class="comment">% the current, potential, max peak index</span>
+0036 p = []; <span class="comment">% the current, potential, max peak value</span>
+0037 i = 1; <span class="comment">% the vector index</span>
+0038 j = 1; <span class="comment">% the recorded, maximal peaks index</span>
+0039 <span class="keyword">while</span> i &lt;= length(x)
+0040     
+0041     <span class="comment">% Found a potential peak.</span>
+0042     <span class="keyword">if</span> x(i) &gt;= height &amp;&amp; (isempty(p) || x(i) &gt; p)
+0043         ip = i;
+0044         p = x(i);
+0045     <span class="keyword">end</span>
+0046     
+0047     <span class="comment">% Test the potential peak.</span>
+0048     <span class="keyword">if</span> ~isempty(p) &amp;&amp; (i - ip &gt;= dist || i == length(x))
+0049         
+0050         <span class="comment">% Check the untested values next to the previous maxima.</span>
+0051         <span class="keyword">if</span> ~isempty(im) &amp;&amp; ip - im &lt;= 2 * dist
+0052             
+0053             <span class="comment">% Record the peak.</span>
+0054             <span class="keyword">if</span> p &gt; max(x((ip - dist): im + dist))
+0055                 indices(j) = ip;
+0056                 peaks(j) = p;
+0057                 j = j + 1;
+0058             <span class="keyword">end</span>
+0059             
+0060             <span class="comment">% Record the maxima.</span>
+0061             im = ip;
+0062             ip = i;
+0063             p = x(ip);
+0064             
+0065         <span class="comment">% Record the peak.</span>
+0066         <span class="keyword">else</span>
+0067             indices(j) = ip;
+0068             peaks(j) = p;
+0069             j = j + 1;
+0070             im = ip;
+0071             ip = i;
+0072             p = x(ip);
+0073         <span class="keyword">end</span>
+0074     <span class="keyword">end</span>
+0075         
+0076     <span class="comment">% Advance.</span>
+0077     i = i + 1;
+0078 <span class="keyword">end</span>
+0079 
+0080 <span class="comment">% Collapse any extra memory.</span>
+0081 indices(j:end) = [];
+0082 peaks(j:end) = [];
+0083 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

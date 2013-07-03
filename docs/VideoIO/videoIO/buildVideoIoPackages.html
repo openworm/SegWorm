@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of buildVideoIoPackages</title>
+  <meta name="keywords" content="buildVideoIoPackages">
+  <meta name="description" content="buildVideoIoPackages">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>buildVideoIoPackages
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>buildVideoIoPackages</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">buildVideoIoPackages
+  This script is used to generate downloadable packages for sourceforge 
+  and Matlab Central.  Most users will have no need for this script.
+
+  Assumptions:
+   * svn and grep are in Matlab''s system path
+   * Windows Matlab 2006a or later is being used
+   * If 32-bit Matlab is being used, the 64-bit mex functions have
+     already been built, or vice-versa.
+
+  Example:
+    buildVideoIoPackages</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>	buildVideoIO</li><li><a href="../videoIO/private/split.html" class="code" title="function l = split(d,s)">split</a>	L=SPLIT(S,D) splits a string S delimited by characters in D.  Meant to</li><li><a href="videoIODir.html" class="code" title="function d = videoIODir">videoIODir</a>	d = videoIODir</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%buildVideoIoPackages</span>
+0002 <span class="comment">%  This script is used to generate downloadable packages for sourceforge</span>
+0003 <span class="comment">%  and Matlab Central.  Most users will have no need for this script.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%  Assumptions:</span>
+0006 <span class="comment">%   * svn and grep are in Matlab''s system path</span>
+0007 <span class="comment">%   * Windows Matlab 2006a or later is being used</span>
+0008 <span class="comment">%   * If 32-bit Matlab is being used, the 64-bit mex functions have</span>
+0009 <span class="comment">%     already been built, or vice-versa.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%  Example:</span>
+0012 <span class="comment">%    buildVideoIoPackages</span>
+0013 
+0014 <span class="comment">%-------------------------------------------------------------------------</span>
+0015 
+0016 <span class="comment">% When enabled, does not create a lean-and-mean archives with no test files</span>
+0017 <span class="comment">% (to reduce the download size).</span>
+0018 suppressNoTests = 1; 
+0019 <span class="comment">% When enabled, only .zip outputs are created for linux-friendly</span>
+0020 <span class="comment">% distributions.</span>
+0021 suppressGz = 1;
+0022 
+0023 origDir = pwd;
+0024 cd(<a href="videoIODir.html" class="code" title="function d = videoIODir">videoIODir</a>);
+0025 
+0026 <span class="comment">%-------------------------------------------------------------------------</span>
+0027 <span class="comment">% Helpers</span>
+0028 cellcat       = @(x,y)         {x{:},y{:}};
+0029 
+0030 strrev        = @(x)           x(end:-1:1);
+0031 
+0032 cellmap       = @(m,l)   cellfun(m,l, <span class="string">'UniformOutput'</span>,0);
+0033 cellfilt      = @(filt,l)      {l{cellfun(filt, l)}}; <span class="comment">% keeps true filt responses</span>
+0034 excludeBegin  = @(beg,l) cellfilt(@(f) isempty(strmatch(beg, f)), l);
+0035 includeBegin  = @(beg,l) cellfilt(@(f) ~isempty(strmatch(beg, f)), l);
+0036 excludeMid    = @(mid,l) cellfilt(@(f) isempty(strfind(f,mid)), l);
+0037 excludeEnd    = @(ext,l) cellfilt(@(f) isempty(strmatch(strrev(ext), strrev(f))), l);
+0038 includeEnd    = @(ext,l) cellfilt(@(f) ~isempty(strmatch(strrev(ext), strrev(f))), l);
+0039 
+0040 multiExclude  = @(excl,pats,l) cellfilt(@(f) isempty(cellfilt(@(p) isempty(excl(p,{f})), pats)), l);
+0041 multiInclude  = @(excl,pats,l) cellfilt(@(f) ~isempty(cellfilt(@(p) ~isempty(excl(p,{f})), pats)), l);
+0042 excludeBegins = @(begs,l) multiExclude(excludeBegin, begs, l);
+0043 includeBegins = @(begs,l) multiInclude(includeBegin, begs, l);
+0044 excludeMids   = @(mids,l) multiExclude(excludeMid,   mids, l);
+0045 excludeEnds   = @(exts,l) multiExclude(excludeEnd,   exts, l);
+0046 includeEnds   = @(exts,l) multiInclude(includeEnd,   exts, l);
+0047 
+0048 <span class="comment">%-------------------------------------------------------------------------</span>
+0049 <span class="comment">% Clean out old files</span>
+0050 !rm -rf *.zip *.tar.gz
+0051 
+0052 <span class="comment">%-------------------------------------------------------------------------</span>
+0053 <span class="comment">% Get meta data</span>
+0054 [status, revisionText] = system(<span class="string">'svn info | grep Revision'</span>);
+0055 <span class="keyword">if</span> status ~= 0
+0056   error([<span class="string">'Error getting the current revision number.  '</span><span class="keyword">...</span>
+0057     <span class="string">'Are svn and grep in your system path?'</span>]);
+0058 <span class="keyword">end</span>
+0059 revision = sscanf(revisionText, <span class="string">'Revision: %d'</span>, 1);
+0060 
+0061 [status,completeFileSet] = system(<span class="string">'svn ls -R'</span>);
+0062 <span class="keyword">if</span> status ~= 0
+0063   error([<span class="string">'Error querying subversion for a recursive file list.   '</span><span class="keyword">...</span>
+0064     <span class="string">'is svn in your system path?'</span>]);
+0065 <span class="keyword">end</span>
+0066 completeFileSet = <a href="../videoIO/private/split.html" class="code" title="function l = split(d,s)">split</a>(sprintf(<span class="string">'\n'</span>), completeFileSet);
+0067 completeFileSet = cellfilt(@(x) ~isempty(x), completeFileSet);
+0068 completeFileSet = unique(<span class="keyword">...</span>
+0069   excludeEnds({<span class="string">'\'</span>, <span class="string">'/'</span>}, <span class="keyword">...</span>
+0070   completeFileSet));
+0071 
+0072 nonTestFileSet = excludeBegin(<span class="string">'tests/'</span>, completeFileSet); 
+0073 
+0074 basePackageName = sprintf(<span class="string">'videoIO-r%d'</span>, revision);
+0075 
+0076 <span class="comment">%-------------------------------------------------------------------------</span>
+0077 <span class="comment">% Build Contents.m</span>
+0078 F = fopen(<span class="string">'ChangeLog.txt'</span>);
+0079 version = <span class="string">'UNKNOWN'</span>;
+0080 <span class="keyword">while</span> 1
+0081   line = fgetl(F);
+0082   tokens = regexp(line, <span class="string">'videoIO\s([0-9\.]+)'</span>, <span class="string">'tokens'</span>);
+0083   <span class="keyword">if</span> ~isempty(tokens)
+0084     version = tokens{1}{1};
+0085     <span class="keyword">break</span>;
+0086   <span class="keyword">end</span>
+0087 <span class="keyword">end</span>
+0088 fclose(F);
+0089 
+0090 nowstr  = datestr(now,1);
+0091 
+0092 classes = unique(<span class="keyword">...</span>
+0093   cellmap(@(f) f(2:find(f==<span class="string">'/'</span>, 1)-1),<span class="keyword">...</span>
+0094   includeBegins({<span class="string">'@'</span>},<span class="keyword">...</span>
+0095   completeFileSet)));
+0096 
+0097 mfiles = unique(<span class="keyword">...</span>
+0098   cellmap(@(f) f(1:end-2),<span class="keyword">...</span><span class="comment">                 % strip extension</span>
+0099   excludeEnds({<span class="string">'Contents.m'</span>},<span class="keyword">...</span><span class="comment">              % don't index Contents.m</span>
+0100   excludeMids({<span class="string">'/'</span>, <span class="string">'\'</span>}, <span class="keyword">...</span><span class="comment">                 % none from subdirs</span>
+0101   includeEnds({<span class="string">'.m'</span>}, completeFileSet)))));   <span class="comment">% mfiles only</span>
+0102 
+0103 plugins = unique(<span class="keyword">...</span>
+0104   includeBegins({<span class="string">'videoReader_'</span>, <span class="string">'videoWriter_'</span>},<span class="keyword">...</span>
+0105   mfiles));
+0106 
+0107 public = unique(<span class="keyword">...</span>
+0108   excludeBegins({<span class="string">'pvt'</span>},<span class="keyword">...</span>
+0109   excludeMids({<span class="string">'_'</span>},<span class="keyword">...</span>
+0110   mfiles)));
+0111 
+0112 build = unique(<span class="keyword">...</span>
+0113   includeBegins({<span class="string">'build'</span>},<span class="keyword">...</span>
+0114   public));
+0115 
+0116 aux = unique(<span class="keyword">...</span>
+0117   excludeBegins({<span class="string">'build'</span>},<span class="keyword">...</span>
+0118   public));
+0119 
+0120 F = fopen(<span class="string">'Contents.m'</span>, <span class="string">'w'</span>);
+0121 fprintf(F,<span class="string">'%% videoIO Toolbox\n'</span>);
+0122 fprintf(F,<span class="string">'%% Version %s (revision %d) %s\n'</span>, version, revision, nowstr);
+0123 fprintf(F,<span class="string">'%% \n'</span>);
+0124 
+0125 fprintf(F,<span class="string">'%% Granting easy, flexible, and efficient read/write access to\n'</span>);
+0126 fprintf(F,<span class="string">'%% video files in Matlab on Windows and GNU/Linux platforms. \n'</span>);
+0127 fprintf(F,<span class="string">'%% \n'</span>);
+0128 fprintf(F,<span class="string">'%% See README.txt for a general description of the library \n'</span>);
+0129 fprintf(F,<span class="string">'%% and tips on getting started.\n'</span>);
+0130 fprintf(F,<span class="string">'%% \n'</span>);
+0131 
+0132 fprintf(F,<span class="string">'%% Classes.\n'</span>);
+0133 <span class="keyword">for</span> i=1:length(classes)
+0134   fprintf(F,<span class="string">'%%   %s - \n'</span>, classes{i}); 
+0135 <span class="keyword">end</span>
+0136 fprintf(F,<span class="string">'%% \n'</span>);
+0137 
+0138 fprintf(F,<span class="string">'%% Plugins (some may not be available for your system).\n'</span>);
+0139 <span class="keyword">for</span> i=1:length(plugins)
+0140   fprintf(F,<span class="string">'%%   %s - \n'</span>, plugins{i}); 
+0141 <span class="keyword">end</span>
+0142 fprintf(F,<span class="string">'%% \n'</span>);
+0143 
+0144 fprintf(F,<span class="string">'%% Build functions (may not be present).\n'</span>);
+0145 <span class="keyword">for</span> i=1:length(build)
+0146   fprintf(F,<span class="string">'%%   %s - \n'</span>, build{i}); 
+0147 <span class="keyword">end</span>
+0148 fprintf(F,<span class="string">'%% \n'</span>);
+0149 
+0150 fprintf(F,<span class="string">'%% Auxiliary functions.\n'</span>);
+0151 <span class="keyword">for</span> i=1:length(aux)
+0152   fprintf(F,<span class="string">'%%   %s - \n'</span>, aux{i}); 
+0153 <span class="keyword">end</span>
+0154 fprintf(F,<span class="string">'%% \n'</span>);
+0155 
+0156 fprintf(F,<span class="string">'\n'</span>);
+0157 fprintf(F,<span class="string">'%% Copyright (C) 2008, Gerald Dalley\n'</span>);
+0158 F = fclose(F);
+0159 
+0160 <span class="comment">%-------------------------------------------------------------------------</span>
+0161 <span class="comment">% Build the full source package</span>
+0162 <span class="keyword">if</span> ~suppressGz
+0163   tar([basePackageName <span class="string">'-source.tar'</span>], completeFileSet);
+0164   gzip([basePackageName <span class="string">'-source.tar'</span>]);
+0165   delete([basePackageName <span class="string">'-source.tar'</span>]);
+0166 <span class="keyword">end</span>
+0167 zip([basePackageName <span class="string">'-source.zip'</span>], completeFileSet);
+0168 
+0169 <span class="keyword">if</span> ~suppressNoTests
+0170   <span class="keyword">if</span> ~suppressGz
+0171     tar([basePackageName <span class="string">'-source-notests.tar'</span>], nonTestFileSet);
+0172     gzip([basePackageName <span class="string">'-source-notests.tar'</span>]);
+0173     delete([basePackageName <span class="string">'-source-notests.tar'</span>]);
+0174   <span class="keyword">end</span>
+0175   zip([basePackageName <span class="string">'-source-notests.zip'</span>], nonTestFileSet);
+0176 <span class="keyword">end</span>
+0177 
+0178 <span class="comment">%-------------------------------------------------------------------------</span>
+0179 <span class="comment">% Build Windows binaries</span>
+0180 <a href="buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>;
+0181 mexw32 = dir(<span class="string">'*.mexw32'</span>); mexw32 = {mexw32.name};
+0182 mexw64 = dir(<span class="string">'*.mexw64'</span>); mexw64 = {mexw64.name};
+0183 <span class="keyword">if</span> isempty(mexw32) 
+0184   error(<span class="string">'You must build the 32-bit Windows binaries before proceeding.'</span>);
+0185 <span class="keyword">end</span>
+0186 <span class="keyword">if</span> isempty(mexw64) 
+0187   error(<span class="string">'You must build the 64-bit Windows binaries before proceeding.'</span>);
+0188 <span class="keyword">end</span>
+0189 
+0190 win32binFileSet = <span class="keyword">...</span>
+0191   unique(<span class="keyword">...</span>
+0192   cellcat(mexw32, <span class="keyword">...</span>
+0193   cellcat(mexw64,<span class="keyword">...</span>
+0194   excludeMids({<span class="string">'linux'</span>, <span class="string">'ffmpeg'</span>, <span class="string">'Ffmpeg'</span>},<span class="keyword">...</span>
+0195   excludeBegins({<span class="string">'echo'</span>}, <span class="keyword">...</span>
+0196   excludeEnds({<span class="string">'Echo.m'</span>}, <span class="keyword">...</span>
+0197   excludeBegins({<span class="string">'build'</span>}, <span class="keyword">...</span>
+0198   excludeEnds({<span class="string">'.cpp'</span>, <span class="string">'.c'</span>, <span class="string">'.h'</span>, <span class="string">'.hpp'</span>}, <span class="keyword">...</span>
+0199   excludeEnds({<span class="string">'makefile'</span>,<span class="string">'.pl'</span>,<span class="string">'.sh'</span>}, completeFileSet)))))))));
+0200 
+0201 win32binNoTestFileSet = excludeBegin(<span class="string">'tests/'</span>, win32binFileSet);
+0202 
+0203 zip([basePackageName <span class="string">'-windowsBin.zip'</span>], win32binFileSet);
+0204 <span class="keyword">if</span> ~suppressNoTests
+0205   zip([basePackageName <span class="string">'-windowsBin-notests.zip'</span>], win32binNoTestFileSet);
+0206 <span class="keyword">end</span>
+0207 
+0208 cd(origDir);</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

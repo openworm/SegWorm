@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getinfo</title>
+  <meta name="keywords" content="getinfo">
+  <meta name="description" content="INFO=GETINFO(VW)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html @videoWriter -->
+<h1>getinfo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>INFO=GETINFO(VW)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function info = getinfo(vw,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">INFO=GETINFO(VW)
+  DEPRECATED METHOD.  Use GET instead.  Future versions of videoIO may
+  remove GETINFO. 
+
+  Since this method was originally much less capable than traditional
+  Matlab GET methods, we used a different name.  It now has the most
+  common features of a Matlab GET function, so we have changed the name
+  from GETINFO to GET.
+
+SEE ALSO:
+  videoWriter/get
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/get.html" class="code" title="function info = get(vr,varargin)">get</a>	INFO=GET(VR)</li><li><a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>	INFO=GET(VW)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function info = getinfo(vw,varargin)</a>
+0002 <span class="comment">%INFO=GETINFO(VW)</span>
+0003 <span class="comment">%  DEPRECATED METHOD.  Use GET instead.  Future versions of videoIO may</span>
+0004 <span class="comment">%  remove GETINFO.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%  Since this method was originally much less capable than traditional</span>
+0007 <span class="comment">%  Matlab GET methods, we used a different name.  It now has the most</span>
+0008 <span class="comment">%  common features of a Matlab GET function, so we have changed the name</span>
+0009 <span class="comment">%  from GETINFO to GET.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%SEE ALSO:</span>
+0012 <span class="comment">%  videoWriter/get</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0015 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0016 <span class="comment">%when using this library on GNU/Linux).</span>
+0017 
+0018 warning(<span class="string">'videoIO:deprecated'</span>, <span class="keyword">...</span>
+0019         <span class="string">'Please use the new GET method instead of GETINFO'</span>);
+0020 info = <a href="get.html" class="code" title="function info = get(vw,varargin)">get</a>(vw, varargin{:});</pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

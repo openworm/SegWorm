@@ -1,0 +1,405 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of segWormFrames</title>
+  <meta name="keywords" content="segWormFrames">
+  <meta name="description" content="SEGWORMFRAMES Segment the worm in a set of video frames and organize">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Video -->
+<h1>segWormFrames
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>SEGWORMFRAMES Segment the worm in a set of video frames and organize</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [worms imgs oImgs] = segWormFrames(videoFile, frames, verbose,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SEGWORMFRAMES Segment the worm in a set of video frames and organize
+   the information in a structure.
+
+   [WORMS IMGS OIMGS] = SEGWORMFRAMES(VIDEOFILE, FRAMES, VERBOSE)
+
+   [WORMS IMGS OIMGS] = SEGWORMFRAMES(VIDEOFILE, FRAMES, VERBOSE, SAMPLES)
+
+   [WORMS IMGS OIMGS] = SEGWORMFRAMES(VIDEOFILE, FRAMES, VERBOSE, SAMPLES,
+                                      ISINTERP)
+
+   Inputs:
+       videoFile - the name of the video to segment
+       frames    - the frames of the video to segment
+                   Note: video frame indexing begins at 0
+       verbose   - verbose mode shows the results in figures
+       samples   - the number of samples to use in verbose mode;
+                   if empty, all the worm is used.
+       isInterp  - when downsampling, should we interpolate the missing
+                   data or copy it from the original worm;
+                   if empty, we interpolate the missing data.
+
+   Output:
+       worms - the worms' information organized in a cell array of structures
+               This structure contains 8 sub-structures,
+               6 sub-sub-structures, and 4 sub-sub-sub-structures:
+
+               * Video *
+               video = {frame}
+
+               * Contour *
+               contour = {pixels, touchI, inI, outI, angles, headI, tailI}
+
+               * Skeleton *
+               skeleton = {pixels, touchI, inI, outI, inOutI, angles,
+                           length, chainCodeLengths, widths}
+
+               * Head *
+               head = {bounds, pixels, area,
+                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+               head.bounds{contour.left (indices for [start end]),
+                           contour.right (indices for [start end]),
+                           skeleton indices for [start end]}
+
+               * Tail *
+               tail = {bounds, pixels, area,
+                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+               tail.bounds{contour.left (indices for [start end]),
+                           contour.right (indices for [start end]),
+                           skeleton indices for [start end]}
+
+               * Left Side (Counter Clockwise from the Head) *
+               left = {bounds, pixels, area,
+                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+               left.bounds{contour (indices for [start end]),
+                           skeleton (indices for [start end])}
+
+               * Right Side (Clockwise from the Head) *
+               right = {bounds, pixels, area,
+                        cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}
+               right.bounds{contour (indices for [start end]),
+                            skeleton (indices for [start end])}
+
+               * Orientation *
+               orientation = {head, vulva}
+               orientation.head = {isFlipped,
+                                   confidence.head, confidence.tail}
+               orientation.vulva = {isClockwiseFromHead,
+                                   confidence.vulva, confidence.nonVulva}
+
+       imgs  - a cell array of the requested frames converted to grayscale
+               and corrected for vignetting
+       oImgs - a cell array of the requested frames
+
+   See also WORM2STRUCT, SEGWORM, and <a href="segWormVideo.html" class="code" title="function failedFrames = segWormVideo(videoFile, anglesVideoFile,touchVideoFile, debugVideoFile, varargin)">SEGWORMVIDEO</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Orientation/headTailMovementConfidence.html" class="code" title="function [headOrthoConfidence tailOrthoConfidenceheadParaConfidence tailParaConfidenceheadMagConfidence tailMagConfidence] =headTailMovementConfidence(worm1, worm2, varargin)">headTailMovementConfidence</a>	HEADTAILMOVEMENTCONFIDENCE How much confidence do we have in the head and</li><li><a href="../../../SegWorm/Worms/Orientation/orientWorm.html" class="code" title="function [worm2 confidence flippedConfidence] =orientWorm(worm1, worm2, samples, varargin)">orientWorm</a>	ORIENTWORM Orient worm2 to match worm1's orientation (by setting</li><li><a href="../../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [worms imgs oImgs] = segWormFrames(videoFile, frames, verbose, </a><span class="keyword">...</span>
+0002     varargin)
+0003 <span class="comment">%SEGWORMFRAMES Segment the worm in a set of video frames and organize</span>
+0004 <span class="comment">%   the information in a structure.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   [WORMS IMGS OIMGS] = SEGWORMFRAMES(VIDEOFILE, FRAMES, VERBOSE)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   [WORMS IMGS OIMGS] = SEGWORMFRAMES(VIDEOFILE, FRAMES, VERBOSE, SAMPLES)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   [WORMS IMGS OIMGS] = SEGWORMFRAMES(VIDEOFILE, FRAMES, VERBOSE, SAMPLES,</span>
+0011 <span class="comment">%                                      ISINTERP)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   Inputs:</span>
+0014 <span class="comment">%       videoFile - the name of the video to segment</span>
+0015 <span class="comment">%       frames    - the frames of the video to segment</span>
+0016 <span class="comment">%                   Note: video frame indexing begins at 0</span>
+0017 <span class="comment">%       verbose   - verbose mode shows the results in figures</span>
+0018 <span class="comment">%       samples   - the number of samples to use in verbose mode;</span>
+0019 <span class="comment">%                   if empty, all the worm is used.</span>
+0020 <span class="comment">%       isInterp  - when downsampling, should we interpolate the missing</span>
+0021 <span class="comment">%                   data or copy it from the original worm;</span>
+0022 <span class="comment">%                   if empty, we interpolate the missing data.</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%   Output:</span>
+0025 <span class="comment">%       worms - the worms' information organized in a cell array of structures</span>
+0026 <span class="comment">%               This structure contains 8 sub-structures,</span>
+0027 <span class="comment">%               6 sub-sub-structures, and 4 sub-sub-sub-structures:</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%               * Video *</span>
+0030 <span class="comment">%               video = {frame}</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%               * Contour *</span>
+0033 <span class="comment">%               contour = {pixels, touchI, inI, outI, angles, headI, tailI}</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%               * Skeleton *</span>
+0036 <span class="comment">%               skeleton = {pixels, touchI, inI, outI, inOutI, angles,</span>
+0037 <span class="comment">%                           length, chainCodeLengths, widths}</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%               * Head *</span>
+0040 <span class="comment">%               head = {bounds, pixels, area,</span>
+0041 <span class="comment">%                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0042 <span class="comment">%               head.bounds{contour.left (indices for [start end]),</span>
+0043 <span class="comment">%                           contour.right (indices for [start end]),</span>
+0044 <span class="comment">%                           skeleton indices for [start end]}</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%               * Tail *</span>
+0047 <span class="comment">%               tail = {bounds, pixels, area,</span>
+0048 <span class="comment">%                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0049 <span class="comment">%               tail.bounds{contour.left (indices for [start end]),</span>
+0050 <span class="comment">%                           contour.right (indices for [start end]),</span>
+0051 <span class="comment">%                           skeleton indices for [start end]}</span>
+0052 <span class="comment">%</span>
+0053 <span class="comment">%               * Left Side (Counter Clockwise from the Head) *</span>
+0054 <span class="comment">%               left = {bounds, pixels, area,</span>
+0055 <span class="comment">%                       cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0056 <span class="comment">%               left.bounds{contour (indices for [start end]),</span>
+0057 <span class="comment">%                           skeleton (indices for [start end])}</span>
+0058 <span class="comment">%</span>
+0059 <span class="comment">%               * Right Side (Clockwise from the Head) *</span>
+0060 <span class="comment">%               right = {bounds, pixels, area,</span>
+0061 <span class="comment">%                        cdf (at [2.5% 25% 50% 75% 97.5%]), stdev}</span>
+0062 <span class="comment">%               right.bounds{contour (indices for [start end]),</span>
+0063 <span class="comment">%                            skeleton (indices for [start end])}</span>
+0064 <span class="comment">%</span>
+0065 <span class="comment">%               * Orientation *</span>
+0066 <span class="comment">%               orientation = {head, vulva}</span>
+0067 <span class="comment">%               orientation.head = {isFlipped,</span>
+0068 <span class="comment">%                                   confidence.head, confidence.tail}</span>
+0069 <span class="comment">%               orientation.vulva = {isClockwiseFromHead,</span>
+0070 <span class="comment">%                                   confidence.vulva, confidence.nonVulva}</span>
+0071 <span class="comment">%</span>
+0072 <span class="comment">%       imgs  - a cell array of the requested frames converted to grayscale</span>
+0073 <span class="comment">%               and corrected for vignetting</span>
+0074 <span class="comment">%       oImgs - a cell array of the requested frames</span>
+0075 <span class="comment">%</span>
+0076 <span class="comment">%   See also WORM2STRUCT, SEGWORM, and SEGWORMVIDEO</span>
+0077 
+0078 <span class="comment">% Open the video.</span>
+0079 <span class="keyword">if</span> ispc()
+0080     vr = videoReader(videoFile, <span class="string">'plugin'</span>, <span class="string">'DirectShow'</span>);
+0081 <span class="keyword">else</span>
+0082     vr = videoReader(videoFile, <span class="string">'plugin'</span>, <span class="string">'ffmpegDirect'</span>);
+0083 <span class="keyword">end</span>
+0084 fps = get(vr, <span class="string">'fps'</span>);
+0085 
+0086 <span class="comment">% Get the vignette.</span>
+0087 vImg = 0;
+0088 vignetteFile = strrep(videoFile, <span class="string">'.avi'</span>, <span class="string">'.info.xml.vignette.dat'</span>);
+0089 <span class="keyword">if</span> exist(vignetteFile, <span class="string">'file'</span>)
+0090     height = get(vr, <span class="string">'height'</span>);
+0091     width = get(vr, <span class="string">'width'</span>);
+0092     fid = fopen(vignetteFile, <span class="string">'r'</span>);
+0093     vImg = fread(fid, [width height], <span class="string">'int32=&gt;int8'</span>, 0, <span class="string">'b'</span>)';
+0094     fclose(fid);
+0095 <span class="keyword">end</span>
+0096 
+0097 <span class="comment">% Is the video grayscale?</span>
+0098 <span class="comment">% Note: if there's no difference between the red and green channel, we</span>
+0099 <span class="comment">% consider all 3 RGB channels identical grayscale images.</span>
+0100 isGray = false;
+0101 <span class="keyword">if</span> next(vr)
+0102     img = getframe(vr);
+0103     <span class="keyword">if</span> max(max(abs(img(:,:,1) - img(:,:,2)))) == 0
+0104         isGray = true;
+0105     <span class="keyword">end</span>
+0106     
+0107 <span class="comment">% The video is empty.</span>
+0108 <span class="keyword">else</span>
+0109     close(vr);
+0110     error(<span class="string">'segWormFrames:EmptyVideo'</span>, <span class="string">'The video is empty'</span>);
+0111 <span class="keyword">end</span>
+0112 
+0113 <span class="comment">% Pre-allocate memory.</span>
+0114 oImgs = cell(length(frames),1);
+0115 imgs = cell(length(frames),1);
+0116 worms = cell(length(frames),1);
+0117 
+0118 <span class="comment">% Segment the video frames.</span>
+0119 orientSamples = [1:5 7:11] / 12;
+0120 timestamp = 0;
+0121 frame = 0;
+0122 nextWorm = [];
+0123 <span class="keyword">for</span> i = 1:length(frames)
+0124     
+0125     <span class="comment">% We are at the frame.</span>
+0126     isNewWorm = true;
+0127     <span class="keyword">if</span> frames(i) == frame
+0128         
+0129         <span class="comment">% We segmented the worm.</span>
+0130         <span class="keyword">if</span> ~isempty(nextWorm)
+0131             
+0132             <span class="comment">% Store the worm information.</span>
+0133             oImgs{i} = nextOImg;
+0134             imgs{i} = nextImg;
+0135             worms{i} = nextWorm;
+0136             isNewWorm = false;
+0137             
+0138         <span class="comment">% We failed to segment the worm.</span>
+0139         <span class="keyword">elseif</span> i &gt; 1 &amp;&amp; frames(i) - frames(i - 1) == 1 &amp;&amp; <span class="keyword">...</span>
+0140                 ~isempty(worms{i - 1})
+0141             isNewWorm = false;
+0142         <span class="keyword">end</span>
+0143         
+0144     <span class="comment">% Step to the next video frame.</span>
+0145     <span class="keyword">elseif</span> frames(i) - frame == 1
+0146         next(vr);
+0147         timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0148         frame = round(timestamp * fps);
+0149         
+0150     <span class="comment">% Seek the next video frame.</span>
+0151     <span class="keyword">elseif</span> frames(i) &gt; frame || (i &gt; 1 &amp;&amp; frames(i) &lt; frames(i - 1))
+0152         
+0153         <span class="comment">% Find the requested frame.</span>
+0154         <span class="comment">% Note: seek is inaccurate.</span>
+0155         seek(vr, frames(i));
+0156         timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0157         
+0158         <span class="comment">% We overshot the requested frame.</span>
+0159         j = frames(i);
+0160         <span class="keyword">while</span> j &gt; 0 &amp;&amp; round(timestamp * fps) &gt; frames(i)
+0161             j = j - 1;
+0162             seek(vr, j);
+0163             timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0164         <span class="keyword">end</span>
+0165         
+0166         <span class="comment">% We undershot the requested frame.</span>
+0167         isNextFrame = true;
+0168         <span class="keyword">while</span> isNextFrame &amp;&amp; round(timestamp * fps) &lt; frames(i)
+0169             isNextFrame = next(vr);
+0170             timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0171         <span class="keyword">end</span>
+0172         frame = round(timestamp * fps);
+0173     <span class="keyword">end</span>
+0174     
+0175     <span class="comment">% Segment the worm and store its information.</span>
+0176     <span class="keyword">if</span> isNewWorm
+0177         
+0178         <span class="comment">% Did we find the requested frame?</span>
+0179         <span class="keyword">if</span> frames(i) ~= frame
+0180             warning(<span class="string">'segWormFrames:NoFrame'</span>, [<span class="string">'Cannot find frame '</span> <span class="keyword">...</span>
+0181                 num2str(frames(i)) <span class="string">'. Perhaps it was dropped'</span>]);
+0182             nextWorm = [];
+0183             
+0184         <span class="comment">% Segment the worm and store the information.</span>
+0185         <span class="keyword">else</span>
+0186             
+0187             <span class="comment">% Store the original image.</span>
+0188             oImgs{i} = getframe(vr);
+0189             
+0190             <span class="comment">% Get the video frame and convert it to grayscale.</span>
+0191             <span class="keyword">if</span> isGray
+0192                 imgs{i} = getframe(vr);
+0193                 imgs{i} = imgs{i}(:,:,1);
+0194             <span class="keyword">else</span>
+0195                 imgs{i} = rgb2gray(getframe(vr));
+0196             <span class="keyword">end</span>
+0197             
+0198             <span class="comment">% Correct the vignette.</span>
+0199             <span class="keyword">if</span> ~isempty(vImg)
+0200                 imgs{i} = uint8(single(imgs{i}) - single(vImg));
+0201             <span class="keyword">end</span>
+0202             
+0203             <span class="comment">% Segment the worm.</span>
+0204             worms{i} = <a href="../../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>(imgs{i}, frame, 1, verbose, varargin{:});
+0205         <span class="keyword">end</span>
+0206     <span class="keyword">end</span>
+0207     
+0208     <span class="comment">% Show the frame information.</span>
+0209     <span class="keyword">if</span> ~isempty(worms{i})
+0210         hours = floor(timestamp / 3600);
+0211         minutes = floor((timestamp - hours * 60) / 60);
+0212         seconds = (timestamp - hours * 3600 - minutes * 60);
+0213         disp([<span class="string">'Worm at approximate frame = '</span> <span class="keyword">...</span>
+0214             num2str(get(vr, <span class="string">'approxFrameNum'</span>)) <span class="keyword">...</span>
+0215             <span class="string">', real frame = '</span>  num2str(frame) <span class="keyword">...</span>
+0216             <span class="string">', timestamp = '</span> num2str(hours) <span class="string">':'</span> <span class="keyword">...</span>
+0217             num2str(minutes, <span class="string">'%02.0f'</span>) <span class="string">':'</span> num2str(seconds, <span class="string">'%02.3f'</span>)]);
+0218         
+0219         <span class="comment">% Compute the proximity and head/tail movement confidence.</span>
+0220         <span class="keyword">if</span> next(vr)
+0221             
+0222             <span class="comment">% Did we find the requested frame?</span>
+0223             timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0224             frame = round(timestamp * fps);
+0225             <span class="keyword">if</span> frames(i) + 1 ~= frame
+0226                 warning(<span class="string">'segWormFrames:NoNextFrame'</span>, [<span class="string">'Frame '</span> <span class="keyword">...</span>
+0227                     num2str(frames(i) + 1) <span class="string">' cannot be found. '</span> <span class="keyword">...</span>
+0228                     <span class="string">'Therefore, the orientation and head/tail'</span> <span class="keyword">...</span>
+0229                     <span class="string">'movement confidences cannot be computed for its '</span> <span class="keyword">...</span>
+0230                     <span class="string">'previous frame '</span> num2str(frames(i))]);
+0231                 nextWorm = [];
+0232                 
+0233             <span class="comment">% Get the next video frame and convert it to grayscale.</span>
+0234             <span class="keyword">else</span>
+0235                 nextOImg = getframe(vr);
+0236                 nextImg = rgb2gray(nextOImg);
+0237                 nextImg = uint8(single(nextImg) - single(vImg));
+0238                 
+0239                 <span class="comment">% Can the worm in the next frame be segmented?</span>
+0240                 nextWorm = <a href="../../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>(nextImg, frame, 1, verbose &amp;&amp; <span class="keyword">...</span>
+0241                     (i &lt; length(frames) &amp;&amp; frames(i + 1) == frame), <span class="keyword">...</span>
+0242                     varargin{:});
+0243                 <span class="keyword">if</span> isempty(nextWorm)
+0244                     warning(<span class="string">'segWormFrames:NoNextWorm'</span>, [<span class="string">'Frame '</span> <span class="keyword">...</span>
+0245                         num2str(frames(i) + 1) <span class="string">' cannot be segmented. '</span> <span class="keyword">...</span>
+0246                         <span class="string">'Therefore, the orientation and head/tail'</span> <span class="keyword">...</span>
+0247                         <span class="string">'movement confidences cannot be computed for its '</span> <span class="keyword">...</span>
+0248                         <span class="string">'previous frame '</span> num2str(frames(i))]);
+0249                     
+0250                 <span class="comment">% Orient the worm and compute the confidence.</span>
+0251                 <span class="keyword">else</span>
+0252                     [nextWorm confidence flippedConfidence] = <span class="keyword">...</span>
+0253                         <a href="../../../SegWorm/Worms/Orientation/orientWorm.html" class="code" title="function [worm2 confidence flippedConfidence] =orientWorm(worm1, worm2, samples, varargin)">orientWorm</a>(worms{i}, nextWorm, orientSamples);
+0254                     [hOrthoConfidence tOrthoConfidence <span class="keyword">...</span>
+0255                         hParaConfidence tParaConfidence <span class="keyword">...</span>
+0256                         hMagConfidence tMagConfidence] = <span class="keyword">...</span>
+0257                         <a href="../../../SegWorm/Worms/Orientation/headTailMovementConfidence.html" class="code" title="function [headOrthoConfidence tailOrthoConfidenceheadParaConfidence tailParaConfidenceheadMagConfidence tailMagConfidence] =headTailMovementConfidence(worm1, worm2, varargin)">headTailMovementConfidence</a>(worms{i}, nextWorm);
+0258                     
+0259                     <span class="comment">% Show the proximity and movement confidence.</span>
+0260                     disp([<span class="string">'Proximal orientation confidence:   '</span> 10 <span class="keyword">...</span>
+0261                         <span class="string">'   Confidence = '</span> <span class="keyword">...</span>
+0262                         num2str(confidence) 10 <span class="keyword">...</span>
+0263                         <span class="string">'   Flipped confidence = '</span> <span class="keyword">...</span>
+0264                         num2str(flippedConfidence)]);
+0265                     disp([<span class="string">'Head/tail movement confidence: '</span> 10 <span class="keyword">...</span>
+0266                         <span class="string">'   Head ortho-movement confidence = '</span> <span class="keyword">...</span>
+0267                         num2str(hOrthoConfidence) 10 <span class="keyword">...</span>
+0268                         <span class="string">'   tail ortho-movement confidence = '</span> <span class="keyword">...</span>
+0269                         num2str(tOrthoConfidence) 10 <span class="keyword">...</span>
+0270                         <span class="string">'   Head para-movement confidence = '</span> <span class="keyword">...</span>
+0271                         num2str(hParaConfidence) 10 <span class="keyword">...</span>
+0272                         <span class="string">'   Tail para-movement confidence = '</span> <span class="keyword">...</span>
+0273                         num2str(tParaConfidence) 10 <span class="keyword">...</span>
+0274                         <span class="string">'   Head movement magnitude confidence = '</span> <span class="keyword">...</span>
+0275                         num2str(hMagConfidence) 10 <span class="keyword">...</span>
+0276                         <span class="string">'   Tail movement magnitude confidence = '</span> <span class="keyword">...</span>
+0277                         num2str(tMagConfidence)]);
+0278                 <span class="keyword">end</span>
+0279             <span class="keyword">end</span>
+0280         <span class="keyword">end</span>
+0281     <span class="keyword">end</span>
+0282 <span class="keyword">end</span>
+0283 
+0284 <span class="comment">% Clean up.</span>
+0285 close(vr);
+0286 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

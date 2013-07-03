@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of videoWriter_Vfw</title>
+  <meta name="keywords" content="videoWriter_Vfw">
+  <meta name="description" content="videoWriter_Vfw">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html videoIO -->
+<h1>videoWriter_Vfw
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>videoWriter_Vfw</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">videoWriter_Vfw
+  This is a videoWriter pluging that uses Microsoft's Video for Windows 
+  (Vfw) API to encode video files on Windows platforms.  
+
+  Users should not call this function directly.  Instead they should use
+  the videoWriter constructor and specify the 'Vfw' plugin.
+
+  Note that if using 64-bit Matlab, only 64-bit codecs may be used.  If
+  using 32-bit Matlab (on 32-bit or 64-bit Windows), only 32-bit codecs
+  may be used.  See INSTALL.dshow.html for details and installation
+  instructions.  
+
+  NOTE: the current implementation outputs AVI 1.0 files, not AVI 2.0
+  OpenDML files.  Files are truncated at 4GB and files with more than
+  1GB in size may not be playable on all platforms.  Use the 'DirectShow'
+  plugin for writing large videos on Windows.
+
+  vr = videoWriter(filename, 'Vfw', ...)
+  vr = videoWriter(filename, ..., 'plugin','Vfw',...)
+    Opens FILENAME for writing using VfW.  Currently, we assume
+    that the desired filetype is an AVI file.  As a convenience, all
+    forward slashes ('/') in FILENAME are automatically converted to
+    backslashes ('\'). 
+
+  vr = videoWriter(..., 'width',W, ...)
+  vr = videoWriter(..., 'height',H, ...)
+    AVI files store frames that all must be of the same size.  W and H
+    are the width and height of the encoded video, respectively.  The
+    ADDFRAME method will automatically resize any images to be this 
+    size. 
+
+    Most codecs require these values to be divisible by 2, 4, 8, or 16.
+    If these parameters are not explicitly set, the first frame to be
+    added via ADDFRAME will be used to set the width and height.
+
+  vr = videoWriter(..., 'codec',FOURCC, ...)
+  vr = videoWriter(..., 'fourcc',FOURCC, ...)
+    When compressing videos, a compression method must be selected.
+    FOURCC is a 4-character string specifying the encoder type to use.
+    It is not necessarily the name of the encoder.  Most users will want
+    to explicitly pass this parameter.   If no codec is given by the 
+    user, an uncompressed video will be created.
+
+    The exact set of possible codecs is highly system-dependent.  To see
+    a list of available codecs on a specific machine, run:
+      codecs = videoWriter([], 'codecs', 'Vfw');
+
+  vr = videoWriter(..., 'fps',FPS, ...)
+  vr = videoWriter(..., 'framesPerSecond',FPS, ...)
+    FPS is the frame rate of the recorded video in frames per second.
+    Note that some codecs only work with some frame rates.  15, 23.976,
+    24/1.001, 24, 25, 29.97, 30/1.001 and 30 should work with most
+    codecs.  30/1.001 fps is the default.
+
+  vr = videoWriter(..., 'fpsNum',NUM,'fpsDenom',DENOM ...)
+  vr = videoWriter(..., 'framesPerSecond_num',NUM,...
+                        'framesPerSecond_denom',DENOM ...)
+    Frame rates may also be specified as rational numbers where
+    FPS=NUM/DENOM.  
+
+  vr = videoWriter(..., 'showCompressionDialog',SHOW, ...)
+    If SHOW is true (a non-zero number), a dialog box is presented to
+    the user allowing precise manual selection of the codec and its
+    parameters.  The 'codec' or 'fourcc' parameter may be used to set
+    the initial Compressor, which the user may override via the GUI.
+
+    After closing the dialog using the &quot;OK&quot; button, the user may save
+    the codec selection and configuration by examining the 'codec' and
+    'codecParams' fields of the struct returned by the GET method.  
+
+  vr = videoWriter(..., 'codecParams',PARAMS, ...)
+    PARAMS is a MIME Base64-encoded string describing the codec
+    selection and setup parameters for a VfW codec.  The contents
+    of this string are very codec-specific.  Often, the best way to
+    come up with a string like this is to first create a videoWriter
+    with the 'showCompressionDialog' option enabled, choose the desired
+    settings, then use the GET method to extract the 'codec' and
+    'codecParams' values.  
+
+    Note that this MIME Base64 representation is the same as used by
+    VirtualDub in its Sylia Script files.  Nearly all useful VfW and
+    DirectShow codecs can only be configured with 'codecParams' and they
+    ignore the separate 'bitRate' and 'gopSize' parameters given below.
+
+  vr = videoWriter(..., 'bitRate',BPS, ...)
+    BPS is the target bits/sec of the encoded video. 
+
+    Note: Very few DirectShow codecs pay attention to the 'bitRate'
+    parameter.  To see which codecs uses the 'bitRate' parameter, run
+    the testBitRate function in the 'tests/' subdirectory of videoIODir.
+
+  vr = videoWriter(..., 'gopSize',GOP, ...)
+    GOP is the maximum period between keyframes.  GOP stands for &quot;group
+    of pictures&quot; in MPEG lingo. 
+
+    Note: Very few DirectShow codecs pay attention to the 'gopSize'
+    parameter.  To see which codecs uses the 'gopSize' parameter, run
+    the testGopSize function in the 'tests/' subdirectory of videoIODir. 
+
+  vr = videoWriter(..., 'quality',Q, ...)
+    Q is the target quality of the encoded video. 
+
+    Note: Very few DirectShow codecs pay attention to the 'quality'
+    parameter.  To see which codecs uses the 'quality' parameter, run
+    the testQuality function in the 'tests/' subdirectory of videoIODir.
+
+ SEE ALSO:
+   <a href="buildVideoIO.html" class="code" title="function buildVideoIO(varargin)">buildVideoIO</a>             : how to build the plugin
+   videoWriter              : overview, usage examples, other plugins
+   <a href="videoWriter_DirectShow.html" class="code" title="">videoWriter_DirectShow</a>   : allows usage of DirectShow encoders too
+
+Copyright (c) 2008 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%videoWriter_Vfw</span>
+0002 <span class="comment">%  This is a videoWriter pluging that uses Microsoft's Video for Windows</span>
+0003 <span class="comment">%  (Vfw) API to encode video files on Windows platforms.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%  Users should not call this function directly.  Instead they should use</span>
+0006 <span class="comment">%  the videoWriter constructor and specify the 'Vfw' plugin.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%  Note that if using 64-bit Matlab, only 64-bit codecs may be used.  If</span>
+0009 <span class="comment">%  using 32-bit Matlab (on 32-bit or 64-bit Windows), only 32-bit codecs</span>
+0010 <span class="comment">%  may be used.  See INSTALL.dshow.html for details and installation</span>
+0011 <span class="comment">%  instructions.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%  NOTE: the current implementation outputs AVI 1.0 files, not AVI 2.0</span>
+0014 <span class="comment">%  OpenDML files.  Files are truncated at 4GB and files with more than</span>
+0015 <span class="comment">%  1GB in size may not be playable on all platforms.  Use the 'DirectShow'</span>
+0016 <span class="comment">%  plugin for writing large videos on Windows.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%  vr = videoWriter(filename, 'Vfw', ...)</span>
+0019 <span class="comment">%  vr = videoWriter(filename, ..., 'plugin','Vfw',...)</span>
+0020 <span class="comment">%    Opens FILENAME for writing using VfW.  Currently, we assume</span>
+0021 <span class="comment">%    that the desired filetype is an AVI file.  As a convenience, all</span>
+0022 <span class="comment">%    forward slashes ('/') in FILENAME are automatically converted to</span>
+0023 <span class="comment">%    backslashes ('\').</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%  vr = videoWriter(..., 'width',W, ...)</span>
+0026 <span class="comment">%  vr = videoWriter(..., 'height',H, ...)</span>
+0027 <span class="comment">%    AVI files store frames that all must be of the same size.  W and H</span>
+0028 <span class="comment">%    are the width and height of the encoded video, respectively.  The</span>
+0029 <span class="comment">%    ADDFRAME method will automatically resize any images to be this</span>
+0030 <span class="comment">%    size.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%    Most codecs require these values to be divisible by 2, 4, 8, or 16.</span>
+0033 <span class="comment">%    If these parameters are not explicitly set, the first frame to be</span>
+0034 <span class="comment">%    added via ADDFRAME will be used to set the width and height.</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%  vr = videoWriter(..., 'codec',FOURCC, ...)</span>
+0037 <span class="comment">%  vr = videoWriter(..., 'fourcc',FOURCC, ...)</span>
+0038 <span class="comment">%    When compressing videos, a compression method must be selected.</span>
+0039 <span class="comment">%    FOURCC is a 4-character string specifying the encoder type to use.</span>
+0040 <span class="comment">%    It is not necessarily the name of the encoder.  Most users will want</span>
+0041 <span class="comment">%    to explicitly pass this parameter.   If no codec is given by the</span>
+0042 <span class="comment">%    user, an uncompressed video will be created.</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%    The exact set of possible codecs is highly system-dependent.  To see</span>
+0045 <span class="comment">%    a list of available codecs on a specific machine, run:</span>
+0046 <span class="comment">%      codecs = videoWriter([], 'codecs', 'Vfw');</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%  vr = videoWriter(..., 'fps',FPS, ...)</span>
+0049 <span class="comment">%  vr = videoWriter(..., 'framesPerSecond',FPS, ...)</span>
+0050 <span class="comment">%    FPS is the frame rate of the recorded video in frames per second.</span>
+0051 <span class="comment">%    Note that some codecs only work with some frame rates.  15, 23.976,</span>
+0052 <span class="comment">%    24/1.001, 24, 25, 29.97, 30/1.001 and 30 should work with most</span>
+0053 <span class="comment">%    codecs.  30/1.001 fps is the default.</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">%  vr = videoWriter(..., 'fpsNum',NUM,'fpsDenom',DENOM ...)</span>
+0056 <span class="comment">%  vr = videoWriter(..., 'framesPerSecond_num',NUM,...</span>
+0057 <span class="comment">%                        'framesPerSecond_denom',DENOM ...)</span>
+0058 <span class="comment">%    Frame rates may also be specified as rational numbers where</span>
+0059 <span class="comment">%    FPS=NUM/DENOM.</span>
+0060 <span class="comment">%</span>
+0061 <span class="comment">%  vr = videoWriter(..., 'showCompressionDialog',SHOW, ...)</span>
+0062 <span class="comment">%    If SHOW is true (a non-zero number), a dialog box is presented to</span>
+0063 <span class="comment">%    the user allowing precise manual selection of the codec and its</span>
+0064 <span class="comment">%    parameters.  The 'codec' or 'fourcc' parameter may be used to set</span>
+0065 <span class="comment">%    the initial Compressor, which the user may override via the GUI.</span>
+0066 <span class="comment">%</span>
+0067 <span class="comment">%    After closing the dialog using the &quot;OK&quot; button, the user may save</span>
+0068 <span class="comment">%    the codec selection and configuration by examining the 'codec' and</span>
+0069 <span class="comment">%    'codecParams' fields of the struct returned by the GET method.</span>
+0070 <span class="comment">%</span>
+0071 <span class="comment">%  vr = videoWriter(..., 'codecParams',PARAMS, ...)</span>
+0072 <span class="comment">%    PARAMS is a MIME Base64-encoded string describing the codec</span>
+0073 <span class="comment">%    selection and setup parameters for a VfW codec.  The contents</span>
+0074 <span class="comment">%    of this string are very codec-specific.  Often, the best way to</span>
+0075 <span class="comment">%    come up with a string like this is to first create a videoWriter</span>
+0076 <span class="comment">%    with the 'showCompressionDialog' option enabled, choose the desired</span>
+0077 <span class="comment">%    settings, then use the GET method to extract the 'codec' and</span>
+0078 <span class="comment">%    'codecParams' values.</span>
+0079 <span class="comment">%</span>
+0080 <span class="comment">%    Note that this MIME Base64 representation is the same as used by</span>
+0081 <span class="comment">%    VirtualDub in its Sylia Script files.  Nearly all useful VfW and</span>
+0082 <span class="comment">%    DirectShow codecs can only be configured with 'codecParams' and they</span>
+0083 <span class="comment">%    ignore the separate 'bitRate' and 'gopSize' parameters given below.</span>
+0084 <span class="comment">%</span>
+0085 <span class="comment">%  vr = videoWriter(..., 'bitRate',BPS, ...)</span>
+0086 <span class="comment">%    BPS is the target bits/sec of the encoded video.</span>
+0087 <span class="comment">%</span>
+0088 <span class="comment">%    Note: Very few DirectShow codecs pay attention to the 'bitRate'</span>
+0089 <span class="comment">%    parameter.  To see which codecs uses the 'bitRate' parameter, run</span>
+0090 <span class="comment">%    the testBitRate function in the 'tests/' subdirectory of videoIODir.</span>
+0091 <span class="comment">%</span>
+0092 <span class="comment">%  vr = videoWriter(..., 'gopSize',GOP, ...)</span>
+0093 <span class="comment">%    GOP is the maximum period between keyframes.  GOP stands for &quot;group</span>
+0094 <span class="comment">%    of pictures&quot; in MPEG lingo.</span>
+0095 <span class="comment">%</span>
+0096 <span class="comment">%    Note: Very few DirectShow codecs pay attention to the 'gopSize'</span>
+0097 <span class="comment">%    parameter.  To see which codecs uses the 'gopSize' parameter, run</span>
+0098 <span class="comment">%    the testGopSize function in the 'tests/' subdirectory of videoIODir.</span>
+0099 <span class="comment">%</span>
+0100 <span class="comment">%  vr = videoWriter(..., 'quality',Q, ...)</span>
+0101 <span class="comment">%    Q is the target quality of the encoded video.</span>
+0102 <span class="comment">%</span>
+0103 <span class="comment">%    Note: Very few DirectShow codecs pay attention to the 'quality'</span>
+0104 <span class="comment">%    parameter.  To see which codecs uses the 'quality' parameter, run</span>
+0105 <span class="comment">%    the testQuality function in the 'tests/' subdirectory of videoIODir.</span>
+0106 <span class="comment">%</span>
+0107 <span class="comment">% SEE ALSO:</span>
+0108 <span class="comment">%   buildVideoIO             : how to build the plugin</span>
+0109 <span class="comment">%   videoWriter              : overview, usage examples, other plugins</span>
+0110 <span class="comment">%   videoWriter_DirectShow   : allows usage of DirectShow encoders too</span>
+0111 <span class="comment">%</span>
+0112 <span class="comment">%Copyright (c) 2008 Gerald Dalley</span>
+0113 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0114 <span class="comment">%when using this library on GNU/Linux).</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

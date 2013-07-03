@@ -1,0 +1,774 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of overlayWormTouch</title>
+  <meta name="keywords" content="overlayWormTouch">
+  <meta name="description" content="OVERLAYWORMTOUCH Overlay the worm's contour/skeleton touching/inner/outer">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Video -->
+<h1>overlayWormTouch
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>OVERLAYWORMTOUCH Overlay the worm's contour/skeleton touching/inner/outer</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function oImg = overlayWormTouch(img, worm, headRGB, isHeadOpaque,tailRGB, isTailOpaque, vulvaRGB, isVulvaOpaque, nonVulvaRGB, isNonVulvaOpaque,cTouchRGB, isCTouchOpaque, cInRGB, isCInOpaque, cOutRGB, isCOutOpaque,sTouchRGB, isSTouchOpaque, sInRGB, isSInOpaque, sOutRGB, isSOutOpaque,sInOutRGB, isSInOutOpaque) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">OVERLAYWORMTOUCH Overlay the worm's contour/skeleton touching/inner/outer
+ segments onto an image. Label the head/tail, and vulval/non-vulval sides.
+
+   OIMG = OVERLAYWORMTOUCH(IMG, WORM, HEADRGB, ISHEADOPAQUE,
+      TAILRGB, ISTAILOPAQUE, VULVARGB, ISVULVAOPAQUE, NONVULVARGB, ISNONVULVAOPAQUE,
+      CTOUCHRGB, ISCTOUCHOPAQUE, CINRGB, ISCINOPAQUE, COUTRGB, ISCOUTOPAQUE,
+      STOUCHRGB, ISSTOUCHOPAQUE, SINRGB, ISSINOPAQUE, SOUTRGB, ISSOUTOPAQUE,
+      SINOUTRGB, ISSINOUTOPAQUE)
+
+   Inputs:
+       img              - the image on which to overlay the worm information
+       worm             - the worm's information; SEE also SEGWORM, and WORM2STRUCT
+       headRGB          - the color to use for labeling the worm's head
+                          Note: if headRGB is empty, we don't color the
+                          worm's head.
+       isHeadOpaque     - is the head opaque? If the head is opaque its
+                          RGB color is assigned to the worm's head; if the
+                          head is translucent, its RGB values are used to
+                          scale (multiply) the 3 channels of the image
+       tailRGB          - the color to use for labeling the worm's tail
+                          Note: if tailRGB is empty, we don't color the
+                          worm's tail.
+       isTailOpaque     - is the tail opaque? If the tail is opaque its
+                          RGB color is assigned to the worm's tail; if the
+                          tail is translucent, its RGB values are used to
+                          scale (multiply) the 3 channels of the image
+       vulvaRGB         - the color to use for labeling the worm's vulval side
+                          Note: if vulvaRGB is empty, we don't color the
+                          worm's vulval side.
+       isVulvaOpaque    - is the vulval side opaque? If the vulval side
+                          is opaque its RGB color is assigned to the
+                          worm's vulval side; if the vulval side is
+                          translucent, its RGB values are used to
+                          scale (multiply) the 3 channels of the image
+       nonVulvaRGB      - the color to use for labeling the worm's non-vulval side
+                          Note: if nonVulvaRGB is empty, we don't color the
+                          worm's non-vulval side.
+       isNonVulvaOpaque - is the non-vulval side opaque? If the non-vulval side
+                          is opaque its RGB color is assigned to the
+                          worm's non-vulval side; if the non-vulval side is
+                          translucent, its RGB values are used to
+                          scale (multiply) the 3 channels of the image
+       cTouchRGB        - the color to use for labeling the worm's
+                          touching contour segments
+                          Note: if cTouchRGB is empty, we don't color the
+                          worm's touching contour segments.
+       isCTouchOpaque   - are the touching contour segments opaque?
+                          If the segments are opaque their RGB color is
+                          assigned to the worm's touching contour
+                          segments; if the segments are translucent, their
+                          RGB values are used to scale (multiply) the
+                          3 channels of the image
+       cInRGB           - the color to use for labeling the worm's
+                          inner contour segment(s)
+                          Note: if cInRGB is empty, we don't color the
+                          worm's inner contour segment(s).
+       isCInOpaque      - is the inner contour segment(s) opaque?
+                          If the segment(s) is opaque its RGB color is
+                          assigned to the worm's inner contour
+                          segment(s); if the segment(s) is translucent,
+                          its RGB values are used to scale (multiply) the
+                          3 channels of the image
+       cOutRGB          - the color to use for labeling the worm's
+                          outer contour segment(s)
+                          Note: if cOutRGB is empty, we don't color the
+                          worm's outer contour segment(s).
+       isCOutOpaque     - is the outer contour segment(s) opaque?
+                          If the segment(s) is opaque its RGB color is
+                          assigned to the worm's outer contour
+                          segment(s); if the segment(s) is translucent,
+                          its RGB values are used to scale (multiply) the
+                          3 channels of the image
+       sTouchRGB        - the color to use for labeling the worm's
+                          touching skeleton segments
+                          Note: if sTouchRGB is empty, we don't color the
+                          worm's touching skeleton segments.
+       isSTouchOpaque   - are the touching skeleton segments opaque?
+                          If the segments are opaque their RGB color is
+                          assigned to the worm's touching skeleton
+                          segments; if the segments are translucent, their
+                          RGB values are used to scale (multiply) the
+                          3 channels of the image
+       sInRGB           - the color to use for labeling the worm's
+                          inner skeleton segment(s)
+                          Note: if sInRGB is empty, we don't color the
+                          worm's inner skeleton segment(s).
+       isSInOpaque      - is the inner skeleton segment(s) opaque?
+                          If the segment(s) is opaque its RGB color is
+                          assigned to the worm's inner skeleton
+                          segment(s); if the segment(s) is translucent,
+                          its RGB values are used to scale (multiply) the
+                          3 channels of the image
+       sOutRGB          - the color to use for labeling the worm's
+                          outer skeleton segment(s)
+                          Note: if sOutRGB is empty, we don't color the
+                          worm's outer skeleton segment(s).
+       isSOutOpaque     - is the outer skeleton segment(s) opaque?
+                          If the segment(s) is opaque its RGB color is
+                          assigned to the worm's outer skeleton
+                          segment(s); if the segment(s) is translucent,
+                          its RGB values are used to scale (multiply) the
+                          3 channels of the image
+       sInOutRGB        - the color to use for labeling the worm's
+                          dual inner/outer skeleton segment(s)
+                          Note: if sInOutRGB is empty, we don't color the
+                          worm's inner/outer skeleton segment(s).
+       isSInOutOpaque   - is the dual inner/outer skeleton segment(s) opaque?
+                          If the segment(s) is opaque its RGB color is
+                          assigned to the worm's dual inner/outer skeleton
+                          segment(s); if the segment(s) is translucent,
+                          its RGB values are used to scale (multiply) the
+                          3 channels of the image
+
+   Outputs:
+       oImg - an image overlayed with the worm's contour/skeleton
+              touching/inner/outer segments; and, the head/tail, and
+              vulval/non-vulval sides labeled
+
+   SEE also <a href="overlayWormAngles.html" class="code" title="function oImg = overlayWormAngles(img, worm, cRGB360, sRGB360, sRGBNaN,headPattern, headRGB, isHeadOpaque, vulvaPattern, vulvaRGB, isVulvaOpaque)">OVERLAYWORMANGLES</a>, SEGWORM, and WORM2STRUCT</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/ComputerVision/inPolyMask.html" class="code" title="function [mask polygonI] = inPolyMask(polygon, seed, maskSize)">inPolyMask</a>	INPOLYMASK Create a mask of the inside of a polygon.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li><li><a href="segWormVideo.html" class="code" title="function failedFrames = segWormVideo(videoFile, anglesVideoFile,touchVideoFile, debugVideoFile, varargin)">segWormVideo</a>	SEGWORMVIDEO Segment a worm video.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function oImg = overlayWormTouch(img, worm, headRGB, isHeadOpaque, </a><span class="keyword">...</span>
+0002     tailRGB, isTailOpaque, vulvaRGB, isVulvaOpaque, nonVulvaRGB, isNonVulvaOpaque, <span class="keyword">...</span>
+0003     cTouchRGB, isCTouchOpaque, cInRGB, isCInOpaque, cOutRGB, isCOutOpaque, <span class="keyword">...</span>
+0004     sTouchRGB, isSTouchOpaque, sInRGB, isSInOpaque, sOutRGB, isSOutOpaque, <span class="keyword">...</span>
+0005     sInOutRGB, isSInOutOpaque)
+0006 <span class="comment">%OVERLAYWORMTOUCH Overlay the worm's contour/skeleton touching/inner/outer</span>
+0007 <span class="comment">% segments onto an image. Label the head/tail, and vulval/non-vulval sides.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   OIMG = OVERLAYWORMTOUCH(IMG, WORM, HEADRGB, ISHEADOPAQUE,</span>
+0010 <span class="comment">%      TAILRGB, ISTAILOPAQUE, VULVARGB, ISVULVAOPAQUE, NONVULVARGB, ISNONVULVAOPAQUE,</span>
+0011 <span class="comment">%      CTOUCHRGB, ISCTOUCHOPAQUE, CINRGB, ISCINOPAQUE, COUTRGB, ISCOUTOPAQUE,</span>
+0012 <span class="comment">%      STOUCHRGB, ISSTOUCHOPAQUE, SINRGB, ISSINOPAQUE, SOUTRGB, ISSOUTOPAQUE,</span>
+0013 <span class="comment">%      SINOUTRGB, ISSINOUTOPAQUE)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Inputs:</span>
+0016 <span class="comment">%       img              - the image on which to overlay the worm information</span>
+0017 <span class="comment">%       worm             - the worm's information; SEE also SEGWORM, and WORM2STRUCT</span>
+0018 <span class="comment">%       headRGB          - the color to use for labeling the worm's head</span>
+0019 <span class="comment">%                          Note: if headRGB is empty, we don't color the</span>
+0020 <span class="comment">%                          worm's head.</span>
+0021 <span class="comment">%       isHeadOpaque     - is the head opaque? If the head is opaque its</span>
+0022 <span class="comment">%                          RGB color is assigned to the worm's head; if the</span>
+0023 <span class="comment">%                          head is translucent, its RGB values are used to</span>
+0024 <span class="comment">%                          scale (multiply) the 3 channels of the image</span>
+0025 <span class="comment">%       tailRGB          - the color to use for labeling the worm's tail</span>
+0026 <span class="comment">%                          Note: if tailRGB is empty, we don't color the</span>
+0027 <span class="comment">%                          worm's tail.</span>
+0028 <span class="comment">%       isTailOpaque     - is the tail opaque? If the tail is opaque its</span>
+0029 <span class="comment">%                          RGB color is assigned to the worm's tail; if the</span>
+0030 <span class="comment">%                          tail is translucent, its RGB values are used to</span>
+0031 <span class="comment">%                          scale (multiply) the 3 channels of the image</span>
+0032 <span class="comment">%       vulvaRGB         - the color to use for labeling the worm's vulval side</span>
+0033 <span class="comment">%                          Note: if vulvaRGB is empty, we don't color the</span>
+0034 <span class="comment">%                          worm's vulval side.</span>
+0035 <span class="comment">%       isVulvaOpaque    - is the vulval side opaque? If the vulval side</span>
+0036 <span class="comment">%                          is opaque its RGB color is assigned to the</span>
+0037 <span class="comment">%                          worm's vulval side; if the vulval side is</span>
+0038 <span class="comment">%                          translucent, its RGB values are used to</span>
+0039 <span class="comment">%                          scale (multiply) the 3 channels of the image</span>
+0040 <span class="comment">%       nonVulvaRGB      - the color to use for labeling the worm's non-vulval side</span>
+0041 <span class="comment">%                          Note: if nonVulvaRGB is empty, we don't color the</span>
+0042 <span class="comment">%                          worm's non-vulval side.</span>
+0043 <span class="comment">%       isNonVulvaOpaque - is the non-vulval side opaque? If the non-vulval side</span>
+0044 <span class="comment">%                          is opaque its RGB color is assigned to the</span>
+0045 <span class="comment">%                          worm's non-vulval side; if the non-vulval side is</span>
+0046 <span class="comment">%                          translucent, its RGB values are used to</span>
+0047 <span class="comment">%                          scale (multiply) the 3 channels of the image</span>
+0048 <span class="comment">%       cTouchRGB        - the color to use for labeling the worm's</span>
+0049 <span class="comment">%                          touching contour segments</span>
+0050 <span class="comment">%                          Note: if cTouchRGB is empty, we don't color the</span>
+0051 <span class="comment">%                          worm's touching contour segments.</span>
+0052 <span class="comment">%       isCTouchOpaque   - are the touching contour segments opaque?</span>
+0053 <span class="comment">%                          If the segments are opaque their RGB color is</span>
+0054 <span class="comment">%                          assigned to the worm's touching contour</span>
+0055 <span class="comment">%                          segments; if the segments are translucent, their</span>
+0056 <span class="comment">%                          RGB values are used to scale (multiply) the</span>
+0057 <span class="comment">%                          3 channels of the image</span>
+0058 <span class="comment">%       cInRGB           - the color to use for labeling the worm's</span>
+0059 <span class="comment">%                          inner contour segment(s)</span>
+0060 <span class="comment">%                          Note: if cInRGB is empty, we don't color the</span>
+0061 <span class="comment">%                          worm's inner contour segment(s).</span>
+0062 <span class="comment">%       isCInOpaque      - is the inner contour segment(s) opaque?</span>
+0063 <span class="comment">%                          If the segment(s) is opaque its RGB color is</span>
+0064 <span class="comment">%                          assigned to the worm's inner contour</span>
+0065 <span class="comment">%                          segment(s); if the segment(s) is translucent,</span>
+0066 <span class="comment">%                          its RGB values are used to scale (multiply) the</span>
+0067 <span class="comment">%                          3 channels of the image</span>
+0068 <span class="comment">%       cOutRGB          - the color to use for labeling the worm's</span>
+0069 <span class="comment">%                          outer contour segment(s)</span>
+0070 <span class="comment">%                          Note: if cOutRGB is empty, we don't color the</span>
+0071 <span class="comment">%                          worm's outer contour segment(s).</span>
+0072 <span class="comment">%       isCOutOpaque     - is the outer contour segment(s) opaque?</span>
+0073 <span class="comment">%                          If the segment(s) is opaque its RGB color is</span>
+0074 <span class="comment">%                          assigned to the worm's outer contour</span>
+0075 <span class="comment">%                          segment(s); if the segment(s) is translucent,</span>
+0076 <span class="comment">%                          its RGB values are used to scale (multiply) the</span>
+0077 <span class="comment">%                          3 channels of the image</span>
+0078 <span class="comment">%       sTouchRGB        - the color to use for labeling the worm's</span>
+0079 <span class="comment">%                          touching skeleton segments</span>
+0080 <span class="comment">%                          Note: if sTouchRGB is empty, we don't color the</span>
+0081 <span class="comment">%                          worm's touching skeleton segments.</span>
+0082 <span class="comment">%       isSTouchOpaque   - are the touching skeleton segments opaque?</span>
+0083 <span class="comment">%                          If the segments are opaque their RGB color is</span>
+0084 <span class="comment">%                          assigned to the worm's touching skeleton</span>
+0085 <span class="comment">%                          segments; if the segments are translucent, their</span>
+0086 <span class="comment">%                          RGB values are used to scale (multiply) the</span>
+0087 <span class="comment">%                          3 channels of the image</span>
+0088 <span class="comment">%       sInRGB           - the color to use for labeling the worm's</span>
+0089 <span class="comment">%                          inner skeleton segment(s)</span>
+0090 <span class="comment">%                          Note: if sInRGB is empty, we don't color the</span>
+0091 <span class="comment">%                          worm's inner skeleton segment(s).</span>
+0092 <span class="comment">%       isSInOpaque      - is the inner skeleton segment(s) opaque?</span>
+0093 <span class="comment">%                          If the segment(s) is opaque its RGB color is</span>
+0094 <span class="comment">%                          assigned to the worm's inner skeleton</span>
+0095 <span class="comment">%                          segment(s); if the segment(s) is translucent,</span>
+0096 <span class="comment">%                          its RGB values are used to scale (multiply) the</span>
+0097 <span class="comment">%                          3 channels of the image</span>
+0098 <span class="comment">%       sOutRGB          - the color to use for labeling the worm's</span>
+0099 <span class="comment">%                          outer skeleton segment(s)</span>
+0100 <span class="comment">%                          Note: if sOutRGB is empty, we don't color the</span>
+0101 <span class="comment">%                          worm's outer skeleton segment(s).</span>
+0102 <span class="comment">%       isSOutOpaque     - is the outer skeleton segment(s) opaque?</span>
+0103 <span class="comment">%                          If the segment(s) is opaque its RGB color is</span>
+0104 <span class="comment">%                          assigned to the worm's outer skeleton</span>
+0105 <span class="comment">%                          segment(s); if the segment(s) is translucent,</span>
+0106 <span class="comment">%                          its RGB values are used to scale (multiply) the</span>
+0107 <span class="comment">%                          3 channels of the image</span>
+0108 <span class="comment">%       sInOutRGB        - the color to use for labeling the worm's</span>
+0109 <span class="comment">%                          dual inner/outer skeleton segment(s)</span>
+0110 <span class="comment">%                          Note: if sInOutRGB is empty, we don't color the</span>
+0111 <span class="comment">%                          worm's inner/outer skeleton segment(s).</span>
+0112 <span class="comment">%       isSInOutOpaque   - is the dual inner/outer skeleton segment(s) opaque?</span>
+0113 <span class="comment">%                          If the segment(s) is opaque its RGB color is</span>
+0114 <span class="comment">%                          assigned to the worm's dual inner/outer skeleton</span>
+0115 <span class="comment">%                          segment(s); if the segment(s) is translucent,</span>
+0116 <span class="comment">%                          its RGB values are used to scale (multiply) the</span>
+0117 <span class="comment">%                          3 channels of the image</span>
+0118 <span class="comment">%</span>
+0119 <span class="comment">%   Outputs:</span>
+0120 <span class="comment">%       oImg - an image overlayed with the worm's contour/skeleton</span>
+0121 <span class="comment">%              touching/inner/outer segments; and, the head/tail, and</span>
+0122 <span class="comment">%              vulval/non-vulval sides labeled</span>
+0123 <span class="comment">%</span>
+0124 <span class="comment">%   SEE also OVERLAYWORMANGLES, SEGWORM, and WORM2STRUCT</span>
+0125 
+0126 <span class="comment">% Convert the image to grayscale.</span>
+0127 <span class="keyword">if</span> (size(img,3) == 3)
+0128     img = rgb2gray(img);
+0129 <span class="keyword">end</span>
+0130 
+0131 <span class="comment">% Setup the rgb channels.</span>
+0132 img1 = img;
+0133 img2 = img;
+0134 img3 = img;
+0135 
+0136 <span class="comment">% Setup the contour and skeleton.</span>
+0137 contour = worm.contour.pixels;
+0138 skeleton = worm.skeleton.pixels;
+0139 
+0140 <span class="comment">% Are the head and tail flipped?</span>
+0141 <span class="keyword">if</span> worm.orientation.head.isFlipped
+0142     head = worm.tail;
+0143     tail = worm.head;
+0144 <span class="keyword">else</span>
+0145     head = worm.head;
+0146     tail = worm.tail;
+0147 <span class="keyword">end</span>
+0148 
+0149 <span class="comment">% Overlay the head.</span>
+0150 <span class="keyword">if</span> ~isempty(headRGB) &amp;&amp; ~isempty(head.pixels)
+0151     
+0152     <span class="comment">% Determine the head's MER (minimum enclosing rectangle).</span>
+0153     hPoly = head.pixels;
+0154     hMinY = min(hPoly(:,1));
+0155     hMinX = min(hPoly(:,2));
+0156     hHeight = max(hPoly(:,1)) - hMinY + 1;
+0157     hWidth = max(hPoly(:,2)) - hMinX + 1;
+0158     
+0159     <span class="comment">% Create a mask of the head.</span>
+0160     merHMask = <a href="../../../SegWorm/ComputerVision/inPolyMask.html" class="code" title="function [mask polygonI] = inPolyMask(polygon, seed, maskSize)">inPolyMask</a>([(hPoly(:,1) - hMinY + 1) <span class="keyword">...</span>
+0161         (hPoly(:,2) - hMinX + 1)], [], [hHeight hWidth]);
+0162     
+0163     <span class="comment">% Determine the head pixels.</span>
+0164     [merHPixels(:,1) merHPixels(:,2)] = find(merHMask == 1);
+0165     hPixels(:,1) = merHPixels(:,1) + hMinY - 1;
+0166     hPixels(:,2) = merHPixels(:,2) + hMinX - 1;
+0167     
+0168     <span class="comment">% Overlay the head.</span>
+0169     hMask = sub2ind(size(img), hPixels(:,1), hPixels(:,2));
+0170     <span class="keyword">if</span> isHeadOpaque
+0171         img1(hMask) = headRGB(1);
+0172         img2(hMask) = headRGB(2);
+0173         img3(hMask) = headRGB(3);
+0174     <span class="keyword">else</span>
+0175         img1(hMask) = round(img(hMask) * headRGB(1));
+0176         img2(hMask) = round(img(hMask) * headRGB(2));
+0177         img3(hMask) = round(img(hMask) * headRGB(3));
+0178     <span class="keyword">end</span>
+0179 <span class="keyword">end</span>
+0180 
+0181 <span class="comment">% Overlay the tail.</span>
+0182 <span class="keyword">if</span> ~isempty(tailRGB) &amp;&amp; ~isempty(tail.pixels)
+0183     
+0184     <span class="comment">% Determine the tail's MER (minimum enclosing rectangle).</span>
+0185     tPoly = tail.pixels;
+0186     tMinY = min(tPoly(:,1));
+0187     tMinX = min(tPoly(:,2));
+0188     tHeight = max(tPoly(:,1)) - tMinY + 1;
+0189     tWidth = max(tPoly(:,2)) - tMinX + 1;
+0190     
+0191     <span class="comment">% Create a mask of the tail.</span>
+0192     merTMask = <a href="../../../SegWorm/ComputerVision/inPolyMask.html" class="code" title="function [mask polygonI] = inPolyMask(polygon, seed, maskSize)">inPolyMask</a>([(tPoly(:,1) - tMinY + 1) <span class="keyword">...</span>
+0193         (tPoly(:,2) - tMinX + 1)], [], [tHeight tWidth]);
+0194     
+0195     <span class="comment">% Determine the tail pixels.</span>
+0196     [merTPixels(:,1) merTPixels(:,2)] = find(merTMask == 1);
+0197     tPixels(:,1) = merTPixels(:,1) + tMinY - 1;
+0198     tPixels(:,2) = merTPixels(:,2) + tMinX - 1;
+0199 
+0200     <span class="comment">% Overlay the tail.</span>
+0201     tMask = sub2ind(size(img), tPixels(:,1), tPixels(:,2));
+0202     <span class="keyword">if</span> isTailOpaque
+0203         img1(tMask) = tailRGB(1);
+0204         img2(tMask) = tailRGB(2);
+0205         img3(tMask) = tailRGB(3);
+0206     <span class="keyword">else</span>
+0207         img1(tMask) = round(img(tMask) * tailRGB(1));
+0208         img2(tMask) = round(img(tMask) * tailRGB(2));
+0209         img3(tMask) = round(img(tMask) * tailRGB(3));
+0210     <span class="keyword">end</span>
+0211 <span class="keyword">end</span>
+0212 
+0213 <span class="comment">% Where is the vulva?</span>
+0214 <span class="keyword">if</span> worm.orientation.vulva.isClockwiseFromHead == <span class="keyword">...</span>
+0215         worm.orientation.head.isFlipped
+0216     vulva = worm.left;
+0217     nonVulva = worm.right;
+0218 <span class="keyword">else</span>
+0219     vulva = worm.right;
+0220     nonVulva = worm.left;
+0221 <span class="keyword">end</span>
+0222     
+0223 <span class="comment">% Overlay the vulval side.</span>
+0224 <span class="keyword">if</span> ~isempty(vulvaRGB) &amp;&amp; ~isempty(vulva.pixels)
+0225     
+0226     <span class="comment">% Determine the vuval side's MER (minimum enclosing rectangle).</span>
+0227     vPoly = vulva.pixels;
+0228     vMinY = min(vPoly(:,1));
+0229     vMinX = min(vPoly(:,2));
+0230     vHeight = max(vPoly(:,1)) - vMinY + 1;
+0231     vWidth = max(vPoly(:,2)) - vMinX + 1;
+0232     
+0233     <span class="comment">% Create a mask of the vuval side.</span>
+0234     merVMask = <a href="../../../SegWorm/ComputerVision/inPolyMask.html" class="code" title="function [mask polygonI] = inPolyMask(polygon, seed, maskSize)">inPolyMask</a>([(vPoly(:,1) - vMinY + 1) <span class="keyword">...</span>
+0235         (vPoly(:,2) - vMinX + 1)], [], [vHeight vWidth]);
+0236     
+0237     <span class="comment">% Determine the vuval side's pixels.</span>
+0238     [merVPixels(:,1) merVPixels(:,2)] = find(merVMask == 1);
+0239     vPixels(:,1) = merVPixels(:,1) + vMinY - 1;
+0240     vPixels(:,2) = merVPixels(:,2) + vMinX - 1;
+0241 
+0242     <span class="comment">% Overlay the vulval side.</span>
+0243     vMask = sub2ind(size(img), vPixels(:,1), vPixels(:,2));
+0244     <span class="keyword">if</span> isVulvaOpaque
+0245         img1(vMask) = vulvaRGB(1);
+0246         img2(vMask) = vulvaRGB(2);
+0247         img3(vMask) = vulvaRGB(3);
+0248     <span class="keyword">else</span>
+0249         img1(vMask) = round(img(vMask) * vulvaRGB(1));
+0250         img2(vMask) = round(img(vMask) * vulvaRGB(2));
+0251         img3(vMask) = round(img(vMask) * vulvaRGB(3));
+0252     <span class="keyword">end</span>
+0253 <span class="keyword">end</span>
+0254 
+0255 <span class="comment">% Overlay the non-vulval side.</span>
+0256 <span class="keyword">if</span> ~isempty(nonVulvaRGB) &amp;&amp; ~isempty(nonVulva.pixels)
+0257     
+0258     <span class="comment">% Determine the non-vuval side's MER (minimum enclosing rectangle).</span>
+0259     nvPoly = nonVulva.pixels;
+0260     nvMinY = min(nvPoly(:,1));
+0261     nvMinX = min(nvPoly(:,2));
+0262     nvHeight = max(nvPoly(:,1)) - nvMinY + 1;
+0263     nvWidth = max(nvPoly(:,2)) - nvMinX + 1;
+0264     
+0265     <span class="comment">% Create a mask of the non-vuval side.</span>
+0266     merNVMask = <a href="../../../SegWorm/ComputerVision/inPolyMask.html" class="code" title="function [mask polygonI] = inPolyMask(polygon, seed, maskSize)">inPolyMask</a>([(nvPoly(:,1) - nvMinY + 1) <span class="keyword">...</span>
+0267         (nvPoly(:,2) - nvMinX + 1)], [], [nvHeight nvWidth]);
+0268     
+0269     <span class="comment">% Determine the non-vuval side's pixels.</span>
+0270     [merNVPixels(:,1) merNVPixels(:,2)] = find(merNVMask == 1);
+0271     nvPixels(:,1) = merNVPixels(:,1) + nvMinY - 1;
+0272     nvPixels(:,2) = merNVPixels(:,2) + nvMinX - 1;
+0273 
+0274     <span class="comment">% Overlay the non-vulval side.</span>
+0275     nvMask = sub2ind(size(img), nvPixels(:,1), nvPixels(:,2));
+0276     <span class="keyword">if</span> isNonVulvaOpaque
+0277         img1(nvMask) = nonVulvaRGB(1);
+0278         img2(nvMask) = nonVulvaRGB(2);
+0279         img3(nvMask) = nonVulvaRGB(3);
+0280     <span class="keyword">else</span>
+0281         img1(nvMask) = round(img(nvMask) * nonVulvaRGB(1));
+0282         img2(nvMask) = round(img(nvMask) * nonVulvaRGB(2));
+0283         img3(nvMask) = round(img(nvMask) * nonVulvaRGB(3));
+0284     <span class="keyword">end</span>
+0285 <span class="keyword">end</span>
+0286 
+0287 <span class="comment">% Overlay the contour.</span>
+0288 cTouchI = worm.contour.touchI;
+0289 <span class="keyword">if</span> isempty(cTouchI)
+0290     <span class="keyword">if</span> ~isempty(cOutRGB) &amp;&amp; ~isempty(contour)
+0291         cMask = sub2ind(size(img), contour(:,1), contour(:,2));
+0292         <span class="keyword">if</span> isCOutOpaque
+0293             img1(cMask) = cOutRGB(1);
+0294             img2(cMask) = cOutRGB(2);
+0295             img3(cMask) = cOutRGB(3);
+0296         <span class="keyword">else</span>
+0297             img1(cMask) = round(img(cMask) * cOutRGB(1));
+0298             img2(cMask) = round(img(cMask) * cOutRGB(2));
+0299             img3(cMask) = round(img(cMask) * cOutRGB(3));
+0300         <span class="keyword">end</span>
+0301     <span class="keyword">end</span>
+0302 
+0303 <span class="comment">% Overlay the coiled contour.</span>
+0304 <span class="keyword">else</span>
+0305     
+0306     <span class="comment">% Overlay the touching contour.</span>
+0307     cLength = size(contour, 1);
+0308     cMask = zeros(cLength, 1);
+0309     <span class="keyword">if</span> ~isempty(cTouchRGB)
+0310         <span class="keyword">for</span> i = 1:size(cTouchI, 1)
+0311             
+0312             <span class="comment">% Determine the touching contour segment on side 1.</span>
+0313             s1 = cTouchI(i,1);
+0314             e1 = cTouchI(i,2);
+0315             <span class="keyword">if</span> s1 &lt; e1
+0316                 cTouchLength = e1 - s1 + 1;
+0317                 cMask(1:cTouchLength) = <span class="keyword">...</span>
+0318                     sub2ind(size(img), contour(s1:e1,1), contour(s1:e1,2));
+0319             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0320                 cTouchLength = (cLength - s1 + 1) + e1;
+0321                 cMask(1:cTouchLength) = <span class="keyword">...</span>
+0322                     [sub2ind(size(img), contour(s1:<span class="keyword">end</span>,1), contour(s1:<span class="keyword">end</span>,2));
+0323                     sub2ind(size(img), contour(1:e1,1), contour(1:e1,2))];
+0324             <span class="keyword">end</span>
+0325             
+0326             <span class="comment">% Determine the touching contour segment on side 2.</span>
+0327             s2 = cTouchI(i,3);
+0328             e2 = cTouchI(i,4);
+0329             <span class="keyword">if</span> s2 &lt; e2
+0330                 newCTouchLength = cTouchLength + (e2 - s2 + 1);
+0331                 cMask((cTouchLength + 1):newCTouchLength) = <span class="keyword">...</span>
+0332                     sub2ind(size(img), contour(s2:e2,1), contour(s2:e2,2));
+0333                 cTouchLength = newCTouchLength;
+0334             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0335                 newCTouchLength = cTouchLength + (cLength - s2 + 2) + e2;
+0336                 cMask((cTouchLength + 1):newCTouchLength) = <span class="keyword">...</span>
+0337                     [sub2ind(size(img), contour(s2:<span class="keyword">end</span>,1), contour(s2:<span class="keyword">end</span>,2));
+0338                     sub2ind(size(img), contour(1:e2,1), contour(1:e2,2))];
+0339                 cTouchLength = newCTouchLength;
+0340             <span class="keyword">end</span>
+0341             
+0342             <span class="comment">% Overlay the touching contour segments.</span>
+0343             <span class="keyword">if</span> isCTouchOpaque
+0344                 img1(cMask(1:cTouchLength)) = cTouchRGB(1);
+0345                 img2(cMask(1:cTouchLength)) = cTouchRGB(2);
+0346                 img3(cMask(1:cTouchLength)) = cTouchRGB(3);
+0347             <span class="keyword">else</span>
+0348                 img1(cMask(1:cTouchLength)) = <span class="keyword">...</span>
+0349                     round(img(cMask(1:cTouchLength)) * cTouchRGB(1));
+0350                 img2(cMask(1:cTouchLength)) = <span class="keyword">...</span>
+0351                     round(img(cMask(1:cTouchLength)) * cTouchRGB(2));
+0352                 img3(cMask(1:cTouchLength)) = <span class="keyword">...</span>
+0353                     round(img(cMask(1:cTouchLength)) * cTouchRGB(3));
+0354             <span class="keyword">end</span>
+0355         <span class="keyword">end</span>
+0356     <span class="keyword">end</span>
+0357     
+0358     <span class="comment">% Overlay the inner contour.</span>
+0359     <span class="keyword">if</span> ~isempty(cInRGB)
+0360         cInI = worm.contour.inI;
+0361         <span class="keyword">for</span> i = 1:size(cInI, 1)
+0362             
+0363             <span class="comment">% Determine the inner contour segment.</span>
+0364             is = cInI(i,1);
+0365             ie = cInI(i,2);
+0366             <span class="keyword">if</span> is &lt; ie
+0367                 cInLength = ie - is + 1;
+0368                 cMask(1:cInLength) = <span class="keyword">...</span>
+0369                     sub2ind(size(img), contour(is:ie,1), contour(is:ie,2));
+0370             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0371                 cInLength = (cLength - is + 1) + ie;
+0372                 cMask(1:cInLength) = <span class="keyword">...</span>
+0373                     [sub2ind(size(img), contour(is:<span class="keyword">end</span>,1), contour(is:<span class="keyword">end</span>,2));
+0374                     sub2ind(size(img), contour(1:ie,1), contour(1:ie,2))];
+0375             <span class="keyword">end</span>
+0376             
+0377             <span class="comment">% Overlay the inner contour segments.</span>
+0378             <span class="keyword">if</span> isCInOpaque
+0379                 img1(cMask(1:cInLength)) = cInRGB(1);
+0380                 img2(cMask(1:cInLength)) = cInRGB(2);
+0381                 img3(cMask(1:cInLength)) = cInRGB(3);
+0382             <span class="keyword">else</span>
+0383                 img1(cMask(1:cInLength)) = <span class="keyword">...</span>
+0384                     round(img(cMask(1:cInLength)) * cInRGB(1));
+0385                 img2(cMask(1:cInLength)) = <span class="keyword">...</span>
+0386                     round(img(cMask(1:cInLength)) * cInRGB(2));
+0387                 img3(cMask(1:cInLength)) = <span class="keyword">...</span>
+0388                     round(img(cMask(1:cInLength)) * cInRGB(3));
+0389             <span class="keyword">end</span>
+0390         <span class="keyword">end</span>
+0391     <span class="keyword">end</span>
+0392     
+0393     <span class="comment">% Overlay the outer contour.</span>
+0394     <span class="keyword">if</span> ~isempty(cOutRGB)
+0395         cOutI = worm.contour.outI;
+0396         <span class="keyword">for</span> i = 1:size(cOutI, 1)
+0397             
+0398             <span class="comment">% Determine the inner contour segment.</span>
+0399             os = cOutI(i,1);
+0400             oe = cOutI(i,2);
+0401             <span class="keyword">if</span> is &lt; ie
+0402                 cOutLength = oe - os + 1;
+0403                 cMask(1:cOutLength) = <span class="keyword">...</span>
+0404                     sub2ind(size(img), contour(os:oe,1), contour(os:oe,2));
+0405             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0406                 cOutLength = (cLength - os + 1) + oe;
+0407                 cMask(1:cOutLength) = <span class="keyword">...</span>
+0408                     [sub2ind(size(img), contour(os:<span class="keyword">end</span>,1), contour(os:<span class="keyword">end</span>,2));
+0409                     sub2ind(size(img), contour(1:oe,1), contour(1:oe,2))];
+0410             <span class="keyword">end</span>
+0411             
+0412             <span class="comment">% Overlay the outer contour segments.</span>
+0413             <span class="keyword">if</span> isCOutOpaque
+0414                 img1(cMask(1:cOutLength)) = cOutRGB(1);
+0415                 img2(cMask(1:cOutLength)) = cOutRGB(2);
+0416                 img3(cMask(1:cOutLength)) = cOutRGB(3);
+0417             <span class="keyword">else</span>
+0418                 img1(cMask(1:cOutLength)) = <span class="keyword">...</span>
+0419                     round(img(cMask(1:cOutLength)) * cOutRGB(1));
+0420                 img2(cMask(1:cOutLength)) = <span class="keyword">...</span>
+0421                     round(img(cMask(1:cOutLength)) * cOutRGB(2));
+0422                 img3(cMask(1:cOutLength)) = <span class="keyword">...</span>
+0423                     round(img(cMask(1:cOutLength)) * cOutRGB(3));
+0424             <span class="keyword">end</span>
+0425         <span class="keyword">end</span>
+0426     <span class="keyword">end</span>
+0427 <span class="keyword">end</span>
+0428 
+0429 <span class="comment">% Overlay the skeleton.</span>
+0430 sTouchI = worm.skeleton.touchI;
+0431 <span class="keyword">if</span> isempty(sTouchI)
+0432     <span class="keyword">if</span> ~isempty(sOutRGB) &amp;&amp; ~isempty(skeleton)
+0433         sMask = sub2ind(size(img), skeleton(:,1), skeleton(:,2));
+0434         <span class="keyword">if</span> isSOutOpaque
+0435             img1(sMask) = sOutRGB(1);
+0436             img2(sMask) = sOutRGB(2);
+0437             img3(sMask) = sOutRGB(3);
+0438         <span class="keyword">else</span>
+0439             img1(sMask) = round(img(sMask) * sOutRGB(1));
+0440             img2(sMask) = round(img(sMask) * sOutRGB(2));
+0441             img3(sMask) = round(img(sMask) * sOutRGB(3));
+0442         <span class="keyword">end</span>
+0443     <span class="keyword">end</span>
+0444 
+0445 <span class="comment">% Overlay the coiled skeleton.</span>
+0446 <span class="keyword">else</span>
+0447     
+0448     <span class="comment">% Overlay the touching skeleton.</span>
+0449     sLength = size(skeleton, 1);
+0450     sMask = zeros(sLength, 1);
+0451     <span class="keyword">if</span> ~isempty(sTouchRGB)
+0452         <span class="keyword">for</span> i = 1:size(sTouchI, 1)
+0453             
+0454             <span class="comment">% Determine the touching skeleton segment on side 1.</span>
+0455             s1 = sTouchI(i,1);
+0456             e1 = sTouchI(i,2);
+0457             <span class="keyword">if</span> s1 &lt; e1
+0458                 sTouchLength = e1 - s1 + 1;
+0459                 sMask(1:sTouchLength) = <span class="keyword">...</span>
+0460                     sub2ind(size(img), skeleton(s1:e1,1), skeleton(s1:e1,2));
+0461             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0462                 sTouchLength = (sLength - s1 + 1) + e1;
+0463                 sMask(1:sTouchLength) = <span class="keyword">...</span>
+0464                     [sub2ind(size(img), skeleton(s1:<span class="keyword">end</span>,1), skeleton(s1:<span class="keyword">end</span>,2));
+0465                     sub2ind(size(img), skeleton(1:e1,1), skeleton(1:e1,2))];
+0466             <span class="keyword">end</span>
+0467             
+0468             <span class="comment">% Determine the touching skeleton segment on side 2.</span>
+0469             s2 = sTouchI(i,3);
+0470             e2 = sTouchI(i,4);
+0471             <span class="keyword">if</span> s2 &lt; e2
+0472                 newSTouchLength = sTouchLength + (e1 - s1 + 1);
+0473                 sMask((sTouchLength + 1):newSTouchLength) = <span class="keyword">...</span>
+0474                     sub2ind(size(img), skeleton(s2:e2,1), skeleton(s2:e2,2));
+0475                 sTouchLength = newSTouchLength;
+0476             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0477                 newSTouchLength = sTouchLength + (sLength - s1 + 1) + e1;
+0478                 sMask((sTouchLength + 1):newSTouchLength) = <span class="keyword">...</span>
+0479                     [sub2ind(size(img), skeleton(s2:<span class="keyword">end</span>,1), skeleton(s2:<span class="keyword">end</span>,2));
+0480                     sub2ind(size(img), skeleton(1:e2,1), skeleton(1:e2,2))];
+0481                 sTouchLength = newSTouchLength;
+0482             <span class="keyword">end</span>
+0483             
+0484             <span class="comment">% Overlay the touching skeleton segments.</span>
+0485             <span class="keyword">if</span> isSTouchOpaque
+0486                 img1(sMask(1:sTouchLength)) = sTouchRGB(1);
+0487                 img2(sMask(1:sTouchLength)) = sTouchRGB(2);
+0488                 img3(sMask(1:sTouchLength)) = sTouchRGB(3);
+0489             <span class="keyword">else</span>
+0490                 img1(sMask(1:sTouchLength)) = <span class="keyword">...</span>
+0491                     round(img(sMask(1:sTouchLength)) * sTouchRGB(1));
+0492                 img2(sMask(1:sTouchLength)) = <span class="keyword">...</span>
+0493                     round(img(sMask(1:sTouchLength)) * sTouchRGB(2));
+0494                 img3(sMask(1:sTouchLength)) = <span class="keyword">...</span>
+0495                     round(img(sMask(1:sTouchLength)) * sTouchRGB(3));
+0496             <span class="keyword">end</span>
+0497         <span class="keyword">end</span>
+0498     <span class="keyword">end</span>
+0499     
+0500     <span class="comment">% Overlay the inner skeleton.</span>
+0501     <span class="keyword">if</span> ~isempty(sInRGB)
+0502         sInI = worm.skeleton.inI;
+0503         <span class="keyword">for</span> i = 1:size(sInI, 1)
+0504             
+0505             <span class="comment">% Determine the inner skeleton segment.</span>
+0506             is = sInI(i,1);
+0507             ie = sInI(i,2);
+0508             <span class="keyword">if</span> is &lt; ie
+0509                 sInLength = ie - is + 1;
+0510                 sMask(1:sInLength) = <span class="keyword">...</span>
+0511                     sub2ind(size(img), skeleton(is:ie,1), skeleton(is:ie,2));
+0512             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0513                 sInLength = (sLength - is + 1) + ie;
+0514                 sMask(1:sInLength) = <span class="keyword">...</span>
+0515                     [sub2ind(size(img), skeleton(is:<span class="keyword">end</span>,1), skeleton(is:<span class="keyword">end</span>,2));
+0516                     sub2ind(size(img), skeleton(1:ie,1), skeleton(1:ie,2))];
+0517             <span class="keyword">end</span>
+0518             
+0519             <span class="comment">% Overlay the inner skeleton segments.</span>
+0520             <span class="keyword">if</span> isSInOpaque
+0521                 img1(sMask(1:sInLength)) = sInRGB(1);
+0522                 img2(sMask(1:sInLength)) = sInRGB(2);
+0523                 img3(sMask(1:sInLength)) = sInRGB(3);
+0524             <span class="keyword">else</span>
+0525                 img1(sMask(1:sInLength)) = <span class="keyword">...</span>
+0526                     round(img(sMask(1:sInLength)) * sInRGB(1));
+0527                 img2(sMask(1:sInLength)) = <span class="keyword">...</span>
+0528                     round(img(sMask(1:sInLength)) * sInRGB(2));
+0529                 img3(sMask(1:sInLength)) = <span class="keyword">...</span>
+0530                     round(img(sMask(1:sInLength)) * sInRGB(3));
+0531             <span class="keyword">end</span>
+0532         <span class="keyword">end</span>
+0533     <span class="keyword">end</span>
+0534     
+0535     <span class="comment">% Overlay the outer skeleton.</span>
+0536     <span class="keyword">if</span> ~isempty(sOutRGB)
+0537         sOutI = worm.skeleton.outI;
+0538         <span class="keyword">for</span> i = 1:size(sOutI, 1)
+0539             
+0540             <span class="comment">% Determine the inner skeleton segment.</span>
+0541             os = sOutI(i,1);
+0542             oe = sOutI(i,2);
+0543             <span class="keyword">if</span> is &lt; ie
+0544                 sOutLength = oe - os + 1;
+0545                 sMask(1:sOutLength) = <span class="keyword">...</span>
+0546                     sub2ind(size(img), skeleton(os:oe,1), skeleton(os:oe,2));
+0547             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0548                 sOutLength = (sLength - os + 1) + oe;
+0549                 sMask(1:sOutLength) = <span class="keyword">...</span>
+0550                     [sub2ind(size(img), skeleton(os:<span class="keyword">end</span>,1), skeleton(os:<span class="keyword">end</span>,2));
+0551                     sub2ind(size(img), skeleton(1:oe,1), skeleton(1:oe,2))];
+0552             <span class="keyword">end</span>
+0553             
+0554             <span class="comment">% Overlay the outer skeleton segments.</span>
+0555             <span class="keyword">if</span> isSOutOpaque
+0556                 img1(sMask(1:sOutLength)) = sOutRGB(1);
+0557                 img2(sMask(1:sOutLength)) = sOutRGB(2);
+0558                 img3(sMask(1:sOutLength)) = sOutRGB(3);
+0559             <span class="keyword">else</span>
+0560                 img1(sMask(1:sOutLength)) = <span class="keyword">...</span>
+0561                     round(img(sMask(1:sOutLength)) * sOutRGB(1));
+0562                 img2(sMask(1:sOutLength)) = <span class="keyword">...</span>
+0563                     round(img(sMask(1:sOutLength)) * sOutRGB(2));
+0564                 img3(sMask(1:sOutLength)) = <span class="keyword">...</span>
+0565                     round(img(sMask(1:sOutLength)) * sOutRGB(3));
+0566             <span class="keyword">end</span>
+0567         <span class="keyword">end</span>
+0568     <span class="keyword">end</span>
+0569     
+0570     <span class="comment">% Overlay the dual inner/outer skeleton.</span>
+0571     <span class="keyword">if</span> ~isempty(sInOutRGB)
+0572         sInOutI = worm.skeleton.inOutI;
+0573         <span class="keyword">for</span> i = 1:size(sInOutI, 1)
+0574             
+0575             <span class="comment">% Determine the inner skeleton segment.</span>
+0576             ios = sInOutI(i,1);
+0577             ioe = sInOutI(i,2);
+0578             <span class="keyword">if</span> ios &lt; ioe
+0579                 sInOutLength = ioe - ios + 1;
+0580                 sMask(1:sInOutLength) = <span class="keyword">...</span>
+0581                     sub2ind(size(img), skeleton(ios:ioe,1), skeleton(ios:ioe,2));
+0582             <span class="keyword">else</span> <span class="comment">% wrap</span>
+0583                 sInOutLength = (sLength - ios + 1) + ioe;
+0584                 sMask(1:sInOutLength) = <span class="keyword">...</span>
+0585                     [sub2ind(size(img), skeleton(ios:<span class="keyword">end</span>,1), skeleton(ios:<span class="keyword">end</span>,2));
+0586                     sub2ind(size(img), skeleton(1:ioe,1), skeleton(1:ioe,2))];
+0587             <span class="keyword">end</span>
+0588             
+0589             <span class="comment">% Overlay the outer skeleton segments.</span>
+0590             <span class="keyword">if</span> isSInOutOpaque
+0591                 img1(sMask(1:sInOutLength)) = sInOutRGB(1);
+0592                 img2(sMask(1:sInOutLength)) = sInOutRGB(2);
+0593                 img3(sMask(1:sInOutLength)) = sInOutRGB(3);
+0594             <span class="keyword">else</span>
+0595                 img1(sMask(1:sInOutLength)) = <span class="keyword">...</span>
+0596                     round(img(sMask(1:sInOutLength)) * sInOutRGB(1));
+0597                 img2(sMask(1:sInOutLength)) = <span class="keyword">...</span>
+0598                     round(img(sMask(1:sInOutLength)) * sInOutRGB(2));
+0599                 img3(sMask(1:sInOutLength)) = <span class="keyword">...</span>
+0600                     round(img(sMask(1:sInOutLength)) * sInOutRGB(3));
+0601             <span class="keyword">end</span>
+0602         <span class="keyword">end</span>
+0603     <span class="keyword">end</span>
+0604 <span class="keyword">end</span>
+0605 
+0606 <span class="comment">% Combine the rgb channels.</span>
+0607 oImg(:,:,1) = img1;
+0608 oImg(:,:,2) = img2;
+0609 oImg(:,:,3) = img3;
+0610 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

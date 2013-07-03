@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of get</title>
+  <meta name="keywords" content="get">
+  <meta name="description" content="INFO=GET(VW)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html videoIO --><!-- menu.html @videoWriter -->
+<h1>get
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>INFO=GET(VW)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function info = get(vw,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">INFO=GET(VW)
+  Returns a structure whose fields contain information about the opened
+  video object.  This structure may be flattened to a cell array and used 
+  with the videoWriter constructor to recreate the current video file.
+
+  Each call to GET makes a fresh call to the plugin, so be aware of
+  potential performance costs if calling it in an inner loop.
+
+VAL=GET(VW,FIELDNAME)
+  Returns the value of FIELDNAME.  The code
+    VAL = get(VW, FIELDNAME);
+  is equivalent to
+    INFO = get(VW);
+    VAL  = INFO.FIELDNAME;
+
+EXAMPLES:
+  vw = videoWriter('test.avi');
+  info = get(vw) % give all relevant configuration info for vw
+  get(vw,'width')
+
+SEE ALSO
+  <a href="videoWriter.html" class="code" title="function vw = videoWriter(url, varargin)">videoWriter</a>
+
+Copyright (c) 2006 Gerald Dalley
+See &quot;MIT.txt&quot; in the installation directory for licensing details (especially
+when using this library on GNU/Linux).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../videoIO/@videoReader/disp.html" class="code" title="function disp(vr)">disp</a>	DISP(vr) displays a videoReader object without printing its name.</li><li><a href="../../videoIO/@videoReader/display.html" class="code" title="function display(vr)">display</a>	DISPLAY(VR) display for a videoReader object</li><li><a href="../../videoIO/@videoReader/getinfo.html" class="code" title="function info = getinfo(vr,varargin)">getinfo</a>	INFO=GETINFO(VR)</li><li><a href="addframe.html" class="code" title="function addframe(vw,varargin)">addframe</a>	ADDFRAME  Add video frame to VIDEOWRITER stream.</li><li><a href="disp.html" class="code" title="function disp(vw)">disp</a>	DISP(vw) displays a videoWriter object without printing its name.</li><li><a href="display.html" class="code" title="function display(vr)">display</a>	DISPLAY(VR) display for a videoReader object</li><li><a href="getinfo.html" class="code" title="function info = getinfo(vw,varargin)">getinfo</a>	INFO=GETINFO(VW)</li><li><a href="../../videoIO/contrib/videoPlayer/videoPlayer.html" class="code" title="function vp = videoPlayer(varargin)">videoPlayer</a>	function vp = videoPlayer(varargin)</li><li><a href="../../videoIO/tests/analyzeNumFinalHiddenFrames.html" class="code" title="">analyzeNumFinalHiddenFrames</a>	analyzeNumFinalHiddenFrames</li><li><a href="../../videoIO/tests/concatReadTests.html" class="code" title="function concatReadTests(plugin)">concatReadTests</a>	concatReadTests</li><li><a href="../../videoIO/tests/divxSeekExpmt.html" class="code" title="function divxSeekExpmt">divxSeekExpmt</a>	divxSeekExpmt</li><li><a href="../../videoIO/tests/doFullRead.html" class="code" title="function images = doFullRead(varargin)">doFullRead</a>	IMAGES=DOFULLREAD(...)</li><li><a href="../../videoIO/tests/doPreciseSeekTests.html" class="code" title="function doPreciseSeekTests(varargin)">doPreciseSeekTests</a>	DOPRECISESEEKTESTS(...)</li><li><a href="../../videoIO/tests/getLoadableFiles.html" class="code" title="function [loadables,nonloadables,errors] = getLoadableFiles(varargin)">getLoadableFiles</a>	loadables = getLoadableFiles(...)</li><li><a href="../../videoIO/tests/longWriteTest.html" class="code" title="function longWriteTest(plugin, readerPlugin)">longWriteTest</a>	longWriteTests(plugin)</li><li><a href="../../videoIO/tests/resizeTest.html" class="code" title="function resizeTest(plugin)">resizeTest</a>	writeTests(plugin)</li><li><a href="../../videoIO/tests/testGet.html" class="code" title="function testGet(plugin)">testGet</a>	testGet</li><li><a href="../../videoIO/tests/videoWriterDemo.html" class="code" title="">videoWriterDemo</a>	videoWriterDemo</li><li><a href="../../videoIO/tests/writeTests.html" class="code" title="function writeTests(plugin, readerPlugin)">writeTests</a>	writeTests(plugin)</li><li><a href="../../videoIO/videoReader_concat.html" class="code" title="function [out,out2] = videoReader_concat(cmd, handle, varargin)">videoReader_concat</a>	videoReader_concat</li><li><a href="../../videoIO/videoread.html" class="code" title="function mov=videoread(fname,varargin)">videoread</a>	VIDEOREAD Read an video file in a mannter compatible with Matlab's</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function info = get(vw,varargin)</a>
+0002 <span class="comment">%INFO=GET(VW)</span>
+0003 <span class="comment">%  Returns a structure whose fields contain information about the opened</span>
+0004 <span class="comment">%  video object.  This structure may be flattened to a cell array and used</span>
+0005 <span class="comment">%  with the videoWriter constructor to recreate the current video file.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%  Each call to GET makes a fresh call to the plugin, so be aware of</span>
+0008 <span class="comment">%  potential performance costs if calling it in an inner loop.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%VAL=GET(VW,FIELDNAME)</span>
+0011 <span class="comment">%  Returns the value of FIELDNAME.  The code</span>
+0012 <span class="comment">%    VAL = get(VW, FIELDNAME);</span>
+0013 <span class="comment">%  is equivalent to</span>
+0014 <span class="comment">%    INFO = get(VW);</span>
+0015 <span class="comment">%    VAL  = INFO.FIELDNAME;</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%EXAMPLES:</span>
+0018 <span class="comment">%  vw = videoWriter('test.avi');</span>
+0019 <span class="comment">%  info = get(vw) % give all relevant configuration info for vw</span>
+0020 <span class="comment">%  get(vw,'width')</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%SEE ALSO</span>
+0023 <span class="comment">%  videoWriter</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%Copyright (c) 2006 Gerald Dalley</span>
+0026 <span class="comment">%See &quot;MIT.txt&quot; in the installation directory for licensing details (especially</span>
+0027 <span class="comment">%when using this library on GNU/Linux).</span>
+0028 
+0029 <span class="comment">% Without this, it can be easy for users to try to disp the object and</span>
+0030 <span class="comment">% the error messages in that case are very cryptic.</span>
+0031 <span class="keyword">if</span> isnan(vw.handle)
+0032   info = struct(<span class="string">'status'</span>,<span class="string">'closed'</span>);
+0033   <span class="keyword">return</span>
+0034 <span class="keyword">end</span>
+0035 
+0036 <span class="comment">% Get information from the plugin</span>
+0037 [names, vals] = feval(vw.plugin, <span class="string">'get'</span>, vw.handle);
+0038 pinfo = cell2struct({vals{:}}, {names{:}}, 2);
+0039 
+0040 <span class="comment">% be nice and convert anything that looks like a number into one.</span>
+0041 <span class="keyword">for</span> i=1:length(names)
+0042   name = names{i};
+0043   <span class="keyword">if</span> (length(pinfo.(name)) &lt; 64) &amp;&amp; ischar(pinfo.(name))
+0044     [num,ok] = str2num(pinfo.(name)); <span class="comment">%#ok&lt;ST2NM&gt; (these can be matrices)</span>
+0045     <span class="keyword">if</span> ok
+0046       pinfo.(name) = num;
+0047     <span class="keyword">end</span>
+0048   <span class="keyword">end</span>
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">% merge Matlab-side and plugin-side metadata</span>
+0052 ctor = class(vw);
+0053 info = struct(vw);
+0054 fnames = fieldnames(pinfo);
+0055 <span class="keyword">for</span> i=1:length(fnames)
+0056   fname = fnames{i};
+0057   info.(fname) = pinfo.(fname);
+0058 <span class="keyword">end</span>
+0059 info = orderfields(info);
+0060 
+0061 <span class="comment">% make pretty plugin name...the way the constructor expects it</span>
+0062 <span class="keyword">if</span> isfield(info, <span class="string">'plugin'</span>) &amp;&amp; strmatch([ctor <span class="string">'_'</span>], info.plugin) 
+0063   info.plugin = info.plugin(length(ctor)+2:end);
+0064 <span class="keyword">end</span>
+0065 
+0066 <span class="comment">% Return what was requested</span>
+0067 <span class="keyword">switch</span> length(varargin)
+0068  <span class="keyword">case</span> 0
+0069   <span class="comment">% do nothing -- return the whole struct</span>
+0070  <span class="keyword">case</span> 1
+0071   info = info.(varargin{1});
+0072  <span class="keyword">otherwise</span>
+0073   error(<span class="string">'Too many arguments.'</span>);
+0074 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 27-Jun-2013 11:03:38 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

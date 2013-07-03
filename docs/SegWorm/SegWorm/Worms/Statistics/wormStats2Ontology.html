@@ -1,0 +1,969 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormStats2Ontology</title>
+  <meta name="keywords" content="wormStats2Ontology">
+  <meta name="description" content="WORMSTATS2ONTOLOGY Convert a worm's significant features to ontology.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>wormStats2Ontology
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMSTATS2ONTOLOGY Convert a worm's significant features to ontology.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function strains = wormStats2Ontology(filenames, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMSTATS2ONTOLOGY Convert a worm's significant features to ontology.
+
+   WORMSTATS2ONTOLOGY(FILENAME)
+
+   WORMSTATS2ONTOLOGY(FILENAME, USEGENOTYPES, ISSTRICTMATCH, ISTTEST,
+                      FEATUREPALPHA, FEATUREQALPHA,
+                      STRAINPALPHA, STRAINQALPHA, ISVERBOSE)
+
+   Inputs:
+       filenames     - the filenames containing the statistics
+       useGenotypes  - the genotype(s) to annotate;
+                       if empty, all genotypes are used
+                       the default is all (empty)
+       isStrictMatch - for each of the genotype(s) to annotate, are we
+                       searching for an identical match (as opposed to
+                       searching for a matching substring)?
+                       if empty, we search for an identical match
+                       the default is an identical match (true)
+       isTTest       - are we using the t-test (normally distributed) or
+                       Wilcoxon rank-sum (non parametric) statistics;
+                       the default is non-parametric statistics (false)
+       featurePAlpha - the threshold for feature p-value significance
+                       the default is &lt; 1
+       featureQAlpha - the threshold for feature q-value significance
+                       the default is &lt; 0.05
+       strainPAlpha  - the threshold for strain p-value significance
+                       the default is &lt; 1
+       strainQAlpha  - the threshold for strain q-value significance
+                       the default is &lt; 1
+       isVerbose     - verbose mode displays the progress;
+                       the default is yes (true)
+
+   Outputs:
+       strains - the strain annotations, a struct with fields:
+
+                 genotype   = the genotype
+                 strain     = the strain
+                 gene       = the gene
+                 allele     = the allele
+                 pValue     = the p-value
+                 qValue     = the q-value
+                 annotation = the annotations:
+
+                              category = the annotation category
+                              terms    = the annotation term
+                              features = the associated feature indices
+                              pValues  = the associated p-values
+                              qValues  = the associated q-values
+                              signs    = the annotation sign:
+
+                                          1 = the feature is &gt; control
+                                          0 = the feature is ~= control
+                                         -1 = the feature is &lt; control
+
+ See also <a href="wormOntology2String.html" class="code" title="function strings = wormOntology2String(annotations)">WORMONTOLOGY2STRING</a>, <a href="worm2StatsInfo.html" class="code" title="function worm2StatsInfo(filename, wormFiles, varargin)">WORM2STATSINFO</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="worm2AlleleLabel.html" class="code" title="function label = worm2AlleleLabel(wormInfo)">worm2AlleleLabel</a>	WORM2ALLELELABEL Label the worm allele.</li><li><a href="worm2GeneLabel.html" class="code" title="function label = worm2GeneLabel(wormInfo)">worm2GeneLabel</a>	WORM2GENELABEL Label the worm gene.</li><li><a href="worm2GenotypeLabel.html" class="code" title="function label = worm2GenotypeLabel(wormInfo)">worm2GenotypeLabel</a>	WORM2GENOTYPELABEL Label the worm genotype.</li><li><a href="worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>	WORM2STRAINLABEL Label the worm strain.</li><li><a href="wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>	WORMFEATUREINFO Get information for computing the worm statistics.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Printing/worm2TOCOntologyTIF.html" class="code" title="function [filename pages] = worm2TOCOntologyTIF(filename, worm, wormName,varargin)">worm2TOCOntologyTIF</a>	WORM2TOCONTOLOGYTIF Save worm details to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/wormStats2OntologyCSV.html" class="code" title="function wormStats2OntologyCSV(filename, wormFiles, varargin)">wormStats2OntologyCSV</a>	WORMSTATS2ONTOLOGYCSV Convert a worm's significant features to an ontology</li><li><a href="../../../SegWorm/Worms/Printing/wormStats2OntologyNetCSV.html" class="code" title="function wormStats2OntologyNetCSV(filename, wormFiles, varargin)">wormStats2OntologyNetCSV</a>	WORMSTATS2ONTOLOGYNETCSV Convert a worm's significant features to an</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function annotation = annotate(features, pValues, qValues,</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function strains = wormStats2Ontology(filenames, varargin)</a>
+0002 <span class="comment">%WORMSTATS2ONTOLOGY Convert a worm's significant features to ontology.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   WORMSTATS2ONTOLOGY(FILENAME)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   WORMSTATS2ONTOLOGY(FILENAME, USEGENOTYPES, ISSTRICTMATCH, ISTTEST,</span>
+0007 <span class="comment">%                      FEATUREPALPHA, FEATUREQALPHA,</span>
+0008 <span class="comment">%                      STRAINPALPHA, STRAINQALPHA, ISVERBOSE)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Inputs:</span>
+0011 <span class="comment">%       filenames     - the filenames containing the statistics</span>
+0012 <span class="comment">%       useGenotypes  - the genotype(s) to annotate;</span>
+0013 <span class="comment">%                       if empty, all genotypes are used</span>
+0014 <span class="comment">%                       the default is all (empty)</span>
+0015 <span class="comment">%       isStrictMatch - for each of the genotype(s) to annotate, are we</span>
+0016 <span class="comment">%                       searching for an identical match (as opposed to</span>
+0017 <span class="comment">%                       searching for a matching substring)?</span>
+0018 <span class="comment">%                       if empty, we search for an identical match</span>
+0019 <span class="comment">%                       the default is an identical match (true)</span>
+0020 <span class="comment">%       isTTest       - are we using the t-test (normally distributed) or</span>
+0021 <span class="comment">%                       Wilcoxon rank-sum (non parametric) statistics;</span>
+0022 <span class="comment">%                       the default is non-parametric statistics (false)</span>
+0023 <span class="comment">%       featurePAlpha - the threshold for feature p-value significance</span>
+0024 <span class="comment">%                       the default is &lt; 1</span>
+0025 <span class="comment">%       featureQAlpha - the threshold for feature q-value significance</span>
+0026 <span class="comment">%                       the default is &lt; 0.05</span>
+0027 <span class="comment">%       strainPAlpha  - the threshold for strain p-value significance</span>
+0028 <span class="comment">%                       the default is &lt; 1</span>
+0029 <span class="comment">%       strainQAlpha  - the threshold for strain q-value significance</span>
+0030 <span class="comment">%                       the default is &lt; 1</span>
+0031 <span class="comment">%       isVerbose     - verbose mode displays the progress;</span>
+0032 <span class="comment">%                       the default is yes (true)</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%   Outputs:</span>
+0035 <span class="comment">%       strains - the strain annotations, a struct with fields:</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%                 genotype   = the genotype</span>
+0038 <span class="comment">%                 strain     = the strain</span>
+0039 <span class="comment">%                 gene       = the gene</span>
+0040 <span class="comment">%                 allele     = the allele</span>
+0041 <span class="comment">%                 pValue     = the p-value</span>
+0042 <span class="comment">%                 qValue     = the q-value</span>
+0043 <span class="comment">%                 annotation = the annotations:</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%                              category = the annotation category</span>
+0046 <span class="comment">%                              terms    = the annotation term</span>
+0047 <span class="comment">%                              features = the associated feature indices</span>
+0048 <span class="comment">%                              pValues  = the associated p-values</span>
+0049 <span class="comment">%                              qValues  = the associated q-values</span>
+0050 <span class="comment">%                              signs    = the annotation sign:</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">%                                          1 = the feature is &gt; control</span>
+0053 <span class="comment">%                                          0 = the feature is ~= control</span>
+0054 <span class="comment">%                                         -1 = the feature is &lt; control</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">% See also WORMONTOLOGY2STRING, WORM2STATSINFO</span>
+0057 
+0058 <span class="comment">% Which genotypes should we use?</span>
+0059 useGenotypes = [];
+0060 <span class="keyword">if</span> ~isempty(varargin)
+0061     useGenotypes = varargin{1};
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="comment">% Are we searching for an identical genotype match?</span>
+0065 isStrictMatch = [];
+0066 <span class="keyword">if</span> length(varargin) &gt; 1
+0067     isStrictMatch = varargin{2};
+0068 <span class="keyword">end</span>
+0069 <span class="keyword">if</span> isempty(isStrictMatch)
+0070     isStrictMatch = true;
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="comment">% Are we using a t-test or Wilcoxon rank-sum?</span>
+0074 isTTest = false;
+0075 <span class="keyword">if</span> length(varargin) &gt; 2
+0076     isTTest = varargin{3};
+0077 <span class="keyword">end</span>
+0078 
+0079 <span class="comment">% What is the threshold for feature p signficance?</span>
+0080 featurePAlpha = 1;
+0081 <span class="keyword">if</span> length(varargin) &gt; 3
+0082     featurePAlpha = varargin{4};
+0083 <span class="keyword">end</span>
+0084 
+0085 <span class="comment">% What is the threshold for feature q signficance?</span>
+0086 featureQAlpha = 0.05;
+0087 <span class="keyword">if</span> length(varargin) &gt; 4
+0088     featureQAlpha = varargin{5};
+0089 <span class="keyword">end</span>
+0090 
+0091 <span class="comment">% % What is the threshold for feature power?</span>
+0092 <span class="comment">% featurePower = 0;</span>
+0093 <span class="comment">% if length(varargin) &gt; 5</span>
+0094 <span class="comment">%     featurePower = varargin{6};</span>
+0095 <span class="comment">% end</span>
+0096 
+0097 <span class="comment">% What is the threshold for worm (strain) p significance?</span>
+0098 strainPAlpha = 1;
+0099 <span class="keyword">if</span> length(varargin) &gt; 5
+0100     strainPAlpha = varargin{6};
+0101 <span class="keyword">end</span>
+0102 
+0103 <span class="comment">% What is the threshold for worm (strain) q significance?</span>
+0104 strainQAlpha = 1;
+0105 <span class="keyword">if</span> length(varargin) &gt; 6
+0106     strainQAlpha = varargin{7};
+0107 <span class="keyword">end</span>
+0108 
+0109 <span class="comment">% Are we displaying the progress?</span>
+0110 isVerbose = true;
+0111 <span class="keyword">if</span> length(varargin) &gt; 7
+0112     isVerbose = varargin{8};
+0113 <span class="keyword">end</span>
+0114 
+0115 <span class="comment">% Fix the data.</span>
+0116 <span class="keyword">if</span> ~iscell(filenames)
+0117     filenames = {filenames};
+0118 <span class="keyword">end</span>
+0119 <span class="keyword">if</span> ~isempty(useGenotypes) &amp;&amp; ~iscell(useGenotypes)
+0120     useGenotypes = {useGenotypes};
+0121 <span class="keyword">end</span>
+0122 <span class="keyword">if</span> length(useGenotypes) &gt; length(isStrictMatch)
+0123     isStrictMatch((end + 1):length(useGenotypes)) = isStrictMatch(end);
+0124 <span class="keyword">end</span>
+0125 
+0126 <span class="comment">% Initialize the reference of annotations.</span>
+0127 reference = [];
+0128 refI = 0;
+0129 bothSigns = <span class="string">'b'</span>;
+0130 unSign = <span class="string">'u'</span>;
+0131 noSign = <span class="string">'0'</span>;
+0132 posSign = <span class="string">'+'</span>;
+0133 negSign = <span class="string">'-'</span>;
+0134 absSign = <span class="string">'a'</span>;
+0135 
+0136 
+0137 
+0138 <span class="comment">%% Morphology.</span>
+0139 
+0140 <span class="comment">% Length.</span>
+0141 refI = refI + 1;
+0142 lengthI = refI;
+0143 reference(lengthI).term = <span class="string">'Length'</span>;
+0144 reference(lengthI).category = <span class="string">'Body'</span>;
+0145 reference(lengthI).indices = 1;
+0146 reference(lengthI).alternatives = [];
+0147 reference(lengthI).sign = unSign;
+0148 
+0149 <span class="comment">% Width.</span>
+0150 refI = refI + 1;
+0151 widthI = refI;
+0152 reference(widthI).term = <span class="string">'Width'</span>;
+0153 reference(widthI).category = <span class="string">'Body'</span>;
+0154 reference(widthI).indices = 2:4;
+0155 reference(widthI).sign = unSign;
+0156 reference(widthI).alternatives = [];
+0157 
+0158 <span class="comment">% Area.</span>
+0159 refI = refI + 1;
+0160 areaI = refI;
+0161 reference(areaI).term = <span class="string">'Area'</span>;
+0162 reference(areaI).category = <span class="string">'Body'</span>;
+0163 reference(areaI).indices = 5;
+0164 reference(areaI).sign = unSign;
+0165 reference(areaI).alternatives = [lengthI widthI];
+0166 
+0167 <span class="comment">% Proportion.</span>
+0168 refI = refI + 1;
+0169 proportionI = refI;
+0170 reference(proportionI).term = <span class="string">'Proportion'</span>;
+0171 reference(proportionI).category = <span class="string">'Body'</span>;
+0172 reference(proportionI).indices = 6:7;
+0173 reference(proportionI).sign = noSign;
+0174 reference(proportionI).alternatives = [lengthI widthI areaI];
+0175 
+0176 
+0177 
+0178 <span class="comment">%% Posture.</span>
+0179 
+0180 <span class="comment">% Head bends.</span>
+0181 refI = refI + 1;
+0182 headBendsI = refI;
+0183 reference(headBendsI).term = <span class="string">'Head Bends'</span>;
+0184 reference(headBendsI).category = <span class="string">'Posture'</span>;
+0185 reference(headBendsI).indices = [8, 13];
+0186 reference(headBendsI).sign = unSign;
+0187 reference(headBendsI).alternatives = [];
+0188 
+0189 <span class="comment">% Tail bends.</span>
+0190 refI = refI + 1;
+0191 tailBendsI = refI;
+0192 reference(tailBendsI).term = <span class="string">'Tail Bends'</span>;
+0193 reference(tailBendsI).category = <span class="string">'Posture'</span>;
+0194 reference(tailBendsI).indices = [12, 17];
+0195 reference(tailBendsI).sign = unSign;
+0196 reference(tailBendsI).alternatives = [];
+0197 
+0198 <span class="comment">% Postural amplitude.</span>
+0199 refI = refI + 1;
+0200 posAmpI = refI;
+0201 reference(posAmpI).term = <span class="string">'Posture Amplitude'</span>;
+0202 reference(posAmpI).category = <span class="string">'Posture'</span>;
+0203 reference(posAmpI).indices = 18;
+0204 reference(posAmpI).sign = unSign;
+0205 reference(posAmpI).alternatives = [];
+0206 
+0207 <span class="comment">% Postural amplitude ratio.</span>
+0208 refI = refI + 1;
+0209 posAmpRatioI = refI;
+0210 reference(posAmpRatioI).term = <span class="string">'Posture Amplitude'</span>;
+0211 reference(posAmpRatioI).category = <span class="string">'Posture'</span>;
+0212 reference(posAmpRatioI).indices = 19;
+0213 reference(posAmpRatioI).sign = noSign;
+0214 reference(posAmpRatioI).alternatives = posAmpI;
+0215 
+0216 <span class="comment">% Posture wavelength.</span>
+0217 refI = refI + 1;
+0218 posWavelengthI = refI;
+0219 reference(posWavelengthI).term = <span class="string">'Posture Wavelength'</span>;
+0220 reference(posWavelengthI).category = <span class="string">'Posture'</span>;
+0221 reference(posWavelengthI).indices = 20:21;
+0222 reference(posWavelengthI).sign = unSign;
+0223 reference(posWavelengthI).alternatives = [];
+0224 
+0225 <span class="comment">% Posture wave.</span>
+0226 refI = refI + 1;
+0227 posWaveI = refI;
+0228 reference(posWaveI).term = <span class="string">'Posture Wave'</span>;
+0229 reference(posWaveI).category = <span class="string">'Posture'</span>;
+0230 reference(posWaveI).indices = 22;
+0231 reference(posWaveI).sign = noSign;
+0232 reference(posWaveI).alternatives = [posAmpI posAmpRatioI posWavelengthI];
+0233 
+0234 <span class="comment">% Body Bends.</span>
+0235 refI = refI + 1;
+0236 bodyBendsI = refI;
+0237 reference(bodyBendsI).term = <span class="string">'Body Bends'</span>;
+0238 reference(bodyBendsI).category = <span class="string">'Posture'</span>;
+0239 reference(bodyBendsI).indices = [9:11, 14:16, 23:24];
+0240 reference(bodyBendsI).sign = unSign;
+0241 reference(bodyBendsI).alternatives = <span class="keyword">...</span>
+0242     [posAmpI posAmpRatioI posWavelengthI posWaveI];
+0243 
+0244 <span class="comment">% Pose.</span>
+0245 refI = refI + 1;
+0246 poseI = refI;
+0247 reference(poseI).term = <span class="string">'Pose'</span>;
+0248 reference(poseI).category = <span class="string">'Posture'</span>;
+0249 reference(poseI).indices = 29;
+0250 reference(poseI).sign = noSign;
+0251 reference(poseI).alternatives = [headBendsI bodyBendsI tailBendsI <span class="keyword">...</span>
+0252     posAmpI posAmpRatioI posWavelengthI posWaveI];
+0253 
+0254 <span class="comment">% Orientation.</span>
+0255 <span class="comment">% refI = refI + 1;</span>
+0256 <span class="comment">% orientationI = refI;</span>
+0257 <span class="comment">% reference(orientationI).term = 'Orientation';</span>
+0258 <span class="comment">% reference(orientationI).indices = 26:28;</span>
+0259 <span class="comment">% reference(orientationI).sign = noSign;</span>
+0260 <span class="comment">% reference(orientationI).alternatives = [];</span>
+0261 
+0262 <span class="comment">% Coils.</span>
+0263 refI = refI + 1;
+0264 coilsI = refI;
+0265 reference(coilsI).term = <span class="string">'Coils'</span>;
+0266 reference(coilsI).category = <span class="string">'Posture'</span>;
+0267 reference(coilsI).indices = 25;
+0268 reference(coilsI).sign = unSign;
+0269 reference(coilsI).alternatives = [];
+0270 
+0271 
+0272 
+0273 <span class="comment">%% Locomotion.</span>
+0274 
+0275 <span class="comment">% Foraging</span>
+0276 refI = refI + 1;
+0277 foragingI = refI;
+0278 reference(foragingI).term = <span class="string">'Foraging'</span>;
+0279 reference(foragingI).category = <span class="string">'Motion'</span>;
+0280 reference(foragingI).indices = [43, 47];
+0281 reference(foragingI).sign = unSign;
+0282 reference(foragingI).alternatives = [];
+0283 
+0284 <span class="comment">% Forward velocity.</span>
+0285 refI = refI + 1;
+0286 forwardVelI = refI;
+0287 reference(forwardVelI).term = <span class="string">'Forward Velocity'</span>;
+0288 reference(forwardVelI).category = <span class="string">'Motion'</span>;
+0289 reference(forwardVelI).indices = [35 40];
+0290 reference(forwardVelI).sign = posSign;
+0291 reference(forwardVelI).alternatives = [];
+0292 
+0293 <span class="comment">% Backward velocity.</span>
+0294 refI = refI + 1;
+0295 backwardVelI = refI;
+0296 reference(backwardVelI).term = <span class="string">'Backward Velocity'</span>;
+0297 reference(backwardVelI).category = <span class="string">'Motion'</span>;
+0298 reference(backwardVelI).indices = [35 40];
+0299 reference(backwardVelI).sign = negSign;
+0300 reference(backwardVelI).alternatives = [];
+0301 
+0302 <span class="comment">% Absolute velocity.</span>
+0303 refI = refI + 1;
+0304 absVelI = refI;
+0305 reference(absVelI).term = <span class="string">'Velocity'</span>;
+0306 reference(absVelI).category = <span class="string">'Motion'</span>;
+0307 reference(absVelI).indices = [35 40];
+0308 reference(absVelI).sign = absSign;
+0309 reference(absVelI).alternatives = [];
+0310 
+0311 <span class="comment">% Head motion.</span>
+0312 refI = refI + 1;
+0313 headVelI = refI;
+0314 reference(headVelI).term = <span class="string">'Head Motion'</span>;
+0315 reference(headVelI).category = <span class="string">'Motion'</span>;
+0316 reference(headVelI).indices = [33:34 38:39];
+0317 reference(headVelI).sign = noSign;
+0318 reference(headVelI).alternatives = [foragingI forwardVelI backwardVelI];
+0319 
+0320 <span class="comment">% Tail motion.</span>
+0321 refI = refI + 1;
+0322 tailVelI = refI;
+0323 reference(tailVelI).term = <span class="string">'Tail Motion'</span>;
+0324 reference(tailVelI).category = <span class="string">'Motion'</span>;
+0325 reference(tailVelI).indices = [36:37 41:42];
+0326 reference(tailVelI).sign = noSign;
+0327 reference(tailVelI).alternatives = [forwardVelI backwardVelI];
+0328 
+0329 <span class="comment">% Forward motion.</span>
+0330 refI = refI + 1;
+0331 forwardI = refI;
+0332 reference(forwardI).term = <span class="string">'Forward Motion'</span>;
+0333 reference(forwardI).category = <span class="string">'Motion'</span>;
+0334 reference(forwardI).indices = 30;
+0335 reference(forwardI).sign = unSign;
+0336 reference(forwardI).alternatives = [];
+0337 
+0338 <span class="comment">% Pausing.</span>
+0339 refI = refI + 1;
+0340 pausedI = refI;
+0341 reference(pausedI).term = <span class="string">'Pausing'</span>;
+0342 reference(pausedI).category = <span class="string">'Motion'</span>;
+0343 reference(pausedI).indices = 31;
+0344 reference(pausedI).sign = unSign;
+0345 reference(pausedI).alternatives = [];
+0346 
+0347 <span class="comment">% Backward motion.</span>
+0348 refI = refI + 1;
+0349 backwardI = refI;
+0350 reference(backwardI).term = <span class="string">'Backward Motion'</span>;
+0351 reference(backwardI).category = <span class="string">'Motion'</span>;
+0352 reference(backwardI).indices = 32;
+0353 reference(backwardI).sign = unSign;
+0354 reference(backwardI).alternatives = [];
+0355 
+0356 <span class="comment">% Crawling amplitude.</span>
+0357 refI = refI + 1;
+0358 crawlAmpI = refI;
+0359 reference(crawlAmpI).term = <span class="string">'Crawling Amplitude'</span>;
+0360 reference(crawlAmpI).category = <span class="string">'Motion'</span>;
+0361 reference(crawlAmpI).indices = 44:46;
+0362 reference(crawlAmpI).sign = unSign;
+0363 reference(crawlAmpI).alternatives = [];
+0364 
+0365 <span class="comment">% Crawling frequency.</span>
+0366 refI = refI + 1;
+0367 crawlFreqI = refI;
+0368 reference(crawlFreqI).term = <span class="string">'Crawling Frequency'</span>;
+0369 reference(crawlFreqI).category = <span class="string">'Motion'</span>;
+0370 reference(crawlFreqI).indices = 48:50;
+0371 reference(crawlFreqI).sign = unSign;
+0372 reference(crawlFreqI).alternatives = [];
+0373 
+0374 <span class="comment">% Turns.</span>
+0375 refI = refI + 1;
+0376 turnsI = refI;
+0377 reference(turnsI).term = <span class="string">'Turns'</span>;
+0378 reference(turnsI).category = <span class="string">'Motion'</span>;
+0379 reference(turnsI).indices = 51:52;
+0380 reference(turnsI).sign = unSign;
+0381 reference(turnsI).alternatives = [];
+0382 
+0383 
+0384 
+0385 <span class="comment">%% Path.</span>
+0386 
+0387 <span class="comment">% Range.</span>
+0388 refI = refI + 1;
+0389 rangeI = refI;
+0390 reference(rangeI).term = <span class="string">'Path Range'</span>;
+0391 reference(rangeI).category = <span class="string">'Path'</span>;
+0392 reference(rangeI).indices = 53;
+0393 reference(rangeI).sign = unSign;
+0394 reference(rangeI).alternatives = [];
+0395 
+0396 <span class="comment">% Path curvature.</span>
+0397 refI = refI + 1;
+0398 pathCurveI = refI;
+0399 reference(pathCurveI).term = <span class="string">'Path Curvature'</span>;
+0400 reference(pathCurveI).category = <span class="string">'Path'</span>;
+0401 reference(pathCurveI).indices = 58;
+0402 reference(pathCurveI).sign = unSign;
+0403 reference(pathCurveI).alternatives = [];
+0404 
+0405 <span class="comment">% Dwelling.</span>
+0406 refI = refI + 1;
+0407 dwellI = refI;
+0408 reference(dwellI).term = <span class="string">'Dwelling'</span>;
+0409 reference(dwellI).category = <span class="string">'Path'</span>;
+0410 reference(dwellI).indices = 54:57;
+0411 reference(dwellI).sign = unSign;
+0412 reference(dwellI).alternatives = pausedI;
+0413 
+0414 
+0415 
+0416 <span class="comment">%% Annotation.</span>
+0417 
+0418 <span class="comment">% Initialize the annotations.</span>
+0419 numStrains = 0;
+0420 strains.genotype = [];
+0421 strains.strain = [];
+0422 strains.gene = [];
+0423 strains.allele = [];
+0424 strains.annotation = [];
+0425 
+0426 <span class="comment">% Annotate the files.</span>
+0427 info = <a href="wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>();
+0428 <span class="keyword">for</span> i = 1:length(filenames)
+0429 
+0430     <span class="comment">% Load the statistics.</span>
+0431     significance = [];
+0432     wormData = [];
+0433     wormInfo = [];
+0434     worm = [];
+0435     <span class="keyword">if</span> ~isempty(whos(<span class="string">'-FILE'</span>, filenames{i}, <span class="string">'worm'</span>))
+0436         load(filenames{i}, <span class="string">'worm'</span>);
+0437     <span class="keyword">elseif</span> ~isempty(whos(<span class="string">'-FILE'</span>, filenames{i}, <span class="string">'significance'</span>))
+0438         load(filenames{i}, <span class="string">'significance'</span>, <span class="string">'wormData'</span>, <span class="string">'wormInfo'</span>);
+0439     <span class="keyword">else</span>
+0440         warning(<span class="string">'wormStats2Ontology:BadFile'</span>, <span class="keyword">...</span>
+0441             [filenames{i} <span class="string">' has an unrecognized format'</span>]);
+0442         numStrains = {};
+0443         <span class="keyword">continue</span>;
+0444     <span class="keyword">end</span>
+0445 
+0446     <span class="comment">% Annotate the file.</span>
+0447     <span class="keyword">if</span> isempty(worm)
+0448         
+0449         <span class="comment">% Are we annotating this genotype?</span>
+0450         genotype = <a href="worm2GenotypeLabel.html" class="code" title="function label = worm2GenotypeLabel(wormInfo)">worm2GenotypeLabel</a>(wormInfo);
+0451         <span class="keyword">if</span> ~isempty(useGenotypes)
+0452             isFound = false;
+0453             <span class="keyword">for</span> j = 1:length(useGenotypes)
+0454                 <span class="keyword">if</span> isStrictMatch(j)
+0455                     isFound = strcmp(useGenotypes{j}, genotype);
+0456                 <span class="keyword">else</span>
+0457                     isFound = ~isempty(strfind(useGenotypes{j}, genotype));
+0458                 <span class="keyword">end</span>
+0459             <span class="keyword">end</span>
+0460             <span class="keyword">if</span> ~isFound
+0461                 <span class="keyword">continue</span>;
+0462             <span class="keyword">end</span>
+0463         <span class="keyword">end</span>
+0464         
+0465         <span class="comment">% Show the progress.</span>
+0466         <span class="keyword">if</span> isVerbose
+0467             disp([<span class="string">'Annotating '</span> num2str(i) <span class="string">'/'</span> num2str(length(filenames)) <span class="keyword">...</span>
+0468                 <span class="string">' &quot;'</span> <a href="worm2GenotypeLabel.html" class="code" title="function label = worm2GenotypeLabel(wormInfo)">worm2GenotypeLabel</a>(wormInfo) <span class="string">'&quot; ...'</span>]);
+0469         <span class="keyword">end</span>
+0470         
+0471         <span class="comment">% Find the significant features.</span>
+0472         sigI = [];
+0473         sigWorm = significance.worm;
+0474         <span class="keyword">if</span> sigWorm.pValue &lt;= strainPAlpha &amp;&amp; sigWorm.qValue &lt;= strainQAlpha
+0475 
+0476             <span class="comment">% Find the feature significance.</span>
+0477             sigFeat = significance.features;
+0478             <span class="keyword">if</span> isTTest
+0479                 pValues = [sigFeat.pTValue];
+0480                 qValues = [sigFeat.qTValue];
+0481             <span class="keyword">else</span>
+0482                 pValues = [sigFeat.pWValue];
+0483                 qValues = [sigFeat.qWValue];
+0484             <span class="keyword">end</span>
+0485 <span class="comment">%             powers = [sigFeat.power];</span>
+0486             
+0487             <span class="comment">% Find the significant features.</span>
+0488             sigI = qValues &lt;= featureQAlpha &amp; <span class="keyword">...</span>
+0489                 pValues &lt;= featurePAlpha;
+0490 <span class="comment">%                 powers &gt;= featurePower;</span>
+0491             sigI = find(sigI);
+0492         <span class="keyword">end</span>
+0493         
+0494         <span class="comment">% Translate the significant features to signed annotations.</span>
+0495         numStrains = numStrains + 1;
+0496         strains(numStrains).genotype = genotype;
+0497         strains(numStrains).strain = <a href="worm2StrainLabel.html" class="code" title="function label = worm2StrainLabel(wormInfo)">worm2StrainLabel</a>(wormInfo);
+0498         strains(numStrains).gene = <a href="worm2GeneLabel.html" class="code" title="function label = worm2GeneLabel(wormInfo)">worm2GeneLabel</a>(wormInfo);
+0499         strains(numStrains).allele = <a href="worm2AlleleLabel.html" class="code" title="function label = worm2AlleleLabel(wormInfo)">worm2AlleleLabel</a>(wormInfo);
+0500         strains(numStrains).pValue = sigWorm.pValue;
+0501         strains(numStrains).qValue = sigWorm.qValue;
+0502         strains(numStrains).annotation = [];
+0503         <span class="keyword">if</span> ~isempty(sigI)
+0504             strains(numStrains).annotation = <a href="#_sub1" class="code" title="subfunction annotation = annotate(features, pValues, qValues, ">annotate</a>(sigI, <span class="keyword">...</span>
+0505                 pValues(sigI), qValues(sigI), <span class="keyword">...</span><span class="comment"> %powers(sigI), ...</span>
+0506                 [wormData(sigI).zScore], reference, info);
+0507         <span class="keyword">end</span>
+0508     
+0509     <span class="comment">% Annotate the matrix.</span>
+0510     <span class="keyword">else</span>
+0511         
+0512         <span class="comment">% Compute the thresholds.</span>
+0513         qAlpha = min(featureQAlpha, strainQAlpha);
+0514         pAlpha = min(featurePAlpha, strainPAlpha);
+0515         
+0516         <span class="comment">% Annotate the matrix.</span>
+0517         <span class="keyword">for</span> j = 1:length(worm.info.genotype)
+0518             
+0519             <span class="comment">% Are we annotating this genotype?</span>
+0520             genotype = worm.info.genotype{j};
+0521             <span class="keyword">if</span> ~isempty(useGenotypes)
+0522                 isFound = false;
+0523                 <span class="keyword">for</span> k = 1:length(useGenotypes)
+0524                     <span class="keyword">if</span> isStrictMatch(k)
+0525                         isFound = strcmp(useGenotypes{k}, genotype);
+0526                     <span class="keyword">else</span>
+0527                         isFound = <span class="keyword">...</span>
+0528                             ~isempty(strfind(useGenotypes{k}, genotype));
+0529                     <span class="keyword">end</span>
+0530                 <span class="keyword">end</span>
+0531                 <span class="keyword">if</span> ~isFound
+0532                     <span class="keyword">continue</span>;
+0533                 <span class="keyword">end</span>
+0534             <span class="keyword">end</span>
+0535             
+0536             <span class="comment">% Show the progress.</span>
+0537             <span class="keyword">if</span> isVerbose
+0538                 disp([<span class="string">'Annotating '</span> <span class="keyword">...</span>
+0539                     num2str(i) <span class="string">'/'</span> num2str(length(filenames)) <span class="string">' : '</span> <span class="keyword">...</span>
+0540                     num2str(j) <span class="string">'/'</span> num2str(length(worm.info.genotype)) <span class="keyword">...</span>
+0541                     <span class="string">' &quot;'</span> worm.info.genotype{j} <span class="string">'&quot; ...'</span>]);
+0542             <span class="keyword">end</span>
+0543 
+0544             <span class="comment">% Find the feature significance.</span>
+0545             <span class="keyword">if</span> isTTest
+0546                 pValues = worm.sig.pTValue(j,:);
+0547                 qValues = worm.sig.qTValue.all(j,:);
+0548             <span class="keyword">else</span>
+0549                 pValues = worm.sig.pWValue(j,:);
+0550                 qValues = worm.sig.qWValue.all(j,:);
+0551             <span class="keyword">end</span>
+0552 <span class="comment">%             powers = worm.sig.power(j,:);</span>
+0553             
+0554             <span class="comment">% Find the significant features.</span>
+0555             sigI = pValues &lt;= pAlpha &amp; qValues &lt;= qAlpha;
+0556 <span class="comment">%                  powers &gt;= featurePower;</span>
+0557             sigI = find(sigI);
+0558             
+0559             <span class="comment">% Annotate the strain.</span>
+0560             numStrains = numStrains + 1;
+0561             strains(numStrains).genotype = genotype;
+0562             strains(numStrains).strain = worm.info.strain{j};
+0563             strains(numStrains).gene = worm.info.gene{j};
+0564             strains(numStrains).allele = worm.info.allele{j};
+0565             strains(numStrains).pValue = min(pValues);
+0566             strains(numStrains).qValue = min(qValues);
+0567             strains(numStrains).annotation = [];
+0568             <span class="keyword">if</span> ~isempty(sigI)
+0569                 strains(numStrains).annotation = <a href="#_sub1" class="code" title="subfunction annotation = annotate(features, pValues, qValues, ">annotate</a>(sigI, <span class="keyword">...</span>
+0570                     pValues(sigI), qValues(sigI), <span class="keyword">...</span><span class="comment"> %powers(sigI), ...</span>
+0571                     worm.stats.zScore(j,sigI), reference, info);
+0572             <span class="keyword">end</span>
+0573         <span class="keyword">end</span>
+0574     <span class="keyword">end</span>
+0575 <span class="keyword">end</span>
+0576 <span class="keyword">end</span>
+0577 
+0578 
+0579 
+0580 <span class="comment">%% Annotate the features.</span>
+0581 <a name="_sub1" href="#_subfunctions" class="code">function annotation = annotate(features, pValues, qValues, </a><span class="keyword">...</span><span class="comment"> %powers, ...</span>
+0582     zScores, reference, info)
+0583 
+0584 <span class="comment">% Determine the main features.</span>
+0585 [mainI, ~, subI] = unique([info(features).title1I]);
+0586 featureI = cell(length(mainI), 1);
+0587 sigI = cell(length(mainI), 1);
+0588 pValueI = cell(length(mainI), 1);
+0589 qValueI = cell(length(mainI), 1);
+0590 <span class="comment">% powerI = cell(length(mainI), 1);</span>
+0591 zScoreI = cell(length(mainI), 1);
+0592 <span class="keyword">for</span> i = 1:length(mainI)
+0593     featureI{i} = features(i == subI);
+0594     sigI{i} = features(i == subI);
+0595     pValueI{i} = pValues(i == subI);
+0596     qValueI{i} = qValues(i == subI);
+0597 <span class="comment">%     powerI{i} = powers(i == subI);</span>
+0598     zScoreI{i} = zScores(i == subI);
+0599 <span class="keyword">end</span>
+0600 
+0601 <span class="comment">% Match the main features to the reference.</span>
+0602 numRefs = 0;
+0603 refI = [];
+0604 mainIs = [];
+0605 featureIs = [];
+0606 sigIs = [];
+0607 pValueIs = [];
+0608 qValueIs = [];
+0609 <span class="comment">% powerIs = [];</span>
+0610 zScoreIs = [];
+0611 <span class="keyword">for</span> i = 1:length(reference)
+0612     [refFeatures, ~, refFeatureI] = intersect(reference(i).indices, mainI);
+0613     <span class="keyword">if</span> ~isempty(refFeatures)
+0614         numRefs = numRefs + 1;
+0615         refI(numRefs) = i;
+0616         mainIs{numRefs} = refFeatures;
+0617         featureIs{numRefs} = cat(2, featureI{refFeatureI});
+0618         sigIs{numRefs} = cat(2, sigI{refFeatureI});
+0619         pValueIs{numRefs} = cat(2, pValueI{refFeatureI});
+0620         qValueIs{numRefs} = cat(2, qValueI{refFeatureI});
+0621 <span class="comment">%         powerIs{numRefs} = cat(2, powerI{refFeatureI});</span>
+0622         zScoreIs{numRefs} = cat(2, zScoreI{refFeatureI});
+0623     <span class="keyword">end</span>
+0624 <span class="keyword">end</span>
+0625 
+0626 <span class="comment">% Compute redundant references.</span>
+0627 alternateI = cell(length(refI), 1);
+0628 keep = false(length(refI), 1);
+0629 <span class="keyword">for</span> i = 1:length(refI)
+0630     
+0631     <span class="comment">% Are there any alternatives?</span>
+0632     [~, ~, alternateI{i}] = <span class="keyword">...</span>
+0633         intersect(reference(refI(i)).alternatives, refI);
+0634     
+0635     <span class="comment">% Remove the redundant reference.</span>
+0636     <span class="keyword">if</span> isempty(alternateI{i})
+0637         keep(i) = true;
+0638         
+0639     <span class="comment">% Route my alternatives to the new alternative.</span>
+0640     <span class="keyword">else</span>
+0641         <span class="keyword">for</span> j = 1:(i - 1)
+0642             iI = find(alternateI{j} == i);
+0643             <span class="keyword">if</span> ~isempty(iI)
+0644                 alternateI{j}(iI) = [];
+0645                 alternateI{j} = cat(2, alternateI{j}, alternateI{i});
+0646             <span class="keyword">end</span>
+0647         <span class="keyword">end</span>
+0648     <span class="keyword">end</span>
+0649 <span class="keyword">end</span>
+0650 
+0651 <span class="comment">% Assign significance to the alternatives</span>
+0652 <span class="comment">% for i = find(~keep)'</span>
+0653 <span class="comment">%     for j = alternateI{i}</span>
+0654 <span class="comment">%         sigIs{j} = cat(2, sigIs{j}, sigIs{i});</span>
+0655 <span class="comment">%         pValueIs{j} = cat(2, pValueIs{j}, pValueIs{i});</span>
+0656 <span class="comment">%         qValueIs{j} = cat(2, qValueIs{j}, qValueIs{i});</span>
+0657 <span class="comment">%         powerIs{j} = cat(2, powerIs{j}, powerIs{i});</span>
+0658 <span class="comment">%     end</span>
+0659 <span class="comment">% end</span>
+0660 
+0661 <span class="comment">% Remove redundant references.</span>
+0662 refI = refI(keep);
+0663 mainIs = mainIs(keep);
+0664 featureIs = featureIs(keep);
+0665 sigIs = sigIs(keep);
+0666 pValueIs = pValueIs(keep);
+0667 qValueIs = qValueIs(keep);
+0668 <span class="comment">% powerIs = powerIs(keep);</span>
+0669 zScoreIs = zScoreIs(keep);
+0670 
+0671 <span class="comment">% Annotate the features.</span>
+0672 bothSigns = <span class="string">'b'</span>;
+0673 unSign = <span class="string">'u'</span>;
+0674 noSign = <span class="string">'0'</span>;
+0675 posSign = <span class="string">'+'</span>;
+0676 negSign = <span class="string">'-'</span>;
+0677 absSign = <span class="string">'a'</span>;
+0678 annotationI = 0;
+0679 annotation = [];
+0680 <span class="keyword">for</span> i = 1:length(refI)
+0681     <span class="keyword">switch</span> reference(refI(i)).sign
+0682         
+0683         <span class="comment">% Add the term and determine the sign.</span>
+0684         <span class="keyword">case</span> unSign
+0685             
+0686             <span class="comment">% Add the term.</span>
+0687             annotationI = annotationI + 1;
+0688             annotation(annotationI).term = reference(refI(i)).term;
+0689             annotation(annotationI).category = reference(refI(i)).category;
+0690             annotation(annotationI).features = sigIs{i};
+0691             annotation(annotationI).pValues = pValueIs{i};
+0692             annotation(annotationI).qValues = qValueIs{i};
+0693 <span class="comment">%             annotation(annotationI).powers = powerIs{i};</span>
+0694             
+0695             <span class="comment">% Determine the potential signs.</span>
+0696             features = featureIs{i};
+0697             zScores = zScoreIs{i};
+0698             potentialSigns = nan(length(features), 1);
+0699             <span class="keyword">for</span> j = 1:length(features)
+0700                 
+0701                 <span class="comment">% Ignore the sign for signed symmetry.</span>
+0702                 <span class="keyword">if</span> info(features(j)).sign == <span class="string">'s'</span>
+0703                     potentialSigns(j) = 0;
+0704                     
+0705                 <span class="comment">% Invert the sign for inter events.</span>
+0706                 <span class="keyword">elseif</span> info(features(j)).type == <span class="string">'i'</span>
+0707                     <span class="keyword">if</span> info(features(j)).sign == <span class="string">'n'</span>
+0708                         potentialSigns(j) = sign(zScores(j));
+0709                     <span class="keyword">else</span>
+0710                         potentialSigns(j) = -sign(zScores(j));
+0711                     <span class="keyword">end</span>
+0712                     
+0713                 <span class="comment">% Invert the sign for negative data.</span>
+0714                 <span class="keyword">elseif</span> info(features(j)).sign == <span class="string">'n'</span>
+0715                     potentialSigns(j) = -sign(zScores(j));
+0716                     
+0717                 <span class="comment">% Use the sign for unsigned, absolute, and positive data.</span>
+0718                 <span class="keyword">else</span>
+0719                     potentialSigns(j) = sign(zScores(j));
+0720                 <span class="keyword">end</span>
+0721             <span class="keyword">end</span>
+0722             
+0723             <span class="comment">% Determine the sign.</span>
+0724             uniqueSigns = unique(potentialSigns);
+0725             <span class="keyword">if</span> length(uniqueSigns) &gt; 1
+0726                 annotation(annotationI).sign = 0;
+0727             <span class="keyword">else</span>
+0728                 annotation(annotationI).sign = uniqueSigns;
+0729             <span class="keyword">end</span>
+0730         
+0731         <span class="comment">% Add the term.</span>
+0732         <span class="keyword">case</span> noSign
+0733             annotationI = annotationI + 1;
+0734             annotation(annotationI).term = reference(refI(i)).term;
+0735             annotation(annotationI).category = reference(refI(i)).category;
+0736             annotation(annotationI).features = sigIs{i};
+0737             annotation(annotationI).pValues = pValueIs{i};
+0738             annotation(annotationI).qValues = qValueIs{i};
+0739 <span class="comment">%             annotation(annotationI).powers = powerIs{i};</span>
+0740             annotation(annotationI).sign = 0;
+0741             
+0742         <span class="comment">% Add the term if the changes are positively signed.</span>
+0743         <span class="keyword">case</span> posSign
+0744             
+0745             <span class="comment">% Determine the potential signs.</span>
+0746             features = featureIs{i};
+0747             zScores = zScoreIs{i};
+0748             potentialSigns = [];
+0749             <span class="keyword">for</span> j = 1:length(features)
+0750                 <span class="keyword">if</span> info(features(j)).sign == <span class="string">'p'</span>
+0751                     potentialSigns(end + 1) = sign(zScores(j));
+0752                 <span class="keyword">end</span>
+0753             <span class="keyword">end</span>
+0754             
+0755             <span class="comment">% Add the term and determine the sign.</span>
+0756             uniqueSigns = unique(potentialSigns);
+0757             <span class="keyword">if</span> ~isempty(uniqueSigns)
+0758                 annotationI = annotationI + 1;
+0759                 annotation(annotationI).term = reference(refI(i)).term;
+0760                 annotation(annotationI).category = <span class="keyword">...</span>
+0761                     reference(refI(i)).category;
+0762                 
+0763                 <span class="comment">% Filter the significance.</span>
+0764                 keep = [info(sigIs{i}).sign] == <span class="string">'p'</span>;
+0765                 annotation(annotationI).features = sigIs{i}(keep);
+0766                 annotation(annotationI).pValues = pValueIs{i}(keep);
+0767                 annotation(annotationI).qValues = qValueIs{i}(keep);
+0768 <span class="comment">%                 annotation(annotationI).powers = powerIs{i}(keep);</span>
+0769                 
+0770                 <span class="comment">% Determine the sign.</span>
+0771                 <span class="keyword">if</span> length(uniqueSigns) &gt; 1
+0772                     annotation(annotationI).sign = 0;
+0773                 <span class="keyword">else</span>
+0774                     annotation(annotationI).sign = uniqueSigns;
+0775                 <span class="keyword">end</span>
+0776             <span class="keyword">end</span>
+0777             
+0778         <span class="comment">% Add the term if the changes are negatively signed.</span>
+0779         <span class="keyword">case</span> negSign
+0780             
+0781             <span class="comment">% Determine the potential signs.</span>
+0782             features = featureIs{i};
+0783             zScores = zScoreIs{i};
+0784             potentialSigns = [];
+0785             <span class="keyword">for</span> j = 1:length(features)
+0786                 <span class="keyword">if</span> info(features(j)).sign == <span class="string">'n'</span>
+0787                     potentialSigns(end + 1) = -sign(zScores(j));
+0788                 <span class="keyword">end</span>
+0789             <span class="keyword">end</span>
+0790             
+0791             <span class="comment">% Add the term and determine the sign.</span>
+0792             uniqueSigns = unique(potentialSigns);
+0793             <span class="keyword">if</span> ~isempty(uniqueSigns)
+0794                 annotationI = annotationI + 1;
+0795                 annotation(annotationI).term = reference(refI(i)).term;
+0796                 annotation(annotationI).category = <span class="keyword">...</span>
+0797                     reference(refI(i)).category;
+0798                 
+0799                 <span class="comment">% Filter the significance.</span>
+0800                 keep = [info(sigIs{i}).sign] == <span class="string">'n'</span>;
+0801                 annotation(annotationI).features = sigIs{i}(keep);
+0802                 annotation(annotationI).pValues = pValueIs{i}(keep);
+0803                 annotation(annotationI).qValues = qValueIs{i}(keep);
+0804 <span class="comment">%                 annotation(annotationI).powers = powerIs{i}(keep);</span>
+0805                 
+0806                 
+0807                 <span class="comment">% Determine the sign.</span>
+0808                 <span class="keyword">if</span> length(uniqueSigns) &gt; 1
+0809                     annotation(annotationI).sign = 0;
+0810                 <span class="keyword">else</span>
+0811                     annotation(annotationI).sign = uniqueSigns;
+0812                 <span class="keyword">end</span>
+0813             <span class="keyword">end</span>
+0814             
+0815         <span class="comment">% Add the term if the changes are absolutely signed.</span>
+0816         <span class="keyword">case</span> absSign
+0817             
+0818             <span class="comment">% Determine the potential signs.</span>
+0819             features = featureIs{i};
+0820             zScores = zScoreIs{i};
+0821             isAbs = [];
+0822             potentialSigns = [];
+0823             <span class="keyword">for</span> j = 1:length(features)
+0824                 
+0825                 <span class="comment">% We found an absolute feature.</span>
+0826                 <span class="keyword">if</span> (info(features(j)).sign == <span class="string">'a'</span> || <span class="keyword">...</span>
+0827                         info(features(j)).sign == <span class="string">'u'</span>) &amp;&amp; <span class="keyword">...</span>
+0828                         (isempty(isAbs) || isAbs)
+0829                     isAbs = true;
+0830                     potentialSigns(end + 1) = sign(zScores(j));
+0831                     
+0832                 <span class="comment">% We found a symmetry feature.</span>
+0833                 <span class="keyword">elseif</span> info(features(j)).sign == <span class="string">'s'</span> &amp;&amp; <span class="keyword">...</span>
+0834                         (isempty(isAbs) || isAbs)
+0835                     isAbs = true;
+0836                     potentialSigns(end + 1) = 0;
+0837                     
+0838                 <span class="comment">% We found postive and/or negative features.</span>
+0839                 <span class="keyword">elseif</span> info(features(j)).sign == <span class="string">'p'</span> || <span class="keyword">...</span>
+0840                         info(features(j)).sign == <span class="string">'n'</span>
+0841                     isAbs = false;
+0842                     potentialSigns = [];
+0843                 <span class="keyword">end</span>
+0844             <span class="keyword">end</span>
+0845             
+0846             <span class="comment">% Add the term and determine the sign.</span>
+0847             uniqueSigns = unique(potentialSigns);
+0848             <span class="keyword">if</span> ~isempty(uniqueSigns)
+0849                 annotationI = annotationI + 1;
+0850                 annotation(annotationI).term = reference(refI(i)).term;
+0851                 annotation(annotationI).category = <span class="keyword">...</span>
+0852                     reference(refI(i)).category;
+0853                 annotation(annotationI).features = sigIs{i};
+0854                 annotation(annotationI).pValues = pValueIs{i};
+0855                 annotation(annotationI).qValues = qValueIs{i};
+0856 <span class="comment">%                 annotation(annotationI).powers = powerIs{i};</span>
+0857                 
+0858                 <span class="comment">% Determine the sign.</span>
+0859                 <span class="keyword">if</span> length(uniqueSigns) &gt; 1
+0860                     annotation(annotationI).sign = 0;
+0861                 <span class="keyword">else</span>
+0862                     annotation(annotationI).sign = uniqueSigns;
+0863                 <span class="keyword">end</span>
+0864             <span class="keyword">end</span>
+0865     <span class="keyword">end</span>
+0866 <span class="keyword">end</span>
+0867 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

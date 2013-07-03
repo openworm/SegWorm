@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormInfo2DayOfYear</title>
+  <meta name="keywords" content="wormInfo2DayOfYear">
+  <meta name="description" content="WORMINFO2DAYOFYEAR Convert worm information to the day of the year the">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>wormInfo2DayOfYear
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMINFO2DAYOFYEAR Convert worm information to the day of the year the</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [isUsed wormX tickX nameX labelX] = wormInfo2DayOfYear(info, filt) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMINFO2DAYOFYEAR Convert worm information to the day of the year the
+experiment was performed.
+
+   [ISUSED WORMX TICKX NAMEX LABELX] = WORMINFO2DAYOFYEAR(INFO, FILT)
+
+   Inputs:
+       info - the worm information
+       filt - the filtering criteria; a structure with any of the fields:
+              minFPS     = the minimum video frame rate (frames/seconds)
+              minTime    = the minimum video time (seconds)
+              maxTime    = the maximum video time (seconds)
+              minSegTime = the minimum time for segmented video (seconds)
+              minRatio   = the minimum ratio for segmented video frames
+              minDate    = the minimum date to use (DATENUM)
+              maxDate    = the maximum date to use (DATENUM)
+              years      = the years to use
+              months     = the months to use (1-12)
+              weeks      = the weeks to use (1-52)
+              days       = the days (of the week) to use (1-7)
+              hours      = the hours to use (1-24)
+              trackers   = the trackers to use (1-8)
+              ticks      = the number of ticks to use
+
+   Outputs:
+       isUsed - for each worm, are we using the data?
+       wormX  - the x-axis values
+       tickX  - the x-axis ticks
+       nameX  - the x-axis tick names
+       labelX - the x-axis tick labels
+
+ See also PLOTWORMSTATS, <a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">FILTERWORMINFO</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>	FILTERWORMINFO Filter worm information to meet specific criteria.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [isUsed wormX tickX nameX labelX] = wormInfo2DayOfYear(info, filt)</a>
+0002 <span class="comment">%WORMINFO2DAYOFYEAR Convert worm information to the day of the year the</span>
+0003 <span class="comment">%experiment was performed.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   [ISUSED WORMX TICKX NAMEX LABELX] = WORMINFO2DAYOFYEAR(INFO, FILT)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Inputs:</span>
+0008 <span class="comment">%       info - the worm information</span>
+0009 <span class="comment">%       filt - the filtering criteria; a structure with any of the fields:</span>
+0010 <span class="comment">%              minFPS     = the minimum video frame rate (frames/seconds)</span>
+0011 <span class="comment">%              minTime    = the minimum video time (seconds)</span>
+0012 <span class="comment">%              maxTime    = the maximum video time (seconds)</span>
+0013 <span class="comment">%              minSegTime = the minimum time for segmented video (seconds)</span>
+0014 <span class="comment">%              minRatio   = the minimum ratio for segmented video frames</span>
+0015 <span class="comment">%              minDate    = the minimum date to use (DATENUM)</span>
+0016 <span class="comment">%              maxDate    = the maximum date to use (DATENUM)</span>
+0017 <span class="comment">%              years      = the years to use</span>
+0018 <span class="comment">%              months     = the months to use (1-12)</span>
+0019 <span class="comment">%              weeks      = the weeks to use (1-52)</span>
+0020 <span class="comment">%              days       = the days (of the week) to use (1-7)</span>
+0021 <span class="comment">%              hours      = the hours to use (1-24)</span>
+0022 <span class="comment">%              trackers   = the trackers to use (1-8)</span>
+0023 <span class="comment">%              ticks      = the number of ticks to use</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   Outputs:</span>
+0026 <span class="comment">%       isUsed - for each worm, are we using the data?</span>
+0027 <span class="comment">%       wormX  - the x-axis values</span>
+0028 <span class="comment">%       tickX  - the x-axis ticks</span>
+0029 <span class="comment">%       nameX  - the x-axis tick names</span>
+0030 <span class="comment">%       labelX - the x-axis tick labels</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% See also PLOTWORMSTATS, FILTERWORMINFO</span>
+0033 
+0034 <span class="comment">% Filter the worms.</span>
+0035 [isUsed data] = <a href="filterWormInfo.html" class="code" title="function [isUsed data] = filterWormInfo(info, filt)">filterWormInfo</a>(info, filt);
+0036 
+0037 <span class="comment">% Compute the x-axis values.</span>
+0038 usedData = data(isUsed);
+0039 wormX(1,:) = datenum([usedData.year], [usedData.month], [usedData.day]) - <span class="keyword">...</span>
+0040     datenum([usedData.year], 1, 0);
+0041 
+0042 <span class="comment">% Compute the x-axis ticks.</span>
+0043 tickX = sort(unique(wormX));
+0044 <span class="keyword">if</span> ~isempty(filt) &amp;&amp; isstruct(filt)
+0045     <span class="keyword">if</span> isfield(filt, <span class="string">'ticks'</span>)
+0046         <span class="keyword">if</span> ~isempty(filt.ticks) &amp;&amp; filt.ticks &lt; length(tickX)
+0047             tickX = round(linspace(tickX(1), tickX(end), filt.ticks));
+0048         <span class="keyword">end</span>
+0049     <span class="keyword">end</span>
+0050 <span class="keyword">end</span>
+0051 
+0052 <span class="comment">% Construct the x-axis tick names.</span>
+0053 nameX(1,:) = arrayfun(@(x) datestr(x, <span class="string">'mmmm dd'</span>), tickX, <span class="keyword">...</span>
+0054     <span class="string">'UniformOutput'</span>, false);
+0055 
+0056 <span class="comment">% Construct the x-axis label.</span>
+0057 labelX = [];
+0058 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of skeletonize</title>
+  <meta name="keywords" content="skeletonize">
+  <meta name="description" content="SKELETONIZE Skeletonize takes the 2 pairs of start and end points on a">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html ComputerVision -->
+<h1>skeletonize
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>SKELETONIZE Skeletonize takes the 2 pairs of start and end points on a</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2,isAcross) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SKELETONIZE Skeletonize takes the 2 pairs of start and end points on a
+contour(s), then traces the skeleton between them using the specified
+increments.
+
+   [SKELETON] = SKELETONIZE(S1, E1, I1, S2, E2, I2, C1, C2)
+
+   Inputs:
+       s1       - The starting index for the first contour segment.
+       e1       - The ending index for the first contour segment.
+       i1       - The increment to walk along the first contour segment.
+                  Note: a negative increment means walk backwards.
+                  Contours are circular, hitting an edge wraps around.
+       s2       - The starting index for the second contour segment.
+       e2       - The ending index for the second contour segment.
+       i2       - The increment to walk along the second contour segment.
+                  Note: a negative increment means walk backwards.
+                  Contours are circular, hitting an edge wraps around.
+       c1       - The contour for the first segment.
+       c2       - The contour for the second segment.
+       isAcross - Does the skeleton cut across, connecting s1 with e2?
+                  Otherwise, the skeleton simply traces the midline
+                  between both contour segments.
+
+   Output:
+       skeleton - the skeleton traced between the 2 sets of contour points.
+       cWidths  - the widths between the 2 sets of contour points.
+                  Note: there are no widths when cutting across.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../SegWorm/Worms/Segmentation/coiledSkeleton.html" class="code" title="function worm = coiledSkeleton(oContour, iContour, sWormSegs)">coiledSkeleton</a>	COILEDSKELETON Summary of this function goes here</li><li><a href="../../SegWorm/Worms/Segmentation/linearSkeleton.html" class="code" title="function [skeleton cWidths] = linearSkeleton(headI, tailI, minP, minI,maxP, maxI, contour, wormSegSize, varargin)">linearSkeleton</a>	LINEARSKELETON Skeletonize a linear (non-looped) worm. The worm is</li><li><a href="../../SegWorm/Worms/Segmentation/linearSkeleton2.html" class="code" title="function skeleton =linearSkeleton2(headI, tailI, minP, minI, maxP, maxI, contour, wormSegSize)">linearSkeleton2</a>	LINEARSKELETON2 Skeletonize a linear (non-looped) worm. The worm is</li><li><a href="../../SegWorm/Worms/Segmentation/linearSkeleton3.html" class="code" title="function [skeleton cWidths] =linearSkeleton3(headI, tailI, minP, minI, contour, wormSegSize)">linearSkeleton3</a>	LINEARSKELETON3 Skeletonize a linear (non-looped) worm. The worm is</li><li><a href="../../SegWorm/Worms/Segmentation/loopedSkeleton.html" class="code" title="function worm = loopedSkeleton(oContour, iContour, wormSegSize)">loopedSkeleton</a>	LOOPEDSKELETON Summary of this function goes here</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [skeleton cWidths] = skeletonize(s1, e1, i1, s2, e2, i2, c1, c2, </a><span class="keyword">...</span>
+0002     isAcross)
+0003 <span class="comment">%SKELETONIZE Skeletonize takes the 2 pairs of start and end points on a</span>
+0004 <span class="comment">%contour(s), then traces the skeleton between them using the specified</span>
+0005 <span class="comment">%increments.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   [SKELETON] = SKELETONIZE(S1, E1, I1, S2, E2, I2, C1, C2)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Inputs:</span>
+0010 <span class="comment">%       s1       - The starting index for the first contour segment.</span>
+0011 <span class="comment">%       e1       - The ending index for the first contour segment.</span>
+0012 <span class="comment">%       i1       - The increment to walk along the first contour segment.</span>
+0013 <span class="comment">%                  Note: a negative increment means walk backwards.</span>
+0014 <span class="comment">%                  Contours are circular, hitting an edge wraps around.</span>
+0015 <span class="comment">%       s2       - The starting index for the second contour segment.</span>
+0016 <span class="comment">%       e2       - The ending index for the second contour segment.</span>
+0017 <span class="comment">%       i2       - The increment to walk along the second contour segment.</span>
+0018 <span class="comment">%                  Note: a negative increment means walk backwards.</span>
+0019 <span class="comment">%                  Contours are circular, hitting an edge wraps around.</span>
+0020 <span class="comment">%       c1       - The contour for the first segment.</span>
+0021 <span class="comment">%       c2       - The contour for the second segment.</span>
+0022 <span class="comment">%       isAcross - Does the skeleton cut across, connecting s1 with e2?</span>
+0023 <span class="comment">%                  Otherwise, the skeleton simply traces the midline</span>
+0024 <span class="comment">%                  between both contour segments.</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   Output:</span>
+0027 <span class="comment">%       skeleton - the skeleton traced between the 2 sets of contour points.</span>
+0028 <span class="comment">%       cWidths  - the widths between the 2 sets of contour points.</span>
+0029 <span class="comment">%                  Note: there are no widths when cutting across.</span>
+0030 
+0031 <span class="comment">% The first starting index is before the ending one.</span>
+0032 we1 = [];
+0033 <span class="keyword">if</span> s1 &lt;= e1
+0034     
+0035     <span class="comment">% We are going forward.</span>
+0036     <span class="keyword">if</span> i1 &gt; 0
+0037         size1 = (e1 - s1 + 1) / i1;
+0038         
+0039     <span class="comment">% We are wrapping backward.</span>
+0040     <span class="keyword">else</span>
+0041         we1 = 1;
+0042         ws1 = size(c1, 1);
+0043         size1 = (s1 + size(c1, 1) - e1 + 1) / -i1;
+0044     <span class="keyword">end</span>
+0045     
+0046 <span class="comment">% The first starting index is after the ending one.</span>
+0047 <span class="keyword">else</span>
+0048     <span class="comment">% We are going backward.</span>
+0049     <span class="keyword">if</span> i1 &lt; 0
+0050         size1 = (s1 - e1 + 1) / -i1;
+0051 
+0052     <span class="comment">% We are wrapping forward.</span>
+0053     <span class="keyword">else</span>
+0054         we1 = size(c1, 1);
+0055         ws1 = 1;
+0056         size1 = (size(c1, 1) - s1 + 1 + e1) / i1;
+0057     <span class="keyword">end</span>
+0058 <span class="keyword">end</span>
+0059 
+0060 <span class="comment">% The second starting index is before the ending one.</span>
+0061 we2 = [];
+0062 <span class="keyword">if</span> s2 &lt;= e2
+0063     
+0064     <span class="comment">% We are going forward.</span>
+0065     <span class="keyword">if</span> i2 &gt; 0
+0066         size2 = (e2 - s2 + 1) / i2;
+0067         
+0068     <span class="comment">% We are wrapping backward.</span>
+0069     <span class="keyword">else</span>
+0070         we2 = 1;
+0071         ws2 = size(c2, 1);
+0072         size2 = (s2 + size(c2, 1) - e2 + 1) / -i2;
+0073     <span class="keyword">end</span>
+0074     
+0075 <span class="comment">% The second starting index is after the ending one.</span>
+0076 <span class="keyword">else</span>
+0077     <span class="comment">% We are going backward.</span>
+0078     <span class="keyword">if</span> i2 &lt; 0
+0079         size2 = (s2 - e2 + 1) / -i2;
+0080 
+0081     <span class="comment">% We are wrapping forward.</span>
+0082     <span class="keyword">else</span>
+0083         we2 = size(c2, 1);
+0084         ws2 = 1;
+0085         size2 = (size(c2, 1) - s2 + 1 + e2) / i2;
+0086     <span class="keyword">end</span>
+0087 <span class="keyword">end</span>
+0088 
+0089 <span class="comment">% Trace the midline between the contour segments.</span>
+0090 <span class="comment">% Note: the next few pages of code represent multiple, nearly identical</span>
+0091 <span class="comment">% algorithms. The reason they are inlined as separate instances is to</span>
+0092 <span class="comment">% mildly speed up one of the tightest loops in our program.</span>
+0093 skeleton = zeros(floor(size1 + size2), 2); <span class="comment">% pre-allocate memory</span>
+0094 cWidths = []; <span class="comment">% there are no widths when cutting across</span>
+0095 j1 = s1;
+0096 j2 = s2;
+0097 <span class="keyword">if</span> ~isAcross
+0098     
+0099     <span class="comment">% Initialize the skeleton and contour widths.</span>
+0100     skeleton(1,:) = round((c1(j1,:) + c2(j2,:)) ./ 2);
+0101     cWidths = zeros(size(skeleton, 1), 1); <span class="comment">% pre-allocate memory</span>
+0102     cWidths(1) = sqrt(sum((c1(j1,:) - c2(j2,:)) .^ 2));
+0103     <span class="keyword">if</span> j1 == we1 <span class="comment">% wrap</span>
+0104         j1 = ws1;
+0105     <span class="keyword">end</span>
+0106     <span class="keyword">if</span> j2 == we2 <span class="comment">% wrap</span>
+0107         j2 = ws2;
+0108     <span class="keyword">end</span>
+0109     sLength = 2;
+0110     
+0111     <span class="comment">% Skeletonize the contour segments and measure the width.</span>
+0112     <span class="keyword">while</span> j1 ~= e1 &amp;&amp; j2 ~= e2
+0113         
+0114         <span class="comment">% Compute the widths.</span>
+0115         nextJ1 = j1 + i1;
+0116         <span class="keyword">if</span> nextJ1 == we1 <span class="comment">% wrap</span>
+0117             nextJ1 = ws1;
+0118         <span class="keyword">end</span>
+0119         nextJ2 = j2 + i2;
+0120         <span class="keyword">if</span> nextJ2 == we2 <span class="comment">% wrap</span>
+0121             nextJ2 = ws2;
+0122         <span class="keyword">end</span>
+0123         dnj1 = c1(nextJ1,:) - c1(j1,:);
+0124         dnj2 = c1(nextJ2,:) - c1(j2,:);
+0125         d12 = sum((c1(nextJ1,:) - c2(nextJ2,:)) .^ 2);
+0126         d1 = sum((c1(nextJ1,:) - c2(j2,:)) .^ 2);
+0127         d2 = sum((c1(j1,:) - c2(nextJ2,:)) .^ 2);
+0128         
+0129 <span class="comment">% % Code for debugging purposes.</span>
+0130 <span class="comment">%         disp(['j1=' num2str(j1) ' j2=' num2str(j2) ...</span>
+0131 <span class="comment">%             ' *** dnj1=[' num2str(dnj1) '] dnj2=[' num2str(dnj2) ...</span>
+0132 <span class="comment">%             '] *** d12=' num2str(sqrt(d12)) ...</span>
+0133 <span class="comment">%             ' d1=' num2str(sqrt(d1)) ' d2=' num2str(sqrt(d2))])</span>
+0134         
+0135         <span class="comment">% Advance along both contours.</span>
+0136         <span class="keyword">if</span> (d12 &lt;= d1 &amp;&amp; d12 &lt;= d2) || d1 == d2
+0137             j1 = nextJ1;
+0138             j2 = nextJ2;
+0139             cWidths(sLength) = sqrt(d12);
+0140             
+0141         <span class="comment">% The contours go in similar directions.</span>
+0142         <span class="comment">% Follow the smallest width.</span>
+0143         <span class="keyword">elseif</span> all((dnj1 .* dnj2) &gt; -1)
+0144             
+0145             <span class="comment">% Advance along the the first contour.</span>
+0146             <span class="keyword">if</span> d1 &lt;= d2
+0147                 j1 = nextJ1;
+0148                 cWidths(sLength) = sqrt(d1);
+0149                 
+0150             <span class="comment">% Advance along the the second contour.</span>
+0151             <span class="keyword">else</span>
+0152                 j2 = nextJ2;
+0153                 cWidths(sLength) = sqrt(d2);
+0154             <span class="keyword">end</span>
+0155             
+0156         <span class="comment">% The contours go in opposite directions.</span>
+0157         <span class="comment">% Follow decreasing widths or walk along both contours.</span>
+0158         <span class="comment">% In other words, catch up both contours, then walk along both.</span>
+0159         <span class="comment">% Note: this step negotiates hairpin turns and bulges.</span>
+0160         <span class="keyword">else</span>
+0161             
+0162             <span class="comment">% Advance along both contours.</span>
+0163             prevWidth = cWidths(sLength - 1) ^ 2;
+0164             <span class="keyword">if</span> (d12 &lt;= d1 &amp;&amp; d12 &lt;= d2) || d1 == d2 <span class="keyword">...</span>
+0165                     || (d1 &gt; prevWidth &amp;&amp; d2 &gt; prevWidth )
+0166                 j1 = nextJ1;
+0167                 j2 = nextJ2;
+0168                 cWidths(sLength) = sqrt(d12);
+0169                 
+0170             <span class="comment">% Advance along the the first contour.</span>
+0171             <span class="keyword">elseif</span> d1 &lt; d2
+0172                 j1 = nextJ1;
+0173                 cWidths(sLength) = sqrt(d1);
+0174                 
+0175             <span class="comment">% Advance along the the second contour.</span>
+0176             <span class="keyword">else</span>
+0177                 j2 = nextJ2;
+0178                 cWidths(sLength) = sqrt(d2);
+0179             <span class="keyword">end</span>
+0180         <span class="keyword">end</span>
+0181         
+0182         <span class="comment">% Compute the skeleton.</span>
+0183         skeleton(sLength,:) = round((c1(j1,:) + c2(j2,:)) ./ 2);
+0184         sLength = sLength + 1;
+0185     <span class="keyword">end</span>
+0186     
+0187     <span class="comment">% Add the last point.</span>
+0188     <span class="keyword">if</span> j1 ~= e1 || j2 ~= e2
+0189         skeleton(sLength,:) = round((c1(e1,:) + c2(e2,:)) ./ 2);
+0190         cWidths(sLength) = sqrt(sum((c1(e1,:) - c2(e2,:)) .^ 2));
+0191         sLength = sLength + 1;
+0192     <span class="keyword">end</span>
+0193 
+0194     <span class="comment">% Collapse any extra memory.</span>
+0195     skeleton(sLength:<span class="keyword">end</span>,:) = [];
+0196     cWidths(sLength:end) = [];
+0197     
+0198 <span class="comment">% The skeleton cuts across, connecting s1 with e2.</span>
+0199 <span class="keyword">else</span>
+0200 
+0201     <span class="comment">% Initialize the connections.</span>
+0202     connect = zeros(size(skeleton, 1), 2); <span class="comment">% pre-allocate memory</span>
+0203     connect(1,1) = j1;
+0204     connect(1,2) = j2;
+0205     <span class="keyword">if</span> j1 == we1 <span class="comment">% wrap</span>
+0206         j1 = ws1;
+0207     <span class="keyword">end</span>
+0208     <span class="keyword">if</span> j2 == we2 <span class="comment">% wrap</span>
+0209         j2 = ws2;
+0210     <span class="keyword">end</span>
+0211     prevWidth = sum((c1(j1,:) - c2(j2,:)) .^ 2);
+0212     sLength = 2;
+0213     
+0214     <span class="comment">% Connect the contour segments.</span>
+0215     <span class="keyword">while</span> j1 ~= e1 &amp;&amp; j2 ~= e2
+0216         
+0217         <span class="comment">% Compute the widths.</span>
+0218         nextJ1 = j1 + i1;
+0219         <span class="keyword">if</span> nextJ1 == we1 <span class="comment">% wrap</span>
+0220             nextJ1 = ws1;
+0221         <span class="keyword">end</span>
+0222         nextJ2 = j2 + i2;
+0223         <span class="keyword">if</span> nextJ2 == we2 <span class="comment">% wrap</span>
+0224             nextJ2 = ws2;
+0225         <span class="keyword">end</span>
+0226         dnj1 = c1(nextJ1,:) - c1(j1,:);
+0227         dnj2 = c1(nextJ2,:) - c1(j2,:);
+0228         d12 = sum((c1(nextJ1,:) - c2(nextJ2,:)) .^ 2);
+0229         d1 = sum((c1(nextJ1,:) - c2(j2,:)) .^ 2);
+0230         d2 = sum((c1(j1,:) - c2(nextJ2,:)) .^ 2);
+0231         
+0232 <span class="comment">% Code for debugging purposes.</span>
+0233 <span class="comment">%</span>
+0234 <span class="comment">%         disp(['j1=' num2str(j1) ' j2=' num2str(j2) ...</span>
+0235 <span class="comment">%             ' *** dnj1=[' num2str(dnj1) '] dnj2=[' num2str(dnj2) ...</span>
+0236 <span class="comment">%             '] *** d12=' num2str(sqrt(d12)) ...</span>
+0237 <span class="comment">%             ' d1=' num2str(sqrt(d1)) ' d2=' num2str(sqrt(d2))])</span>
+0238         
+0239         <span class="comment">% Advance along both contours.</span>
+0240         <span class="keyword">if</span> (d12 &lt;= d1 &amp;&amp; d12 &lt;= d2) || d1 == d2
+0241             j1 = nextJ1;
+0242             j2 = nextJ2;
+0243             prevWidth = d12;
+0244             
+0245         <span class="comment">% The contours go in similar directions.</span>
+0246         <span class="comment">% Follow the smallest width.</span>
+0247         <span class="keyword">elseif</span> all((dnj1 .* dnj2) &gt; -1)
+0248             
+0249             <span class="comment">% Advance along the the first contour.</span>
+0250             <span class="keyword">if</span> d1 &lt;= d2
+0251                 j1 = nextJ1;
+0252                 prevWidth = d1;
+0253                 
+0254             <span class="comment">% Advance along the the second contour.</span>
+0255             <span class="keyword">else</span>
+0256                 j2 = nextJ2;
+0257                 prevWidth = d2;
+0258             <span class="keyword">end</span>
+0259             
+0260         <span class="comment">% The contours go in opposite directions.</span>
+0261         <span class="comment">% Follow decreasing widths or walk along both contours.</span>
+0262         <span class="comment">% In other words, catch up both contours, then walk along both.</span>
+0263         <span class="comment">% Note: this step negotiates hairpin turns and bulges.</span>
+0264         <span class="keyword">else</span>
+0265             
+0266             <span class="comment">% Advance along both contours.</span>
+0267             <span class="keyword">if</span> (d12 &lt;= d1 &amp;&amp; d12 &lt;= d2) || d1 == d2 <span class="keyword">...</span>
+0268                     || (d1 &gt; prevWidth &amp;&amp; d2 &gt; prevWidth )
+0269                 j1 = nextJ1;
+0270                 j2 = nextJ2;
+0271                 prevWidth = d12;
+0272                 
+0273             <span class="comment">% Advance along the the first contour.</span>
+0274             <span class="keyword">elseif</span> d1 &lt; d2
+0275                 j1 = nextJ1;
+0276                 prevWidth = d1;
+0277                 
+0278             <span class="comment">% Advance along the the second contour.</span>
+0279             <span class="keyword">else</span>
+0280                 j2 = nextJ2;
+0281                 prevWidth = d2;
+0282             <span class="keyword">end</span>
+0283         <span class="keyword">end</span>
+0284             
+0285         <span class="comment">% Compute the skeleton.</span>
+0286         connect(sLength,1) = j1;
+0287         connect(sLength,2) = j2;
+0288         sLength = sLength + 1;
+0289     <span class="keyword">end</span>
+0290     
+0291     <span class="comment">% Add the last point.</span>
+0292     <span class="keyword">if</span> j1 ~= e1 || j2 ~= e2
+0293         connect(sLength,1) = e1;
+0294         connect(sLength,2) = e2;
+0295         sLength = sLength + 1;
+0296     <span class="keyword">end</span>
+0297     
+0298     <span class="comment">% Collapse any extra memory.</span>
+0299     skeleton(sLength:<span class="keyword">end</span>,:) = [];
+0300     sLength = sLength - 1;
+0301     
+0302     <span class="comment">% Setup the weights for the connections.</span>
+0303     i = 1:sLength;
+0304     weights = 2 * (sLength - i) / (sLength - 1);
+0305     w1 = [weights; weights]';
+0306     w2 = flipud(w1);
+0307     
+0308     <span class="comment">% Compute the skeleton across the connections.</span>
+0309     skeleton(i,:) = (w1 .* c1(connect(i,1),:) + <span class="keyword">...</span>
+0310         w2 .* c2(connect(i,2),:)) ./ 2;
+0311 <span class="keyword">end</span>
+0312 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

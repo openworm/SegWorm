@@ -1,0 +1,725 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of worm2pdf</title>
+  <meta name="keywords" content="worm2pdf">
+  <meta name="description" content="WORM2PDF Show the worm information in a PDF.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Features -->
+<h1>worm2pdf
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORM2PDF Show the worm information in a PDF.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm2pdf(wormFile, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORM2PDF Show the worm information in a PDF.
+
+   WORM2PDF(WORMFILE)
+
+   WORM2PDF(WORMFILE, PDFFILE)
+
+   Inputs:
+       wormFile - the name of the worm feature's Matlab file
+       pdfFile  - the name for the PDF file; if empty, the wormFile name
+                  is used and ammended to end in .pdf</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>	HISTOGRAM Compute the data's histogram.</li><li><a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>	PLOTHISTOGRAM Plot a histogram(s) of data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function showMorphology(worm)</a></li><li><a href="#_sub2" class="code">function showPosture(worm, time, isVentralSide)</a></li><li><a href="#_sub3" class="code">function showLocomotion(worm, time, fps, isVentralSide)</a></li><li><a href="#_sub4" class="code">function plotHistogram(data, resolutions, titleName, valueName,</a></li><li><a href="#_sub5" class="code">function plotPath(wormPaths, startWorm, endWorm, wormColors, time,</a></li><li><a href="#_sub6" class="code">function plotPathData(data, wormPath, startWorm, endWorm, wormColors,</a></li><li><a href="#_sub7" class="code">function paths = integratePath(skeleton, scale, points)</a></li><li><a href="#_sub8" class="code">function dataColors = data2colors(data, colors)</a></li><li><a href="#_sub9" class="code">function saveFigure(figureHandle, pdfFile)</a></li><li><a href="#_sub10" class="code">function mergePDFs(file1, file2, mergeFile)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm2pdf(wormFile, varargin)</a>
+0002 <span class="comment">%WORM2PDF Show the worm information in a PDF.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   WORM2PDF(WORMFILE)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   WORM2PDF(WORMFILE, PDFFILE)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Inputs:</span>
+0009 <span class="comment">%       wormFile - the name of the worm feature's Matlab file</span>
+0010 <span class="comment">%       pdfFile  - the name for the PDF file; if empty, the wormFile name</span>
+0011 <span class="comment">%                  is used and ammended to end in .pdf</span>
+0012 
+0013 <span class="comment">% Determine the PDF file name.</span>
+0014 <span class="keyword">if</span> isempty(varargin)
+0015     pdfFile = strrep(wormFile, <span class="string">'.mat'</span>, <span class="string">'.pdf'</span>);
+0016 <span class="keyword">else</span>
+0017     pdfFile = varargin{1};
+0018 <span class="keyword">end</span>
+0019 
+0020 <span class="comment">% Load the worm information.</span>
+0021 info = [];
+0022 worm = [];
+0023 load(wormFile, <span class="string">'info'</span>, <span class="string">'worm'</span>);
+0024 <span class="keyword">if</span> isempty(info)
+0025     error(<span class="string">'worm2pdf:NoInfo'</span>, [<span class="string">'&quot;'</span> wormFile <span class="string">'&quot; does not contain &quot;info&quot;'</span>]);
+0026 <span class="keyword">end</span>
+0027 <span class="keyword">if</span> isempty(worm)
+0028     error(<span class="string">'worm2pdf:NoWorm'</span>, [<span class="string">'&quot;'</span> wormFile <span class="string">'&quot; does not contain a &quot;worm&quot;'</span>]);
+0029 <span class="keyword">end</span>
+0030 
+0031 <span class="comment">% Determine the frames/second.</span>
+0032 fps = info.video.resolution.fps;
+0033 
+0034 <span class="comment">% Do we know the worm's ventral side?</span>
+0035 isVentralSide = ~isempty(info.experiment.worm.ventralSide);
+0036 
+0037 <span class="comment">% Show the worm's morphology.</span>
+0038 <span class="comment">%showMorphology(worm);</span>
+0039 
+0040 <span class="comment">% Show the worm's posture.</span>
+0041 time = info.video.length.time;
+0042 <span class="comment">%showPosture(worm, time, isVentralSide);</span>
+0043 
+0044 <span class="comment">% Show the worm's locomotion.</span>
+0045 <a href="#_sub3" class="code" title="subfunction showLocomotion(worm, time, fps, isVentralSide)">showLocomotion</a>(worm, time, fps, isVentralSide);
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="comment">%% Show the worm's morphology.</span>
+0049 <a name="_sub1" href="#_subfunctions" class="code">function showMorphology(worm)</a>
+0050 
+0051 <span class="comment">% Create the figure.</span>
+0052 h = figure;
+0053 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1]);
+0054 hold on;
+0055 
+0056 <span class="comment">% Show the worm length.</span>
+0057 data = worm.morphology.length;
+0058 titleName = <span class="string">'WORM LENGTH '</span>;
+0059 valueName = <span class="string">'Length (microns)'</span>;
+0060 dataNames = <span class="string">'Length'</span>;
+0061 resolutions = 1;
+0062 histColors = [.5 .5 .5];
+0063 lineColors = [.75 0 0];
+0064 subplot(2,3,1);
+0065 hold on;
+0066 <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(data, resolutions, titleName, valueName, dataNames, <span class="keyword">...</span>
+0067     histColors, lineColors);
+0068 
+0069 <span class="comment">% Show the worm's midbody width.</span>
+0070 data = { <span class="keyword">...</span>
+0071     worm.morphology.width.midbody, <span class="keyword">...</span>
+0072     worm.morphology.width.head, <span class="keyword">...</span>
+0073     worm.morphology.width.tail};
+0074 titleName = <span class="string">'WORM WIDTH '</span>;
+0075 valueName = <span class="string">'Width (microns)'</span>;
+0076 dataNames = { <span class="keyword">...</span>
+0077     <span class="string">'Midbody Width'</span>, <span class="keyword">...</span>
+0078     <span class="string">'Head Width'</span>, <span class="keyword">...</span>
+0079     <span class="string">'Tail Width'</span>};
+0080 resolutions = { <span class="keyword">...</span>
+0081     1, <span class="keyword">...</span>
+0082     1, <span class="keyword">...</span>
+0083     1};
+0084 histColors = { <span class="keyword">...</span>
+0085     [.5 .5 .5], <span class="keyword">...</span>
+0086     [0 .5 0], <span class="keyword">...</span>
+0087     [.5 0 0]};
+0088 lineColors = { <span class="keyword">...</span>
+0089     [.25 .25 .25], <span class="keyword">...</span>
+0090     [0 .75 0], <span class="keyword">...</span>
+0091     [.75 0 0]};
+0092 subplot(2,3,2);
+0093 hold on;
+0094 <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(data, resolutions, titleName, valueName, dataNames, <span class="keyword">...</span>
+0095     histColors, lineColors);
+0096 
+0097 <span class="comment">% Show the worm area.</span>
+0098 data = worm.morphology.area;
+0099 titleName = <span class="string">'WORM AREA '</span>;
+0100 valueName = <span class="string">'Area (microns^{2})'</span>;
+0101 dataNames = <span class="string">'Area'</span>;
+0102 resolutions = 250;
+0103 histColors = [.5 .5 .5];
+0104 lineColors = [.75 0 0];
+0105 subplot(2,3,3);
+0106 hold on;
+0107 <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(data, resolutions, titleName, valueName, dataNames, <span class="keyword">...</span>
+0108     histColors, lineColors);
+0109 
+0110 <span class="comment">% Show the worm midbody width/length.</span>
+0111 data = worm.morphology.widthPerLength;
+0112 titleName = <span class="string">'WORM MIDBODY WIDTH/LENGTH   '</span>;
+0113 valueName = <span class="string">'Midbody Width/Length (unitless measure)'</span>;
+0114 dataNames = <span class="string">'Width/Length'</span>;
+0115 resolutions = 0.0001;
+0116 histColors = [.5 .5 .5];
+0117 lineColors = [.75 0 0];
+0118 subplot(2,3,4);
+0119 hold on;
+0120 <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(data, resolutions, titleName, valueName, dataNames, <span class="keyword">...</span>
+0121     histColors, lineColors);
+0122 
+0123 <span class="comment">% Show the worm area/length.</span>
+0124 data = worm.morphology.areaPerLength;
+0125 titleName = <span class="string">'WORM AREA/LENGTH  '</span>;
+0126 valueName = <span class="string">'Area/Length (microns)'</span>;
+0127 dataNames = <span class="string">'Area/Length'</span>;
+0128 resolutions = 0.1;
+0129 histColors = [.5 .5 .5];
+0130 lineColors = [.75 0 0];
+0131 subplot(2,3,5);
+0132 hold on;
+0133 <a href="../../../SegWorm/Util/plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>(data, resolutions, titleName, valueName, dataNames, <span class="keyword">...</span>
+0134     histColors, lineColors);
+0135 <span class="keyword">end</span>
+0136 
+0137 
+0138 
+0139 <span class="comment">%% Show the worm's posture.</span>
+0140 <a name="_sub2" href="#_subfunctions" class="code">function showPosture(worm, time, isVentralSide)</a>
+0141 
+0142 <span class="keyword">end</span>
+0143 
+0144 
+0145 
+0146 <span class="comment">%% Show the worm's locomotion.</span>
+0147 <a name="_sub3" href="#_subfunctions" class="code">function showLocomotion(worm, time, fps, isVentralSide)</a>
+0148 
+0149 <span class="comment">% Compute the video frames.</span>
+0150 frames = 1:size(worm.posture.skeleton.x, 1);
+0151 
+0152 <span class="comment">% Construct the skeleton.</span>
+0153 skeleton = cat(3, worm.posture.skeleton.x, worm.posture.skeleton.y);
+0154 skeleton = permute(skeleton, [2 3 1]);
+0155 
+0156 <span class="comment">% Compute the worm indices.</span>
+0157 headI = 1;
+0158 tailI = size(worm.posture.skeleton.x, 2);
+0159 midI = round((tailI + 1) / 2);
+0160 
+0161 <span class="comment">% Compute the worm segments.</span>
+0162 wormSegSize = round(tailI / 12);
+0163 halfWormSegSize = round(wormSegSize / 2);
+0164 headIs = headI:(headI + wormSegSize - 1);
+0165 neckIs = (headI + wormSegSize):(headI + wormSegSize * 2 - 1);
+0166 midIs = (midI - halfWormSegSize):(midI + halfWormSegSize);
+0167 hipIs = (tailI - wormSegSize * 2 + 1):(tailI - wormSegSize);
+0168 tailIs = (tailI - wormSegSize + 1):tailI;
+0169 <span class="comment">%allMidIs = (neckIs(end) + 1):(hipIs(1) - 1);</span>
+0170 
+0171 <span class="comment">% Find the starting worm shape.</span>
+0172 startWorm = [];
+0173 i = 1;
+0174 <span class="keyword">while</span> i &lt; size(worm.posture.skeleton.x, 1) &amp;&amp; <span class="keyword">...</span>
+0175         isnan(worm.posture.skeleton.x(i,1))
+0176     i = i + 1;
+0177 <span class="keyword">end</span>
+0178 <span class="keyword">if</span> i &lt; size(worm.posture.skeleton.x, 1)
+0179     startWorm = squeeze(skeleton(:,:,i));
+0180 <span class="keyword">end</span>
+0181 
+0182 <span class="comment">% Find the ending worm shape.</span>
+0183 endWorm = [];
+0184 i = size(worm.posture.skeleton.x, 1);
+0185 <span class="keyword">while</span> i &gt; 0  &amp;&amp; isnan(worm.posture.skeleton.x(i,1))
+0186     i = i - 1;
+0187 <span class="keyword">end</span>
+0188 <span class="keyword">if</span> i &gt; 0
+0189     endWorm = squeeze(skeleton(:,:,i));
+0190 <span class="keyword">end</span>
+0191 
+0192 <span class="comment">% Create the figure.</span>
+0193 h = figure;
+0194 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1]);
+0195 hold on;
+0196 
+0197 <span class="comment">% Plot the worm's integrated path.</span>
+0198 headWidth = nanmean(worm.morphology.width.head);
+0199 midWidth = nanmean(worm.morphology.width.midbody);
+0200 tailWidth = nanmean(worm.morphology.width.tail);
+0201 meanWidth = (headWidth + midWidth + tailWidth) / 3;
+0202 scale = sqrt(2) / meanWidth;
+0203 points = { <span class="keyword">...</span>
+0204     headI:tailI, <span class="keyword">...</span>
+0205     headIs, <span class="keyword">...</span>
+0206     tailIs, <span class="keyword">...</span>
+0207     midIs, <span class="keyword">...</span>
+0208     neckIs, <span class="keyword">...</span>
+0209     hipIs};
+0210 titleNames = { <span class="keyword">...</span>
+0211     <span class="string">'Worm Path Integral'</span>, <span class="keyword">...</span>
+0212     <span class="string">'Head Path Integral'</span>, <span class="keyword">...</span>
+0213     <span class="string">'Tail Path Integral'</span>, <span class="keyword">...</span>
+0214     <span class="string">'Midbody Path Integral'</span>, <span class="keyword">...</span>
+0215     <span class="string">'Neck Path Integral'</span>, <span class="keyword">...</span>
+0216     <span class="string">'Hips Path Integral'</span>};
+0217 paths = <a href="#_sub7" class="code" title="subfunction paths = integratePath(skeleton, scale, points)">integratePath</a>(skeleton, scale, points);
+0218 <span class="keyword">for</span> i = 1:length(paths)
+0219     
+0220     <span class="comment">% Plot the integrated path.</span>
+0221     data = paths{i} / fps;
+0222     subplot(2, ceil(length(paths) / 2), i);
+0223     imagesc(data);
+0224     axis image;
+0225     
+0226     <span class="comment">% Label the figure.</span>
+0227     title(titleNames{i});
+0228     xlabel(<span class="string">'X Location (microns)'</span>);
+0229     ylabel(<span class="string">'Y Location (microns)'</span>);
+0230     
+0231     <span class="comment">% Label the figure values.</span>
+0232     colorbarHandle = colorbar;
+0233     caxis([min(data(:)) max(data(:))]);
+0234     set(get(colorbarHandle, <span class="string">'YLabel'</span>), <span class="string">'String'</span>, <span class="string">'Time (seconds)'</span>);
+0235 <span class="keyword">end</span>
+0236 <span class="keyword">return</span>;
+0237 
+0238 <span class="comment">% Create the figure.</span>
+0239 h = figure;
+0240 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1]);
+0241 hold on;
+0242 
+0243 <span class="comment">% Plot the worm's midbody speed.</span>
+0244 data = worm.locomotion.velocity.midbody.speed;
+0245 data = frames;
+0246 wormPath = squeeze(skeleton(midI,:,:));
+0247 wormColors = { <span class="keyword">...</span>
+0248     [0 0 0], <span class="keyword">...</span>
+0249     [.5 .5 .5]};
+0250 titleName = <span class="string">'WORM MIDBODY SPEED'</span>;
+0251 valueName = <span class="string">'Locaton (microns)'</span>;
+0252 dataName = <span class="string">'Speed (microns/second)'</span>;
+0253 <span class="comment">%subplot(2,3,1);</span>
+0254 <span class="comment">%hold on;</span>
+0255 <a href="#_sub6" class="code" title="subfunction plotPathData(data, wormPath, startWorm, endWorm, wormColors, ">plotPathData</a>(data, wormPath, startWorm, endWorm, wormColors, time, <span class="keyword">...</span>
+0256     nanmean(worm.morphology.widthPerLength), titleName, valueName, <span class="keyword">...</span>
+0257     dataName, data);
+0258 <span class="comment">%saveFigure(h, speedFile);</span>
+0259 
+0260 <span class="keyword">return</span>;
+0261 
+0262 <span class="comment">% Create the figure.</span>
+0263 h = figure;
+0264 set(h, <span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'position'</span>, [0 0 1 1]);
+0265 hold on;
+0266 
+0267 <span class="comment">% Plot the worm's head, midbody, and tail path.</span>
+0268 wormPaths = { <span class="keyword">...</span>
+0269     squeeze(nanmean(skeleton(headIs,:,:), 1)), <span class="keyword">...</span>
+0270     squeeze(nanmean(skeleton(neckIs,:,:), 1)), <span class="keyword">...</span>
+0271     squeeze(nanmean(skeleton(tailIs,:,:), 1)), <span class="keyword">...</span>
+0272     squeeze(nanmean(skeleton(hipIs,:,:), 1)), <span class="keyword">...</span>
+0273     squeeze(nanmean(skeleton(midIs,:,:), 1))};
+0274 wormColors = { <span class="keyword">...</span>
+0275     [0 0 0], <span class="keyword">...</span>
+0276     [.5 .5 .5]};
+0277 titleName = <span class="string">'WORM PATH'</span>;
+0278 valueName = <span class="string">'Locaton (microns)'</span>;
+0279 pathNames = { <span class="keyword">...</span>
+0280     <span class="string">'Head Path'</span>, <span class="keyword">...</span>
+0281     <span class="string">'Neck Path'</span>, <span class="keyword">...</span>
+0282     <span class="string">'Tail Path'</span>, <span class="keyword">...</span>
+0283     <span class="string">'Hips Path'</span>, <span class="keyword">...</span>
+0284     <span class="string">'Midbody Path'</span>};
+0285 pathColors = { <span class="keyword">...</span>
+0286     [1 0 0], <span class="keyword">...</span>
+0287     [1 .8 .9], <span class="keyword">...</span>
+0288     [0 0 1], <span class="keyword">...</span>
+0289     [.8 .9 1], <span class="keyword">...</span>
+0290     [0 1 0]};
+0291 <span class="comment">%subplot(2,3,1);</span>
+0292 <span class="comment">%hold on;</span>
+0293 <a href="#_sub5" class="code" title="subfunction plotPath(wormPaths, startWorm, endWorm, wormColors, time, ">plotPath</a>(wormPaths, startWorm, endWorm, wormColors, time, <span class="keyword">...</span>
+0294     nanmean(worm.morphology.widthPerLength), titleName, valueName, <span class="keyword">...</span>
+0295     pathNames, pathColors);
+0296 <span class="keyword">end</span>
+0297 
+0298 
+0299 
+0300 <span class="comment">%% Plot a histogram of data.</span>
+0301 <a name="_sub4" href="#_subfunctions" class="code">function plotHistogram(data, resolutions, titleName, valueName, </a><span class="keyword">...</span>
+0302     dataNames, histColors, lineColors)
+0303 
+0304 <span class="comment">% Organize the data.</span>
+0305 <span class="keyword">if</span> ~iscell(data)
+0306     data = {data};
+0307     resolutions = {resolutions};
+0308     dataNames = {dataNames};
+0309     histColors = {histColors};
+0310     lineColors = {lineColors};
+0311 <span class="keyword">end</span>
+0312 
+0313 <span class="comment">% Compute the statistics.</span>
+0314 counts = cell(length(data),1);
+0315 bins = cell(length(data),1);
+0316 probability = cell(length(data),1);
+0317 maxProbability = nan(length(data),1);
+0318 means = nan(length(data),1);
+0319 stdDevs = nan(length(data),1);
+0320 minBin = NaN;
+0321 maxBin = NaN;
+0322 <span class="keyword">for</span> i = 1:length(data)
+0323     
+0324     <span class="comment">% Compute the histogram.</span>
+0325     [counts{i} bins{i}] = <a href="../../../SegWorm/Util/histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(data{i}, resolutions{i});
+0326     probability{i} = counts{i} ./ sum(counts{i});
+0327     maxProbability(i) = max(probability{i});
+0328     
+0329     <span class="comment">% Compute the summary statistics.</span>
+0330     means(i) = nanmean(data{i});
+0331     stdDevs(i) = nanstd(data{i});
+0332     
+0333     <span class="comment">% Compute the minimum and maximum bins.</span>
+0334     minBin = min(minBin, min(bins{i}));
+0335     maxBin = max(maxBin, max(bins{i}));
+0336 <span class="keyword">end</span>
+0337 
+0338 <span class="comment">% Compute the summary statistics.</span>
+0339 lineScale = 1.1;
+0340 meanLineX = nan(length(data), 2);
+0341 negStdLineX = nan(length(data), 2);
+0342 posStdLineX = nan(length(data), 2);
+0343 lineY = nan(length(data), 2);
+0344 <span class="keyword">for</span> i = 1:length(data)
+0345     
+0346     <span class="comment">% Compute the line.</span>
+0347     meanLineX(i,1:2) = means(i);
+0348     negStdLineX(i,:) = meanLineX(i,:) - stdDevs(i);
+0349     posStdLineX(i,:) = meanLineX(i,:) + stdDevs(i);
+0350     lineY(i,1:2) = [0, maxProbability(i) * lineScale];
+0351 <span class="keyword">end</span>
+0352 
+0353 <span class="comment">% Plot the data.</span>
+0354 <span class="comment">% Note: this is done twice to display the legend and layers correctly.</span>
+0355 transparency = 0.5;
+0356 meanLineStyle = <span class="string">'-'</span>;
+0357 stdLineStyle = <span class="string">'--'</span>;
+0358 plotHandle = [];
+0359 <span class="keyword">for</span> i = 1:length(data)
+0360     
+0361     <span class="comment">% Plot the histograms.</span>
+0362     histHandle = fill(bins{i}, probability{i}, histColors{i});
+0363     set(histHandle, <span class="string">'FaceAlpha'</span>, transparency);
+0364     plotHandle = get(histHandle, <span class="string">'Parent'</span>);
+0365     
+0366     <span class="comment">% Plot the summary statisitics.</span>
+0367     line(meanLineX(i,:), lineY(i,:), <span class="string">'LineStyle'</span>, meanLineStyle, <span class="keyword">...</span>
+0368         <span class="string">'Color'</span>, lineColors{i});
+0369     line(negStdLineX(i,:), lineY(i,:), <span class="string">'LineStyle'</span>, stdLineStyle, <span class="keyword">...</span>
+0370         <span class="string">'Color'</span>, lineColors{i});
+0371 <span class="keyword">end</span>
+0372 
+0373 <span class="comment">% Re-plot the summary statistics.</span>
+0374 <span class="comment">% Note: this is done twice to display the legend and layers correctly.</span>
+0375 <span class="keyword">for</span> i = 1:length(data)
+0376     line(meanLineX(i,:), lineY(i,:), <span class="string">'LineStyle'</span>, meanLineStyle, <span class="keyword">...</span>
+0377         <span class="string">'Color'</span>, lineColors{i});
+0378     line(negStdLineX(i,:), lineY(i,:), <span class="string">'LineStyle'</span>, stdLineStyle, <span class="keyword">...</span>
+0379         <span class="string">'Color'</span>, lineColors{i});
+0380     line(posStdLineX(i,:), lineY(i,:), <span class="string">'LineStyle'</span>, stdLineStyle, <span class="keyword">...</span>
+0381         <span class="string">'Color'</span>, lineColors{i});
+0382 <span class="keyword">end</span>
+0383 
+0384 <span class="comment">% Construct the legend.</span>
+0385 legends = cell(3 * length(data), 1);
+0386 <span class="keyword">for</span> i = 1:length(data)
+0387     legends{3 * i - 2} = [dataNames{i} <span class="string">' Histogram (N = '</span> <span class="keyword">...</span>
+0388         num2str(sum(~isnan(data{i}))) <span class="string">')'</span>];
+0389     legends{3 * i - 1} = [<span class="string">'Mean '</span> dataNames{i} <span class="string">' = '</span> num2str(means(i))];
+0390     legends{3 * i} = [<span class="string">'Standard Deviation '</span> dataNames{i} <span class="string">' = '</span> <span class="keyword">...</span>
+0391         num2str(stdDevs(i))];
+0392 <span class="keyword">end</span>
+0393 
+0394 <span class="comment">% Label the figure.</span>
+0395 title(titleName);
+0396 xlabel(valueName);
+0397 ylabel(<span class="string">'Probability'</span>);
+0398 set(zoom(gcf), <span class="string">'Motion'</span>, <span class="string">'horizontal'</span>, <span class="string">'Enable'</span>, <span class="string">'on'</span>);
+0399 legendHandle = legend(legends, <span class="string">'Location'</span>, <span class="string">'North'</span>);
+0400 set(legendHandle, <span class="string">'LineWidth'</span>, 1.5);
+0401 
+0402 <span class="comment">% Resize the plots to fit the legend.</span>
+0403 plotPosition = get(plotHandle, <span class="string">'Position'</span>);
+0404 legendPosition = get(legendHandle, <span class="string">'Position'</span>);
+0405 histScale = (legendPosition(2) - plotPosition(2)) / plotPosition(4);
+0406 <span class="keyword">if</span> minBin ~= maxBin
+0407     xlim([minBin, maxBin]);
+0408 <span class="keyword">end</span>
+0409 ylim([0, max(maxProbability) * lineScale / histScale]);
+0410 <span class="keyword">end</span>
+0411 
+0412 
+0413 
+0414 <span class="comment">%% Plot the worm's path.</span>
+0415 <a name="_sub5" href="#_subfunctions" class="code">function plotPath(wormPaths, startWorm, endWorm, wormColors, time, </a><span class="keyword">...</span>
+0416     widthPerLength, titleName, valueName, pathNames, pathColors)
+0417 
+0418 <span class="comment">% Organize the paths.</span>
+0419 <span class="keyword">if</span> ~iscell(wormPaths)
+0420     wormPaths = {wormPaths};
+0421     pathNames = {pathNames};
+0422     pathColors = {pathColors};
+0423 <span class="keyword">end</span>
+0424 
+0425 <span class="comment">% Plot the start worm for each path in the respective path color.</span>
+0426 <span class="comment">% Note: this is repeated to display the legend and layers correctly.</span>
+0427 widthScale = 50;
+0428 lineSize = widthPerLength * widthScale;
+0429 <span class="keyword">for</span> i = 1:length(pathColors)
+0430     plot(startWorm(:,1), startWorm(:,2), <span class="string">'Color'</span>, pathColors{i}, <span class="keyword">...</span>
+0431         <span class="string">'LineWidth'</span>, lineSize, <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="string">'MarkerSize'</span>, lineSize, <span class="keyword">...</span>
+0432         <span class="string">'MarkerFaceColor'</span>, pathColors{i}, <span class="string">'MarkerEdgeColor'</span>, pathColors{i});
+0433 <span class="keyword">end</span>
+0434 
+0435 <span class="comment">% Plot the start and end worms.</span>
+0436 <span class="comment">% Note: this is repeated to display the legend and layers correctly.</span>
+0437 plot(startWorm(:,1), startWorm(:,2), <span class="string">'Color'</span>, wormColors{1}, <span class="keyword">...</span>
+0438     <span class="string">'LineWidth'</span>, lineSize, <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="string">'MarkerSize'</span>, lineSize, <span class="keyword">...</span>
+0439     <span class="string">'MarkerFaceColor'</span>, wormColors{1}, <span class="string">'MarkerEdgeColor'</span>, wormColors{1});
+0440 plot(endWorm(:,1), endWorm(:,2), <span class="string">'Color'</span>, wormColors{2}, <span class="keyword">...</span>
+0441     <span class="string">'LineWidth'</span>, lineSize, <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="string">'MarkerSize'</span>, lineSize, <span class="keyword">...</span>
+0442     <span class="string">'MarkerFaceColor'</span>, wormColors{2}, <span class="string">'MarkerEdgeColor'</span>, wormColors{2});
+0443 
+0444 <span class="comment">% Plot the worm paths.</span>
+0445 minXPath = NaN;
+0446 maxXPath = NaN;
+0447 minYPath = NaN;
+0448 maxYPath = NaN;
+0449 plotHandle = [];
+0450 <span class="keyword">for</span> i = 1:length(wormPaths)
+0451     
+0452     <span class="comment">% Plot the path.</span>
+0453     pathHandle = plot(wormPaths{i}(1,:), wormPaths{i}(2,:), <span class="keyword">...</span>
+0454         <span class="string">'LineStyle'</span>, <span class="string">'.'</span>, <span class="string">'Marker'</span>, <span class="string">'.'</span>, <span class="string">'MarkerSize'</span>, 1, <span class="keyword">...</span>
+0455         <span class="string">'Color'</span>, pathColors{i});
+0456     plotHandle = get(pathHandle, <span class="string">'Parent'</span>);
+0457     
+0458     <span class="comment">% Compute the minimum and maximum path coordinates.</span>
+0459     minXPath = min(minXPath, min(wormPaths{i}(1,:)));
+0460     maxXPath = max(maxXPath, max(wormPaths{i}(1,:)));
+0461     minYPath = min(minYPath, min(wormPaths{i}(2,:)));
+0462     maxYPath = max(maxYPath, max(wormPaths{i}(2,:)));
+0463 <span class="keyword">end</span>
+0464 
+0465 <span class="comment">% Plot the start and end worms.</span>
+0466 <span class="comment">% Note: this is repeated to display the legend and layers correctly.</span>
+0467 plot(startWorm(:,1), startWorm(:,2), <span class="string">'Color'</span>, wormColors{1}, <span class="keyword">...</span>
+0468     <span class="string">'LineWidth'</span>, lineSize, <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="string">'MarkerSize'</span>, lineSize, <span class="keyword">...</span>
+0469     <span class="string">'MarkerFaceColor'</span>, wormColors{1}, <span class="string">'MarkerEdgeColor'</span>, wormColors{1});
+0470 plot(endWorm(:,1), endWorm(:,2), <span class="string">'Color'</span>, wormColors{2}, <span class="keyword">...</span>
+0471     <span class="string">'LineWidth'</span>, lineSize, <span class="string">'Marker'</span>, <span class="string">'o'</span>, <span class="string">'MarkerSize'</span>, lineSize, <span class="keyword">...</span>
+0472     <span class="string">'MarkerFaceColor'</span>, wormColors{2}, <span class="string">'MarkerEdgeColor'</span>, wormColors{2});
+0473 
+0474 <span class="comment">% Construct the legend.</span>
+0475 legends = cell(length(wormPaths) + 2, 1);
+0476 <span class="keyword">for</span> i = 1:length(wormPaths)
+0477     legends{i} = [pathNames{i} <span class="string">' Path (N = '</span> <span class="keyword">...</span>
+0478         num2str(sum(~isnan(wormPaths{i}(:,1)))) <span class="string">')'</span>];
+0479 <span class="keyword">end</span>
+0480 legends{i + 1} = <span class="string">'Start'</span>;
+0481 legends{i + 2} = [<span class="string">'End (Time = '</span> num2str(time) <span class="string">' seconds)'</span>];
+0482 
+0483 <span class="comment">% Label the figure.</span>
+0484 title(titleName);
+0485 xlabel([<span class="string">'X '</span> valueName]);
+0486 ylabel([<span class="string">'Y '</span> valueName]);
+0487 legendHandle = legend(legends, <span class="string">'Location'</span>, <span class="string">'North'</span>);
+0488 set(legendHandle, <span class="string">'LineWidth'</span>, 1.5);
+0489 
+0490 <span class="comment">% Resize the plots to fit the legend.</span>
+0491 plotPosition = get(plotHandle, <span class="string">'Position'</span>);
+0492 legendPosition = get(legendHandle, <span class="string">'Position'</span>);
+0493 pathScale = (legendPosition(2) - plotPosition(2)) / plotPosition(4);
+0494 axis equal;
+0495 pad = 0.01 * min(maxXPath - minXPath, maxYPath - minYPath);
+0496 xlim([minXPath - pad, maxXPath + pad]);
+0497 ylim([minYPath - pad, (maxYPath - minYPath) / pathScale + minYPath + pad]);
+0498 <span class="keyword">end</span>
+0499 
+0500 
+0501 
+0502 <span class="comment">%% Plot the worm's path data.</span>
+0503 <a name="_sub6" href="#_subfunctions" class="code">function plotPathData(data, wormPath, startWorm, endWorm, wormColors, </a><span class="keyword">...</span>
+0504     time, widthPerLength, titleName, valueName, dataName, dataColors)
+0505 
+0506 <span class="comment">% Plot the start and end worms.</span>
+0507 <span class="comment">% Note: this is done twice to display the legend and layers correctly.</span>
+0508 widthScale = 150;
+0509 lineSize = widthPerLength * widthScale;
+0510 plot(startWorm(:,1), startWorm(:,2), <span class="string">'Color'</span>, wormColors{1}, <span class="keyword">...</span>
+0511     <span class="string">'LineWidth'</span>, lineSize); <span class="comment">%, 'Marker', 'o', 'MarkerSize', lineSize, ...</span>
+0512     <span class="comment">%'MarkerFaceColor', wormColors{1}, 'MarkerEdgeColor', wormColors{1});</span>
+0513 plot(endWorm(:,1), endWorm(:,2), <span class="string">'Color'</span>, wormColors{2}, <span class="keyword">...</span>
+0514     <span class="string">'LineWidth'</span>, lineSize); <span class="comment">%, 'Marker', 'o', 'MarkerSize', lineSize, ...</span>
+0515     <span class="comment">%'MarkerFaceColor', wormColors{2}, 'MarkerEdgeColor', wormColors{2});</span>
+0516 
+0517 <span class="comment">% Plot the worm path data.</span>
+0518 colormap(jet);
+0519 circleSize = 3;
+0520 pathHandle = scatter(wormPath(1,:), wormPath(2,:), circleSize, <span class="keyword">...</span>
+0521     dataColors, <span class="string">'filled'</span>);
+0522 plotHandle = get(pathHandle, <span class="string">'Parent'</span>);
+0523 
+0524 <span class="comment">% Show the color legend.</span>
+0525 colorbarHandle = colorbar;
+0526 caxis([min(data) max(data)]);
+0527 set(get(colorbarHandle, <span class="string">'YLabel'</span>), <span class="string">'String'</span>, dataName);
+0528 
+0529 <span class="comment">% Compute the minimum and maximum path coordinates.</span>
+0530 minXPath = min(wormPath(1,:));
+0531 maxXPath = max(wormPath(1,:));
+0532 minYPath = min(wormPath(2,:));
+0533 maxYPath = max(wormPath(2,:));
+0534 
+0535 <span class="comment">% Plot the start and end worms.</span>
+0536 <span class="comment">% Note: this is done twice to display the legend and layers correctly.</span>
+0537 plot(startWorm(:,1), startWorm(:,2), <span class="string">'Color'</span>, wormColors{1}, <span class="keyword">...</span>
+0538     <span class="string">'LineWidth'</span>, lineSize); <span class="comment">%, 'Marker', 'o', 'MarkerSize', lineSize, ...</span>
+0539     <span class="comment">%'MarkerFaceColor', wormColors{1}, 'MarkerEdgeColor', wormColors{1});</span>
+0540 plot(endWorm(:,1), endWorm(:,2), <span class="string">'Color'</span>, wormColors{2}, <span class="keyword">...</span>
+0541     <span class="string">'LineWidth'</span>, lineSize); <span class="comment">%, 'Marker', 'o', 'MarkerSize', lineSize, ...</span>
+0542     <span class="comment">%'MarkerFaceColor', wormColors{2}, 'MarkerEdgeColor', wormColors{2});</span>
+0543 
+0544 <span class="comment">% Construct the legend.</span>
+0545 legends = { <span class="keyword">...</span>
+0546     <span class="string">'Start'</span>, <span class="keyword">...</span>
+0547     [<span class="string">'End (Time = '</span> num2str(time) <span class="string">' seconds)'</span>]};
+0548 
+0549 <span class="comment">% Label the figure.</span>
+0550 title(titleName);
+0551 xlabel([<span class="string">'X '</span> valueName]);
+0552 ylabel([<span class="string">'Y '</span> valueName]);
+0553 legendHandle = legend(legends, <span class="string">'Location'</span>, <span class="string">'North'</span>);
+0554 set(legendHandle, <span class="string">'LineWidth'</span>, 1.5);
+0555 
+0556 <span class="comment">% Resize the plots to fit the legend.</span>
+0557 plotPosition = get(plotHandle, <span class="string">'Position'</span>);
+0558 legendPosition = get(legendHandle, <span class="string">'Position'</span>);
+0559 pathScale = (legendPosition(2) - plotPosition(2)) / plotPosition(4);
+0560 axis equal;
+0561 pad = 0.01 * min(maxXPath - minXPath, maxYPath - minYPath);
+0562 xlim([minXPath - pad, maxXPath + pad]);
+0563 ylim([minYPath - pad, (maxYPath - minYPath) / pathScale + minYPath + pad]);
+0564 <span class="keyword">end</span>
+0565 
+0566 
+0567 
+0568 <span class="comment">%% Integrate the worm path.</span>
+0569 <a name="_sub7" href="#_subfunctions" class="code">function paths = integratePath(skeleton, scale, points)</a>
+0570 
+0571 <span class="comment">% Scale the skeleton.</span>
+0572 skeleton = round(skeleton * scale);
+0573 skeletonX = skeleton(:,1,:);
+0574 skeletonY = skeleton(:,2,:);
+0575 
+0576 <span class="comment">% Compute the path space.</span>
+0577 xMin = min(skeletonX(:));
+0578 xMax = max(skeletonX(:));
+0579 yMin = min(skeletonY(:));
+0580 yMax = max(skeletonY(:));
+0581 
+0582 <span class="comment">% Translate the skeleton to a zero origin.</span>
+0583 skeleton(:,1,:) = skeleton(:,1,:) - xMin + 1;
+0584 skeleton(:,2,:) = skeleton(:,2,:) - yMin + 1;
+0585 
+0586 <span class="comment">% Construct the empty paths.</span>
+0587 pathSize = [yMax - yMin + 1, xMax - xMin + 1];
+0588 zeroPath = zeros(pathSize);
+0589 paths = cell(length(points),1);
+0590 <span class="keyword">for</span> i = 1:length(points)
+0591     paths{i} = zeroPath;
+0592 <span class="keyword">end</span>
+0593 
+0594 <span class="comment">% Integrate the paths.</span>
+0595 <span class="keyword">for</span> i = 1:size(skeleton, 3)
+0596 
+0597     <span class="comment">% Is there a skeleton for this frame?</span>
+0598     worm = squeeze(skeleton(:,:,i));
+0599     <span class="keyword">if</span> isnan(worm(1))
+0600         <span class="keyword">continue</span>;
+0601     <span class="keyword">end</span>
+0602 
+0603     <span class="comment">% Compute the worm.</span>
+0604     wormI = sub2ind(pathSize, worm(:,2), worm(:,1));
+0605     
+0606     <span class="comment">% Integrate the path.</span>
+0607     <span class="keyword">for</span> j = 1:length(paths)
+0608         
+0609         <span class="comment">% Compute the unique worm points.</span>
+0610         wormPointsI = unique(wormI(points{j}));
+0611         
+0612         <span class="comment">% Integrate the path.</span>
+0613         paths{j}(wormPointsI) = paths{j}(wormPointsI) + 1;
+0614     <span class="keyword">end</span>
+0615 <span class="keyword">end</span>
+0616 
+0617 <span class="comment">% Correct the y-axis (from image space).</span>
+0618 <span class="keyword">for</span> i = 1:length(paths)
+0619     paths{i} = flipud(paths{i});
+0620 <span class="keyword">end</span>
+0621 <span class="keyword">end</span>
+0622 
+0623 
+0624 
+0625 <span class="comment">%% Convert data to colors.</span>
+0626 <a name="_sub8" href="#_subfunctions" class="code">function dataColors = data2colors(data, colors)</a>
+0627 
+0628 <span class="comment">% Normalize the data.</span>
+0629 minData = min(data);
+0630 data = data - minData;
+0631 data = data / max(data);
+0632 
+0633 <span class="comment">% Convert the data to colors.</span>
+0634 colorIndex = round((size(colors ,1) - 1) * data) + 1;
+0635 dataColors = colors(colorIndex,:);
+0636 <span class="keyword">end</span>
+0637 
+0638 
+0639 
+0640 <span class="comment">%% Save a figure to a file.</span>
+0641 <a name="_sub9" href="#_subfunctions" class="code">function saveFigure(figureHandle, pdfFile)</a>
+0642 drawnow;
+0643 set(figureHandle, <span class="string">'PaperPosition'</span>, [0.25 0.25 22.9036 16.048]);
+0644 set(figureHandle, <span class="string">'PaperOrientation'</span>, <span class="string">'landscape'</span>);
+0645 set(figureHandle, <span class="string">'PaperType'</span>, <span class="string">'A2'</span>);
+0646 saveas(figureHandle, pdfFile, <span class="string">'pdf'</span>);
+0647 <span class="keyword">end</span>
+0648 
+0649 
+0650 
+0651 <span class="comment">%% Merge 2 PDF files.</span>
+0652 <a name="_sub10" href="#_subfunctions" class="code">function mergePDFs(file1, file2, mergeFile)</a>
+0653 
+0654 <span class="comment">% Use Ghostscript to merge.</span>
+0655 gsPath = <span class="string">'/usr/local/bin/gs'</span>;
+0656 command = [gsPath <span class="string">' -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite '</span> <span class="keyword">...</span>
+0657     <span class="string">'-sOutputFile='</span> mergeFile <span class="string">' '</span> file1 <span class="string">' '</span> file2 ];
+0658 
+0659 <span class="comment">% Merge the PDFs.</span>
+0660 [status, result] = system(command);
+0661 <span class="keyword">if</span> status ~= 0
+0662     error(<span class="string">'worm2pdf:MergePDF'</span>, [<span class="string">'&quot;'</span> file1 <span class="string">'&quot; and &quot;'</span> file2 <span class="keyword">...</span>
+0663         <span class="string">'&quot; cannot be merged into &quot;'</span> mergeFile <span class="string">'&quot;: '</span> result]);
+0664 <span class="keyword">end</span>
+0665 <span class="keyword">end</span>
+0666 
+0667 <span class="comment">% function plotEvent(eventFrames, eventField, titleName, valueName, color)</span>
+0668 <span class="comment">% end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

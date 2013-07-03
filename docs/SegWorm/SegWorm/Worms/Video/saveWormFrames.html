@@ -1,0 +1,512 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of saveWormFrames</title>
+  <meta name="keywords" content="saveWormFrames">
+  <meta name="description" content="SAVEWORMFRAMES Segment the worm in a set of video frames and save">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Video -->
+<h1>saveWormFrames
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>SAVEWORMFRAMES Segment the worm in a set of video frames and save</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function failedFrames = saveWormFrames(wormFile, videoFile, frames,blockSize, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SAVEWORMFRAMES Segment the worm in a set of video frames and save
+   the information in a file.
+
+   - Save every segmented frame:
+   FAILEDFRAMES = SAVEWORMFRAMES(WORMFILE, VIDEOFILE, FRAMES, BLOCKSIZE)
+
+   - Save segmented frames, normalize the worms:
+   FAILEDFRAMES = SAVEWORMFRAMES(WORMFILE, VIDEOFILE, FRAMES, BLOCKSIZE,
+                                 SAMPLES)
+
+   - Save segmented frames, normalize the worms, exclude stage movements:
+   FAILEDFRAMES = SAVEWORMFRAMES(WORMFILE, VIDEOFILE, FRAMES, BLOCKSIZE,
+                                 SAMPLES, INFOFILE, LOGFILE, DIFFFILE)
+
+   Inputs:
+       wormFile  - the name of the file in which to store the worm blocks.
+                   The file format is MAT (Matlab's '.mat') and contains
+                   the following variables:
+                   
+                   samples      = the samples per normalized worm; if
+                                  empty, the worms are in structs
+                   fps          = frames/seconds
+                   firstFrame   = the first frame number (in block1)
+                   lastFrame    = the last frame number (in the last block)
+                   blockSize    = the size of a block
+                   blocks       = the number of blocks
+                   block1       = the first block
+                   ...
+                   blockN       = the N-th (last) block
+
+                   If the data is normalized, the blocks are cell arrays
+                   with following structure (see normWorms):
+
+                   blockN{1}  = status:
+                                s = segmented
+                                f = segmentation failed
+                                m = stage movement
+                                d = dropped frame
+                   blockN{2}  = vulvaContours
+                   blockN{3}  = nonVulvaContours
+                   blockN{4}  = skeletons
+                   blockN{5}  = angles
+                   blockN{6}  = inOutTouches
+                   blockN{7}  = lengths
+                   blockN{8}  = widths
+                   blockN{9}  = headAreas
+                   blockN{10} = tailAreas
+                   blockN{11} = vulvaAreas
+                   blockN{12} = nonVulvaAreas
+
+                   Otherwise, the blocks are just cell arrays of worm
+                   cells; missing worms are labeled with their frame
+                   status instead:
+
+                   blockN = 1 to, at most, blockSize number of worm cells;
+                            or, for missing worms, their frame status:
+                            f = segmentation failed
+                            m = stage movement
+                            d = dropped frame
+
+       videoFile - the name of the video to segment
+       frames    - the frames of the video to segment; if empty, all
+                   frames are segmented
+                   Note: video frame indexing begins at 0
+       blockSize - the size for blocks of worm information (i.e., the
+                   number of worms in a block); if empty, all worms are
+                   stored in a single block
+       samples   - the number of samples to use in order to normalize the
+                   worms (see normWorms)
+                   Note: if the samples is undefined, the worms are stored
+                   as cells (see worm2cell); otherwise, the worms are
+                   stored as normalized matrices (see normWorms).
+       infoFile  - the XML file with the experiment information
+                   Note: if infoFile, logFile, and diffFile are undefined,
+                   all video frames are segmented (including those
+                   containing stage movements)
+       logFile   - the CSV file with the stage locations
+       diffFile  - the MAT file with the video differentiation
+
+   Outputs:
+       failedFrames - the frame numbers at which segmentation failed
+
+   See also SEGWORM, <a href="segWormFrames.html" class="code" title="function [worms imgs oImgs] = segWormFrames(videoFile, frames, verbose,varargin)">SEGWORMFRAMES</a>, CELL2WORM, NORMWORMS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Orientation/flipWormHead.html" class="code" title="function worm = flipWormHead(worm)">flipWormHead</a>	FLIPWORMHEAD Flip the head-to-tail orientation of the worm.</li><li><a href="../../../SegWorm/Worms/Orientation/orientWormAtCentroid.html" class="code" title="function [worm2 confidence flippedConfidence] =orientWormAtCentroid(worm1, worm2, samples, varargin)">orientWormAtCentroid</a>	ORIENTWORMATCENTROID Orient worm2 to match worm1's orientation (by setting</li><li><a href="../../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>	SEGWORM Segment the worm in an image and organize the information in a</li><li><a href="../../../SegWorm/Worms/StageMovement/findStageMovement.html" class="code" title="function [frames movesI locations] =findStageMovement(infoFile, logFile, diffFile, verbose, varargin)">findStageMovement</a>	FINDSTAGEMOVEMENT Find stage movements in a worm experiment.</li><li><a href="../../../SegWorm/Worms/StageMovement/readPixels2Microns.html" class="code" title="function [pixel2MicronScale rotation] = readPixels2Microns(infoFile)">readPixels2Microns</a>	READPIXELS2MICRONS Read the experiment information file and compute the</li><li><a href="../../../SegWorm/Worms/Util/normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">normWorms</a>	NORMWORMS Normalize the worms' information to a standard, compact set.</li><li><a href="../../../SegWorm/Worms/Util/worm2cell.html" class="code" title="function worm = worm2cell(worm)">worm2cell</a>	WORM2CELL Convert a worm struct to a cell array.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function failedFrames = saveWormFrames(wormFile, videoFile, frames, </a><span class="keyword">...</span>
+0002     blockSize, varargin)
+0003 <span class="comment">%SAVEWORMFRAMES Segment the worm in a set of video frames and save</span>
+0004 <span class="comment">%   the information in a file.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   - Save every segmented frame:</span>
+0007 <span class="comment">%   FAILEDFRAMES = SAVEWORMFRAMES(WORMFILE, VIDEOFILE, FRAMES, BLOCKSIZE)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   - Save segmented frames, normalize the worms:</span>
+0010 <span class="comment">%   FAILEDFRAMES = SAVEWORMFRAMES(WORMFILE, VIDEOFILE, FRAMES, BLOCKSIZE,</span>
+0011 <span class="comment">%                                 SAMPLES)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   - Save segmented frames, normalize the worms, exclude stage movements:</span>
+0014 <span class="comment">%   FAILEDFRAMES = SAVEWORMFRAMES(WORMFILE, VIDEOFILE, FRAMES, BLOCKSIZE,</span>
+0015 <span class="comment">%                                 SAMPLES, INFOFILE, LOGFILE, DIFFFILE)</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   Inputs:</span>
+0018 <span class="comment">%       wormFile  - the name of the file in which to store the worm blocks.</span>
+0019 <span class="comment">%                   The file format is MAT (Matlab's '.mat') and contains</span>
+0020 <span class="comment">%                   the following variables:</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%                   samples      = the samples per normalized worm; if</span>
+0023 <span class="comment">%                                  empty, the worms are in structs</span>
+0024 <span class="comment">%                   fps          = frames/seconds</span>
+0025 <span class="comment">%                   firstFrame   = the first frame number (in block1)</span>
+0026 <span class="comment">%                   lastFrame    = the last frame number (in the last block)</span>
+0027 <span class="comment">%                   blockSize    = the size of a block</span>
+0028 <span class="comment">%                   blocks       = the number of blocks</span>
+0029 <span class="comment">%                   block1       = the first block</span>
+0030 <span class="comment">%                   ...</span>
+0031 <span class="comment">%                   blockN       = the N-th (last) block</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%                   If the data is normalized, the blocks are cell arrays</span>
+0034 <span class="comment">%                   with following structure (see normWorms):</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%                   blockN{1}  = status:</span>
+0037 <span class="comment">%                                s = segmented</span>
+0038 <span class="comment">%                                f = segmentation failed</span>
+0039 <span class="comment">%                                m = stage movement</span>
+0040 <span class="comment">%                                d = dropped frame</span>
+0041 <span class="comment">%                   blockN{2}  = vulvaContours</span>
+0042 <span class="comment">%                   blockN{3}  = nonVulvaContours</span>
+0043 <span class="comment">%                   blockN{4}  = skeletons</span>
+0044 <span class="comment">%                   blockN{5}  = angles</span>
+0045 <span class="comment">%                   blockN{6}  = inOutTouches</span>
+0046 <span class="comment">%                   blockN{7}  = lengths</span>
+0047 <span class="comment">%                   blockN{8}  = widths</span>
+0048 <span class="comment">%                   blockN{9}  = headAreas</span>
+0049 <span class="comment">%                   blockN{10} = tailAreas</span>
+0050 <span class="comment">%                   blockN{11} = vulvaAreas</span>
+0051 <span class="comment">%                   blockN{12} = nonVulvaAreas</span>
+0052 <span class="comment">%</span>
+0053 <span class="comment">%                   Otherwise, the blocks are just cell arrays of worm</span>
+0054 <span class="comment">%                   cells; missing worms are labeled with their frame</span>
+0055 <span class="comment">%                   status instead:</span>
+0056 <span class="comment">%</span>
+0057 <span class="comment">%                   blockN = 1 to, at most, blockSize number of worm cells;</span>
+0058 <span class="comment">%                            or, for missing worms, their frame status:</span>
+0059 <span class="comment">%                            f = segmentation failed</span>
+0060 <span class="comment">%                            m = stage movement</span>
+0061 <span class="comment">%                            d = dropped frame</span>
+0062 <span class="comment">%</span>
+0063 <span class="comment">%       videoFile - the name of the video to segment</span>
+0064 <span class="comment">%       frames    - the frames of the video to segment; if empty, all</span>
+0065 <span class="comment">%                   frames are segmented</span>
+0066 <span class="comment">%                   Note: video frame indexing begins at 0</span>
+0067 <span class="comment">%       blockSize - the size for blocks of worm information (i.e., the</span>
+0068 <span class="comment">%                   number of worms in a block); if empty, all worms are</span>
+0069 <span class="comment">%                   stored in a single block</span>
+0070 <span class="comment">%       samples   - the number of samples to use in order to normalize the</span>
+0071 <span class="comment">%                   worms (see normWorms)</span>
+0072 <span class="comment">%                   Note: if the samples is undefined, the worms are stored</span>
+0073 <span class="comment">%                   as cells (see worm2cell); otherwise, the worms are</span>
+0074 <span class="comment">%                   stored as normalized matrices (see normWorms).</span>
+0075 <span class="comment">%       infoFile  - the XML file with the experiment information</span>
+0076 <span class="comment">%                   Note: if infoFile, logFile, and diffFile are undefined,</span>
+0077 <span class="comment">%                   all video frames are segmented (including those</span>
+0078 <span class="comment">%                   containing stage movements)</span>
+0079 <span class="comment">%       logFile   - the CSV file with the stage locations</span>
+0080 <span class="comment">%       diffFile  - the MAT file with the video differentiation</span>
+0081 <span class="comment">%</span>
+0082 <span class="comment">%   Outputs:</span>
+0083 <span class="comment">%       failedFrames - the frame numbers at which segmentation failed</span>
+0084 <span class="comment">%</span>
+0085 <span class="comment">%   See also SEGWORM, SEGWORMFRAMES, CELL2WORM, NORMWORMS</span>
+0086 
+0087 <span class="comment">% Check the variable input arguments.</span>
+0088 <span class="keyword">if</span> ~isempty(varargin) &amp;&amp; length(varargin) ~= 1 &amp;&amp; length(varargin) ~= 4
+0089     error(<span class="string">'saveWormFrames:varargin'</span>, [<span class="string">'There are too many or too few '</span> <span class="keyword">...</span>
+0090         <span class="string">'input arguments. Please check the function usage with ''help'''</span>]);
+0091 <span class="keyword">end</span>
+0092 
+0093 <span class="comment">% Remove the worm-blocks-file name's extension.</span>
+0094 matExt = <span class="string">'.mat'</span>;
+0095 <span class="keyword">if</span> isequal(wormFile((end - length(matExt) + 1):end), matExt) 
+0096     wormFile((end - length(matExt) + 1):end) = [];
+0097 <span class="keyword">end</span>
+0098 
+0099 <span class="comment">% Are we normalizing the worms?</span>
+0100 samples = [];
+0101 <span class="keyword">if</span> ~isempty(varargin)
+0102     samples = varargin{1};
+0103     
+0104     <span class="comment">% Setup the stage movements.</span>
+0105     moves = [0, 0];
+0106     origins = [0,0];
+0107     pixel2MicronScale = [-1, -1];
+0108     rotation = 1;
+0109 <span class="keyword">end</span>
+0110 
+0111 <span class="comment">% Are we excluding stage movement frames?</span>
+0112 moveFrames = [];
+0113 <span class="keyword">if</span> length(varargin) == 4
+0114     
+0115     <span class="comment">% Assign the variable input arguments.</span>
+0116     infoFile = varargin{2};
+0117     logFile = varargin{3};
+0118     diffFile = varargin{4};
+0119     
+0120     <span class="comment">% Read the info to convert onscreen pixels to real-world microns.</span>
+0121     [pixel2MicronScale rotation] = <a href="../../../SegWorm/Worms/StageMovement/readPixels2Microns.html" class="code" title="function [pixel2MicronScale rotation] = readPixels2Microns(infoFile)">readPixels2Microns</a>(infoFile);
+0122     
+0123     <span class="comment">% Find the stage movements.</span>
+0124     [moveFrames moves origins] = <a href="../../../SegWorm/Worms/StageMovement/findStageMovement.html" class="code" title="function [frames movesI locations] =findStageMovement(infoFile, logFile, diffFile, verbose, varargin)">findStageMovement</a>(infoFile, logFile, <span class="keyword">...</span>
+0125         diffFile, 0);
+0126 <span class="keyword">end</span>
+0127 
+0128 <span class="comment">% Open the video and get its information.</span>
+0129 <span class="keyword">if</span> ispc()
+0130     vr = videoReader(videoFile, <span class="string">'plugin'</span>, <span class="string">'DirectShow'</span>);
+0131 <span class="keyword">else</span>
+0132     vr = videoReader(videoFile, <span class="string">'plugin'</span>, <span class="string">'ffmpegDirect'</span>);
+0133 <span class="keyword">end</span>
+0134 <span class="keyword">if</span> ~next(vr)
+0135     error(<span class="string">'saveWormFrames:NoFrames'</span>, <span class="keyword">...</span>
+0136         [<span class="string">''''</span> videoFile <span class="string">''' has no video frames'</span>]);
+0137 <span class="keyword">end</span>
+0138 fps = get(vr, <span class="string">'fps'</span>);
+0139 
+0140 <span class="comment">% Get the vignette.</span>
+0141 vImg = 0;
+0142 vignetteFile = strrep(videoFile, <span class="string">'.avi'</span>, <span class="string">'.info.xml.vignette.dat'</span>);
+0143 <span class="keyword">if</span> exist(vignetteFile, <span class="string">'file'</span>)
+0144     height = get(vr, <span class="string">'height'</span>);
+0145     width = get(vr, <span class="string">'width'</span>);
+0146     fid = fopen(vignetteFile, <span class="string">'r'</span>);
+0147     vImg = fread(fid, [width height], <span class="string">'int32=&gt;int8'</span>, 0, <span class="string">'b'</span>)';
+0148     fclose(fid);
+0149 <span class="keyword">end</span>
+0150 
+0151 <span class="comment">% Is the video grayscale?</span>
+0152 <span class="comment">% Note: if there's no difference between the red and green channel, we</span>
+0153 <span class="comment">% consider all 3 RGB channels identical grayscale images.</span>
+0154 img = getframe(vr);
+0155 isGray = false;
+0156 <span class="keyword">if</span> max(max(abs(img(:,:,1) - img(:,:,2)))) == 0
+0157     isGray = true;
+0158 <span class="keyword">end</span>
+0159 frame = 0;
+0160 
+0161 <span class="comment">% If we're normalizing the worms, the frames must be a continuous sequence.</span>
+0162 <span class="keyword">if</span> ~isempty(frames)
+0163     <span class="keyword">if</span> ~isempty(samples) &amp;&amp; any(diff(frames) ~= 1)
+0164         error([<span class="string">'saveWormFrames:NormalizedContinuity'</span>, <span class="string">'When normalizing'</span> <span class="keyword">...</span>
+0165             <span class="string">', the saved frames must form a continuous sequence.'</span>]);
+0166     <span class="keyword">end</span>
+0167     
+0168 <span class="comment">% Segment and save every frame.</span>
+0169 <span class="keyword">else</span>
+0170     frames = 0:(get(vr, <span class="string">'numFrames'</span>) + get(vr, <span class="string">'nHiddenFinalFrames'</span>) - 1);
+0171 <span class="keyword">end</span>
+0172 
+0173 <span class="comment">% Pre-allocate memory.</span>
+0174 failedFrames(1:length(frames)) = NaN;
+0175 <span class="keyword">if</span> isempty(blockSize)
+0176     blockSize = length(frames);
+0177 <span class="keyword">end</span>
+0178 framesStatus(1:blockSize) = <span class="string">'d'</span>;
+0179 block = cell(blockSize,1);
+0180 <span class="keyword">if</span> ~isempty(samples)
+0181     normBlock = cell(12,1);
+0182 <span class="keyword">end</span>
+0183 
+0184 <span class="comment">% Pre-compute values.</span>
+0185 orientationSamples = [1:5 7:11] / 12;
+0186 
+0187 <span class="comment">% Segment the video frames.</span>
+0188 isSaved = false;
+0189 prevWorm = [];
+0190 frames = sort(frames);
+0191 isDone = false;
+0192 i = 1;
+0193 failI = 1;
+0194 <span class="keyword">while</span> ~isDone &amp;&amp; i &lt;= length(frames)
+0195 
+0196     <span class="comment">% Use the next video frame.</span>
+0197     <span class="keyword">if</span> frames(i) - frame == 1
+0198         <span class="keyword">if</span> next(vr)
+0199             timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0200             frame = round(timestamp * fps);
+0201             
+0202         <span class="comment">% We reached the end of the video.</span>
+0203         <span class="keyword">else</span>
+0204             frames(i:end) = [];
+0205             i = i - 1;
+0206             isDone = true;
+0207         <span class="keyword">end</span>
+0208         
+0209     <span class="comment">% Seek the video frame.</span>
+0210     <span class="keyword">elseif</span> frames(i) &gt; frame
+0211         prevWorm = [];
+0212         
+0213         <span class="comment">% Find the requested frame.</span>
+0214         <span class="comment">% Note: seek is inaccurate.</span>
+0215         seek(vr, frames(i));
+0216         timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0217         
+0218         <span class="comment">% We overshot the requested frame.</span>
+0219         j = frames(i);
+0220         <span class="keyword">while</span> j &gt; 0 &amp;&amp; round(timestamp * fps) &gt; frames(i)
+0221             j = j - 1;
+0222             seek(vr, j);
+0223             timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0224         <span class="keyword">end</span>
+0225         
+0226         <span class="comment">% We undershot the requested frame.</span>
+0227         <span class="keyword">while</span> ~isDone &amp;&amp; round(timestamp * fps) &lt; frames(i)
+0228             <span class="keyword">if</span> next(vr)
+0229                 timestamp = get(vr, <span class="string">'timeStamp'</span>);
+0230                 
+0231             <span class="comment">% We reached the end of the video.</span>
+0232             <span class="keyword">else</span>
+0233                 frames(i:end) = [];
+0234                 i = i - 1;
+0235                 isDone = true;
+0236             <span class="keyword">end</span>
+0237         <span class="keyword">end</span>
+0238         frame = round(timestamp * fps);
+0239     <span class="keyword">end</span>
+0240     
+0241     <span class="comment">% Did we drop any frames?</span>
+0242     blockI = mod(i - 1, blockSize) + 1;
+0243     <span class="keyword">if</span> isDone
+0244         isSeg = false;
+0245     <span class="keyword">else</span>
+0246         isSeg = true;
+0247         <span class="keyword">if</span> frames(i) ~= frame
+0248             isSeg = false;
+0249             
+0250         <span class="comment">% Skip stage movement frames.</span>
+0251         <span class="keyword">elseif</span> ~isempty(moveFrames)
+0252             <span class="keyword">if</span> moveFrames(frames(i) + 1)
+0253                 isSeg = false;
+0254                 framesStatus(blockI) = <span class="string">'m'</span>;
+0255             <span class="keyword">end</span>
+0256         <span class="keyword">end</span>
+0257     <span class="keyword">end</span>
+0258     
+0259     <span class="comment">% Are we segmenting this frame?</span>
+0260     <span class="keyword">if</span> isSeg
+0261         
+0262         <span class="comment">% Get the video frame and convert it to grayscale.</span>
+0263         <span class="keyword">if</span> isGray
+0264             img = getframe(vr);
+0265             img = img(:,:,1);
+0266         <span class="keyword">else</span>
+0267             img = rgb2gray(getframe(vr));
+0268         <span class="keyword">end</span>
+0269         
+0270         <span class="comment">% Correct the vignette.</span>
+0271         <span class="keyword">if</span> ~isempty(vImg)
+0272             img = uint8(single(img) - single(vImg));
+0273         <span class="keyword">end</span>
+0274         
+0275         <span class="comment">% Segment the worm.</span>
+0276         worm = <a href="../../../SegWorm/Worms/Segmentation/segWorm.html" class="code" title="function worm = segWorm(img, frame, isNormalized, verbose, varargin)">segWorm</a>(img, frames(i), 1, false);
+0277         <span class="keyword">if</span> ~isempty(worm)
+0278             
+0279             <span class="comment">% Orient the worm.</span>
+0280             <span class="keyword">if</span> isempty(prevWorm)
+0281                 <span class="keyword">if</span> worm.orientation.head.confidence.head &lt; <span class="keyword">...</span>
+0282                         worm.orientation.head.confidence.tail
+0283                     worm = <a href="../../../SegWorm/Worms/Orientation/flipWormHead.html" class="code" title="function worm = flipWormHead(worm)">flipWormHead</a>(worm);
+0284                 <span class="keyword">end</span>
+0285             <span class="keyword">else</span>
+0286                 [worm, ~, ~] = <a href="../../../SegWorm/Worms/Orientation/orientWormAtCentroid.html" class="code" title="function [worm2 confidence flippedConfidence] =orientWormAtCentroid(worm1, worm2, samples, varargin)">orientWormAtCentroid</a>(prevWorm, worm, <span class="keyword">...</span>
+0287                     orientationSamples);
+0288             <span class="keyword">end</span>
+0289             
+0290             <span class="comment">% Save the worm.</span>
+0291             framesStatus(blockI) = <span class="string">'s'</span>;
+0292             block{blockI} = <a href="../../../SegWorm/Worms/Util/worm2cell.html" class="code" title="function worm = worm2cell(worm)">worm2cell</a>(worm);
+0293             prevWorm = worm;
+0294             
+0295         <span class="comment">% Segmentation failed.</span>
+0296         <span class="keyword">else</span>
+0297             failedFrames(failI) = frames(i);
+0298             failI = failI + 1;
+0299             framesStatus(blockI) = <span class="string">'f'</span>;
+0300             warning(<span class="string">'segWormFrames:NoWorm'</span>, <span class="keyword">...</span>
+0301                 [<span class="string">'No worm at frame = '</span> num2str(frame) <span class="keyword">...</span>
+0302                 <span class="string">', timestamp = '</span> num2str(timestamp)]);
+0303         <span class="keyword">end</span>
+0304     <span class="keyword">end</span>
+0305     
+0306     <span class="comment">% Save the block.</span>
+0307     <span class="keyword">if</span> blockI == blockSize || i == length(frames) || isDone
+0308         
+0309         <span class="comment">% Trim the block.</span>
+0310         <span class="keyword">if</span> blockI &lt; blockSize
+0311             framesStatus((blockI + 1):end) = [];
+0312             block = block(1:blockI);
+0313         <span class="keyword">end</span>
+0314         
+0315         <span class="comment">% Record the frame status for missing worms.</span>
+0316         <span class="keyword">if</span> isempty(samples)
+0317             <span class="keyword">for</span> j = 1:size(block)
+0318                 <span class="keyword">if</span> isempty(block{j})
+0319                     block{j} = framesStatus(j);
+0320                 <span class="keyword">end</span>
+0321             <span class="keyword">end</span>
+0322             saveBlock = block;
+0323             
+0324         <span class="comment">% Normalize the worms.</span>
+0325         <span class="keyword">else</span>
+0326             
+0327             <span class="comment">% Normalize the worms.</span>
+0328             [vulvaContours nonVulvaContours skeletons angles <span class="keyword">...</span>
+0329                 inOutTouches lengths widths headAreas tailAreas <span class="keyword">...</span>
+0330                 vulvaAreas nonVulvaAreas] = <a href="../../../SegWorm/Worms/Util/normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">normWorms</a>(block, samples, <span class="keyword">...</span>
+0331                 moves, origins, pixel2MicronScale, rotation, false);
+0332             
+0333             <span class="comment">% Convert the block.</span>
+0334             normBlock{1} = framesStatus;
+0335             normBlock{2} = vulvaContours;
+0336             normBlock{3} = nonVulvaContours;
+0337             normBlock{4} = skeletons;
+0338             normBlock{5} = angles;
+0339             normBlock{6} = inOutTouches;
+0340             normBlock{7} = lengths;
+0341             normBlock{8} = widths;
+0342             normBlock{9} = headAreas;
+0343             normBlock{10} = tailAreas;
+0344             normBlock{11} = vulvaAreas;
+0345             normBlock{12} = nonVulvaAreas;
+0346             saveBlock = normBlock;
+0347         <span class="keyword">end</span>
+0348         
+0349         <span class="comment">% Save the block.</span>
+0350         <span class="comment">% Note: I don't trust IEEE floating point arithmetic.</span>
+0351         blockName = [<span class="string">'block'</span> num2str(floor((i - 1) / blockSize) + 1)];
+0352         eval([blockName <span class="string">' = saveBlock;'</span>]);
+0353         <span class="keyword">if</span> isSaved
+0354             save([wormFile <span class="string">'.mat'</span>], blockName, <span class="string">'-append'</span>);
+0355         <span class="keyword">else</span>
+0356             save([wormFile <span class="string">'.mat'</span>], blockName);
+0357             isSaved = true;
+0358         <span class="keyword">end</span>
+0359         framesStatus(1:blockSize) = <span class="string">'d'</span>;
+0360         block = cell(blockSize,1);
+0361     <span class="keyword">end</span>
+0362     
+0363     <span class="comment">% Advance.</span>
+0364     i = i + 1;    
+0365 <span class="keyword">end</span>
+0366 
+0367 <span class="comment">% Clean up.</span>
+0368 close(vr);
+0369 failedFrames(failI:end) = [];
+0370 
+0371 <span class="comment">% Save the remaining information.</span>
+0372 <span class="comment">% Note: I don't trust IEEE floating point arithmetic.</span>
+0373 firstFrame = frames(1);
+0374 lastFrame = frames(end);
+0375 blocks = floor((i - 2) / blockSize) + 1;
+0376 <span class="keyword">if</span> isSaved
+0377     save([wormFile <span class="string">'.mat'</span>], <span class="string">'blocks'</span>, <span class="string">'blockSize'</span>, <span class="string">'firstFrame'</span>, <span class="keyword">...</span>
+0378         <span class="string">'lastFrame'</span>, <span class="string">'samples'</span>, <span class="string">'fps'</span>, <span class="string">'pixel2MicronScale'</span>, <span class="string">'rotation'</span>, <span class="keyword">...</span>
+0379         <span class="string">'-append'</span>);
+0380 <span class="keyword">else</span>
+0381     save([wormFile <span class="string">'.mat'</span>], <span class="string">'blocks'</span>, <span class="string">'blockSize'</span>, <span class="string">'firstFrame'</span>, <span class="keyword">...</span>
+0382         <span class="string">'lastFrame'</span>, <span class="string">'samples'</span>, <span class="string">'fps'</span>, <span class="string">'pixel2MicronScale'</span>, <span class="string">'rotation'</span>);
+0383 <span class="keyword">end</span>
+0384 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

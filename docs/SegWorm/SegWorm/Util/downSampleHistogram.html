@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of downSampleHistogram</title>
+  <meta name="keywords" content="downSampleHistogram">
+  <meta name="description" content="DOWNSAMPLEHISTOGRAM Downsample a histogram(s).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- menu.html Util -->
+<h1>downSampleHistogram
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>DOWNSAMPLEHISTOGRAM Downsample a histogram(s).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function histogram = downSampleHistogram(histogram, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">DOWNSAMPLEHISTOGRAM Downsample a histogram(s).
+
+   HISTOGRAM = DOWNSAMPLEHISTOGRAM(HISTOGRAM)
+
+   HISTOGRAM = DOWNSAMPLEHISTOGRAM(HISTOGRAM, SCALE)
+
+   Input:
+       histogram - the histogram(s) to downsample
+       scale     - the scale to use for downsampling;
+                   if empty/NaN/0, the scale is guessed by using the
+                   square root of the smallest, non-zero data sample size
+                   as the number of bins to aim for
+
+   Output:
+       histogram - the downsampled histogram(s)
+
+ See also <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">HISTOGRAM</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>	HISTOGRAM Compute the data's histogram.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="plotHistogram.html" class="code" title="function plotHistogram(data, titleName, xAxisName, yAxisPrefix,dataNames, histColors, varargin)">plotHistogram</a>	PLOTHISTOGRAM Plot a histogram(s) of data.</li><li><a href="../../SegWorm/Worms/Printing/worm2detailsPDF2.html" class="code" title="function [filename pages] = worm2detailsPDF(filename, worm, wormName,varargin)">worm2detailsPDF2</a>	WORM2DETAILSPDF Save worm details to a PDF.</li><li><a href="../../SegWorm/Worms/Printing/worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>	WORM2DETAILSTIF Save worm details to a TIF.</li><li><a href="../../SegWorm/Worms/Printing/worm2summaryTIF.html" class="code" title="function [filename pages] = worm2summaryTIF(filename, worm, wormName,varargin)">worm2summaryTIF</a>	WORM2SUMMARYTIF Save a worm summary to a TIF.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function data = scaleHistogram(data, scale)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function histogram = downSampleHistogram(histogram, varargin)</a>
+0002 <span class="comment">%DOWNSAMPLEHISTOGRAM Downsample a histogram(s).</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   HISTOGRAM = DOWNSAMPLEHISTOGRAM(HISTOGRAM)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   HISTOGRAM = DOWNSAMPLEHISTOGRAM(HISTOGRAM, SCALE)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Input:</span>
+0009 <span class="comment">%       histogram - the histogram(s) to downsample</span>
+0010 <span class="comment">%       scale     - the scale to use for downsampling;</span>
+0011 <span class="comment">%                   if empty/NaN/0, the scale is guessed by using the</span>
+0012 <span class="comment">%                   square root of the smallest, non-zero data sample size</span>
+0013 <span class="comment">%                   as the number of bins to aim for</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Output:</span>
+0016 <span class="comment">%       histogram - the downsampled histogram(s)</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% See also HISTOGRAM</span>
+0019 
+0020 <span class="comment">% Is the histogram empty?</span>
+0021 <span class="keyword">if</span> isempty(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>)
+0022     <span class="keyword">return</span>;
+0023 <span class="keyword">end</span>
+0024 
+0025 <span class="comment">% Determine the scale for downsampling.</span>
+0026 scale = [];
+0027 <span class="keyword">if</span> ~isempty(varargin)
+0028     scale = varargin{1};
+0029     
+0030     <span class="comment">% Compute the scale.</span>
+0031     <span class="keyword">if</span> isnan(scale) || scale == 0
+0032         scale = [];
+0033     <span class="keyword">end</span>
+0034 <span class="keyword">end</span>
+0035 
+0036 <span class="comment">% Check the scale.</span>
+0037 <span class="keyword">if</span> scale &lt; 1
+0038     error(<span class="string">'downSampleHistogram:Scale'</span>, <span class="keyword">...</span>
+0039         <span class="string">'The scale must be a positive integer'</span>)
+0040 <span class="keyword">end</span>
+0041 
+0042 <span class="comment">% Are any of the histograms empty?</span>
+0043 empty = arrayfun(@(x) isempty(x.bins) || isnan(x.bins(1)), <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>);
+0044 <span class="keyword">if</span> all(empty)
+0045     <span class="keyword">return</span>;
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="comment">% Use the smallest data sets to compute the downsampling.</span>
+0049 samples = nan(length(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>),1);
+0050 numBins = nan(length(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>),1);
+0051 resolutions = nan(length(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>),1);
+0052 isZeroBins = false(length(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>),1);
+0053 <span class="keyword">for</span> i = 1:length(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>)
+0054     <span class="keyword">if</span> ~empty(i) &amp;&amp; <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i).allData.samples &gt; 0
+0055         samples(i) = <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i).allData.samples;
+0056         numBins(i) = length(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i).bins);
+0057         resolutions(i) = <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i).resolution;
+0058         isZeroBins(i) = <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i).isZeroBin;
+0059     <span class="keyword">end</span>
+0060 <span class="keyword">end</span>
+0061 minSamples = min(samples);
+0062 maxResolution = max(resolutions);
+0063 <span class="keyword">if</span> isnan(minSamples)
+0064     <span class="keyword">return</span>;
+0065 <span class="keyword">end</span>
+0066 
+0067 <span class="comment">% Compute the histogram scales.</span>
+0068 scales = double(maxResolution) ./ double(resolutions);
+0069 
+0070 <span class="comment">% Check the histogram(s) compatibility.</span>
+0071 isZeroBin = isZeroBins(~empty);
+0072 isZeroBins(empty) = isZeroBin(1);
+0073 <span class="keyword">if</span> length(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>) &gt; 1
+0074     <span class="keyword">if</span> any(~isequalwithequalnans(scales, floor(scales))) || <span class="keyword">...</span>
+0075             any(isZeroBins(1) ~= isZeroBins(2:end))
+0076         warning(<span class="string">'downSampleHistogram:UnequalBins'</span>, <span class="keyword">...</span>
+0077             [<span class="string">'Two or more histograms have inconsistent bins and, '</span> <span class="keyword">...</span>
+0078             <span class="string">'therefore, none can be downsampled'</span>]);
+0079         <span class="keyword">return</span>;
+0080     <span class="keyword">end</span>
+0081 <span class="keyword">end</span>
+0082 
+0083 <span class="comment">% Compute the scale.</span>
+0084 numBins = numBins ./ scales;
+0085 <span class="comment">%minNumBins = min(numBins);</span>
+0086 <span class="keyword">if</span> isempty(scale)
+0087     <span class="comment">%scale = min(ceil(double(numBins) ./ sqrt(samples)));</span>
+0088     <span class="comment">%scale = ceil(mean(double(numBins) ./ sqrt(samples)));</span>
+0089     scale = max(ceil(double(numBins) ./ sqrt(samples)));
+0090 <span class="keyword">end</span>
+0091 
+0092 <span class="comment">% Check the scales.</span>
+0093 <span class="keyword">if</span> scale &lt; 1
+0094     scale = 1;
+0095 <span class="keyword">end</span>
+0096 <span class="keyword">if</span> all(scales * scale &lt;= 1)
+0097     <span class="keyword">return</span>;
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="comment">% Downsample the histogram(s).</span>
+0101 <span class="keyword">for</span> i = 1:length(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>)
+0102     <span class="keyword">if</span> ~empty(i)
+0103         <a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i) = <a href="#_sub1" class="code" title="subfunction data = scaleHistogram(data, scale)">scaleHistogram</a>(<a href="histogram.html" class="code" title="function histData = histogram(data, varargin)">histogram</a>(i), scales(i) * scale);
+0104     <span class="keyword">end</span>
+0105 <span class="keyword">end</span>
+0106 <span class="keyword">end</span>
+0107 
+0108 
+0109 
+0110 <span class="comment">%% Scale a histogram.</span>
+0111 <a name="_sub1" href="#_subfunctions" class="code">function data = scaleHistogram(data, scale)</a>
+0112 
+0113 <span class="comment">% Can the histogram be scaled down?</span>
+0114 <span class="keyword">if</span> scale &lt;= 1
+0115     <span class="keyword">return</span>;
+0116 <span class="keyword">end</span>
+0117 
+0118 <span class="comment">% Compute the bin range.</span>
+0119 bins = data.bins;
+0120 minBins = min(bins);
+0121 maxBins = max(bins);
+0122 
+0123 <span class="comment">% Compute the padding.</span>
+0124 resolution = data.resolution * scale;
+0125 halfResolution = resolution / 2;
+0126 <span class="keyword">if</span> minBins &lt; 0
+0127     minPad = resolution - abs(rem(minBins, resolution));
+0128 <span class="keyword">else</span>
+0129     minPad = abs(rem(minBins, resolution));
+0130 <span class="keyword">end</span>
+0131 <span class="keyword">if</span> maxBins &lt; 0
+0132     maxPad = abs(rem(maxBins, resolution));
+0133 <span class="keyword">else</span>
+0134     maxPad = resolution - abs(rem(maxBins, resolution));
+0135 <span class="keyword">end</span>
+0136 
+0137 <span class="comment">% Translate the bins by half the resolution to create a zero bin.</span>
+0138 <span class="comment">% Note: we compute just enough padding to capture the data.</span>
+0139 <span class="keyword">if</span> data.isZeroBin
+0140     <span class="keyword">if</span> minPad &gt; halfResolution
+0141         minPad = minPad - halfResolution;
+0142     <span class="keyword">else</span>
+0143         minPad = minPad + halfResolution;
+0144     <span class="keyword">end</span>
+0145     <span class="keyword">if</span> maxPad &gt; halfResolution
+0146         maxPad = maxPad - halfResolution;
+0147     <span class="keyword">else</span>
+0148         maxPad = maxPad + halfResolution;
+0149     <span class="keyword">end</span>
+0150 <span class="keyword">end</span>
+0151 
+0152 <span class="comment">% Compute the edge range.</span>
+0153 minEdge = minBins - minPad;
+0154 maxEdge = maxBins + maxPad;
+0155 
+0156 <span class="comment">% Compute the bins and their edges.</span>
+0157 numBins = round((maxEdge - minEdge) / resolution);
+0158 oldBins = bins;
+0159 bins = linspace(minEdge + halfResolution, maxEdge - halfResolution, <span class="keyword">...</span>
+0160     numBins);
+0161 edges = bins - halfResolution;
+0162 edges(end + 1) = edges(end) + resolution;
+0163 
+0164 <span class="comment">% Fix the zero bin.</span>
+0165 <span class="comment">% Note: IEEE floating point issues may shift us just off zero.</span>
+0166 <span class="keyword">if</span> data.isZeroBin
+0167     [zeroBin, zeroI] = min(abs(bins));
+0168     <span class="keyword">if</span> zeroBin &lt; halfResolution / 2
+0169         bins(zeroI) = 0;
+0170     <span class="keyword">end</span>
+0171 <span class="keyword">end</span>
+0172 
+0173 <span class="comment">% Redistribute the data into the new bins.</span>
+0174 PDFs = zeros(1, length(bins));
+0175 dataCounts = zeros(size(data.data.counts, 1), length(bins));
+0176 allDataCounts = zeros(1, length(bins));
+0177 oldPDFs = data.PDF;
+0178 oldDataCounts = data.data.counts;
+0179 oldAllDataCounts = data.allData.counts;
+0180 oldBinsI = 1;
+0181 <span class="keyword">for</span> j = 1:(length(edges) - 1)
+0182     <span class="keyword">while</span> oldBinsI &lt;= length(oldBins) &amp;&amp; <span class="keyword">...</span>
+0183             (oldBins(oldBinsI) &gt;= edges(j) &amp;&amp; <span class="keyword">...</span>
+0184             oldBins(oldBinsI) &lt; edges(j + 1))
+0185         PDFs(j) = PDFs(j) + oldPDFs(oldBinsI);
+0186         dataCounts(:,j) = dataCounts(:,j) + oldDataCounts(:, oldBinsI);
+0187         allDataCounts(j) = allDataCounts(j) + <span class="keyword">...</span>
+0188             oldAllDataCounts(oldBinsI);
+0189         oldBinsI = oldBinsI + 1;
+0190     <span class="keyword">end</span>
+0191 <span class="keyword">end</span>
+0192 
+0193 <span class="comment">% Update the data.</span>
+0194 data.bins = bins;
+0195 data.PDF = PDFs;
+0196 data.data.counts = dataCounts;
+0197 data.allData.counts = allDataCounts;
+0198 data.resolution = resolution;
+0199 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

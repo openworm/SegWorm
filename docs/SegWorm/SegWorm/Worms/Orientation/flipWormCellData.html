@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of flipWormCellData</title>
+  <meta name="keywords" content="flipWormCellData">
+  <meta name="description" content="FLIPWORMCELLDATA Flip the orientation of the worm (organized in a cell">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Orientation -->
+<h1>flipWormCellData
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>FLIPWORMCELLDATA Flip the orientation of the worm (organized in a cell</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm = flipWormCellData(worm) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FLIPWORMCELLDATA Flip the orientation of the worm (organized in a cell
+   array)data (re-orient the entire worm data structure and every one of
+   its substructures).
+
+   WORM = FLIPWORMCELLDATA(WORM)
+
+   Input:
+       worm - the worm (organized in a cell array) to flip
+
+   Output:
+       worm - the flipped worm (organized in a cell array)
+
+   See also <a href="flipWormData.html" class="code" title="function worm = flipWormData(worm)">FLIPWORMDATA</a>, <a href="flipWormCellHead.html" class="code" title="function worm = flipWormCellHead(worm)">FLIPWORMCELLHEAD</a>, <a href="flipWormCellVulva.html" class="code" title="function worm = flipWormCellVulva(worm)">FLIPWORMCELLVULVA</a>,  CELL2WORM,
+   WORM2CELL, WORM2STRUCT, SEGWORM</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm = flipWormCellData(worm)</a>
+0002 <span class="comment">%FLIPWORMCELLDATA Flip the orientation of the worm (organized in a cell</span>
+0003 <span class="comment">%   array)data (re-orient the entire worm data structure and every one of</span>
+0004 <span class="comment">%   its substructures).</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   WORM = FLIPWORMCELLDATA(WORM)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Input:</span>
+0009 <span class="comment">%       worm - the worm (organized in a cell array) to flip</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Output:</span>
+0012 <span class="comment">%       worm - the flipped worm (organized in a cell array)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   See also FLIPWORMDATA, FLIPWORMCELLHEAD, FLIPWORMCELLVULVA,  CELL2WORM,</span>
+0015 <span class="comment">%   WORM2CELL, WORM2STRUCT, SEGWORM</span>
+0016 
+0017 <span class="comment">% Does the worm cell array have enough elements?</span>
+0018 <span class="keyword">if</span> size(worm, 1) ~= 8
+0019     error(<span class="string">'flipWormCellData:BadWorm'</span>, <span class="keyword">...</span>
+0020         <span class="string">'The worm cell array must have 6 elements'</span>);
+0021 <span class="keyword">end</span>
+0022 
+0023 <span class="comment">% Does the contour cell array have enough elements?</span>
+0024 <span class="keyword">if</span> size(worm{2}, 1) ~= 8
+0025     error(<span class="string">'flipWormCellData:BadContour'</span>, <span class="keyword">...</span>
+0026         <span class="string">'The worm contour cell array (worm{2}) must have 8 elements'</span>);
+0027 <span class="keyword">end</span>
+0028 
+0029 <span class="comment">% Flip worm.contour.headI and worm.contour.tailI.</span>
+0030 tmp = worm{2}{6};
+0031 worm{2}{6} = worm{2}{7};
+0032 worm{2}{7} = tmp;
+0033 
+0034 <span class="comment">% Does the skeleton cell array have enough elements?</span>
+0035 <span class="keyword">if</span> size(worm{3}, 1) ~= 9
+0036     error(<span class="string">'flipWormCellData:BadSkeleton'</span>, <span class="keyword">...</span>
+0037         <span class="string">'The worm skeleton cell array (worm{3}) must have 9 elements'</span>);
+0038 <span class="keyword">end</span>
+0039 
+0040 <span class="comment">% Flip worm.skeleton.pixels.</span>
+0041 worm{3}{1} = flipud(worm{3}{1});
+0042 
+0043 <span class="comment">% Flip worm.skeleton.touchI.</span>
+0044 worm{3}{2} = fliplr(length(worm{3}{6}) - worm{3}{2} + 1);
+0045 
+0046 <span class="comment">% Flip worm.skeleton.inI.</span>
+0047 worm{3}{3} = fliplr(length(worm{3}{6}) - worm{3}{3} + 1);
+0048 
+0049 <span class="comment">% Flip worm.skeleton.outI.</span>
+0050 worm{3}{4} = fliplr(length(worm{3}{6}) - worm{3}{4} + 1);
+0051 
+0052 <span class="comment">% Flip worm.skeleton.inOutI.</span>
+0053 worm{3}{5} = fliplr(length(worm{3}{6}) - worm{3}{5} + 1);
+0054 
+0055 <span class="comment">% Flip worm.skeleton.angles.</span>
+0056 worm{3}{6} = -flipud(worm{3}{6});
+0057 
+0058 <span class="comment">% Flip worm.skeleton.chainCodeLengths.</span>
+0059 worm{3}{8} = flipud(worm{3}{7} - worm{3}{8});
+0060 
+0061 <span class="comment">% Flip worm.skeleton.widths.</span>
+0062 worm{3}{9} = flipud(worm{3}{9});
+0063 
+0064 <span class="comment">% Does the head cell array have enough elements?</span>
+0065 <span class="keyword">if</span> size(worm{4}, 1) ~= 5
+0066     error(<span class="string">'flipWormCellData:BadHead'</span>, <span class="keyword">...</span>
+0067         <span class="string">'The worm head cell array (worm{4}) must have 4 elements'</span>);
+0068 <span class="keyword">end</span>
+0069 <span class="keyword">if</span> size(worm{4}{1}, 1) ~= 2
+0070     error(<span class="string">'flipWormCellData:BadHeadBounds'</span>, <span class="keyword">...</span>
+0071         <span class="string">'The worm head bounds cell array (worm{4}{1}) must have 2 elements'</span>);
+0072 <span class="keyword">end</span>
+0073 <span class="keyword">if</span> size(worm{4}{1}{1}, 1) ~= 2
+0074     error(<span class="string">'flipWormCellData:BadHeadContour'</span>, <span class="keyword">...</span>
+0075         <span class="string">'The worm head contour cell array (worm{4}{1}{1}) must have 2 elements'</span>);
+0076 <span class="keyword">end</span>
+0077 
+0078 <span class="comment">% Flip worm.head.bounds.contour.left and worm.head.bounds.contour.right.</span>
+0079 tmp = worm{4}{1}{1}{1};
+0080 worm{4}{1}{1}{1} = worm{4}{1}{1}{2};
+0081 worm{4}{1}{1}{2} = tmp;
+0082 
+0083 <span class="comment">% Flip worm.head.bounds.skeleton.</span>
+0084 worm{4}{1}{2} = flipud(length(worm{3}{6}) - worm{4}{1}{2} + 1);
+0085 
+0086 <span class="comment">% Does the tail cell array have enough elements?</span>
+0087 <span class="keyword">if</span> size(worm{5}, 1) ~= 5
+0088     error(<span class="string">'flipWormCellData:BadTail'</span>, <span class="keyword">...</span>
+0089         <span class="string">'The worm tail cell array (worm{5}) must have 4 elements'</span>);
+0090 <span class="keyword">end</span>
+0091 <span class="keyword">if</span> size(worm{5}{1}, 1) ~= 2
+0092     error(<span class="string">'flipWormCellData:BadTailBounds'</span>, <span class="keyword">...</span>
+0093         <span class="string">'The worm tail bounds cell array (worm{5}{1}) must have 2 elements'</span>);
+0094 <span class="keyword">end</span>
+0095 <span class="keyword">if</span> size(worm{5}{1}{1}, 1) ~= 2
+0096     error(<span class="string">'flipWormCellData:BadTailContour'</span>, <span class="keyword">...</span>
+0097         <span class="string">'The worm tail contour cell array (worm{5}{1}{1}) must have 2 elements'</span>);
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="comment">% Flip worm.tail.bounds.contour.left and worm.tail.bounds.contour.right.</span>
+0101 tmp = worm{5}{1}{1}{1};
+0102 worm{5}{1}{1}{1} = worm{5}{1}{1}{2};
+0103 worm{5}{1}{1}{2} = tmp;
+0104 
+0105 <span class="comment">% Flip worm.tail.bounds.skeleton.</span>
+0106 worm{5}{1}{2} = flipud(length(worm{3}{6}) - worm{5}{1}{2} + 1);
+0107 
+0108 <span class="comment">% Flip worm.head and worm.tail.</span>
+0109 tmp = worm{4};
+0110 worm{4} = worm{5};
+0111 worm{5} = tmp;
+0112 
+0113 <span class="comment">% Does the left-side cell array have enough elements?</span>
+0114 <span class="keyword">if</span> size(worm{6}, 1) ~= 5
+0115     error(<span class="string">'flipWormCellData:BadLeftSide'</span>, <span class="keyword">...</span>
+0116         <span class="string">'The worm left-side cell array (worm{6}) must have 4 elements'</span>);
+0117 <span class="keyword">end</span>
+0118 <span class="keyword">if</span> size(worm{6}{1}, 1) ~= 2
+0119     error(<span class="string">'flipWormCellData:BadLeftSideBounds'</span>, <span class="keyword">...</span>
+0120         <span class="string">'The worm left-side bounds cell array (worm{6}{1}) must have 2 elements'</span>);
+0121 <span class="keyword">end</span>
+0122 
+0123 <span class="comment">% Flip worm.left.bounds.skeleton.</span>
+0124 worm{6}{1}{2} = flipud(length(worm{3}{6}) - worm{6}{1}{2} + 1);
+0125 
+0126 <span class="comment">% Does the right-side cell array have enough elements?</span>
+0127 <span class="keyword">if</span> size(worm{7}, 1) ~= 5
+0128     error(<span class="string">'flipWormCellData:BadRightSide'</span>, <span class="keyword">...</span>
+0129         <span class="string">'The worm right-side cell array (worm{7}) must have 4 elements'</span>);
+0130 <span class="keyword">end</span>
+0131 <span class="keyword">if</span> size(worm{7}{1}, 1) ~= 2
+0132     error(<span class="string">'flipWormCellData:BadRightSideBounds'</span>, <span class="keyword">...</span>
+0133         <span class="string">'The worm right-side bounds cell array (worm{7}{1}) must have 2 elements'</span>);
+0134 <span class="keyword">end</span>
+0135 
+0136 <span class="comment">% Flip worm.right.bounds.skeleton.</span>
+0137 worm{7}{1}{2} = flipud(length(worm{3}{6}) - worm{7}{1}{2} + 1);
+0138 
+0139 <span class="comment">% Flip worm.left and worm.right.</span>
+0140 tmp = worm{6};
+0141 worm{6} = worm{7};
+0142 worm{7} = tmp;
+0143 
+0144 <span class="comment">% Does the orientation cell array have enough elements?</span>
+0145 <span class="keyword">if</span> size(worm{8}, 1) ~= 2
+0146     error(<span class="string">'flipWormCellData:BadOrientation'</span>, <span class="keyword">...</span>
+0147         <span class="string">'The worm orientation cell array (worm{8}) must have 2 elements'</span>);
+0148 <span class="keyword">end</span>
+0149 <span class="keyword">if</span> size(worm{8}{1}, 1) ~= 2
+0150     error(<span class="string">'flipWormCellData:BadOrientationHead'</span>, <span class="keyword">...</span>
+0151         [<span class="string">'The worm orientation head cell array '</span> <span class="keyword">...</span>
+0152          <span class="string">'(worm{8}{1}) must have 2 elements'</span>]);
+0153 <span class="keyword">end</span>
+0154 <span class="keyword">if</span> size(worm{8}{1}{2}, 1) ~= 2
+0155     error(<span class="string">'flipWormCellData:BadOrientationHeadConfidence'</span>, <span class="keyword">...</span>
+0156         [<span class="string">'The worm orientation head confidence cell array '</span> <span class="keyword">...</span>
+0157          <span class="string">'(worm{8}{1}{2}) must have 2 elements'</span>]);
+0158 <span class="keyword">end</span>
+0159 <span class="keyword">if</span> size(worm{8}{2}, 1) ~= 2
+0160     error(<span class="string">'flipWormCellData:BadOrientationVulva'</span>, <span class="keyword">...</span>
+0161         [<span class="string">'The worm orientation vulva cell array '</span> <span class="keyword">...</span>
+0162          <span class="string">'(worm{8}{2}) must have 2 elements'</span>]);
+0163 <span class="keyword">end</span>
+0164 
+0165 <span class="comment">% Flip worm.orientation.head.isFlipped.</span>
+0166 worm{8}{1}{1} = ~worm{8}{1}{1};
+0167 
+0168 <span class="comment">% Flip worm.orientation.vulva.isClockwiseFromHead.</span>
+0169 worm{8}{2}{1} = ~worm{8}{2}{1};
+0170 
+0171 <span class="comment">% Flip worm.orientation.vulva.confidence.vulva and</span>
+0172 <span class="comment">% worm.orientation.vulva.confidence.nonVulva.</span>
+0173 tmp = worm{8}{2}{2}{1};
+0174 worm{8}{2}{2}{1} = worm{8}{2}{2}{2};
+0175 worm{8}{2}{2}{2} = tmp;
+0176 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

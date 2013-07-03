@@ -1,0 +1,339 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of filterWormInfo</title>
+  <meta name="keywords" content="filterWormInfo">
+  <meta name="description" content="FILTERWORMINFO Filter worm information to meet specific criteria.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>filterWormInfo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>FILTERWORMINFO Filter worm information to meet specific criteria.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [isUsed data] = filterWormInfo(info, filt) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FILTERWORMINFO Filter worm information to meet specific criteria.
+
+   [ISUSED DATA] = FILTERWORMINFO(INFO, FILTER)
+
+   Inputs:
+       info - the worm information
+       filt - the filtering criteria; a structure with any of the fields:
+
+              minFPS     = the minimum video frame rate (frames/seconds)
+              minTime    = the minimum video time (seconds)
+              maxTime    = the maximum video time (seconds)
+              minSegTime = the minimum time for segmented video (seconds)
+              minRatio   = the minimum ratio for segmented video frames
+              minDate    = the minimum date to use (DATENUM)
+              maxDate    = the maximum date to use (DATENUM)
+              years      = the years to use
+              months     = the months to use (1-12)
+              weeks      = the weeks to use (1-52)
+              days       = the days (of the week) to use (1-7, Mon-Sun)
+              hours      = the hours to use (0-23)
+              trackers   = the trackers to use (1-8)
+
+   Outputs:
+       isUsed - for each worm, did it meet the criteria?
+       data   - the worm data; a structure with any of the fields:
+
+                fps         = the video frame rate (frames/seconds)
+                videoTime   = the video time (seconds)
+                videoFrames = the total number of video frames
+                segFrames   = the number of segmented video frames
+                date        = the experiment date (see DATENUM)
+                year        = the experiment year
+                month       = the experiment month (1-12)
+                week        = the experiment week (1-52)
+                weekday     = the experiment weekday (1-7 = Mon-Sat)
+                day         = the experiment day (1-31)
+                hour        = the experiment hour (1-24)
+                minute      = the experiment minute (1-60)
+                second      = the experiment second (1-60)
+                tracker     = the tracker number (1-8)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Printing/worm2TOCOntologyTIF.html" class="code" title="function [filename pages] = worm2TOCOntologyTIF(filename, worm, wormName,varargin)">worm2TOCOntologyTIF</a>	WORM2TOCONTOLOGYTIF Save worm details to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2detailsPDF2.html" class="code" title="function [filename pages] = worm2detailsPDF(filename, worm, wormName,varargin)">worm2detailsPDF2</a>	WORM2DETAILSPDF Save worm details to a PDF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2detailsTIF.html" class="code" title="function [filename pages] = worm2detailsTIF(filename, worm, wormName,varargin)">worm2detailsTIF</a>	WORM2DETAILSTIF Save worm details to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2pathTIF.html" class="code" title="function [filename pages] = worm2pathTIF(filename, worm, wormName, varargin)">worm2pathTIF</a>	WORM2PATHTIF Save worm information to a TIF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2summaryPDF2.html" class="code" title="function [filename pages] = worm2summaryPDF(filename, worm, wormName,varargin)">worm2summaryPDF2</a>	WORM2SUMMARYPDF Save a worm summary to a PDF.</li><li><a href="../../../SegWorm/Worms/Printing/worm2summaryTIF.html" class="code" title="function [filename pages] = worm2summaryTIF(filename, worm, wormName,varargin)">worm2summaryTIF</a>	WORM2SUMMARYTIF Save a worm summary to a TIF.</li><li><a href="findControls.html" class="code" title="">findControls</a>	Initialize the control info.</li><li><a href="worm2StatsInfo.html" class="code" title="function worm2StatsInfo(filename, wormFiles, varargin)">worm2StatsInfo</a>	WORM2STATSINFO Compute worm statistics information and save it to a file.</li><li><a href="wormInfo2Date.html" class="code" title="function [isUsed wormX tickX nameX labelX] = wormInfo2Date(info, filt)">wormInfo2Date</a>	WORMINFO2DATE Convert worm information to the date the experiment was</li><li><a href="wormInfo2DayOfWeek.html" class="code" title="function [isUsed wormX tickX nameX labelX] = wormInfo2DayOfWeek(info, filt)">wormInfo2DayOfWeek</a>	WORMINFO2DAYOFWEEK Convert worm information to the day of the week the</li><li><a href="wormInfo2DayOfYear.html" class="code" title="function [isUsed wormX tickX nameX labelX] = wormInfo2DayOfYear(info, filt)">wormInfo2DayOfYear</a>	WORMINFO2DAYOFYEAR Convert worm information to the day of the year the</li><li><a href="wormInfo2HourOfDay.html" class="code" title="function [isUsed wormX tickX nameX labelX] = wormInfo2HourOfDay(info, filt)">wormInfo2HourOfDay</a>	WORMINFO2HOUROFDAY Convert worm information to the hour the experiment was</li><li><a href="wormInfo2MonthOfYear.html" class="code" title="function [isUsed wormX tickX nameX labelX] = wormInfo2MonthOfYear(info, filt)">wormInfo2MonthOfYear</a>	WORMINFO2MONTHOFYEAR Convert worm information to the month the experiment</li><li><a href="wormInfo2Room.html" class="code" title="function [isUsed wormX tickX nameX labelX] = wormInfo2Room(info, filt)">wormInfo2Room</a>	WORMINFO2ROOM Convert worm information to the room in which the experiment</li><li><a href="wormInfo2TimeOfDay.html" class="code" title="function [isUsed wormX tickX nameX labelX] = wormInfo2TimeOfDay(info, filt)">wormInfo2TimeOfDay</a>	WORMINFO2TIMEOFDAY Convert worm information to the time the experiment was</li><li><a href="wormInfo2TimeSeries.html" class="code" title="function [isUsed wormX tickX nameX labelX] = wormInfo2TimeSeries(info, filt)">wormInfo2TimeSeries</a>	WORMINFO2TIMESERIES Convert worm information to time series information.</li><li><a href="wormInfo2Tracker.html" class="code" title="function [isUsed wormX tickX nameX labelX] = wormInfo2Tracker(info, filt)">wormInfo2Tracker</a>	WORMINFO2TRACKER Convert worm information to the tracker number on which</li><li><a href="wormInfo2Week.html" class="code" title="function [isUsed wormX tickX nameX labelX] = wormInfo2Week(info, filt)">wormInfo2Week</a>	WORMINFO2WEEKOFYEAR Convert worm information to the week the experiment</li><li><a href="wormInfo2WeekOfYear.html" class="code" title="function [isUsed wormX tickX nameX labelX] = wormInfo2WeekOfYear(info, filt)">wormInfo2WeekOfYear</a>	WORMINFO2WEEKOFYEAR Convert worm information to the week of the year the</li><li><a href="wormStats2Matrix2.html" class="code" title="function wormStats2Matrix(filename, wormFiles, varargin)">wormStats2Matrix2</a>	WORMSTATS2MATRIX Construct and save a features x worms matrix.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [isUsed data] = filterWormInfo(info, filt)</a>
+0002 <span class="comment">%FILTERWORMINFO Filter worm information to meet specific criteria.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [ISUSED DATA] = FILTERWORMINFO(INFO, FILTER)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   Inputs:</span>
+0007 <span class="comment">%       info - the worm information</span>
+0008 <span class="comment">%       filt - the filtering criteria; a structure with any of the fields:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%              minFPS     = the minimum video frame rate (frames/seconds)</span>
+0011 <span class="comment">%              minTime    = the minimum video time (seconds)</span>
+0012 <span class="comment">%              maxTime    = the maximum video time (seconds)</span>
+0013 <span class="comment">%              minSegTime = the minimum time for segmented video (seconds)</span>
+0014 <span class="comment">%              minRatio   = the minimum ratio for segmented video frames</span>
+0015 <span class="comment">%              minDate    = the minimum date to use (DATENUM)</span>
+0016 <span class="comment">%              maxDate    = the maximum date to use (DATENUM)</span>
+0017 <span class="comment">%              years      = the years to use</span>
+0018 <span class="comment">%              months     = the months to use (1-12)</span>
+0019 <span class="comment">%              weeks      = the weeks to use (1-52)</span>
+0020 <span class="comment">%              days       = the days (of the week) to use (1-7, Mon-Sun)</span>
+0021 <span class="comment">%              hours      = the hours to use (0-23)</span>
+0022 <span class="comment">%              trackers   = the trackers to use (1-8)</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%   Outputs:</span>
+0025 <span class="comment">%       isUsed - for each worm, did it meet the criteria?</span>
+0026 <span class="comment">%       data   - the worm data; a structure with any of the fields:</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%                fps         = the video frame rate (frames/seconds)</span>
+0029 <span class="comment">%                videoTime   = the video time (seconds)</span>
+0030 <span class="comment">%                videoFrames = the total number of video frames</span>
+0031 <span class="comment">%                segFrames   = the number of segmented video frames</span>
+0032 <span class="comment">%                date        = the experiment date (see DATENUM)</span>
+0033 <span class="comment">%                year        = the experiment year</span>
+0034 <span class="comment">%                month       = the experiment month (1-12)</span>
+0035 <span class="comment">%                week        = the experiment week (1-52)</span>
+0036 <span class="comment">%                weekday     = the experiment weekday (1-7 = Mon-Sat)</span>
+0037 <span class="comment">%                day         = the experiment day (1-31)</span>
+0038 <span class="comment">%                hour        = the experiment hour (1-24)</span>
+0039 <span class="comment">%                minute      = the experiment minute (1-60)</span>
+0040 <span class="comment">%                second      = the experiment second (1-60)</span>
+0041 <span class="comment">%                tracker     = the tracker number (1-8)</span>
+0042 
+0043 <span class="comment">% Use all the worms.</span>
+0044 isUsed = true(length(info), 1);
+0045 
+0046 <span class="comment">% Determine the filtering criteria.</span>
+0047 minFPS = NaN;
+0048 minTime = NaN;
+0049 maxTime = NaN;
+0050 minSegTime = NaN;
+0051 minRatio = NaN;
+0052 minDate = NaN;
+0053 maxDate = NaN;
+0054 useHours = [];
+0055 useDays = [];
+0056 useWeeks = [];
+0057 useMonths = [];
+0058 useYears = [];
+0059 useTrackers = [];
+0060 <span class="keyword">if</span> ~isempty(filt) &amp;&amp; isstruct(filt)
+0061     
+0062     <span class="comment">% Determine the minimum video frame rate.</span>
+0063     <span class="keyword">if</span> isfield(filt, <span class="string">'minFPS'</span>)
+0064         minFPS = filt.minFPS;
+0065     <span class="keyword">end</span>
+0066     
+0067     <span class="comment">% Determine the minimum video time.</span>
+0068     <span class="keyword">if</span> isfield(filt, <span class="string">'minTime'</span>)
+0069         minTime = filt.minTime;
+0070     <span class="keyword">end</span>
+0071     
+0072     <span class="comment">% Determine the maximum video time.</span>
+0073     <span class="keyword">if</span> isfield(filt, <span class="string">'maxTime'</span>)
+0074         maxTime = filt.maxTime;
+0075     <span class="keyword">end</span>
+0076     
+0077     <span class="comment">% Determine the minimum time for segmented video.</span>
+0078     <span class="keyword">if</span> isfield(filt, <span class="string">'minSegTime'</span>)
+0079         minSegTime = filt.minSegTime;
+0080     <span class="keyword">end</span>
+0081     
+0082     <span class="comment">% Determine the minimum ratio for segmented video frames.</span>
+0083     <span class="keyword">if</span> isfield(filt, <span class="string">'minRatio'</span>)
+0084         minRatio = filt.minRatio;
+0085     <span class="keyword">end</span>
+0086     
+0087     <span class="comment">% Determine the minimum date to use.</span>
+0088     <span class="keyword">if</span> isfield(filt, <span class="string">'minDate'</span>)
+0089         minDate = filt.minDate;
+0090     <span class="keyword">end</span>
+0091     
+0092     <span class="comment">% Determine the maximum date to use.</span>
+0093     <span class="keyword">if</span> isfield(filt, <span class="string">'maxDate'</span>)
+0094         maxDate = filt.maxDate;
+0095     <span class="keyword">end</span>
+0096     
+0097     <span class="comment">% Determine the years to use.</span>
+0098     <span class="keyword">if</span> isfield(filt, <span class="string">'years'</span>)
+0099         useMonths = filt.months;
+0100     <span class="keyword">end</span>
+0101     
+0102     <span class="comment">% Determine the months to use.</span>
+0103     <span class="keyword">if</span> isfield(filt, <span class="string">'months'</span>)
+0104         useMonths = filt.months;
+0105     <span class="keyword">end</span>
+0106     
+0107     <span class="comment">% Determine the weeks to use.</span>
+0108     <span class="keyword">if</span> isfield(filt, <span class="string">'weeks'</span>)
+0109         useWeeks = filt.weeks;
+0110     <span class="keyword">end</span>
+0111     
+0112     <span class="comment">% Determine the days to use.</span>
+0113     <span class="keyword">if</span> isfield(filt, <span class="string">'days'</span>)
+0114         useDays = filt.days;
+0115     <span class="keyword">end</span>
+0116     
+0117     <span class="comment">% Determine the hours to use.</span>
+0118     <span class="keyword">if</span> isfield(filt, <span class="string">'hours'</span>)
+0119         useHours = filt.hours;
+0120     <span class="keyword">end</span>
+0121     
+0122     <span class="comment">% Determine the trackers to use.</span>
+0123     <span class="keyword">if</span> isfield(filt, <span class="string">'trackers'</span>)
+0124         useTrackers = filt.trackers;
+0125     <span class="keyword">end</span>
+0126 <span class="keyword">end</span>
+0127 
+0128 <span class="comment">% Don't use low-resolution videos.</span>
+0129 fps = arrayfun(@(x) x.video.resolution.fps, info);
+0130 <span class="keyword">if</span> ~isnan(minFPS)
+0131     isUsed(fps &lt; minFPS) = false;
+0132 <span class="keyword">end</span>
+0133 
+0134 <span class="comment">% Don't use videos that are too short or too long.</span>
+0135 times = arrayfun(@(x) x.video.length.time, info);
+0136 <span class="keyword">if</span> ~(isnan(minTime) &amp;&amp; isnan(maxTime))
+0137     isUsed(times &lt; minTime) = false;
+0138     isUsed(times &gt; maxTime) = false;
+0139 <span class="keyword">end</span>
+0140 
+0141 <span class="comment">% Don't use videos with insufficient frames segmented.</span>
+0142 frames = arrayfun(@(x) x.video.length.frames, info);
+0143 segFrames = arrayfun(@(x) sum(x.video.annotations.frames == 1), info);
+0144 <span class="keyword">if</span> ~(isnan(minSegTime) &amp;&amp; isnan(minRatio))
+0145     isUsed((segFrames .* fps) &lt; minSegTime) = false;
+0146     isUsed((segFrames ./ frames) &lt; minRatio) = false;
+0147 <span class="keyword">end</span>
+0148 
+0149 <span class="comment">% Don't use videos outside our date range.</span>
+0150 dates = arrayfun(@(x) datenum(x.experiment.environment.timestamp), info);
+0151 <span class="keyword">if</span> ~(isnan(minDate) &amp;&amp; isnan(maxDate))
+0152     isUsed(dates &lt; minDate) = false;
+0153     isUsed(dates &gt; maxDate) = false;
+0154 <span class="keyword">end</span>
+0155 
+0156 <span class="comment">% Only use videos from the requested years.</span>
+0157 [years, months, days, hours, minutes, seconds] = datevec(dates);
+0158 <span class="keyword">if</span> ~isempty(useYears)
+0159     unusedYears = setdiff(unique(years), useYears);
+0160     unusedWorms = arrayfun(@(x) any(x == unusedYears), years);
+0161     isUsed(unusedWorms) = false;
+0162 <span class="keyword">end</span>
+0163 
+0164 <span class="comment">% Only use videos from the requested months.</span>
+0165 <span class="keyword">if</span> ~isempty(useMonths)
+0166     unusedMonths = setdiff(unique(months), useMonths);
+0167     unusedWorms = arrayfun(@(x) any(x == unusedMonths), months);
+0168     isUsed(unusedWorms) = false;
+0169 <span class="keyword">end</span>
+0170 
+0171 <span class="comment">% Compute the experiment days and weeks.</span>
+0172 dayStrs = {
+0173     <span class="string">'Mon'</span>
+0174     <span class="string">'Tue'</span>
+0175     <span class="string">'Wed'</span>
+0176     <span class="string">'Thu'</span>
+0177     <span class="string">'Fri'</span>
+0178     <span class="string">'Sat'</span>
+0179     <span class="string">'Sun'</span>};
+0180 [minDate minDateI] = min(dates);
+0181 minDayStr = datestr(minDate, <span class="string">'ddd'</span>);
+0182 dayI = 1;
+0183 <span class="keyword">while</span> dayI &lt;= size(dayStrs,1) &amp;&amp; ~strcmp(minDayStr, dayStrs{dayI})
+0184     dayI = dayI + 1;
+0185 <span class="keyword">end</span>
+0186 shortDates = datenum(years, months, days);
+0187 diffDates =  shortDates - shortDates(minDateI);
+0188 diffDays = diffDates + dayI - 1;
+0189 weekdays = mod(diffDays, 7) + 1;
+0190 diffWeeks = shortDates - datenum(years(minDateI), 0, 0) + dayI - 1;
+0191 weeks = mod(floor(diffWeeks / 7), 52) + 1;
+0192 
+0193 <span class="comment">% Only use videos from the requested weeks.</span>
+0194 <span class="keyword">if</span> ~isempty(useWeeks)
+0195     unusedWeeks = setdiff(unique(weeks), useWeeks);
+0196     unusedWorms = arrayfun(@(x) any(x == unusedWeeks), weeks);
+0197     isUsed(unusedWorms) = false;
+0198 <span class="keyword">end</span>
+0199 
+0200 <span class="comment">% Only use videos from the requested weekdays.</span>
+0201 <span class="keyword">if</span> ~isempty(useDays)
+0202     unusedDays = setdiff(unique(weekdays), useDays);
+0203     unusedWorms = arrayfun(@(x) any(x == unusedDays), weekdays);
+0204     isUsed(unusedWorms) = false;
+0205 <span class="keyword">end</span>
+0206 
+0207 <span class="comment">% Only use videos from the requested hours.</span>
+0208 <span class="keyword">if</span> ~isempty(useHours)
+0209     unusedHours = setdiff(unique(hours), useHours);
+0210     unusedWorms = arrayfun(@(x) any(x == unusedHours), hours);
+0211     isUsed(unusedWorms) = false;
+0212 <span class="keyword">end</span>
+0213 
+0214 <span class="comment">% Only use videos from the requested trackers.</span>
+0215 trackers = arrayfun(@(x) <span class="keyword">...</span>
+0216     uint8(str2double(x.experiment.environment.tracker)), info);
+0217 <span class="keyword">if</span> ~isempty(useTrackers)
+0218     unusedTrackers = setdiff(unique(trackers), useTrackers);
+0219     unusedWorms = arrayfun(@(x) any(x == unusedTrackers), trackers);
+0220     isUsed(unusedWorms) = false;
+0221 <span class="keyword">end</span>
+0222 
+0223 <span class="comment">% Organize the data.</span>
+0224 data(length(info),1).fps = [];
+0225 data(length(info),1).videoTime = [];
+0226 data(length(info),1).videoFrames = [];
+0227 data(length(info),1).videoSegFrames = [];
+0228 data(length(info),1).date = [];
+0229 data(length(info),1).year = [];
+0230 data(length(info),1).month = [];
+0231 data(length(info),1).week = [];
+0232 data(length(info),1).day = [];
+0233 data(length(info),1).weekday = [];
+0234 data(length(info),1).hour = [];
+0235 data(length(info),1).minute = [];
+0236 data(length(info),1).second = [];
+0237 data(length(info),1).tracker = [];
+0238 <span class="keyword">for</span> i = 1:length(data)
+0239     data(i).fps = fps(i);
+0240     data(i).videoTime = times(i);
+0241     data(i).videoFrames = frames(i);
+0242     data(i).videoSegFrames = segFrames(i);
+0243     data(i).date = dates(i);
+0244     data(i).year = years(i);
+0245     data(i).month = months(i);
+0246     data(i).week = weeks(i);
+0247     data(i).day = days(i);
+0248     data(i).weekday = weekdays(i);
+0249     data(i).hour = hours(i);
+0250     data(i).minute = minutes(i);
+0251     data(i).second = seconds(i);
+0252     data(i).tracker = trackers(i);
+0253 <span class="keyword">end</span>
+0254 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

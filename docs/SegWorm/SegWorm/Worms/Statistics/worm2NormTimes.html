@@ -1,0 +1,788 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of worm2NormTimes</title>
+  <meta name="keywords" content="worm2NormTimes">
+  <meta name="description" content="WORM2NORMTIMES Normalize worm feature time series.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Statistics -->
+<h1>worm2NormTimes
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORM2NORMTIMES Normalize worm feature time series.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function worm2NormTimes(filename, seconds, wormFiles, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORM2NORMTIMES Normalize worm feature time series.
+
+   WORM2NORMTIMES(FILENAME, SECONDS, WORMFILES)
+
+   WORM2NORMTIMES(FILENAME, SECONDS, WORMFILES, CONTROLFILES)
+
+   WORM2NORMTIMES(FILENAME, SECONDS, WORMFILES, CONTROLFILES,
+                  ISOLDCONTROL)
+
+   WORM2NORMTIMES(FILENAME, SECONDS, WORMFILES, CONTROLFILES,
+                  ISOLDCONTROL, ISSAVEMEMORY, VERBOSE)
+
+   WORM2NORMTIMES(FILENAME, SECONDS, WORMFILES, CONTROLFILES,
+                  ISOLDCONTROL, ISSAVEMEMORY, VERBOSE)
+
+   Inputs:
+       filename     - the file name for the statistics;
+                      the file includes:
+
+                      wormInfo    = the worm information
+                      worm        = the worm statistics
+                      controlInfo = the control information (if it exists)
+                      worm        = the control statistics (if they exist)
+
+       seconds      - the time bin size in seconds
+       wormFiles    - the histogram files to use for the worm(s)
+       controlFiles - the histogram files to use for the control(s);
+                      if empty, the worm has no new control
+       isOldControl - are we adding the old controls?
+                      the default is no (false)
+       isSaveMemory - are we conserving memory?
+                      if yes, each feature is loaded, as needed, from disk
+                      if no, all the features are loaded at once
+                      the default is no (false)
+       isVerbose    - verbose mode display the progress;
+                      the default is yes (true)
+
+ See also <a href="worm2histogram.html" class="code" title="function worm2histogram(filename, wormFiles, varargin)">WORM2HISTOGRAM</a>, HISTOGRAM, WORMDISPLAYINFO, WORMDATAINFO</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>	GETSTRUCTFIELD Get a field in a structure.</li><li><a href="../../../SegWorm/Util/loadStructField.html" class="code" title="function data = loadStructField(fileName, structName, field)">loadStructField</a>	LOADSTRUCTFIELD Load a struct field from a file.</li><li><a href="../../../SegWorm/Worms/Features/removePartialEvents.html" class="code" title="function eventStats = removePartialEvents(eventStats, totalFrames)">removePartialEvents</a>	REMOVEPARTIALEVENTS Remove partial events at the start and end of the data.</li><li><a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>	WORMDATAINFO Get information for computing the worm data.</li><li><a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>	WORMDISPLAYINFO Get information for displaying the worm data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function data = loadWormFiles(files, wormName, field, varargin)</a></li><li><a href="#_sub2" class="code">function saveFeatures(filename, wormScales, wormFrames, isNormWorm,</a></li><li><a href="#_sub3" class="code">function data = normFeatures(wormScales, isNormWorm, wormFiles,</a></li><li><a href="#_sub4" class="code">function data = normMotionFeatures(wormScales, wormFrames, isNormWorm,</a></li><li><a href="#_sub5" class="code">function data = normEventFeatures(wormScales, wormFrames, isNormWorm,</a></li><li><a href="#_sub6" class="code">function data = normFeaturesData(wormScales, normData, isSigned, varargin)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function worm2NormTimes(filename, seconds, wormFiles, varargin)</a>
+0002 <span class="comment">%WORM2NORMTIMES Normalize worm feature time series.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   WORM2NORMTIMES(FILENAME, SECONDS, WORMFILES)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   WORM2NORMTIMES(FILENAME, SECONDS, WORMFILES, CONTROLFILES)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   WORM2NORMTIMES(FILENAME, SECONDS, WORMFILES, CONTROLFILES,</span>
+0009 <span class="comment">%                  ISOLDCONTROL)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   WORM2NORMTIMES(FILENAME, SECONDS, WORMFILES, CONTROLFILES,</span>
+0012 <span class="comment">%                  ISOLDCONTROL, ISSAVEMEMORY, VERBOSE)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   WORM2NORMTIMES(FILENAME, SECONDS, WORMFILES, CONTROLFILES,</span>
+0015 <span class="comment">%                  ISOLDCONTROL, ISSAVEMEMORY, VERBOSE)</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   Inputs:</span>
+0018 <span class="comment">%       filename     - the file name for the statistics;</span>
+0019 <span class="comment">%                      the file includes:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%                      wormInfo    = the worm information</span>
+0022 <span class="comment">%                      worm        = the worm statistics</span>
+0023 <span class="comment">%                      controlInfo = the control information (if it exists)</span>
+0024 <span class="comment">%                      worm        = the control statistics (if they exist)</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%       seconds      - the time bin size in seconds</span>
+0027 <span class="comment">%       wormFiles    - the histogram files to use for the worm(s)</span>
+0028 <span class="comment">%       controlFiles - the histogram files to use for the control(s);</span>
+0029 <span class="comment">%                      if empty, the worm has no new control</span>
+0030 <span class="comment">%       isOldControl - are we adding the old controls?</span>
+0031 <span class="comment">%                      the default is no (false)</span>
+0032 <span class="comment">%       isSaveMemory - are we conserving memory?</span>
+0033 <span class="comment">%                      if yes, each feature is loaded, as needed, from disk</span>
+0034 <span class="comment">%                      if no, all the features are loaded at once</span>
+0035 <span class="comment">%                      the default is no (false)</span>
+0036 <span class="comment">%       isVerbose    - verbose mode display the progress;</span>
+0037 <span class="comment">%                      the default is yes (true)</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">% See also WORM2HISTOGRAM, HISTOGRAM, WORMDISPLAYINFO, WORMDATAINFO</span>
+0040 
+0041 <span class="comment">% Do we have a control?</span>
+0042 controlFiles = [];
+0043 <span class="keyword">if</span> ~isempty(varargin)
+0044     controlFiles = varargin{1};
+0045 <span class="keyword">end</span>
+0046 
+0047 <span class="comment">% Are we adding the old controls?</span>
+0048 isOldControl = false;
+0049 <span class="keyword">if</span> length(varargin) &gt; 1
+0050     isOldControl = varargin{2};
+0051 <span class="keyword">end</span>
+0052 
+0053 <span class="comment">% Are we conserving memory?</span>
+0054 isSaveMemory = false;
+0055 <span class="keyword">if</span> length(varargin) &gt; 2
+0056     isSaveMemory = varargin{3};
+0057 <span class="keyword">end</span>
+0058 
+0059 <span class="comment">% Are we in verbose mode?</span>
+0060 isVerbose = true;
+0061 <span class="keyword">if</span> length(varargin) &gt; 3
+0062     isVerbose = varargin{4};
+0063 <span class="keyword">end</span>
+0064 
+0065 <span class="comment">% Organize the worm files.</span>
+0066 <span class="keyword">if</span> ~iscell(wormFiles)
+0067     wormFiles = {wormFiles};
+0068 <span class="keyword">end</span>
+0069 <span class="keyword">if</span> ~isempty(controlFiles) &amp;&amp; ~iscell(controlFiles)
+0070     controlFiles = {controlFiles};
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="comment">% Delete the file if it already exists.</span>
+0074 <span class="keyword">if</span> exist(filename, <span class="string">'file'</span>)
+0075     delete(filename);
+0076 <span class="keyword">end</span>
+0077 
+0078 <span class="comment">% Save the worm information.</span>
+0079 <span class="keyword">if</span> isVerbose
+0080     disp(<span class="string">'Combining &quot;wormInfo&quot; ...'</span>);
+0081 <span class="keyword">end</span>
+0082 newFPS = 1.0 / double(seconds);
+0083 isNormWorm = [];
+0084 wormFrames = [];
+0085 wormScales = [];
+0086 newWormInfo = [];
+0087 <span class="keyword">for</span> i = 1:length(wormFiles)
+0088     
+0089     <span class="comment">% Load the worm information.</span>
+0090     wormInfo = who(<span class="string">'-FILE'</span>, wormFiles{i}, <span class="string">'wormInfo'</span>);
+0091     <span class="keyword">if</span> isempty(wormInfo)
+0092         isNormWorm = cat(1, isNormWorm, false);
+0093         info = [];
+0094         load(wormFiles{i}, <span class="string">'info'</span>);
+0095         wormInfo = info;
+0096     <span class="keyword">else</span>
+0097         isNormWorm = cat(1, isNormWorm, true);
+0098         load(wormFiles{i}, <span class="string">'wormInfo'</span>);
+0099     <span class="keyword">end</span>
+0100     
+0101     <span class="comment">% Can the features be downsampled?</span>
+0102     fps = arrayfun(@(x) x.video.resolution.fps, wormInfo);
+0103     <span class="keyword">if</span> any(round(double(newFPS) / double(fps)) &gt; 1)
+0104         error(<span class="string">'worm2NormTimes:FrameRate'</span>, [<span class="string">'&quot;'</span> wormFiles{i} <span class="keyword">...</span>
+0105             <span class="string">'&quot; is sampled at '</span> num2str(fps) <span class="keyword">...</span>
+0106             <span class="string">' frames/second and cannot be downsampled to '</span> <span class="keyword">...</span>
+0107             num2str(newFPS) <span class="string">' frames/second'</span>]);
+0108     <span class="keyword">end</span>
+0109     
+0110     <span class="comment">% Compute the new frames/seconds.</span>
+0111     frames = arrayfun(@(x) x.video.length.frames, wormInfo);
+0112     wormFrames{end + 1} = frames;
+0113     scales = round(fps * seconds);
+0114     wormScales{end + 1} = scales;
+0115     <span class="keyword">for</span> j = 1:length(wormInfo)
+0116         wormInfo(j).video.resolution.fps = fps(j) ./ scales(j);
+0117     <span class="keyword">end</span>
+0118     
+0119     <span class="comment">% Save the worm information.</span>
+0120     newWormInfo = cat(1, newWormInfo, wormInfo);
+0121 <span class="keyword">end</span>
+0122 
+0123 <span class="comment">% Collect the new control information.</span>
+0124 <span class="keyword">if</span> isVerbose
+0125     disp(<span class="string">'Combining &quot;controlInfo&quot; ...'</span>);
+0126 <span class="keyword">end</span>
+0127 isNormControl = [];
+0128 controlFrames = [];
+0129 controlScales = [];
+0130 newControlInfo = [];
+0131 <span class="keyword">if</span> ~isempty(controlFiles)
+0132     <span class="keyword">for</span> i = 1:length(controlFiles)
+0133         
+0134         <span class="comment">% Load the worm information.</span>
+0135         controlInfo = who(<span class="string">'-FILE'</span>, controlFiles{i}, <span class="string">'wormInfo'</span>);
+0136         <span class="keyword">if</span> isempty(controlInfo)
+0137             isNormControl = cat(1, isNormControl, false);
+0138             info = [];
+0139             load(controlFiles{i}, <span class="string">'info'</span>);
+0140             controlInfo = info;
+0141         <span class="keyword">else</span>
+0142             isNormControl = cat(1, isNormControl, true);
+0143             load(controlFiles{i}, <span class="string">'wormInfo'</span>);
+0144             controlInfo = wormInfo;
+0145         <span class="keyword">end</span>
+0146         
+0147         <span class="comment">% Can the features be downsampled?</span>
+0148         fps = arrayfun(@(x) x.video.resolution.fps, controlInfo);
+0149         <span class="keyword">if</span> any(round(double(newFPS) / double(fps)) &gt; 1)
+0150             error(<span class="string">'worm2NormTimes:FrameRate'</span>, [<span class="string">'&quot;'</span> controlFiles{i} <span class="keyword">...</span>
+0151                 <span class="string">'&quot; is sampled at '</span> num2str(fps) <span class="keyword">...</span>
+0152                 <span class="string">' frames/second and cannot be downsampled to '</span> <span class="keyword">...</span>
+0153                 num2str(newFPS) <span class="string">' frames/second'</span>]);
+0154         <span class="keyword">end</span>
+0155         
+0156         <span class="comment">% Compute the new frames/seconds.</span>
+0157         frames = arrayfun(@(x) x.video.length.frames, controlInfo);
+0158         controlFrames{end + 1} = frames;
+0159         scales = round(fps * seconds);
+0160         controlScales{end + 1} = scales;
+0161         <span class="keyword">for</span> j = 1:length(controlInfo)
+0162             controlInfo(j).video.resolution.fps = fps(j) ./ scales(j);
+0163         <span class="keyword">end</span>
+0164         
+0165         <span class="comment">% Save the worm information.</span>
+0166         newControlInfo = cat(1, newControlInfo, wormInfo);
+0167     <span class="keyword">end</span>
+0168 <span class="keyword">end</span>
+0169 
+0170 <span class="comment">% Collect the old control information.</span>
+0171 <span class="keyword">if</span> isOldControl
+0172     <span class="keyword">for</span> i = 1:length(wormFiles)
+0173         <span class="keyword">if</span> isNormWorm(i)
+0174             
+0175             <span class="comment">% Load the worm information.</span>
+0176             controlInfo = [];
+0177             load(wormFiles{i}, <span class="string">'controlInfo'</span>);
+0178             <span class="keyword">if</span> ~isempty(controlInfo)
+0179                 isNormControl = cat(1, isNormControl, true);
+0180             
+0181                 <span class="comment">% Can the features be downsampled?</span>
+0182                 fps = arrayfun(@(x) x.video.resolution.fps, controlInfo);
+0183                 <span class="keyword">if</span> any(round(double(newFPS) / double(fps)) &gt; 1)
+0184                     error(<span class="string">'worm2NormTimes:FrameRate'</span>, [<span class="string">'&quot;'</span> wormFiles{i} <span class="keyword">...</span>
+0185                         <span class="string">'&quot; is sampled at '</span> num2str(fps) <span class="keyword">...</span>
+0186                         <span class="string">' frames/second and cannot be downsampled to '</span> <span class="keyword">...</span>
+0187                         num2str(newFPS) <span class="string">' frames/second'</span>]);
+0188                 <span class="keyword">end</span>
+0189                 
+0190                 <span class="comment">% Compute the new frames/seconds.</span>
+0191                 frames = arrayfun(@(x) x.video.length.frames, controlInfo);
+0192                 controlFrames{end + 1} = frames;
+0193                 scales = round(fps * seconds);
+0194                 controlScales{end + 1} = scales;
+0195                 <span class="keyword">for</span> j = 1:length(controlInfo)
+0196                     controlInfo(j).video.resolution.fps = <span class="keyword">...</span>
+0197                         fps(j) ./ scales(j);
+0198                 <span class="keyword">end</span>
+0199                 
+0200                 <span class="comment">% Save the worm information.</span>
+0201                 newControlInfo =  cat(1, newControlInfo, controlInfo);
+0202             <span class="keyword">end</span>
+0203         <span class="keyword">end</span>
+0204     <span class="keyword">end</span>
+0205 <span class="keyword">end</span>
+0206 
+0207 <span class="comment">% Save the worm information.</span>
+0208 wormInfo = newWormInfo;
+0209 <span class="keyword">if</span> isempty(newControlInfo)
+0210     save(filename, <span class="string">'wormInfo'</span>);
+0211 <span class="keyword">else</span>
+0212     controlInfo = newControlInfo;
+0213     save(filename, <span class="string">'wormInfo'</span>, <span class="string">'controlInfo'</span>);
+0214     clear newControlInfo;
+0215     clear controlInfo;
+0216 <span class="keyword">end</span>
+0217 clear newWormInfo;
+0218 clear wormInfo;
+0219 
+0220 <span class="comment">% Initialize the worm data information.</span>
+0221 histInfo = <a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>();
+0222 dataInfo = <a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>();
+0223 
+0224 <span class="comment">% Load the worm file data into memory.</span>
+0225 wormFileData = [];
+0226 <span class="keyword">if</span> ~isSaveMemory
+0227     <span class="keyword">for</span> i = 1:length(wormFiles)
+0228         worm = [];
+0229         load(wormFiles{i}, <span class="string">'worm'</span>);
+0230         wormFileData = cat(1, wormFileData, worm);
+0231     <span class="keyword">end</span>
+0232 <span class="keyword">end</span>
+0233 
+0234 <span class="comment">% Save the normalized worm features.</span>
+0235 <span class="keyword">if</span> isempty(wormFileData)
+0236     <a href="#_sub2" class="code" title="subfunction saveFeatures(filename, wormScales, wormFrames, isNormWorm, ">saveFeatures</a>(filename, wormScales, wormFrames, isNormWorm, <span class="keyword">...</span>
+0237         wormFiles, histInfo, dataInfo, <span class="string">'worm'</span>, <span class="string">'worm'</span>, isVerbose);
+0238 <span class="keyword">else</span>
+0239     <a href="#_sub2" class="code" title="subfunction saveFeatures(filename, wormScales, wormFrames, isNormWorm, ">saveFeatures</a>(filename, wormScales, wormFrames, isNormWorm, <span class="keyword">...</span>
+0240         wormFileData, histInfo, dataInfo, <span class="string">'worm'</span>, <span class="string">'worm'</span>, isVerbose);
+0241 <span class="keyword">end</span>
+0242 
+0243 <span class="comment">% Are we adding the old controls?</span>
+0244 <span class="keyword">if</span> isOldControl
+0245     
+0246     <span class="comment">% Initialize the new control names.</span>
+0247     controlNames = cell(length(controlFiles), 1);
+0248     <span class="keyword">for</span> i = 1:length(controlFiles)
+0249         controlNames{i} = <span class="string">'worm'</span>;
+0250     <span class="keyword">end</span>
+0251     
+0252     <span class="comment">% Initialize the old control names.</span>
+0253     <span class="keyword">for</span> i = 1:length(wormFiles)
+0254         control = who(<span class="string">'-FILE'</span>, wormFiles{i}, <span class="string">'control'</span>);
+0255         <span class="keyword">if</span> ~isempty(control)
+0256             controlFiles{end + 1} = wormFiles{i};
+0257             controlNames{end + 1} = <span class="string">'control'</span>;
+0258         <span class="keyword">end</span>
+0259     <span class="keyword">end</span>
+0260     
+0261 <span class="comment">% Initialize the new control names.</span>
+0262 <span class="keyword">else</span>
+0263     controlNames = <span class="string">'worm'</span>;
+0264 <span class="keyword">end</span>
+0265 
+0266 <span class="comment">% Load the control file data into memory.</span>
+0267 controlFileData = [];
+0268 <span class="keyword">if</span> ~isSaveMemory
+0269     <span class="keyword">for</span> i = 1:length(controlFiles)
+0270         worm = [];
+0271         load(controlFiles{i}, controlNames{i});
+0272         controlFileData = cat(1, controlFileData, worm);
+0273     <span class="keyword">end</span>
+0274 <span class="keyword">end</span>
+0275 
+0276 <span class="comment">% Save the normalized control features.</span>
+0277 <span class="keyword">if</span> ~isempty(controlFiles)
+0278     <span class="keyword">if</span> isempty(controlFileData)
+0279         <a href="#_sub2" class="code" title="subfunction saveFeatures(filename, wormScales, wormFrames, isNormWorm, ">saveFeatures</a>(filename, controlScales, controlFrames, <span class="keyword">...</span>
+0280             isNormControl, controlFiles, histInfo, dataInfo, <span class="keyword">...</span>
+0281             controlNames, <span class="string">'control'</span>, isVerbose);
+0282     <span class="keyword">else</span>
+0283         <a href="#_sub2" class="code" title="subfunction saveFeatures(filename, wormScales, wormFrames, isNormWorm, ">saveFeatures</a>(filename, controlScales, controlFrames, <span class="keyword">...</span>
+0284             isNormControl, controlFileData, histInfo, dataInfo, <span class="keyword">...</span>
+0285             controlNames, <span class="string">'control'</span>, isVerbose);
+0286     <span class="keyword">end</span>
+0287 <span class="keyword">end</span>
+0288 <span class="keyword">end</span>
+0289 
+0290 
+0291 
+0292 <span class="comment">%% Load worm data from files.</span>
+0293 <span class="comment">% varargin = empty</span>
+0294 <a name="_sub1" href="#_subfunctions" class="code">function data = loadWormFiles(files, wormName, field, varargin)</a>
+0295 
+0296 <span class="comment">% Should any of the data be left empty?</span>
+0297 empty = false(size(files));
+0298 <span class="keyword">if</span> ~isempty(varargin)
+0299     empty = varargin{1};
+0300 <span class="keyword">end</span>
+0301 
+0302 <span class="comment">% Load the field from memory.</span>
+0303 <span class="keyword">if</span> isstruct(files)
+0304     data = cell(length(files), 1);
+0305     <span class="keyword">for</span> i = 1:length(files)
+0306             <span class="keyword">if</span> ~empty(i)
+0307                 data{i} = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(files(i), field);
+0308             <span class="keyword">end</span>
+0309     <span class="keyword">end</span>
+0310     
+0311 <span class="comment">% Load the field from a file.</span>
+0312 <span class="keyword">else</span>
+0313     
+0314     <span class="comment">% Fix the data.</span>
+0315     <span class="keyword">if</span> ~iscell(wormName)
+0316         wormName = {wormName};
+0317     <span class="keyword">end</span>
+0318     
+0319     <span class="comment">% Load each worm by name.</span>
+0320     data = cell(length(wormName), 1);
+0321     <span class="keyword">if</span> length(wormName) &gt; 1
+0322         <span class="keyword">for</span> i = 1:length(files)
+0323             <span class="keyword">if</span> ~empty(i)
+0324                 data{i} = <a href="../../../SegWorm/Util/loadStructField.html" class="code" title="function data = loadStructField(fileName, structName, field)">loadStructField</a>(files{i}, wormName{i}, field);
+0325             <span class="keyword">end</span>
+0326         <span class="keyword">end</span>
+0327         
+0328         <span class="comment">% Load all worms using the same name.</span>
+0329     <span class="keyword">else</span>
+0330         <span class="keyword">for</span> i = 1:length(files)
+0331             <span class="keyword">if</span> ~empty(i)
+0332                 data{i} = <a href="../../../SegWorm/Util/loadStructField.html" class="code" title="function data = loadStructField(fileName, structName, field)">loadStructField</a>(files{i}, wormName{1}, field);
+0333             <span class="keyword">end</span>
+0334         <span class="keyword">end</span>
+0335     <span class="keyword">end</span>
+0336 <span class="keyword">end</span>
+0337 <span class="keyword">end</span>
+0338 
+0339 
+0340 
+0341 <span class="comment">%% Save the normalized features.</span>
+0342 <a name="_sub2" href="#_subfunctions" class="code">function saveFeatures(filename, wormScales, wormFrames, isNormWorm, </a><span class="keyword">...</span>
+0343     wormFiles, histInfo, dataInfo, loadName, saveName, isVerbose)
+0344 
+0345 <span class="comment">% Determine the locomotion modes.</span>
+0346 motionModes = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(files, wormName, field, varargin)">loadWormFiles</a>(wormFiles, loadName, <span class="keyword">...</span>
+0347     <span class="string">'locomotion.motion.mode'</span>, isNormWorm);
+0348 motionNames = { <span class="keyword">...</span>
+0349     <span class="string">'forward'</span>, <span class="keyword">...</span>
+0350     <span class="string">'paused'</span>, <span class="keyword">...</span>
+0351     <span class="string">'backward'</span>};
+0352 motionEvents = { <span class="keyword">...</span>
+0353     cellfun(@(x) x == 1, motionModes, <span class="string">'UniformOutput'</span>, false), <span class="keyword">...</span>
+0354     cellfun(@(x) x == 0, motionModes, <span class="string">'UniformOutput'</span>, false), <span class="keyword">...</span>
+0355     cellfun(@(x) x == -1, motionModes, <span class="string">'UniformOutput'</span>, false)};
+0356 
+0357 <span class="comment">% Normalize the features.</span>
+0358 <span class="keyword">for</span> i = 1:length(dataInfo)
+0359     
+0360     <span class="comment">% Can the feature be normalized?</span>
+0361     <span class="keyword">if</span> ~dataInfo(i).isTimeSeries
+0362         <span class="keyword">continue</span>;
+0363     <span class="keyword">end</span>
+0364     
+0365     <span class="comment">% Normalize the feature.</span>
+0366     field = dataInfo(i).field;
+0367     <span class="keyword">if</span> isVerbose
+0368         disp([<span class="string">'Normalizing &quot;'</span> field <span class="string">'&quot; ...'</span>]);
+0369     <span class="keyword">end</span>
+0370     <span class="keyword">switch</span> dataInfo(i).type
+0371         
+0372         <span class="comment">% Normalize a simple feature.</span>
+0373         <span class="keyword">case</span> <span class="string">'s'</span>
+0374             data = <a href="#_sub3" class="code" title="subfunction data = normFeatures(wormScales, isNormWorm, wormFiles, ">normFeatures</a>(wormScales, isNormWorm, wormFiles, <span class="keyword">...</span>
+0375                 histInfo, loadName, field);
+0376             eval([saveName <span class="string">'.'</span> field <span class="string">'=data;'</span>]);
+0377             
+0378         <span class="comment">% Normalize a motion feature.</span>
+0379         <span class="keyword">case</span> <span class="string">'m'</span>
+0380             data = <a href="#_sub4" class="code" title="subfunction data = normMotionFeatures(wormScales, wormFrames, isNormWorm, ">normMotionFeatures</a>(wormScales, wormFrames, <span class="keyword">...</span>
+0381                 isNormWorm, wormFiles, histInfo, loadName, field, <span class="keyword">...</span>
+0382                 motionNames, motionEvents);
+0383             eval([saveName <span class="string">'.'</span> field <span class="string">'=data;'</span>]);
+0384             
+0385         <span class="comment">% Normalize an event feature.</span>
+0386         <span class="keyword">case</span> <span class="string">'e'</span>
+0387             data = <a href="#_sub5" class="code" title="subfunction data = normEventFeatures(wormScales, wormFrames, isNormWorm, ">normEventFeatures</a>(wormScales, wormFrames, <span class="keyword">...</span>
+0388                 isNormWorm, wormFiles, histInfo, loadName, field, <span class="keyword">...</span>
+0389                 dataInfo(i).subFields.data, dataInfo(i).subFields.sign);
+0390             eval([saveName <span class="string">'.'</span> field <span class="string">'=data;'</span>]);
+0391     <span class="keyword">end</span>
+0392 <span class="keyword">end</span>
+0393 
+0394 <span class="comment">% Save the normalized features.</span>
+0395 save(filename, saveName, <span class="string">'-append'</span>);
+0396 <span class="keyword">end</span>
+0397 
+0398 
+0399 
+0400 <span class="comment">%% Normalize the features.</span>
+0401 <a name="_sub3" href="#_subfunctions" class="code">function data = normFeatures(wormScales, isNormWorm, wormFiles, </a><span class="keyword">...</span>
+0402     histInfo, wormName, field)
+0403 
+0404 <span class="comment">% Get the data.</span>
+0405 info = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field);
+0406 normData = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(files, wormName, field, varargin)">loadWormFiles</a>(wormFiles, wormName, field);
+0407 
+0408 <span class="comment">% Organize the data.</span>
+0409 <span class="keyword">for</span> i = 1:length(normData)
+0410     <span class="keyword">if</span> ~isNormWorm(i)
+0411         newNormData.all = {normData(i)};
+0412         
+0413         <span class="comment">% Organize the signed data.</span>
+0414         <span class="keyword">if</span> info.isSigned
+0415             newNormData.abs = {abs(normData(i))};
+0416             newNormData.pos = {nan(length(normData{i}))};
+0417             posI = normData{i} &gt; 0;
+0418             newNormData.pos{1}(posI) = {normData{i}(posI)};
+0419             newNormData.neg = {nan(length(normData{i}))};
+0420             negI = normData{i} &gt; 0;
+0421             newNormData.neg{1}(negI) = {normData{i}(negI)};
+0422         <span class="keyword">end</span>
+0423         normData{i} = newNormData;
+0424     <span class="keyword">end</span>
+0425 <span class="keyword">end</span>
+0426 
+0427 <span class="comment">% Normalize the feature data.</span>
+0428 data = <a href="#_sub6" class="code" title="subfunction data = normFeaturesData(wormScales, normData, isSigned, varargin)">normFeaturesData</a>(wormScales, normData, info.isSigned);
+0429 <span class="keyword">end</span>
+0430 
+0431 
+0432 
+0433 <span class="comment">%% Normalize the motion features.</span>
+0434 <a name="_sub4" href="#_subfunctions" class="code">function data = normMotionFeatures(wormScales, wormFrames, isNormWorm, </a><span class="keyword">...</span>
+0435     wormFiles, histInfo, wormName, field, motionNames, motionEvents)
+0436 
+0437 <span class="comment">% Get the data.</span>
+0438 info = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field);
+0439 normData = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(files, wormName, field, varargin)">loadWormFiles</a>(wormFiles, wormName, field);
+0440 
+0441 <span class="comment">% Initialize the data.</span>
+0442 dataLength = size(normData{1}, 1);
+0443 newNormData(dataLength,1).all = [];
+0444 <span class="keyword">for</span> i = 1:length(motionNames)
+0445     newNormData(dataLength,1).(motionNames{i}) = [];
+0446 <span class="keyword">end</span>
+0447         
+0448 <span class="comment">% Organize the data.</span>
+0449 <span class="keyword">for</span> i = 1:length(normData)
+0450     <span class="keyword">if</span> ~isNormWorm(i)
+0451         
+0452         <span class="comment">% Organize the feature data.</span>
+0453         <span class="keyword">for</span> j = 1:dataLength
+0454             newNormData(j,1).all.all = {normData{i}(j,:)};
+0455             
+0456             <span class="comment">% Organize the motion feature data.</span>
+0457             <span class="keyword">for</span> k = 1:length(motionNames)
+0458                 newNormData(j,1).(motionNames{k}).all = <span class="keyword">...</span>
+0459                     {nan(1, wormFrames{i})};
+0460                 newNormData(j,1).(motionNames{k}).all{1}(motionEvents{k}{i}) = <span class="keyword">...</span>
+0461                     normData{i}(j, motionEvents{k}{i});
+0462             <span class="keyword">end</span>
+0463             
+0464             <span class="comment">% Organize the signed feature data.</span>
+0465             <span class="keyword">if</span> info(j).isSigned
+0466                 newNormData(j,1).all.abs = {abs(normData{i}(j,:))};
+0467                 posI = normData{i}(j,:) &gt; 0;
+0468                 newNormData(j,1).all.pos = {nan(1, wormFrames{i})};
+0469                 newNormData(j,1).all.pos{1}(posI) = normData{i}(j,posI);
+0470                 negI = normData{i}(j,:) &lt; 0;
+0471                 newNormData(j,1).all.neg = {nan(1, wormFrames{i})};
+0472                 newNormData(j,1).all.neg{1}(negI) = normData{i}(j,negI);
+0473                 
+0474                 <span class="comment">% Organize the motion feature data.</span>
+0475                 <span class="keyword">for</span> k = 1:length(motionNames)
+0476                     newNormData(j,1).(motionNames{k}).abs = <span class="keyword">...</span>
+0477                         {nan(1, wormFrames{i})};
+0478                     newNormData(j,1).(motionNames{k}).abs{1}(motionEvents{k}{i}) = <span class="keyword">...</span>
+0479                         abs(normData{i}(j, motionEvents{k}{i}));
+0480                     newNormData(j,1).(motionNames{k}).pos = <span class="keyword">...</span>
+0481                         {nan(1, wormFrames{i})};
+0482                     posI = motionEvents{k}{i} &amp; normData{i}(j, :) &gt; 0;
+0483                     newNormData(j,1).(motionNames{k}).pos{1}(posI) = <span class="keyword">...</span>
+0484                         normData{i}(j, posI);
+0485                     newNormData(j,1).(motionNames{k}).neg = <span class="keyword">...</span>
+0486                         {nan(1, wormFrames{i})};
+0487                     negI = motionEvents{k}{i} &amp; normData{i}(j, :) &lt; 0;
+0488                     newNormData(j,1).(motionNames{k}).neg{1}(negI) = <span class="keyword">...</span>
+0489                         normData{i}(j, negI);
+0490                 <span class="keyword">end</span>
+0491             <span class="keyword">end</span>
+0492         <span class="keyword">end</span>
+0493         normData{i} = newNormData;
+0494     <span class="keyword">end</span>
+0495 <span class="keyword">end</span>
+0496 
+0497 <span class="comment">% Initialize the data.</span>
+0498 data(dataLength,1).all = [];
+0499 <span class="keyword">for</span> i = 1:length(motionNames)
+0500     data(dataLength,1).(motionNames{i}) = [];
+0501 <span class="keyword">end</span>
+0502 
+0503 <span class="comment">% Normalize the feature data.</span>
+0504 <span class="keyword">for</span> i = 1:dataLength
+0505     
+0506     <span class="comment">% Normalize the feature data.</span>
+0507     subData = cellfun(@(x) x(i).all, normData, <span class="string">'UniformOutput'</span>, false);
+0508     data(i,1).all = <a href="#_sub6" class="code" title="subfunction data = normFeaturesData(wormScales, normData, isSigned, varargin)">normFeaturesData</a>(wormScales, subData, info(i).isSigned);
+0509     
+0510     <span class="comment">% Normalize the motion feature data.</span>
+0511     <span class="keyword">for</span> j = 1:length(motionNames)
+0512         subData = cellfun(@(x) x(i).(motionNames{j}), normData, <span class="keyword">...</span>
+0513             <span class="string">'UniformOutput'</span>, false);
+0514         data(i,1).(motionNames{j}) = <a href="#_sub6" class="code" title="subfunction data = normFeaturesData(wormScales, normData, isSigned, varargin)">normFeaturesData</a>(wormScales, <span class="keyword">...</span>
+0515             subData, info(i).isSigned);
+0516     <span class="keyword">end</span>
+0517 <span class="keyword">end</span>
+0518 <span class="keyword">end</span>
+0519 
+0520 
+0521 
+0522 <span class="comment">%% Normalize event features.</span>
+0523 <a name="_sub5" href="#_subfunctions" class="code">function data = normEventFeatures(wormScales, wormFrames, isNormWorm, </a><span class="keyword">...</span>
+0524     wormFiles, histInfo, wormName, field, subFields, signField)
+0525 
+0526 <span class="comment">% Get the data.</span>
+0527 info = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, field);
+0528 normData = <a href="#_sub1" class="code" title="subfunction data = loadWormFiles(files, wormName, field, varargin)">loadWormFiles</a>(wormFiles, wormName, field);
+0529 isSigned = ~isempty(signField);
+0530 
+0531 <span class="comment">% Organize the event data.</span>
+0532 <span class="keyword">for</span> i = 1:length(normData)
+0533     <span class="keyword">if</span> ~isNormWorm(i)
+0534         
+0535         <span class="comment">% Initialize the event data.</span>
+0536         newNormData.start.all = {zeros(1, wormFrames{i})};
+0537         newNormData.end.all = {zeros(1, wormFrames{i})};
+0538         <span class="keyword">if</span> isSigned
+0539             newNormData.start.pos = {zeros(1, wormFrames{i})};
+0540             newNormData.start.neg = {zeros(1, wormFrames{i})};
+0541             newNormData.end.pos = {zeros(1, wormFrames{i})};
+0542             newNormData.end.neg = {zeros(1, wormFrames{i})};
+0543         <span class="keyword">end</span>
+0544         <span class="keyword">for</span> j = 1:length(subFields)
+0545             newNormData.(subFields{j}).all = {nan(1, wormFrames{i})};
+0546             <span class="keyword">if</span> info.(subFields{j}).isSigned
+0547                 newNormData.(subFields{j}).abs = {nan(1, wormFrames{i})};
+0548                 newNormData.(subFields{j}).pos = {nan(1, wormFrames{i})};
+0549                 newNormData.(subFields{j}).neg = {nan(1, wormFrames{i})};
+0550             <span class="keyword">end</span>
+0551         <span class="keyword">end</span>
+0552         
+0553         <span class="comment">% Organize the data.</span>
+0554         events = normData{i}.frames;
+0555         events = <a href="../../../SegWorm/Worms/Features/removePartialEvents.html" class="code" title="function eventStats = removePartialEvents(eventStats, totalFrames)">removePartialEvents</a>(events, wormFrames{i});
+0556         signs = ones(1, length(events));
+0557         <span class="keyword">if</span> isSigned
+0558             signs([events.(signField)]) = -1;
+0559         <span class="keyword">end</span>
+0560         <span class="keyword">for</span> j = 1:length(events)
+0561             
+0562             <span class="comment">% Mark the event start and end.</span>
+0563             startI = events(j).start + 1;
+0564             endI = events(j).end + 1;
+0565             newNormData.start.all{1}(startI) = <span class="keyword">...</span>
+0566                 newNormData.start.all{1}(startI) + 1;
+0567             newNormData.end.all{1}(endI) = <span class="keyword">...</span>
+0568                 newNormData.end.all{1}(endI) + 1;
+0569             <span class="keyword">if</span> isSigned
+0570                 <span class="keyword">if</span> signs(j) &gt;= 0
+0571                     newNormData.start.pos{1}(startI) = <span class="keyword">...</span>
+0572                         newNormData.start.pos{1}(startI) + 1;
+0573                     newNormData.end.pos{1}(endI) = <span class="keyword">...</span>
+0574                         newNormData.end.pos{1}(endI) + 1;
+0575                 <span class="keyword">else</span>
+0576                     newNormData.start.neg{1}(startI) = <span class="keyword">...</span>
+0577                         newNormData.start.neg{1}(startI) - 1;
+0578                     newNormData.end.neg{1}(endI) = <span class="keyword">...</span>
+0579                         newNormData.end.neg{1}(endI) - 1;
+0580                 <span class="keyword">end</span>
+0581             <span class="keyword">end</span>
+0582 
+0583             <span class="comment">% Organize the data.</span>
+0584             <span class="keyword">for</span> k = 1:length(subFields)
+0585                 eventData = events(j).(subFields{k}) * signs(j);
+0586                 newNormData.(subFields{k}).all{1}(startI) = eventData;
+0587                 
+0588                 <span class="comment">% Organize the signed data.</span>
+0589                 <span class="keyword">if</span> info.(subFields{k}).isSigned
+0590                     newNormData.(subFields{k}).abs{1}(startI) = <span class="keyword">...</span>
+0591                         abs(eventData);
+0592                     <span class="keyword">if</span> eventData &gt; 0
+0593                         newNormData.(subFields{k}).pos{1}(startI) = <span class="keyword">...</span>
+0594                             eventData;
+0595                     <span class="keyword">end</span>
+0596                     <span class="keyword">if</span> eventData &lt; 0
+0597                         newNormData.(subFields{k}).neg{1}(startI) = <span class="keyword">...</span>
+0598                             eventData;
+0599                     <span class="keyword">end</span>
+0600                 <span class="keyword">end</span>
+0601             <span class="keyword">end</span>
+0602         <span class="keyword">end</span>
+0603         normData{i} = newNormData;
+0604     <span class="keyword">end</span>
+0605 <span class="keyword">end</span>
+0606 
+0607 <span class="comment">% Normalize the event data.</span>
+0608 subData = cellfun(@(x) x.start, normData, <span class="string">'UniformOutput'</span>, false);
+0609 data.start = <a href="#_sub6" class="code" title="subfunction data = normFeaturesData(wormScales, normData, isSigned, varargin)">normFeaturesData</a>(wormScales, subData, isSigned, false, @nansum);
+0610 subData = cellfun(@(x) x.end, normData, <span class="string">'UniformOutput'</span>, false);
+0611 data.end = <a href="#_sub6" class="code" title="subfunction data = normFeaturesData(wormScales, normData, isSigned, varargin)">normFeaturesData</a>(wormScales, subData, isSigned, false, @nansum);
+0612 
+0613 <span class="comment">% Normalize the event feature data.</span>
+0614 <span class="keyword">for</span> i = 1:length(subFields)
+0615     subData = cellfun(@(x) x.(subFields{i}), normData, <span class="string">'UniformOutput'</span>, <span class="keyword">...</span>
+0616         false);
+0617     data.(subFields{i}) = <a href="#_sub6" class="code" title="subfunction data = normFeaturesData(wormScales, normData, isSigned, varargin)">normFeaturesData</a>(wormScales, subData, <span class="keyword">...</span>
+0618         info.(subFields{i}).isSigned);
+0619 <span class="keyword">end</span>
+0620 <span class="keyword">end</span>
+0621 
+0622 
+0623 
+0624 <span class="comment">%% Normalize the feature data.</span>
+0625 <span class="comment">% varargin = [isAbs, normOp]</span>
+0626 <a name="_sub6" href="#_subfunctions" class="code">function data = normFeaturesData(wormScales, normData, isSigned, varargin)</a>
+0627 
+0628 <span class="comment">% If signed, are we computing the absolute value?</span>
+0629 isAbs = true;
+0630 <span class="keyword">if</span> ~isempty(varargin)
+0631     isAbs = varargin{1};
+0632 <span class="keyword">end</span>
+0633 
+0634 <span class="comment">% Are we summing the data?</span>
+0635 normOp = @nanmean;
+0636 <span class="keyword">if</span> length(varargin) &gt; 1
+0637     normOp = varargin{2};
+0638 <span class="keyword">end</span>
+0639 
+0640 <span class="comment">% Initialize the data.</span>
+0641 data.all = [];
+0642 <span class="keyword">if</span> isSigned
+0643     data.pos = [];
+0644     data.neg = [];
+0645     <span class="keyword">if</span> isAbs
+0646         data.abs = [];
+0647     <span class="keyword">end</span>
+0648 <span class="keyword">end</span>
+0649 
+0650 <span class="comment">% Normalize the feature data.</span>
+0651 <span class="keyword">for</span> i = 1:length(normData)
+0652     
+0653     <span class="comment">% Initialize the feature data.</span>
+0654     scales = wormScales{i};
+0655     <span class="keyword">for</span> j = 1:length(normData{i}.all)
+0656         
+0657         <span class="comment">% Is the feature data at the appropriate scale?</span>
+0658         <span class="keyword">if</span> wormScales{i} == 1
+0659             data.all{end + 1,1} = normData{i}.all{j};
+0660             <span class="keyword">if</span> isSigned
+0661                 data.pos{end + 1,1} = normData{i}.pos{j};
+0662                 data.neg{end + 1,1} = normData{i}.neg{j};
+0663                 <span class="keyword">if</span> isAbs
+0664                     data.abs{end + 1,1} = normData{i}.abs{j};
+0665                 <span class="keyword">end</span>
+0666             <span class="keyword">end</span>
+0667             <span class="keyword">continue</span>;
+0668         <span class="keyword">end</span>
+0669         
+0670         <span class="comment">% Normalize the feature data.</span>
+0671         data.all{end + 1,1} = <span class="keyword">...</span>
+0672             nan(1, floor(size(normData{i}.all{j}, 2) / scales(j)));
+0673         <span class="keyword">if</span> isSigned
+0674             data.pos{end + 1,1} = <span class="keyword">...</span>
+0675                 nan(1, floor(size(normData{i}.pos{j}, 2) / scales(j)));
+0676             data.neg{end + 1,1} = <span class="keyword">...</span>
+0677                 nan(1, floor(size(normData{i}.neg{j}, 2) / scales(j)));
+0678             <span class="keyword">if</span> isAbs
+0679                 data.abs{end + 1,1} = <span class="keyword">...</span>
+0680                     nan(1, floor(size(normData{i}.abs{j}, 2) / scales(j)));
+0681             <span class="keyword">end</span>
+0682         <span class="keyword">end</span>
+0683         
+0684         <span class="comment">% Normalize the feature data.</span>
+0685         <span class="keyword">for</span> k = 1:length(data.all{end})
+0686             index = (k - 1) * scales(j) + 1;
+0687             data.all{end}(k) = <span class="keyword">...</span>
+0688                 normOp(normData{i}.all{j}(index:(index + scales(j) - 1)));
+0689         <span class="keyword">end</span>
+0690         <span class="keyword">if</span> isSigned
+0691             <span class="keyword">for</span> k = 1:length(data.all{end})
+0692                 index = (k - 1) * scales(j) + 1;
+0693                 range = index:(index + scales(j) - 1);
+0694                 data.pos{end}(k) = normOp(normData{i}.pos{j}(range));
+0695                 data.neg{end}(k) = normOp(normData{i}.neg{j}(range));
+0696                 <span class="keyword">if</span> isAbs
+0697                     data.abs{end}(k) = normOp(normData{i}.abs{j}(range));
+0698                 <span class="keyword">end</span>
+0699             <span class="keyword">end</span>
+0700         <span class="keyword">end</span>
+0701     <span class="keyword">end</span>
+0702 <span class="keyword">end</span>
+0703 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

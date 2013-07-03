@@ -1,0 +1,1013 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotWormStats</title>
+  <meta name="keywords" content="plotWormStats">
+  <meta name="description" content="PLOTWORMSTATS Plot the worm statistics.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>plotWormStats
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>PLOTWORMSTATS Plot the worm statistics.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function plotWormStats(wormFile, worm2num, state, titleName, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOTWORMSTATS Plot the worm statistics.
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,
+                 SHOWFEATUREI)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,
+                 SHOWFEATUREI, ISSHOWSIGN)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,
+                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,
+                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,
+                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,
+                 ISSETS)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,
+                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,
+                 ISSETS, ISNORM)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,
+                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,
+                 ISSETS, ISNORM, ISSEM)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,
+                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,
+                 ISSETS, ISNORM, ISSEM, ISLINES)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,
+                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,
+                 ISSETS, ISNORM, ISSEM, ISLINES, ISVAR)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,
+                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,
+                 ISSETS, ISNORM, ISSEM, ISLINES, ISVAR, ISLEGEND)
+
+   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,
+                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,
+                 ISSETS, ISNORM, ISSEM, ISLINES, ISVAR, ISLEGEND, ...
+                 ISVERBOSE)
+
+   Inputs:
+       wormFile     - the worm histogram or normalized time series file
+       worm2num     - the function to convert worm information to
+                      numerical data:
+
+                      [isUsed wormX tickX nameX labelX] =
+                      worm2num(info, state)
+
+                      Inputs:
+                      info   = the worm information (from wormFile)
+                      state  = the function state
+
+                      Outputs:
+                      isUsed = for each worm, are we using the data?
+                      wormX  = for a time series, the frames/seconds;
+                               otherwise, the x-axis numerical data
+                      tickX  = the x-axis ticks; if length(tickX) is 1,
+                               the tick is used to space the x-axis ticks;
+                               if empty, Matlab decides
+                      nameX  = the x-axis tick names; if length(tickX) is
+                               1, the name is prepended to the ticks;
+                               if empty, Matlab decides
+                      labelX = the label for the x-axis
+                      state  = the function state
+
+       titleName    - the title for the figure
+       isTimeSeries - are we plotting a time series?
+                      the default is yes (true)
+       showFeatureI - the indices of the features to show
+                      (see wormDisplayInfo)
+                      if empty, all feature are shown
+                      the default is all features (empty)
+       isShowSign   - are we plotting the signed data sub features?
+                      the default is no (false)
+       isShowMotion - are we plotting the motion data sub features?
+                      the default is no (false)
+       isShowEvent  - are we plotting the event data sub features?
+                      the default is no (false)
+       isSets       - are we plotting the data as individual sets?
+                      the default is no (false)
+       isNorm       - are we normalizing the data to [-1,1]?
+                      the default is yes (true)
+       isSEM        - are we plotting the standard error of the mean?
+                      if false, we plot the standard error
+                      if empty, we plot neither
+                      the default is yes (true)
+       isLines      - are we connecting the plots with lines?
+                      the default is no (false)
+       isVar        - are we plotting the intra vs. inter group variance?
+                      if false, we plot the data values
+                      the default is no (false)
+       isLegend     - are we showing a figure legend?
+                      the default is yes (true)
+       isVerbose    - verbose mode displays the progress;
+                      the default is yes (true)
+
+ See also WORM2HISTOGRAM, ADDWORMHISTOGRAMS, WORM2NORMTIMES</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>	GETSTRUCTFIELD Get a field in a structure.</li><li><a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>	STR2COLORS Convert a string of colors to RGB values.</li><li><a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>	WORMDATAINFO Get information for computing the worm data.</li><li><a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>	WORMDISPLAYINFO Get information for displaying the worm data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function legends = plotEventData(isUsed, wormX, worm, dataInfo,</a></li><li><a href="#_sub2" class="code">function legends = plotWormData(isUsed, wormX, worm, field, subField,</a></li><li><a href="#_sub3" class="code">function plotSignedData(isUsed, xData, data, isTimeSeries, normLength,</a></li><li><a href="#_sub4" class="code">function plotData(xData, data, isTimeSeries, normLength, isSets,</a></li><li><a href="#_sub5" class="code">function [data dataError] = normalize(data, dataError)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function plotWormStats(wormFile, worm2num, state, titleName, varargin)</a>
+0002 <span class="comment">%PLOTWORMSTATS Plot the worm statistics.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,</span>
+0009 <span class="comment">%                 SHOWFEATUREI)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,</span>
+0012 <span class="comment">%                 SHOWFEATUREI, ISSHOWSIGN)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,</span>
+0015 <span class="comment">%                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION)</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,</span>
+0018 <span class="comment">%                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT)</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,</span>
+0021 <span class="comment">%                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,</span>
+0022 <span class="comment">%                 ISSETS)</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,</span>
+0025 <span class="comment">%                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,</span>
+0026 <span class="comment">%                 ISSETS, ISNORM)</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,</span>
+0029 <span class="comment">%                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,</span>
+0030 <span class="comment">%                 ISSETS, ISNORM, ISSEM)</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,</span>
+0033 <span class="comment">%                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,</span>
+0034 <span class="comment">%                 ISSETS, ISNORM, ISSEM, ISLINES)</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,</span>
+0037 <span class="comment">%                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,</span>
+0038 <span class="comment">%                 ISSETS, ISNORM, ISSEM, ISLINES, ISVAR)</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,</span>
+0041 <span class="comment">%                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,</span>
+0042 <span class="comment">%                 ISSETS, ISNORM, ISSEM, ISLINES, ISVAR, ISLEGEND)</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%   PLOTWORMSTATS(WORMFILE, WORM2NUM, STATE, TITLENAME, ISTIMESERIES,</span>
+0045 <span class="comment">%                 SHOWFEATUREI, ISSHOWSIGN, ISSHOWMOTION, ISSHOWEVENT,</span>
+0046 <span class="comment">%                 ISSETS, ISNORM, ISSEM, ISLINES, ISVAR, ISLEGEND, ...</span>
+0047 <span class="comment">%                 ISVERBOSE)</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%   Inputs:</span>
+0050 <span class="comment">%       wormFile     - the worm histogram or normalized time series file</span>
+0051 <span class="comment">%       worm2num     - the function to convert worm information to</span>
+0052 <span class="comment">%                      numerical data:</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%                      [isUsed wormX tickX nameX labelX] =</span>
+0055 <span class="comment">%                      worm2num(info, state)</span>
+0056 <span class="comment">%</span>
+0057 <span class="comment">%                      Inputs:</span>
+0058 <span class="comment">%                      info   = the worm information (from wormFile)</span>
+0059 <span class="comment">%                      state  = the function state</span>
+0060 <span class="comment">%</span>
+0061 <span class="comment">%                      Outputs:</span>
+0062 <span class="comment">%                      isUsed = for each worm, are we using the data?</span>
+0063 <span class="comment">%                      wormX  = for a time series, the frames/seconds;</span>
+0064 <span class="comment">%                               otherwise, the x-axis numerical data</span>
+0065 <span class="comment">%                      tickX  = the x-axis ticks; if length(tickX) is 1,</span>
+0066 <span class="comment">%                               the tick is used to space the x-axis ticks;</span>
+0067 <span class="comment">%                               if empty, Matlab decides</span>
+0068 <span class="comment">%                      nameX  = the x-axis tick names; if length(tickX) is</span>
+0069 <span class="comment">%                               1, the name is prepended to the ticks;</span>
+0070 <span class="comment">%                               if empty, Matlab decides</span>
+0071 <span class="comment">%                      labelX = the label for the x-axis</span>
+0072 <span class="comment">%                      state  = the function state</span>
+0073 <span class="comment">%</span>
+0074 <span class="comment">%       titleName    - the title for the figure</span>
+0075 <span class="comment">%       isTimeSeries - are we plotting a time series?</span>
+0076 <span class="comment">%                      the default is yes (true)</span>
+0077 <span class="comment">%       showFeatureI - the indices of the features to show</span>
+0078 <span class="comment">%                      (see wormDisplayInfo)</span>
+0079 <span class="comment">%                      if empty, all feature are shown</span>
+0080 <span class="comment">%                      the default is all features (empty)</span>
+0081 <span class="comment">%       isShowSign   - are we plotting the signed data sub features?</span>
+0082 <span class="comment">%                      the default is no (false)</span>
+0083 <span class="comment">%       isShowMotion - are we plotting the motion data sub features?</span>
+0084 <span class="comment">%                      the default is no (false)</span>
+0085 <span class="comment">%       isShowEvent  - are we plotting the event data sub features?</span>
+0086 <span class="comment">%                      the default is no (false)</span>
+0087 <span class="comment">%       isSets       - are we plotting the data as individual sets?</span>
+0088 <span class="comment">%                      the default is no (false)</span>
+0089 <span class="comment">%       isNorm       - are we normalizing the data to [-1,1]?</span>
+0090 <span class="comment">%                      the default is yes (true)</span>
+0091 <span class="comment">%       isSEM        - are we plotting the standard error of the mean?</span>
+0092 <span class="comment">%                      if false, we plot the standard error</span>
+0093 <span class="comment">%                      if empty, we plot neither</span>
+0094 <span class="comment">%                      the default is yes (true)</span>
+0095 <span class="comment">%       isLines      - are we connecting the plots with lines?</span>
+0096 <span class="comment">%                      the default is no (false)</span>
+0097 <span class="comment">%       isVar        - are we plotting the intra vs. inter group variance?</span>
+0098 <span class="comment">%                      if false, we plot the data values</span>
+0099 <span class="comment">%                      the default is no (false)</span>
+0100 <span class="comment">%       isLegend     - are we showing a figure legend?</span>
+0101 <span class="comment">%                      the default is yes (true)</span>
+0102 <span class="comment">%       isVerbose    - verbose mode displays the progress;</span>
+0103 <span class="comment">%                      the default is yes (true)</span>
+0104 <span class="comment">%</span>
+0105 <span class="comment">% See also WORM2HISTOGRAM, ADDWORMHISTOGRAMS, WORM2NORMTIMES</span>
+0106 
+0107 <span class="comment">% Are we plotting a time series?</span>
+0108 isTimeSeries = false;
+0109 <span class="keyword">if</span> ~isempty(varargin)
+0110     isTimeSeries = varargin{1};
+0111 <span class="keyword">end</span>
+0112 
+0113 <span class="comment">% Initialize the worm data information.</span>
+0114 histInfo = <a href="../../../SegWorm/Worms/Features/wormDisplayInfo.html" class="code" title="function info = wormDisplayInfo()">wormDisplayInfo</a>();
+0115 dataInfo = <a href="../../../SegWorm/Worms/Features/wormDataInfo.html" class="code" title="function info = wormDataInfo()">wormDataInfo</a>();
+0116 
+0117 <span class="comment">% Which features are we showing?</span>
+0118 showFeatureI = [];
+0119 <span class="keyword">if</span> length(varargin) &gt; 1
+0120     showFeatureI = varargin{2};
+0121 <span class="keyword">end</span>
+0122 <span class="keyword">if</span> isempty(showFeatureI)
+0123     isShow = true(length(dataInfo),1);
+0124 <span class="keyword">else</span>
+0125     isShow = false(length(dataInfo),1);
+0126     isShow(showFeatureI) = true;
+0127 <span class="keyword">end</span>
+0128 
+0129 <span class="comment">% Are we plotting the signed data sub features?</span>
+0130 isShowSign = false;
+0131 <span class="keyword">if</span> length(varargin) &gt; 2
+0132     isShowSign = varargin{3};
+0133 <span class="keyword">end</span>
+0134 
+0135 <span class="comment">% Are we plotting the motion data sub features?</span>
+0136 isShowMotion = false;
+0137 <span class="keyword">if</span> length(varargin) &gt; 3
+0138     isShowMotion = varargin{4};
+0139 <span class="keyword">end</span>
+0140 
+0141 <span class="comment">% Are we plotting the event data sub features?</span>
+0142 isShowEvent = false;
+0143 <span class="keyword">if</span> length(varargin) &gt; 4
+0144     isShowEvent = varargin{5};
+0145 <span class="keyword">end</span>
+0146 
+0147 <span class="comment">% Are we plotting the data as individual sets?</span>
+0148 isSets = false;
+0149 <span class="keyword">if</span> length(varargin) &gt; 5
+0150     isSets = varargin{6};
+0151 <span class="keyword">end</span>
+0152 
+0153 <span class="comment">% Are we normalizing the data to [-1,1]?</span>
+0154 isNorm = true;
+0155 <span class="keyword">if</span> length(varargin) &gt; 6
+0156     isNorm = varargin{7};
+0157 <span class="keyword">end</span>
+0158 
+0159 <span class="comment">% Are we plotting the standard error of the mean?</span>
+0160 isSEM = true;
+0161 <span class="keyword">if</span> length(varargin) &gt; 7
+0162     isSEM = varargin{8};
+0163 <span class="keyword">end</span>
+0164 
+0165 <span class="comment">% Are we connecting the plots with lines?</span>
+0166 isLines = false;
+0167 <span class="keyword">if</span> length(varargin) &gt; 8
+0168     isLines = varargin{9};
+0169 <span class="keyword">end</span>
+0170 
+0171 <span class="comment">% Are we plotting the intra vs. inter group variance?</span>
+0172 isVar = false;
+0173 <span class="keyword">if</span> length(varargin) &gt; 9
+0174     isVar = varargin{10};
+0175 <span class="keyword">end</span>
+0176 
+0177 <span class="comment">% Are we showing a figure legend?</span>
+0178 isLegend = true;
+0179 <span class="keyword">if</span> length(varargin) &gt; 10
+0180     isLegend = varargin{11};
+0181 <span class="keyword">end</span>
+0182 
+0183 <span class="comment">% Are we displaying the progress?</span>
+0184 isVerbose = true;
+0185 <span class="keyword">if</span> length(varargin) &gt; 12
+0186     isVerbose = varargin{13};
+0187 <span class="keyword">end</span>
+0188 
+0189 <span class="comment">% Get the worm information.</span>
+0190 wormInfo = [];
+0191 worm = [];
+0192 load(wormFile, <span class="string">'wormInfo'</span>, <span class="string">'worm'</span>);
+0193 
+0194 <span class="comment">% Convert the worm info to numerical data.</span>
+0195 [isUsed wormX tickX nameX labelX] = worm2num(wormInfo, state);
+0196 
+0197 <span class="comment">% Initialize the locomotion modes.</span>
+0198 motionNames = { <span class="keyword">...</span>
+0199     <span class="string">'forward'</span>, <span class="keyword">...</span>
+0200     <span class="string">'paused'</span>, <span class="keyword">...</span>
+0201     <span class="string">'backward'</span>};
+0202 
+0203 <span class="comment">% How many features do we have?</span>
+0204 morphologyTotal = 0;
+0205 postureTotal = 0;
+0206 locomotionTotal = 0;
+0207 pathTotal = 0;
+0208 morphologyNum = [];
+0209 postureNum = [];
+0210 locomotionNum = [];
+0211 pathNum = [];
+0212 <span class="keyword">for</span> i = 1:length(dataInfo)
+0213     
+0214     <span class="comment">% Are we showing this feature?</span>
+0215     <span class="keyword">if</span> ~isShow(i)
+0216         <span class="keyword">continue</span>;
+0217     <span class="keyword">end</span>
+0218     
+0219     <span class="comment">% Is the data a time series?</span>
+0220     <span class="keyword">if</span> isTimeSeries &amp;&amp; ~dataInfo(i).isTimeSeries
+0221         <span class="keyword">continue</span>;
+0222     <span class="keyword">end</span>
+0223     
+0224     <span class="comment">% Count the features.</span>
+0225     numFeatures = 0;
+0226     field = dataInfo(i).field;
+0227     isSigned = false;
+0228     <span class="keyword">switch</span> dataInfo(i).type
+0229         
+0230         <span class="comment">% Count the simple features.</span>
+0231         <span class="keyword">case</span> <span class="string">'s'</span>
+0232             <span class="keyword">if</span> isShowSign
+0233                 isSigned = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, [field <span class="string">'.isSigned'</span>]);
+0234             <span class="keyword">end</span>
+0235             <span class="keyword">if</span> isSigned
+0236                 numFeatures = 4;
+0237             <span class="keyword">else</span>
+0238                 numFeatures = 1;
+0239             <span class="keyword">end</span>
+0240             
+0241         <span class="comment">% Count the motion features.</span>
+0242         <span class="keyword">case</span> <span class="string">'m'</span>
+0243             <span class="keyword">if</span> isShowSign
+0244                 isSigned = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, [field <span class="string">'.isSigned'</span>]);
+0245             <span class="keyword">end</span>
+0246             <span class="keyword">if</span> isShowMotion
+0247                 numFeatures = length(motionNames) + 1;
+0248             <span class="keyword">else</span>
+0249                 numFeatures = 1;
+0250             <span class="keyword">end</span>
+0251             <span class="keyword">if</span> isSigned
+0252                 numFeatures = numFeatures * 4;
+0253             <span class="keyword">end</span>
+0254             
+0255         <span class="comment">% Count the event features.</span>
+0256         <span class="keyword">case</span> <span class="string">'e'</span>
+0257             
+0258             <span class="comment">% Count the event summary features.</span>
+0259             <span class="keyword">if</span> isTimeSeries
+0260                 numFeatures = 2;
+0261                 <span class="keyword">if</span> isShowSign &amp;&amp; ~isempty(dataInfo(i).subFields.sign)
+0262                     numFeatures = numFeatures + 2;
+0263                 <span class="keyword">end</span>
+0264             <span class="keyword">else</span>
+0265                 numFeatures = length(dataInfo(i).subFields.summary);
+0266             <span class="keyword">end</span>
+0267             
+0268             <span class="comment">% Count the event data features.</span>
+0269             subFields = dataInfo(i).subFields.data;
+0270             <span class="keyword">for</span> j = 1:length(subFields)
+0271                 <span class="keyword">if</span> isShowSign
+0272                     isSigned = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, <span class="keyword">...</span>
+0273                         [field <span class="string">'.'</span> subFields{j} <span class="string">'.isSigned'</span>]);
+0274                 <span class="keyword">end</span>
+0275                 <span class="keyword">if</span> isSigned
+0276                     numFeatures = numFeatures + 4;
+0277                 <span class="keyword">else</span>
+0278                     numFeatures = numFeatures + 1;
+0279                 <span class="keyword">end</span>
+0280             <span class="keyword">end</span>
+0281     <span class="keyword">end</span>
+0282     
+0283     <span class="comment">% Categorize the features.</span>
+0284     <span class="keyword">switch</span> dataInfo(i).category
+0285         <span class="keyword">case</span> <span class="string">'m'</span>
+0286             morphologyTotal = morphologyTotal + numFeatures;
+0287             morphologyNum{end + 1,1} = numFeatures;
+0288         <span class="keyword">case</span> <span class="string">'s'</span>
+0289             postureTotal = postureTotal + numFeatures;
+0290             postureNum{end + 1,1} = numFeatures;
+0291         <span class="keyword">case</span> <span class="string">'l'</span>
+0292             locomotionTotal = locomotionTotal + numFeatures;
+0293             locomotionNum{end + 1,1} = numFeatures;
+0294         <span class="keyword">case</span> <span class="string">'p'</span>
+0295             pathTotal = pathTotal + numFeatures;
+0296             pathNum{end + 1,1} = numFeatures;
+0297     <span class="keyword">end</span>
+0298 <span class="keyword">end</span>
+0299 
+0300 <span class="comment">% Initialize all the colors.</span>
+0301 <span class="keyword">if</span> ~isempty(showFeatureI)
+0302     allColors = lines(morphologyTotal + postureTotal + <span class="keyword">...</span>
+0303         locomotionTotal + pathTotal);
+0304     allColorsI = 0;
+0305 <span class="keyword">end</span>
+0306 
+0307 <span class="comment">% Initialize the morphology colors;</span>
+0308 minShade = -0.5;
+0309 maxShade = 0.5;
+0310 <span class="keyword">if</span> isempty(showFeatureI)
+0311     morphologyAllColors = <span class="keyword">...</span>
+0312         <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'g'</span>, linspace(minShade, maxShade, morphologyTotal));
+0313 <span class="keyword">else</span>
+0314     morphologyAllColors = <span class="keyword">...</span>
+0315         allColors((allColorsI + 1):(allColorsI + morphologyTotal),:);
+0316     allColorsI = allColorsI + morphologyTotal;
+0317 <span class="keyword">end</span>
+0318 morphologyColors = cell(length(morphologyNum),1);
+0319 startI = 1;
+0320 <span class="keyword">for</span> i = 1:length(morphologyColors)
+0321     endI = startI + morphologyNum{i} - 1;
+0322     morphologyColors{i} = morphologyAllColors(startI:endI,:);
+0323     startI = endI + 1;
+0324 <span class="keyword">end</span>
+0325 
+0326 <span class="comment">% Initialize the posture colors;</span>
+0327 <span class="keyword">if</span> isempty(showFeatureI)
+0328     postureAllColors = <span class="keyword">...</span>
+0329         <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'r'</span>, linspace(minShade, maxShade, postureTotal));
+0330 <span class="keyword">else</span>
+0331     postureAllColors = <span class="keyword">...</span>
+0332         allColors((allColorsI + 1):(allColorsI + postureTotal),:);
+0333     allColorsI = allColorsI + postureTotal;
+0334 <span class="keyword">end</span>
+0335 postureColors = cell(length(postureNum),1);
+0336 startI = 1;
+0337 <span class="keyword">for</span> i = 1:length(postureColors)
+0338     endI = startI + postureNum{i} - 1;
+0339     postureColors{i} = postureAllColors(startI:endI,:);
+0340     startI = endI + 1;
+0341 <span class="keyword">end</span>
+0342 
+0343 <span class="comment">% Initialize the locomotion colors;</span>
+0344 <span class="keyword">if</span> isempty(showFeatureI)
+0345     locomotionAllColors = <span class="keyword">...</span>
+0346         <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'b'</span>, linspace(minShade, maxShade, locomotionTotal));
+0347 <span class="keyword">else</span>
+0348     locomotionAllColors = <span class="keyword">...</span>
+0349         allColors((allColorsI + 1):(allColorsI + locomotionTotal),:);
+0350     allColorsI = allColorsI + locomotionTotal;
+0351 <span class="keyword">end</span>
+0352 locomotionColors = cell(length(locomotionNum),1);
+0353 startI = 1;
+0354 <span class="keyword">for</span> i = 1:length(locomotionColors)
+0355     endI = startI + locomotionNum{i} - 1;
+0356     locomotionColors{i} = locomotionAllColors(startI:endI,:);
+0357     startI = endI + 1;
+0358 <span class="keyword">end</span>
+0359 
+0360 <span class="comment">% Initialize the path colors;</span>
+0361 <span class="keyword">if</span> isempty(showFeatureI)
+0362     pathAllColors = <span class="keyword">...</span>
+0363         <a href="../../../SegWorm/Util/str2colors.html" class="code" title="function colors = str2colors(string, varargin)">str2colors</a>(<span class="string">'k'</span>, linspace(minShade, maxShade, pathTotal));
+0364 <span class="keyword">else</span>
+0365     pathAllColors = <span class="keyword">...</span>
+0366         allColors((allColorsI + 1):(allColorsI + pathTotal),:);
+0367     allColorsI = allColorsI + pathTotal;
+0368 <span class="keyword">end</span>
+0369 pathColors = cell(length(pathNum),1);
+0370 startI = 1;
+0371 <span class="keyword">for</span> i = 1:length(pathColors)
+0372     endI = startI + pathNum{i} - 1;
+0373     pathColors{i} = pathAllColors(startI:endI,:);
+0374     startI = endI + 1;
+0375 <span class="keyword">end</span>
+0376 
+0377 <span class="comment">% Plot the data.</span>
+0378 legends = {};
+0379 morphologyI = 1;
+0380 postureI = 1;
+0381 locomotionI = 1;
+0382 pathI = 1;
+0383 figure;
+0384 hold on;
+0385 <span class="keyword">for</span> i = 1:length(dataInfo)
+0386     
+0387     <span class="comment">% Are we using the data?</span>
+0388     <span class="keyword">if</span> ~isShow(i)
+0389         <span class="keyword">continue</span>;
+0390     <span class="keyword">end</span>
+0391     
+0392     <span class="comment">% Is the data a time series?</span>
+0393     <span class="keyword">if</span> isTimeSeries &amp;&amp; ~dataInfo(i).isTimeSeries
+0394         <span class="keyword">continue</span>;
+0395     <span class="keyword">end</span>
+0396     
+0397     <span class="comment">% Get the data information.</span>
+0398     field = dataInfo(i).field;
+0399     
+0400     <span class="comment">% Set the colors.</span>
+0401     colors = [];
+0402     <span class="keyword">switch</span> dataInfo(i).category
+0403         <span class="keyword">case</span> <span class="string">'m'</span>
+0404             colors = morphologyColors{morphologyI};
+0405             morphologyI = morphologyI + 1;
+0406         <span class="keyword">case</span> <span class="string">'s'</span>
+0407             colors = postureColors{postureI};
+0408             postureI = postureI + 1;
+0409         <span class="keyword">case</span> <span class="string">'l'</span>
+0410             colors = locomotionColors{locomotionI};
+0411             locomotionI = locomotionI + 1;
+0412         <span class="keyword">case</span> <span class="string">'p'</span>
+0413             colors = pathColors{pathI};
+0414             pathI = pathI + 1;
+0415     <span class="keyword">end</span>
+0416     
+0417     <span class="comment">% Plot the data.</span>
+0418     <span class="keyword">if</span> isVerbose
+0419         disp([<span class="string">'Plotting &quot;'</span> field <span class="string">'&quot; ...'</span>]);
+0420     <span class="keyword">end</span>
+0421     isSigned = false;
+0422     <span class="keyword">switch</span> dataInfo(i).type
+0423         
+0424         <span class="comment">% Plot the simple features.</span>
+0425         <span class="keyword">case</span> <span class="string">'s'</span>
+0426             <span class="keyword">if</span> isShowSign
+0427                 isSigned = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, [field <span class="string">'.isSigned'</span>]);
+0428             <span class="keyword">end</span>
+0429             newLegends = <a href="#_sub2" class="code" title="subfunction legends = plotWormData(isUsed, wormX, worm, field, subField, ">plotWormData</a>(isUsed, wormX, worm, field, [], <span class="keyword">...</span>
+0430                 histInfo, isTimeSeries, isSigned, isSets, isNorm, <span class="keyword">...</span>
+0431                 isSEM, isLines, isVar, colors);
+0432             legends((end + 1):(end + length(newLegends))) = newLegends;
+0433             
+0434         <span class="comment">% Plot the motion features.</span>
+0435         <span class="keyword">case</span> <span class="string">'m'</span>
+0436             
+0437             <span class="comment">% Plot the simple feature.</span>
+0438             <span class="keyword">if</span> isShowSign
+0439                 isSigned = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, [field <span class="string">'.isSigned'</span>]);
+0440             <span class="keyword">end</span>
+0441             subField = [];
+0442             <span class="keyword">if</span> isTimeSeries
+0443                 subField = <span class="string">'all'</span>;
+0444             <span class="keyword">end</span>
+0445             newLegends = <a href="#_sub2" class="code" title="subfunction legends = plotWormData(isUsed, wormX, worm, field, subField, ">plotWormData</a>(isUsed, wormX, worm, field, <span class="keyword">...</span>
+0446                 subField, histInfo, isTimeSeries, isSigned, isSets, <span class="keyword">...</span>
+0447                 isNorm, isSEM, isLines, isVar, colors);
+0448             legends((end + 1):(end + length(newLegends))) = newLegends;
+0449             
+0450             <span class="comment">% Plot the motion features.</span>
+0451             <span class="keyword">if</span> isShowMotion
+0452                 <span class="keyword">for</span> j = 1:length(motionNames)
+0453                     colors = colors((length(newLegends) + 1):<span class="keyword">end</span>,:);
+0454                     newLegends = <a href="#_sub2" class="code" title="subfunction legends = plotWormData(isUsed, wormX, worm, field, subField, ">plotWormData</a>(isUsed, wormX, worm, <span class="keyword">...</span>
+0455                         field, motionNames{j}, histInfo, isTimeSeries, <span class="keyword">...</span>
+0456                         isSigned, isSets, isNorm, isSEM, isLines, <span class="keyword">...</span>
+0457                         isVar, colors);
+0458                     legends((end + 1):(end + length(newLegends))) = <span class="keyword">...</span>
+0459                         newLegends;
+0460                 <span class="keyword">end</span>
+0461             <span class="keyword">end</span>
+0462             
+0463         <span class="comment">% Plot the event features.</span>
+0464         <span class="keyword">case</span> <span class="string">'e'</span>
+0465           newLegends = <a href="#_sub1" class="code" title="subfunction legends = plotEventData(isUsed, wormX, worm, dataInfo, ">plotEventData</a>(isUsed, wormX, worm, dataInfo(i), <span class="keyword">...</span>
+0466               histInfo, isTimeSeries, isShowSign, isShowEvent, isSets, <span class="keyword">...</span>
+0467               isNorm, isSEM, isLines, isVar, colors);
+0468           legends((end + 1):(end + length(newLegends))) = newLegends;
+0469     <span class="keyword">end</span>
+0470 <span class="keyword">end</span>
+0471 
+0472 <span class="comment">% Label the axes for variability.</span>
+0473 <span class="keyword">if</span> isVar
+0474     
+0475     <span class="comment">% Determine the group name.</span>
+0476     groupName = <span class="string">'Group'</span>;
+0477     <span class="keyword">if</span> ~isempty(labelX)
+0478         groupName = labelX;
+0479     <span class="keyword">end</span>
+0480     
+0481     <span class="comment">% Label the y axis.</span>
+0482     <span class="keyword">if</span> isTimeSeries
+0483         ylabel([<span class="string">'Inter/Intra '</span> groupName <span class="string">' Deviation'</span>]);
+0484     <span class="keyword">else</span>
+0485         ylabel([<span class="string">'Inter/Intra '</span> groupName <span class="string">' Deviation '</span> <span class="keyword">...</span>
+0486             <span class="string">'(Deviation(Group Means)/Mean(Group Deviations)) '</span>]);
+0487     <span class="keyword">end</span>
+0488     
+0489     <span class="comment">% Remove the x-axis ticks.</span>
+0490     set(gca, <span class="string">'XTick'</span>, []);
+0491     set(gca, <span class="string">'XTickLabel'</span>, []);
+0492     
+0493 <span class="comment">% Label the axes and ticks for data.</span>
+0494 <span class="keyword">else</span>
+0495     
+0496     <span class="comment">% Set the x-axis ticks.</span>
+0497     <span class="keyword">if</span> length(tickX) == 1
+0498         ticks = get(gca, <span class="string">'XTick'</span>);
+0499         tickX = ticks(1):tickX:ticks(end);
+0500         set(gca, <span class="string">'XTick'</span>, tickX);
+0501     <span class="keyword">end</span>
+0502     <span class="keyword">if</span> ~isempty(tickX)
+0503         set(gca, <span class="string">'XTick'</span>, tickX);
+0504     <span class="keyword">end</span>
+0505     
+0506     <span class="comment">% Label the x-axis ticks.</span>
+0507     <span class="keyword">if</span> length(nameX) == 1
+0508         ticks = get(gca, <span class="string">'XTick'</span>, tickX);
+0509         <span class="keyword">if</span> iscell(nameX)
+0510             nameX = nameX{1};
+0511         <span class="keyword">end</span>
+0512         nameX = arrayfun(@(X) [nameX num2str(x)], ticks, <span class="string">'UniformOutput'</span>, <span class="keyword">...</span>
+0513             false);
+0514         set(gca, <span class="string">'XTick'</span>, tickX);
+0515     <span class="keyword">end</span>
+0516     <span class="keyword">if</span> ~isempty(nameX)
+0517         set(gca, <span class="string">'XTickLabel'</span>, nameX);
+0518     <span class="keyword">end</span>
+0519     
+0520     <span class="comment">% Label the x-axis.</span>
+0521     <span class="keyword">if</span> isempty(labelX)
+0522         rotateticklabel(gca);
+0523     <span class="keyword">else</span>
+0524         xlabel(labelX);
+0525     <span class="keyword">end</span>
+0526 
+0527     <span class="comment">% Label the y-axis.</span>
+0528     <span class="keyword">if</span> isNorm
+0529         ylabel(<span class="string">'Normalized Feature Values (no units)'</span>);
+0530     <span class="keyword">else</span>
+0531         ylabel(<span class="string">'Feature Values'</span>);
+0532     <span class="keyword">end</span>
+0533 <span class="keyword">end</span>
+0534 
+0535 <span class="comment">% Label the figure.</span>
+0536 title([titleName <span class="string">' (N = '</span> num2str(sum(isUsed)) <span class="string">')'</span>]);
+0537 <span class="keyword">if</span> isLegend &amp;&amp; ~isSets
+0538     legend(legends, <span class="string">'Location'</span>, <span class="string">'BestOutside'</span>);
+0539 <span class="keyword">end</span>
+0540 <span class="keyword">end</span>
+0541 
+0542 
+0543 
+0544 <span class="comment">%% Plot event summary data.</span>
+0545 <a name="_sub1" href="#_subfunctions" class="code">function legends = plotEventData(isUsed, wormX, worm, dataInfo, </a><span class="keyword">...</span>
+0546     histInfo, isTimeSeries, isShowSign, isShowEvent, isSets, isNorm, <span class="keyword">...</span>
+0547     isSEM, isLines, isVar, colors)
+0548 
+0549 <span class="comment">% Get the data information.</span>
+0550 field = dataInfo.field;
+0551 subFields = dataInfo.subFields;
+0552 legends = {};
+0553 
+0554 <span class="comment">% Plot the event time series summary features.</span>
+0555 <span class="keyword">if</span> isTimeSeries
+0556     isSigned = isShowSign &amp;&amp; ~isempty(subFields.sign);
+0557     newLegends = <a href="#_sub2" class="code" title="subfunction legends = plotWormData(isUsed, wormX, worm, field, subField, ">plotWormData</a>(isUsed, wormX, worm, field, <span class="string">'start'</span>, <span class="keyword">...</span>
+0558         histInfo, isTimeSeries, isSigned, isSets, isNorm, isSEM, <span class="keyword">...</span>
+0559         isLines, isVar, colors, false);
+0560     legends((end + 1):(end + length(newLegends))) = newLegends;
+0561     colors = colors((length(newLegends) + 1):<span class="keyword">end</span>,:);
+0562     
+0563 <span class="comment">% Plot the event statistics summary features.</span>
+0564 <span class="keyword">else</span>
+0565     summaryFields = subFields.summary;
+0566     <span class="keyword">for</span> j = 1:length(summaryFields)
+0567         summaryField = [field <span class="string">'.'</span> summaryFields{j}];
+0568         data = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, [summaryField <span class="string">'.data'</span>]);
+0569         <a href="#_sub4" class="code" title="subfunction plotData(xData, data, isTimeSeries, normLength, isSets, ">plotData</a>(wormX, data, isTimeSeries, 1, isSets, isNorm, <span class="keyword">...</span>
+0570             isSEM, isLines, isVar, colors);
+0571         newLegends = {<a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, [summaryField <span class="string">'.name'</span>])};
+0572         legends((end + 1):(end + length(newLegends))) = newLegends;
+0573         colors = colors((length(newLegends) + 1):<span class="keyword">end</span>,:);
+0574     <span class="keyword">end</span>
+0575 <span class="keyword">end</span>
+0576 
+0577 <span class="comment">% Plot the event data features.</span>
+0578 <span class="keyword">if</span> isShowEvent
+0579     dataFields = subFields.data;
+0580     <span class="keyword">for</span> j = 1:length(dataFields)
+0581         dataField = [field <span class="string">'.'</span> dataFields{j}];
+0582         <span class="keyword">if</span> isShowSign
+0583             isSigned = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(histInfo, [dataField <span class="string">'.isSigned'</span>]);
+0584         <span class="keyword">end</span>
+0585         newLegends = <a href="#_sub2" class="code" title="subfunction legends = plotWormData(isUsed, wormX, worm, field, subField, ">plotWormData</a>(isUsed, wormX, worm, dataField, [], <span class="keyword">...</span>
+0586             histInfo, isTimeSeries, isSigned, isSets, isNorm, isSEM, <span class="keyword">...</span>
+0587             isLines, isVar, colors);
+0588         legends((end + 1):(end + length(newLegends))) = newLegends;
+0589         colors = colors((length(newLegends) + 1):<span class="keyword">end</span>,:);
+0590     <span class="keyword">end</span>
+0591 <span class="keyword">end</span>
+0592 <span class="keyword">end</span>
+0593 
+0594 
+0595 
+0596 <span class="comment">%% Plot worm data.</span>
+0597 <span class="comment">% varargin = isAbs</span>
+0598 <a name="_sub2" href="#_subfunctions" class="code">function legends = plotWormData(isUsed, wormX, worm, field, subField, </a><span class="keyword">...</span>
+0599     info, isTimeSeries, isSigned, isSets, isNorm, isSEM, isLines, <span class="keyword">...</span>
+0600     isVar, colors, varargin)
+0601 
+0602 <span class="comment">% If signed, are we plotting the absolute value?</span>
+0603 isAbs = true;
+0604 <span class="keyword">if</span> ~isempty(varargin)
+0605     isAbs = varargin{1};
+0606 <span class="keyword">end</span>
+0607 
+0608 <span class="comment">% Get the data.</span>
+0609 <span class="keyword">if</span> isTimeSeries
+0610     data = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, [field <span class="string">'.'</span> subField]);
+0611 <span class="keyword">else</span>
+0612     <span class="keyword">if</span> isempty(subField)
+0613         data = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, [field <span class="string">'.histogram.data.mean'</span>]);
+0614     <span class="keyword">else</span>
+0615         data = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(worm, <span class="keyword">...</span>
+0616             [field <span class="string">'.'</span> subField <span class="string">'.histogram.data.mean'</span>]);
+0617     <span class="keyword">end</span>
+0618 <span class="keyword">end</span>
+0619 info = <a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(info, field);
+0620 
+0621 <span class="comment">% Plot data.</span>
+0622 xData = wormX;
+0623 legends = {};
+0624 <span class="keyword">for</span> i = 1:length(data)
+0625     
+0626     <span class="comment">% Compute the time series data.</span>
+0627     minLength = 1;
+0628     <span class="keyword">if</span> isTimeSeries
+0629         minLength = min(cellfun(@(x) length(x), data(i).all(isUsed)));
+0630         timeX = wormX;
+0631         <span class="keyword">if</span> ~isSets
+0632             timeX = nanmean(timeX,1);
+0633         <span class="keyword">end</span>
+0634         xData = nan(size(timeX, 1), minLength);
+0635         <span class="keyword">for</span> j = 1:size(xData, 1)
+0636             xData(j,:) = linspace(0, (minLength - 1) * timeX(j), minLength);
+0637         <span class="keyword">end</span>
+0638     <span class="keyword">end</span>
+0639     
+0640     <span class="comment">% Plot the signed data.</span>
+0641     <span class="keyword">if</span> isSigned
+0642         <span class="keyword">if</span> isAbs
+0643             legends((end + 1):(end + 4)) = {
+0644                 info(i).name
+0645                 [<span class="string">'Absolute '</span> info(i).name]
+0646                 [<span class="string">'Positive '</span> info(i).name]
+0647                 [<span class="string">'Negative '</span> info(i).name]};
+0648         <span class="keyword">else</span>
+0649             legends((end + 1):(end + 3)) = {
+0650                 info(i).name
+0651                 [<span class="string">'Positive '</span> info(i).name]
+0652                 [<span class="string">'Negative '</span> info(i).name]};
+0653         <span class="keyword">end</span>
+0654         <a href="#_sub3" class="code" title="subfunction plotSignedData(isUsed, xData, data, isTimeSeries, normLength, ">plotSignedData</a>(isUsed, xData, data(i), isTimeSeries, minLength, <span class="keyword">...</span>
+0655             isSets, isNorm, isSEM, isLines, isVar, colors, isAbs);
+0656         
+0657     <span class="comment">% Plot the data.</span>
+0658     <span class="keyword">else</span>
+0659         legends(end + 1) = {info(i).name};
+0660         <a href="#_sub4" class="code" title="subfunction plotData(xData, data, isTimeSeries, normLength, isSets, ">plotData</a>(xData, data(i).all(isUsed), isTimeSeries, minLength, <span class="keyword">...</span>
+0661             isSets, isNorm, isSEM, isLines, isVar, colors);
+0662     <span class="keyword">end</span>
+0663 <span class="keyword">end</span>
+0664 <span class="keyword">end</span>
+0665 
+0666 
+0667 
+0668 <span class="comment">%% Plot signed data.</span>
+0669 <span class="comment">% varargin = isAbs</span>
+0670 <a name="_sub3" href="#_subfunctions" class="code">function plotSignedData(isUsed, xData, data, isTimeSeries, normLength, </a><span class="keyword">...</span>
+0671     isSets, isNorm, isSEM, isLines, isVar, colors, varargin)
+0672 
+0673 <span class="comment">% Are we plotting the absolute value?</span>
+0674 isAbs = true;
+0675 <span class="keyword">if</span> ~isempty(varargin)
+0676     isAbs = varargin{1};
+0677 <span class="keyword">end</span>
+0678 
+0679 <span class="comment">% Plot the data.</span>
+0680 colorI = 1;
+0681 <a href="#_sub4" class="code" title="subfunction plotData(xData, data, isTimeSeries, normLength, isSets, ">plotData</a>(xData, data.all(isUsed), isTimeSeries, normLength, isSets, <span class="keyword">...</span>
+0682     isNorm, isSEM, isLines, isVar, colors(colorI,:));
+0683 colorI = colorI + 1;
+0684 <span class="keyword">if</span> isAbs
+0685     <a href="#_sub4" class="code" title="subfunction plotData(xData, data, isTimeSeries, normLength, isSets, ">plotData</a>(xData, data.abs(isUsed), isTimeSeries, normLength, isSets, <span class="keyword">...</span>
+0686         isNorm, isSEM, isLines, isVar, colors(colorI,:));
+0687     colorI = colorI + 1;
+0688 <span class="keyword">end</span>
+0689 <a href="#_sub4" class="code" title="subfunction plotData(xData, data, isTimeSeries, normLength, isSets, ">plotData</a>(xData, data.pos(isUsed), isTimeSeries, normLength, isSets, <span class="keyword">...</span>
+0690     isNorm, isSEM, isLines, isVar, colors(colorI,:));
+0691 colorI = colorI + 1;
+0692 <a href="#_sub4" class="code" title="subfunction plotData(xData, data, isTimeSeries, normLength, isSets, ">plotData</a>(xData, data.neg(isUsed), isTimeSeries, normLength, isSets, <span class="keyword">...</span>
+0693     isNorm, isSEM, isLines, isVar, colors(colorI,:));
+0694 <span class="keyword">end</span>
+0695 
+0696 
+0697 
+0698 <span class="comment">%% Plot data.</span>
+0699 <a name="_sub4" href="#_subfunctions" class="code">function plotData(xData, data, isTimeSeries, normLength, isSets, </a><span class="keyword">...</span>
+0700     isNorm, isSEM, isLines, isVar, color)
+0701 
+0702 <span class="comment">% Organize the time series data.</span>
+0703 yData = nan(length(data), normLength);
+0704 <span class="keyword">if</span> isTimeSeries
+0705     <span class="keyword">for</span> i = 1:size(yData, 1)
+0706         yData(i,:) = data{i}(1:normLength);
+0707     <span class="keyword">end</span>
+0708     
+0709 <span class="comment">% Organize the data.</span>
+0710 <span class="keyword">else</span>
+0711     yData = data;
+0712 <span class="keyword">end</span>
+0713 
+0714 <span class="comment">% Compute the variability, mean, and/or error of the sets.</span>
+0715 yError = [];
+0716 <span class="keyword">if</span> isVar || ~isSets
+0717     
+0718     <span class="comment">% Compute the intra vs. inter group variability of the time series.</span>
+0719     <span class="keyword">if</span> isTimeSeries
+0720         <span class="keyword">if</span> isVar
+0721             
+0722             <span class="comment">% Compute the inter (y) and intra (x) group variability.</span>
+0723             <span class="keyword">if</span> isSEM
+0724                 xData = nanmean(nanstd(yData, 0, 2)) / sqrt(size(yData, 2));
+0725                 yData = nanmean(nanstd(yData, 0, 1)) / sqrt(size(yData, 1));
+0726             <span class="keyword">else</span>
+0727                 xData = nanmean(nanstd(yData, 0, 2));
+0728                 yData = nanmean(nanstd(yData, 0, 1));
+0729             <span class="keyword">end</span>
+0730             
+0731             <span class="comment">% Compute the inter (y) vs. intra (x) group variability.</span>
+0732             yData = yData ./ xData;
+0733             xData = 1;
+0734             
+0735         <span class="comment">% Compute the mean and error of the time series.</span>
+0736         <span class="keyword">else</span>
+0737             
+0738             <span class="comment">% Compute the error of the time series.</span>
+0739             <span class="keyword">if</span> ~isempty(isSEM)
+0740                 <span class="keyword">if</span> size(yData, 1) &gt; 1
+0741                     yError = nanstd(yData);
+0742                     <span class="keyword">if</span> isSEM
+0743                         yError = yError / sqrt(size(yData, 1));
+0744                     <span class="keyword">end</span>
+0745                 <span class="keyword">end</span>
+0746             <span class="keyword">end</span>
+0747             
+0748             <span class="comment">% Compute the mean of the time series.</span>
+0749             yData = nanmean(yData, 1);
+0750         <span class="keyword">end</span>
+0751         
+0752     <span class="comment">% Compute the variability, mean, and/or error of the data.</span>
+0753     <span class="keyword">else</span>
+0754         
+0755         <span class="comment">% Compute the intra vs. inter group variability of the data.</span>
+0756         [values, ~, dataI] = unique(xData);
+0757         xData = [];
+0758         xData(1,:) = values;
+0759         newYData = nan(1, length(xData));
+0760         yError = [];
+0761         <span class="keyword">if</span> isVar
+0762             
+0763             <span class="comment">% Compute the inter (y) and intra (x) group variability.</span>
+0764             <span class="keyword">for</span> i = 1:length(newYData)
+0765                 newData = yData(dataI == i);
+0766                 <span class="keyword">if</span> isSEM
+0767                     xData(1,i) = nanstd(newData) / sqrt(length(newData));
+0768                 <span class="keyword">else</span>
+0769                     xData(1,i) = nanstd(newData);
+0770                 <span class="keyword">end</span>
+0771                 newYData(1,i) = nanmean(newData);
+0772             <span class="keyword">end</span>
+0773             xData = nanmean(xData);
+0774             <span class="keyword">if</span> isSEM
+0775                 newYData = nanstd(newYData) / sqrt(size(newYData, 2));
+0776             <span class="keyword">else</span>
+0777                 newYData = nanstd(newYData);
+0778             <span class="keyword">end</span>
+0779             
+0780             <span class="comment">% Compute the inter (y) vs. intra (x) group variability.</span>
+0781             newYData = newYData ./ xData;
+0782             xData = 1;
+0783             
+0784         <span class="comment">% Compute the mean and error of the data.</span>
+0785         <span class="keyword">elseif</span> isempty(isSEM)
+0786             <span class="keyword">for</span> i = 1:length(newYData)
+0787                 newYData(1,i) = nanmean(yData(dataI == i));
+0788             <span class="keyword">end</span>
+0789             
+0790         <span class="comment">% Compute the mean and error of the data.</span>
+0791         <span class="keyword">else</span>
+0792             yError = nan(1, length(xData));
+0793             <span class="keyword">if</span> isSEM
+0794                 <span class="keyword">for</span> i = 1:length(newYData)
+0795                     newData = yData(dataI == i);
+0796                     newYData(1,i) = nanmean(newData);
+0797                     yError(1,i) = nanstd(newData) / sqrt(length(newData));
+0798                 <span class="keyword">end</span>
+0799             <span class="keyword">else</span>
+0800                 <span class="keyword">for</span> i = 1:length(newYData)
+0801                     newData = yData(dataI == i);
+0802                     newYData(1,i) = nanmean(newData);
+0803                     yError(1,i) = nanstd(newData);
+0804                 <span class="keyword">end</span>
+0805             <span class="keyword">end</span>
+0806         <span class="keyword">end</span>
+0807         yData = newYData;
+0808     <span class="keyword">end</span>
+0809 <span class="keyword">end</span>
+0810 
+0811 <span class="comment">% Normalize the data.</span>
+0812 <span class="keyword">if</span> isNorm
+0813     <span class="keyword">if</span> isVar
+0814         <span class="keyword">if</span> 0
+0815         [xData yData] = normalizeVar(xData, yData);
+0816         <span class="keyword">end</span>
+0817     <span class="keyword">else</span>
+0818         [yData yError] = <a href="#_sub5" class="code" title="subfunction [data dataError] = normalize(data, dataError)">normalize</a>(yData, yError);
+0819     <span class="keyword">end</span>
+0820 <span class="keyword">end</span>
+0821 
+0822 <span class="comment">% Plot the data.</span>
+0823 color = color(1,:);
+0824 <span class="keyword">if</span> isempty(yError)
+0825     <span class="keyword">if</span> isLines
+0826         plot(xData', yData', <span class="string">'Color'</span>, color, <span class="string">'Marker'</span>, <span class="string">'.'</span>);
+0827     <span class="keyword">else</span>
+0828         plot(xData', yData', <span class="string">'Color'</span>, color, <span class="string">'Marker'</span>, <span class="string">'.'</span>, <span class="keyword">...</span>
+0829             <span class="string">'LineStyle'</span>, <span class="string">'none'</span>);
+0830     <span class="keyword">end</span>
+0831     
+0832 <span class="comment">% Plot the data with error bars.</span>
+0833 <span class="keyword">else</span>
+0834     <span class="keyword">if</span> isLines
+0835         errorbar(xData', yData', yError', <span class="string">'Color'</span>, color, <span class="string">'Marker'</span>, <span class="string">'.'</span>);
+0836     <span class="keyword">else</span>
+0837         errorbar(xData', yData', yError', <span class="string">'Color'</span>, color, <span class="keyword">...</span>
+0838             <span class="string">'Marker'</span>, <span class="string">'.'</span>, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>);
+0839     <span class="keyword">end</span>
+0840 <span class="keyword">end</span>
+0841 <span class="keyword">end</span>
+0842 
+0843 
+0844 
+0845 <span class="comment">%% Normalize data to [-1,1].</span>
+0846 <a name="_sub5" href="#_subfunctions" class="code">function [data dataError] = normalize(data, dataError)</a>
+0847 
+0848 <span class="comment">% Center the data at 0.</span>
+0849 dataSign = sign(data);
+0850 minData = min(abs(data(:)));
+0851 dataCenter = zeros(size(data));
+0852 dataCenter(:,:) = minData;
+0853 dataCenter = dataSign .* dataCenter;
+0854 data = data - dataCenter;
+0855 
+0856 <span class="comment">% Scale the data to 1.</span>
+0857 maxData = max(abs(data(:)));
+0858 data = data ./ maxData;
+0859 
+0860 <span class="comment">% Scale the error to the data.</span>
+0861 dataError = dataError ./ maxData;
+0862 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

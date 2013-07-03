@@ -1,0 +1,514 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wormStatsInfo2CSV</title>
+  <meta name="keywords" content="wormStatsInfo2CSV">
+  <meta name="description" content="WORMSTATSINFO2CSV Convert the worm statistics to a set of CSV files.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html Printing -->
+<h1>wormStatsInfo2CSV
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>WORMSTATSINFO2CSV Convert the worm statistics to a set of CSV files.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function wormStatsInfo2CSV(filename, wormFile, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WORMSTATSINFO2CSV Convert the worm statistics to a set of CSV files.
+
+   WORMSTATSINFO2CSV(FILENAME, WORMFILE)
+   WORMSTATSINFO2CSV(FILENAME, WORMFILE, SIGFILE, SEPARATOR, VERBOSE)
+
+   Inputs:
+       filename  - the CSV filename
+       wormFile  - the filename containing the worm statistics
+                   (see WORM2STATSINFO)
+       sigFile   - a file containing a matrix of worm significance to use
+                   in place of those in the wormFile
+                   (see WORMSTATS2MATRIX)
+                   the default is none ([])
+       separator - the separator string to use
+                   the default is ','
+       isVerbose - verbose mode displays the progress;
+                   the default is yes (true)
+
+ See also WORM2STATSINFO, WORMSTATS2MATRIX</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>	GETSTRUCTFIELD Get a field in a structure.</li><li><a href="p2stars.html" class="code" title="function stars = p2stars(p)">p2stars</a>	P2STARS Convert a p-value to a string of stars representing significance.</li><li><a href="../../../SegWorm/Worms/Statistics/worm2GenotypeLabel.html" class="code" title="function label = worm2GenotypeLabel(wormInfo)">worm2GenotypeLabel</a>	WORM2GENOTYPELABEL Label the worm genotype.</li><li><a href="../../../SegWorm/Worms/Statistics/wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>	WORMFEATUREINFO Get information for computing the worm statistics.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function printFile(filename, featureName, category, info, sepStr,</a></li><li><a href="#_sub2" class="code">function printSignificantFeatures(file, featureName, category, info,</a></li><li><a href="#_sub3" class="code">function printFeatures(file, featureName, category, info, sepStr, sep1,</a></li><li><a href="#_sub4" class="code">function printField(structs, field, sepStr, file, varargin)</a></li><li><a href="#_sub5" class="code">function printData(file, data, sepStr)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function wormStatsInfo2CSV(filename, wormFile, varargin)</a>
+0002 <span class="comment">%WORMSTATSINFO2CSV Convert the worm statistics to a set of CSV files.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   WORMSTATSINFO2CSV(FILENAME, WORMFILE)</span>
+0005 <span class="comment">%   WORMSTATSINFO2CSV(FILENAME, WORMFILE, SIGFILE, SEPARATOR, VERBOSE)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Inputs:</span>
+0008 <span class="comment">%       filename  - the CSV filename</span>
+0009 <span class="comment">%       wormFile  - the filename containing the worm statistics</span>
+0010 <span class="comment">%                   (see WORM2STATSINFO)</span>
+0011 <span class="comment">%       sigFile   - a file containing a matrix of worm significance to use</span>
+0012 <span class="comment">%                   in place of those in the wormFile</span>
+0013 <span class="comment">%                   (see WORMSTATS2MATRIX)</span>
+0014 <span class="comment">%                   the default is none ([])</span>
+0015 <span class="comment">%       separator - the separator string to use</span>
+0016 <span class="comment">%                   the default is ','</span>
+0017 <span class="comment">%       isVerbose - verbose mode displays the progress;</span>
+0018 <span class="comment">%                   the default is yes (true)</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% See also WORM2STATSINFO, WORMSTATS2MATRIX</span>
+0021 
+0022 <span class="comment">% What string should we use as the separator?</span>
+0023 sigFile = [];
+0024 <span class="keyword">if</span> ~isempty(varargin)
+0025     sigFile = varargin{1};
+0026 <span class="keyword">end</span>
+0027 
+0028 <span class="comment">% What string should we use as the separator?</span>
+0029 sepStr = <span class="string">','</span>;
+0030 <span class="keyword">if</span> length(varargin) &gt; 1
+0031     sepStr = varargin{2};
+0032 <span class="keyword">end</span>
+0033 
+0034 <span class="comment">% Are we displaying the progress?</span>
+0035 isVerbose = true;
+0036 <span class="keyword">if</span> length(varargin) &gt; 2
+0037     isVerbose = varargin{3};
+0038 <span class="keyword">end</span>
+0039 
+0040 <span class="comment">% Load the statistics data.</span>
+0041 wormInfo = [];
+0042 controlInfo = [];
+0043 wormData = [];
+0044 controlData = [];
+0045 significance = [];
+0046 load(wormFile, <span class="string">'wormInfo'</span>, <span class="string">'controlInfo'</span>, <span class="string">'wormData'</span>, <span class="string">'controlData'</span>, <span class="keyword">...</span>
+0047     <span class="string">'significance'</span>);
+0048 
+0049 <span class="comment">% Is there any data?</span>
+0050 <span class="keyword">if</span> isempty(wormInfo)
+0051     warning(<span class="string">'wormStatsInfo2CSV:NoWormInfo'</span>, <span class="keyword">...</span>
+0052         [wormFile <span class="string">' does not contain &quot;wormInfo&quot;'</span>]);
+0053     <span class="keyword">return</span>;
+0054 <span class="keyword">end</span>
+0055 <span class="keyword">if</span> isempty(wormData)
+0056     warning(<span class="string">'wormStatsInfo2CSV:NoWormData'</span>, <span class="keyword">...</span>
+0057         [wormFile <span class="string">' does not contain &quot;wormData&quot;'</span>]);
+0058     <span class="keyword">return</span>;
+0059 <span class="keyword">end</span>
+0060 <span class="keyword">if</span> isempty(controlInfo)
+0061     warning(<span class="string">'wormStatsInfo2CSV:NoControlInfo'</span>, <span class="keyword">...</span>
+0062         [wormFile <span class="string">' does not contain &quot;wormInfo&quot;'</span>]);
+0063 <span class="keyword">end</span>
+0064 <span class="keyword">if</span> isempty(controlData)
+0065     warning(<span class="string">'wormStatsInfo2CSV:NoControlData'</span>, <span class="keyword">...</span>
+0066         [wormFile <span class="string">' does not contain &quot;wormData&quot;'</span>]);
+0067 <span class="keyword">end</span>
+0068 <span class="keyword">if</span> isempty(significance)
+0069     warning(<span class="string">'wormStatsInfo2CSV:NoSignificance'</span>, <span class="keyword">...</span>
+0070         [wormFile <span class="string">' does not contain &quot;significance&quot;'</span>]);
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="comment">% Use the matrix statistics.</span>
+0074 sig = [];
+0075 <span class="keyword">if</span> ~isempty(sigFile)
+0076     
+0077     <span class="comment">% Is there any significance data?</span>
+0078     <span class="keyword">if</span> isempty(whos(<span class="string">'-FILE'</span>, sigFile, <span class="string">'worm'</span>))
+0079         warning(<span class="string">'wormStatsInfo2CSV:NoMatrix'</span>, <span class="keyword">...</span>
+0080             [sigFile <span class="string">' does not contain &quot;worm&quot; significance'</span>]);
+0081         
+0082     <span class="comment">% Load the significance matrix.</span>
+0083     <span class="keyword">else</span>
+0084         sigData = load(sigFile, <span class="string">'worm'</span>, <span class="string">'control'</span>);
+0085         
+0086         <span class="comment">% Find the genotype.</span>
+0087         genotype = <a href="../../../SegWorm/Worms/Statistics/worm2GenotypeLabel.html" class="code" title="function label = worm2GenotypeLabel(wormInfo)">worm2GenotypeLabel</a>(wormInfo);
+0088         strainI = find(cellfun(@(x) strcmp(genotype, x), <span class="keyword">...</span>
+0089             sigData.worm.info.genotype));
+0090         
+0091         <span class="comment">% Determine the significance.</span>
+0092         <span class="keyword">if</span> length(strainI) == 1
+0093             sig.pNWorm = sigData.worm.stats.pNormal(strainI,:);
+0094             sig.qNWorm = sigData.worm.stats.qNormal.all(strainI,:);
+0095             sig.pNControl = sigData.control.stats.pNormal(strainI,:);
+0096             sig.qNControl = sigData.control.stats.qNormal.all(strainI,:);
+0097             sig.pW = sigData.worm.sig.pWValue(strainI,:);
+0098             sig.qW = sigData.worm.sig.qWValue.all(strainI,:);
+0099             sig.pT = sigData.worm.sig.pTValue(strainI,:);
+0100             sig.qT = sigData.worm.sig.qTValue.all(strainI,:);
+0101 <span class="comment">%             sig.power = sigData.worm.sig.power(strainI,:);</span>
+0102             sig.pWorm = min(sig.pW);
+0103             sig.qWorm = min(sig.qW);
+0104             
+0105         <span class="comment">% We can't find the strain.</span>
+0106         <span class="keyword">elseif</span> isempty(strainI)
+0107             warning(<span class="string">'wormStatsInfo2CSV:NoGenotype'</span>, <span class="keyword">...</span>
+0108                 [sigFile <span class="string">' is missing &quot;'</span> genotype <span class="string">'&quot;'</span>]);
+0109             
+0110         <span class="comment">% We found too many strains.</span>
+0111         <span class="keyword">elseif</span> length(strainI) &gt; 1
+0112             warning(<span class="string">'wormStatsInfo2CSV:ManyGenotypes'</span>, <span class="keyword">...</span>
+0113                 [sigFile <span class="string">' has more than 1 &quot;'</span> genotype <span class="string">'&quot;'</span>]);
+0114         <span class="keyword">end</span>
+0115     <span class="keyword">end</span>
+0116 <span class="keyword">end</span>
+0117 
+0118 <span class="comment">% Use the strain statistics.</span>
+0119 <span class="keyword">if</span> isempty(sig) &amp;&amp; ~isempty(significance)
+0120     sig.pNWorm = [wormData.pNormal];
+0121     sig.qNWorm = [wormData.qNormal];
+0122     sig.pNControl = [controlData.pNormal];
+0123     sig.qNControl = [controlData.qNormal];
+0124     sig.pW = [significance.features.pWValue];
+0125     sig.qW = [significance.features.qWValue];
+0126     sig.pT = [significance.features.pTValue];
+0127     sig.qT = [significance.features.qTValue];
+0128 <span class="comment">%     sig.power = [significance.features.power];</span>
+0129     sig.pWorm = significance.worm.pValue;
+0130     sig.qWorm = significance.worm.qValue;
+0131 <span class="keyword">end</span>
+0132 
+0133 <span class="comment">% Sort the worm and controls by date.</span>
+0134 <span class="comment">% [~, wormSortI] = sort(arrayfun(@(x) ...</span>
+0135 <span class="comment">%     datenum(x.experiment.environment.timestamp), wormInfo));</span>
+0136 <span class="comment">% controlSortI = [];</span>
+0137 <span class="comment">% if ~isempty(controlInfo)</span>
+0138 <span class="comment">%     [~, controlSortI] = sort(arrayfun(@(x) ...</span>
+0139 <span class="comment">%         datenum(x.experiment.environment.timestamp), controlInfo));</span>
+0140 <span class="comment">% end</span>
+0141 
+0142 <span class="comment">% Initialize the feature information.</span>
+0143 info = <a href="../../../SegWorm/Worms/Statistics/wormStatsInfo.html" class="code" title="function info = wormStatsInfo()">wormStatsInfo</a>();
+0144 
+0145 <span class="comment">% Fix the file name</span>
+0146 csvExt = <span class="string">'.csv'</span>;
+0147 <span class="keyword">if</span> strcmpi(filename((end - length(csvExt) + 1):end), csvExt)
+0148     filename = filename(1:(end - length(csvExt)));
+0149 <span class="keyword">end</span>
+0150 
+0151 <span class="comment">% Initialize the feature CSV files.</span>
+0152 filenames = {
+0153     [filename <span class="string">'.morphology'</span> csvExt]
+0154     [filename <span class="string">'.posture'</span> csvExt]
+0155     [filename <span class="string">'.motion'</span> csvExt]
+0156     [filename <span class="string">'.path'</span> csvExt]};
+0157 names = {
+0158     <span class="string">'Morphology Features'</span>
+0159     <span class="string">'Posture Features'</span>
+0160     <span class="string">'Motion Features'</span>
+0161     <span class="string">'Path Features'</span>};
+0162 categories = [ <span class="keyword">...</span>
+0163     <span class="string">'m'</span>, <span class="keyword">...</span>
+0164     <span class="string">'s'</span>, <span class="keyword">...</span>
+0165     <span class="string">'l'</span>, <span class="keyword">...</span>
+0166     <span class="string">'p'</span>];
+0167 
+0168 <span class="comment">% Print the feature categories separately.</span>
+0169 <span class="keyword">for</span> i = 1:length(filenames)
+0170     <span class="keyword">if</span> isVerbose
+0171         disp([<span class="string">'Printing '</span> num2str(i) <span class="string">'/'</span> num2str(length(filenames)) <span class="keyword">...</span>
+0172             <span class="string">'&quot;'</span> filenames{i} <span class="string">'&quot; ...'</span>]);
+0173     <span class="keyword">end</span>
+0174     <a href="#_sub1" class="code" title="subfunction printFile(filename, featureName, category, info, sepStr, ">printFile</a>(filenames{i}, names{i}, categories(i), info, sepStr, <span class="keyword">...</span>
+0175         wormInfo, controlInfo, wormData, controlData, sig);
+0176 <span class="keyword">end</span>
+0177 <span class="keyword">end</span>
+0178 
+0179 
+0180 
+0181 <span class="comment">%% Print the feature file.</span>
+0182 <a name="_sub1" href="#_subfunctions" class="code">function printFile(filename, featureName, category, info, sepStr, </a><span class="keyword">...</span>
+0183     wormInfo, controlInfo, wormData, controlData, significance)
+0184 
+0185 <span class="comment">% Initialize the experimnet information fields.</span>
+0186 genotypeField = <span class="string">'experiment.worm.genotype'</span>;
+0187 strainField = <span class="string">'experiment.worm.strain'</span>;
+0188 dateField = <span class="string">'experiment.environment.timestamp'</span>;
+0189 sep1 = repmat(sepStr, 1, 2);
+0190 
+0191 <span class="comment">% Open the file.</span>
+0192 file = fopen(filename, <span class="string">'w'</span>);
+0193 
+0194 <span class="comment">% Print header.</span>
+0195 <span class="keyword">if</span> isempty(controlInfo)
+0196     fprintf(file, <span class="string">'INFO%sEXPERIMENTS'</span>, sep1);
+0197 <span class="keyword">else</span>
+0198     fprintf(file, <span class="string">'INFO%sEXPERIMENTS%sCONTROLS'</span>, sep1, <span class="keyword">...</span>
+0199         repmat(sepStr, 1, length(wormInfo) + 1));
+0200 <span class="keyword">end</span>
+0201 fprintf(file, <span class="string">'\n'</span>);
+0202 fprintf(file, <span class="string">'\n'</span>);
+0203 
+0204 <span class="comment">% Print the genotype.</span>
+0205 fprintf(file, <span class="string">'Strain%s'</span>, sep1);
+0206 <a href="#_sub4" class="code" title="subfunction printField(structs, field, sepStr, file, varargin)">printField</a>(wormInfo, strainField, sepStr, file);
+0207 <span class="keyword">if</span> ~isempty(controlInfo)
+0208     fprintf(file, <span class="string">'%s'</span>, sepStr);
+0209     <a href="#_sub4" class="code" title="subfunction printField(structs, field, sepStr, file, varargin)">printField</a>(controlInfo, strainField, sepStr, file);
+0210 <span class="keyword">end</span>
+0211 fprintf(file, <span class="string">'\n'</span>);
+0212 
+0213 <span class="comment">% Print the strain.</span>
+0214 fprintf(file, <span class="string">'Genotype%s'</span>, sep1);
+0215 <a href="#_sub4" class="code" title="subfunction printField(structs, field, sepStr, file, varargin)">printField</a>(wormInfo, genotypeField, sepStr, file);
+0216 <span class="keyword">if</span> ~isempty(controlInfo)
+0217     fprintf(file, <span class="string">'%s'</span>, sepStr);
+0218     <a href="#_sub4" class="code" title="subfunction printField(structs, field, sepStr, file, varargin)">printField</a>(controlInfo, genotypeField, sepStr, file);
+0219 <span class="keyword">end</span>
+0220 fprintf(file, <span class="string">'\n'</span>);
+0221 
+0222 <span class="comment">% Print the date.</span>
+0223 fprintf(file, <span class="string">'Date%s'</span>, sep1);
+0224 <a href="#_sub4" class="code" title="subfunction printField(structs, field, sepStr, file, varargin)">printField</a>(wormInfo, dateField, sepStr, file, @(x) datestr(datenum(x)));
+0225 <span class="keyword">if</span> ~isempty(controlInfo)
+0226     fprintf(file, <span class="string">'%s'</span>, sepStr);
+0227     <a href="#_sub4" class="code" title="subfunction printField(structs, field, sepStr, file, varargin)">printField</a>(controlInfo, dateField, sepStr, file, <span class="keyword">...</span>
+0228         @(x) datestr(datenum(x)));
+0229 <span class="keyword">end</span>
+0230 fprintf(file, <span class="string">'\n\n\n\n'</span>);
+0231 
+0232 <span class="comment">% Print the significance.</span>
+0233 <span class="keyword">if</span> ~isempty(significance) &amp;&amp; ~isempty(significance.pWorm)
+0234     fprintf(file, <span class="string">'TOTAL FEATURE SIGNIFICANCE\n'</span>);
+0235     fprintf(file, <span class="string">'p-value%s%d\n'</span>, sep1, significance.pWorm);
+0236     fprintf(file, <span class="string">'q-value%s%d%s%s\n'</span>, sep1, significance.qWorm, <span class="keyword">...</span>
+0237         sepStr, <a href="p2stars.html" class="code" title="function stars = p2stars(p)">p2stars</a>(significance.qWorm));
+0238     fprintf(file, <span class="string">'\n\n\n'</span>);
+0239 <span class="keyword">end</span>
+0240 
+0241 <span class="comment">% Print the features.</span>
+0242 <span class="keyword">if</span> isempty(controlData)
+0243     <a href="#_sub3" class="code" title="subfunction printFeatures(file, featureName, category, info, sepStr, sep1, ">printFeatures</a>(file, featureName, category, info, sepStr, sep1, <span class="keyword">...</span>
+0244         wormData);
+0245 <span class="keyword">else</span>
+0246     <a href="#_sub2" class="code" title="subfunction printSignificantFeatures(file, featureName, category, info, ">printSignificantFeatures</a>(file, featureName, category, info, sepStr, <span class="keyword">...</span>
+0247         sep1, wormInfo, wormData, controlData, significance);
+0248 <span class="keyword">end</span>
+0249 
+0250 <span class="comment">% Close the file.</span>
+0251 fclose(file);
+0252 <span class="keyword">end</span>
+0253 
+0254 
+0255 
+0256 <span class="comment">%% Print the features significance.</span>
+0257 <a name="_sub2" href="#_subfunctions" class="code">function printSignificantFeatures(file, featureName, category, info, </a><span class="keyword">...</span>
+0258     sepStr, sep1, wormInfo, wormData, controlData, significance)
+0259 
+0260 <span class="comment">% Print the header.</span>
+0261 fprintf(file, <span class="string">'%s\n\n'</span>, upper(featureName));
+0262 
+0263 <span class="comment">% Find the categorical features.</span>
+0264 features = find([info.category] == category);
+0265 
+0266 <span class="comment">% Remove paused motion features.</span>
+0267 <span class="keyword">if</span> category == <span class="string">'l'</span>
+0268     featureLabels = {info.name};
+0269     lowerLabels = lower(featureLabels);
+0270     pausedI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'paused'</span>)), lowerLabels);
+0271     crawlI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'crawl'</span>)), lowerLabels);
+0272     remI = find(pausedI &amp; crawlI);
+0273     features = setdiff(features, remI);
+0274 <span class="keyword">end</span>
+0275 
+0276 <span class="comment">% Print the features.</span>
+0277 <span class="keyword">for</span> i = 1:length(features)
+0278     
+0279     <span class="comment">% Print the title.</span>
+0280     featI = features(i);
+0281     featTitle = upper([info(featI).name <span class="string">' ('</span> info(featI).unit <span class="string">')'</span>]);
+0282     <span class="keyword">if</span> info(featI).title2I == 1 &amp;&amp; info(featI).title3I == 1 
+0283         fprintf(file, <span class="string">'\n\n\n&quot;&gt; %s&quot;\n\n'</span>, featTitle);
+0284     <span class="keyword">elseif</span> info(featI).title3I == 1
+0285         fprintf(file, <span class="string">'\n&quot;&gt;&gt; %s&quot;\n\n'</span>, featTitle);
+0286     <span class="keyword">else</span>
+0287         fprintf(file, <span class="string">'&quot;&gt;&gt;&gt; %s&quot;\n\n'</span>, featTitle);
+0288     <span class="keyword">end</span>
+0289     
+0290     <span class="comment">% Print the significance.</span>
+0291     <span class="keyword">if</span> ~isempty(significance)
+0292         fprintf(file, <span class="string">'SIGNIFICANCE\n'</span>);
+0293         fprintf(file, <span class="string">'Rank-sum p%s%d\n'</span>, sep1, significance.pW(featI));
+0294         fprintf(file, <span class="string">'Rank-sum q%s%d%s%s\n'</span>, sep1, <span class="keyword">...</span>
+0295             significance.qW(featI), sepStr, <span class="keyword">...</span>
+0296             <a href="p2stars.html" class="code" title="function stars = p2stars(p)">p2stars</a>(significance.qW(featI)));
+0297         fprintf(file, <span class="string">'T-test p%s%d\n'</span>, sep1, significance.pT(featI));
+0298         fprintf(file, <span class="string">'T-test q%s%d%s%s\n\n'</span>, sep1, <span class="keyword">...</span>
+0299             significance.qT(featI), sepStr, <span class="keyword">...</span>
+0300             <a href="p2stars.html" class="code" title="function stars = p2stars(p)">p2stars</a>(significance.qT(featI)));
+0301 <span class="comment">%         fprintf(file, 'Power%s%d\n\n', sep1, significance.power(featI));</span>
+0302     <span class="keyword">end</span>
+0303     
+0304     <span class="comment">% Print the normality.</span>
+0305     fprintf(file, <span class="string">'NORMALITY%sEXPERIMENT%s%sCONTROL\n'</span>, sep1, sep1, <span class="keyword">...</span>
+0306         sepStr);
+0307     fprintf(file, <span class="string">'Shapiro-Wilk p%s%d%s%s%d\n'</span>, sep1, <span class="keyword">...</span>
+0308         significance.pNWorm(featI), sep1, sepStr, <span class="keyword">...</span>
+0309         significance.pNControl(featI));
+0310     fprintf(file, <span class="string">'Shapiro-Wilk q%s%d%s%s%s%d%s%s\n\n'</span>, sep1, <span class="keyword">...</span>
+0311         significance.qNWorm(featI), sepStr, <span class="keyword">...</span>
+0312         <a href="p2stars.html" class="code" title="function stars = p2stars(p)">p2stars</a>(significance.qNWorm(featI)), sep1, <span class="keyword">...</span>
+0313         significance.qNControl(featI), sepStr, <span class="keyword">...</span>
+0314         <a href="p2stars.html" class="code" title="function stars = p2stars(p)">p2stars</a>(significance.qNControl(featI)));
+0315     
+0316     <span class="comment">% Print the summary data.</span>
+0317     fprintf(file, <span class="string">'SUMMARY%sEXPERIMENT%s%sCONTROL\n'</span>, sep1, sep1, sepStr);
+0318     fprintf(file, <span class="string">'Mean%s%d%s%s%d\n'</span>, sep1, wormData(featI).mean, <span class="keyword">...</span>
+0319         sep1, sepStr, controlData(featI).mean);
+0320     fprintf(file, <span class="string">'S.D.%s%d%s%s%d\n'</span>, sep1, wormData(featI).stdDev, <span class="keyword">...</span>
+0321         sep1, sepStr, controlData(featI).stdDev);
+0322     fprintf(file, <span class="string">'Samples%s%d%s%s%d\n\n'</span>, sep1, wormData(featI).samples, <span class="keyword">...</span>
+0323         sep1, sepStr, controlData(featI).samples);
+0324     
+0325     <span class="comment">% Print all the data.</span>
+0326     fprintf(file, <span class="string">'DETAILS%sEXPERIMENT%sCONTROL\n'</span>, sep1, <span class="keyword">...</span>
+0327         repmat(sepStr, 1, length(wormInfo) + 1));
+0328     <span class="keyword">if</span> info(featI).type == <span class="string">'d'</span>
+0329         fprintf(file, <span class="string">'Value%s'</span>, sep1);
+0330         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, wormData(featI).dataMeans, sepStr);
+0331         fprintf(file, <span class="string">'%s'</span>, sepStr);
+0332         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, controlData(featI).dataMeans, sepStr);
+0333     <span class="keyword">else</span>
+0334         fprintf(file, <span class="string">'Mean%s'</span>, sep1);
+0335         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, wormData(featI).dataMeans, sepStr);
+0336         fprintf(file, <span class="string">'%s'</span>, sepStr);
+0337         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, controlData(featI).dataMeans, sepStr);
+0338         fprintf(file, <span class="string">'\nS.D.%s'</span>, sep1);
+0339         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, wormData(featI).dataStdDevs, sepStr);
+0340         fprintf(file, <span class="string">'%s'</span>, sepStr);
+0341         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, controlData(featI).dataStdDevs, sepStr);
+0342         fprintf(file, <span class="string">'\nSamples%s'</span>, sep1);
+0343         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, wormData(featI).dataSamples, sepStr);
+0344         fprintf(file, <span class="string">'%s'</span>, sepStr);
+0345         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, controlData(featI).dataSamples, sepStr);
+0346     <span class="keyword">end</span>
+0347     fprintf(file, <span class="string">'\n\n'</span>);
+0348 <span class="keyword">end</span>
+0349 <span class="keyword">end</span>
+0350 
+0351 
+0352 
+0353 <span class="comment">%% Print the features.</span>
+0354 <a name="_sub3" href="#_subfunctions" class="code">function printFeatures(file, featureName, category, info, sepStr, sep1, </a><span class="keyword">...</span>
+0355     wormData)
+0356 
+0357 <span class="comment">% Print the header.</span>
+0358 fprintf(file, <span class="string">'%s\n\n'</span>, upper(featureName));
+0359 
+0360 <span class="comment">% Find the categorical features.</span>
+0361 features = find([info.category] == category);
+0362 
+0363 <span class="comment">% Remove paused motion features.</span>
+0364 <span class="keyword">if</span> category == <span class="string">'l'</span>
+0365     featureLabels = {info.name};
+0366     lowerLabels = lower(featureLabels);
+0367     pausedI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'paused'</span>)), lowerLabels);
+0368     bendI = cellfun(@(x) ~isempty(strfind(x, <span class="string">'bend'</span>)), lowerLabels);
+0369     amplitudeI = <span class="keyword">...</span>
+0370         cellfun(@(x) ~isempty(strfind(x, <span class="string">'amplitude'</span>)), lowerLabels);
+0371     frequencyI = <span class="keyword">...</span>
+0372         cellfun(@(x) ~isempty(strfind(x, <span class="string">'frequency'</span>)), lowerLabels);
+0373     remI = find(pausedI &amp; bendI &amp; (amplitudeI | frequencyI));
+0374     features = setdiff(features, remI);
+0375 <span class="keyword">end</span>
+0376 
+0377 <span class="comment">% Print the features.</span>
+0378 <span class="keyword">for</span> i = 1:length(features)
+0379     
+0380     <span class="comment">% Print the title.</span>
+0381     featI = features(i);
+0382     featTitle = upper([info(featI).name <span class="string">' ('</span> info(featI).unit <span class="string">')'</span>]);
+0383     <span class="keyword">if</span> info(featI).title2I == 1 &amp;&amp; info(featI).title3I == 1 
+0384         fprintf(file, <span class="string">'\n\n\n&quot;&gt; %s&quot;\n\n'</span>, featTitle);
+0385     <span class="keyword">elseif</span> info(featI).title3I == 1
+0386         fprintf(file, <span class="string">'\n&quot;&gt;&gt; %s&quot;\n\n'</span>, featTitle);
+0387     <span class="keyword">else</span>
+0388         fprintf(file, <span class="string">'&quot;&gt;&gt;&gt; %s&quot;\n\n'</span>, featTitle);
+0389     <span class="keyword">end</span>
+0390     
+0391     <span class="comment">% Print the normality.</span>
+0392     fprintf(file, <span class="string">'NORMALITY%sEXPERIMENT\n'</span>, sep1);
+0393     fprintf(file, <span class="string">'Shapiro-Wilk p%s%d\n'</span>, sep1, <span class="keyword">...</span>
+0394         wormData(featI).pNormal);
+0395     fprintf(file, <span class="string">'Shapiro-Wilk q%s%d%s%s\n\n'</span>, sep1, <span class="keyword">...</span>
+0396         wormData(featI).qNormal, sepStr, <a href="p2stars.html" class="code" title="function stars = p2stars(p)">p2stars</a>(wormData(featI).qNormal));
+0397     
+0398     <span class="comment">% Print the summary data.</span>
+0399     fprintf(file, <span class="string">'SUMMARY%sEXPERIMENT\n'</span>, sep1);
+0400     fprintf(file, <span class="string">'Mean%s%d\n'</span>, sep1, wormData(featI).mean);
+0401     fprintf(file, <span class="string">'S.D.%s%d\n'</span>, sep1, wormData(featI).stdDev);
+0402     fprintf(file, <span class="string">'Samples%s%d\n\n'</span>, sep1, wormData(featI).samples);
+0403     
+0404     <span class="comment">% Print all the data.</span>
+0405     fprintf(file, <span class="string">'DETAILS%sEXPERIMENT\n'</span>, sep1);
+0406     <span class="keyword">if</span> info(featI).type == <span class="string">'d'</span>
+0407         fprintf(file, <span class="string">'Value%s'</span>, sep1);
+0408         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, wormData(featI).dataMeans, sepStr);
+0409     <span class="keyword">else</span>
+0410         fprintf(file, <span class="string">'Mean%s'</span>, sep1);
+0411         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, wormData(featI).dataMeans, sepStr);
+0412         fprintf(file, <span class="string">'\nS.D.%s'</span>, sep1);
+0413         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, wormData(featI).dataStdDevs, sepStr);
+0414         fprintf(file, <span class="string">'\nSamples%s'</span>, sep1);
+0415         <a href="#_sub5" class="code" title="subfunction printData(file, data, sepStr)">printData</a>(file, wormData(featI).dataSamples, sepStr);
+0416     <span class="keyword">end</span>
+0417     fprintf(file, <span class="string">'\n\n'</span>);
+0418 <span class="keyword">end</span>
+0419 <span class="keyword">end</span>
+0420 
+0421 
+0422 
+0423 <span class="comment">%% Print a struct field.</span>
+0424 <span class="comment">% varargin = func</span>
+0425 <span class="comment">% func - a function to run on the field data</span>
+0426 <a name="_sub4" href="#_subfunctions" class="code">function printField(structs, field, sepStr, file, varargin)</a>
+0427 
+0428 <span class="comment">% Are we running a function over the field data?</span>
+0429 func = @(x) x;
+0430 <span class="keyword">if</span> ~isempty(varargin)
+0431     func = varargin{1};
+0432 <span class="keyword">end</span>
+0433 
+0434 <span class="comment">% Print the field data.</span>
+0435 <span class="keyword">for</span> i = 1:length(structs)
+0436     fprintf(file, <span class="string">'&quot;%s&quot;%s'</span>, func(<a href="../../../SegWorm/Util/getStructField.html" class="code" title="function data = getStructField(data, field, varargin)">getStructField</a>(structs(i), field)), <span class="keyword">...</span>
+0437         sepStr);
+0438 <span class="keyword">end</span>
+0439 <span class="keyword">end</span>
+0440 
+0441 
+0442 
+0443 <span class="comment">%% Print the data.</span>
+0444 <a name="_sub5" href="#_subfunctions" class="code">function printData(file, data, sepStr)</a>
+0445 <span class="keyword">for</span> i = 1:length(data)
+0446     fprintf(file, <span class="string">'%d%s'</span>, data(i), sepStr);
+0447 <span class="keyword">end</span>
+0448 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

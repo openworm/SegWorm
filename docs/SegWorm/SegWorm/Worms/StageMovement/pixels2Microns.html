@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of pixels2Microns</title>
+  <meta name="keywords" content="pixels2Microns">
+  <meta name="description" content="PIXELS2MICRONS Convert onscreen pixel coordinates to real-world micron">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # SegWorm --><!-- # Worms --><!-- menu.html StageMovement -->
+<h1>pixels2Microns
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>PIXELS2MICRONS Convert onscreen pixel coordinates to real-world micron</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function microns = pixels2Microns(origin, pixels, pixel2MicronScale,rotation) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PIXELS2MICRONS Convert onscreen pixel coordinates to real-world micron
+   locations.
+
+   MICRONS = PIXELS2MICRONS(ORIGIN, PIXELS, PIXEL2MICRONSCALE, ROTATION)
+
+   Inputs:
+       origin            - the real-world micron origin (stage location)
+                           for the image
+       pixels            - the onscreen pixel coordinates to convert
+       pixel2MicronScale - the scale for converting pixels to microns
+                           (see readPixels2Microns)
+       rotation          - the rotation matrix (see readPixels2Microns)
+
+   Output:
+       microns - the real-world, micron locations
+
+ See also <a href="readPixels2Microns.html" class="code" title="function [pixel2MicronScale rotation] = readPixels2Microns(infoFile)">READPIXELS2MICRONS</a>, <a href="microns2Pixels.html" class="code" title="function pixels = microns2Pixels(origin, microns, pixel2MicronScale,rotation)">MICRONS2PIXELS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../SegWorm/Worms/Orientation/orientWormPostCoil.html" class="code" title="function worm2 = orientWormPostCoil(worm1, worm2, varargin)">orientWormPostCoil</a>	ORIENTWORMPOSTCOIL Orient worm2 to match worm1's orientation (by setting</li><li><a href="../../../SegWorm/Worms/Util/normWorms.html" class="code" title="function [vulvaContours nonVulvaContours skeletons angles inOutToucheslengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] =normWorms(worms, samples, moves, origins, pixel2MicronScale,rotation, verbose)">normWorms</a>	NORMWORMS Normalize the worms' information to a standard, compact set.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function microns = pixels2Microns(origin, pixels, pixel2MicronScale, </a><span class="keyword">...</span>
+0002     rotation)
+0003 <span class="comment">%PIXELS2MICRONS Convert onscreen pixel coordinates to real-world micron</span>
+0004 <span class="comment">%   locations.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   MICRONS = PIXELS2MICRONS(ORIGIN, PIXELS, PIXEL2MICRONSCALE, ROTATION)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Inputs:</span>
+0009 <span class="comment">%       origin            - the real-world micron origin (stage location)</span>
+0010 <span class="comment">%                           for the image</span>
+0011 <span class="comment">%       pixels            - the onscreen pixel coordinates to convert</span>
+0012 <span class="comment">%       pixel2MicronScale - the scale for converting pixels to microns</span>
+0013 <span class="comment">%                           (see readPixels2Microns)</span>
+0014 <span class="comment">%       rotation          - the rotation matrix (see readPixels2Microns)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   Output:</span>
+0017 <span class="comment">%       microns - the real-world, micron locations</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% See also READPIXELS2MICRONS, MICRONS2PIXELS</span>
+0020 
+0021 <span class="comment">% Rotate the pixels.</span>
+0022 pixels = (rotation * pixels')';
+0023 
+0024 <span class="comment">% Convert the pixels coordinates to micron locations.</span>
+0025 microns(:,1) = origin(1) - pixels(:,1) * pixel2MicronScale(1);
+0026 microns(:,2) = origin(2) - pixels(:,2) * pixel2MicronScale(2);
+0027 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 25-Jun-2013 14:47:30 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
