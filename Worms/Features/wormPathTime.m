@@ -44,6 +44,12 @@ function [arena times] = wormPathTime(skeletonX, skeletonY, points, ...
 %                         arena matrix
 %               times   = the non-zero time point values (in seconds)
 %                         corresponding to the arena matrix indices
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Organize the skeleton points.
 if ~iscell(points)

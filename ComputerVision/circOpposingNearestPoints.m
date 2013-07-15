@@ -26,6 +26,12 @@ function pointsI = circOpposingNearestPoints(pointsI, x, startI, endI, ...
 %       pointsI - the equivalent point indices on the opposing side
 %
 % See also CIRCOPPOSINGPOINTS, CIRCNEARESTPOINTS, CIRCCOMPUTECHAINCODELENGTHS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Re-order the start and end to make life simple. 
 if startI > endI

@@ -38,6 +38,12 @@ function [velocity events] = wormVelocity(x, y, fps, lengths, varargin)
 %                             -1 = backward locomotion
 %                              0 = no locomotion (the worm is paused)
 %                              1 = forward locomotion
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Where is the ventral side located?
 ventralMode = 0;

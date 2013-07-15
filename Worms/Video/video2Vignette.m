@@ -74,6 +74,12 @@ function vignette = video2Vignette(videoFile, frames, threshold, ...
 %
 %   Output:
 %       vignette - the video's vignette
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are we saving the vignette to a file?
 vignetteFile = [];

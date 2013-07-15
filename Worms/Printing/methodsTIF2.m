@@ -26,6 +26,12 @@ function [filename pages] = methodsTIF(filename, varargin)
 %       pages    - the number of pages in the figure file
 %
 % See also FILTERWORMINFO, FILTERWORMHIST, WORM2HISTOGRAM, WORM2STATSINFO
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are we showing the figures onscreen?
 % Note: hiding the figures is faster.

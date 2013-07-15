@@ -67,6 +67,12 @@ function [diffData usedFramesI] = multiScaleDiff(data, use, startI, ...
 %                     matrix is 2 dimensional. The first matrix dimension
 %                     corresponds to X1 and X2, respectively. The second
 %                     matrix dimension corresponds to the frame index used.
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Correct the data types, if necessary.
 if ~iscell(data)

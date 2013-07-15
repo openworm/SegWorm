@@ -77,6 +77,12 @@ function bends = wormBends(wormFile, varargin)
 %               "frequency", except foraging which contains an "amplitude"
 %               and an "angleSpeed" (an angular speed in place of the
 %               frequency). Each value maintains its dorsal/ventral sign.
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are we using the locomotion mode to remove non-foraging bends?
 pausedMotion = [];

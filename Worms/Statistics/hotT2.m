@@ -17,6 +17,12 @@ function [pAll pMean] = hotT2(data1, data2)
 % biological knowledge"
 % Kong SW, Pu WT, Park PJ.
 % Bioinformatics, 22:2373-80, 2006.
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Get the number of samples for each data set.
 n1 = size(data1, 1);

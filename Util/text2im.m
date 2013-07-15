@@ -1,9 +1,7 @@
 function imtext=text2im(text)
 % text2im - generates an image, containing the input text
 
-% Code courtesy of Matlab central from author Tobias Kiessling (TobiasJuz@gmx.de).
-% (author information: http://www.mathworks.com/matlabcentral/fileexchange/authors/30987)
-% Original URL: http://www.mathworks.com/matlabcentral/fileexchange/19896-convert-text-to-an-image/all_files
+% Code courtesy of Matlab central from author Tobias Kiessling.
 
 
 text=text+0;                    % converting string into Ascii-number array

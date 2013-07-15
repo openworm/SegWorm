@@ -43,6 +43,12 @@ function [saveFile pages] = showWormMorphologyLength(worm, varargin)
 %       pages    - the number of pages in the figure file
 %
 %   See WORMORGANIZATION, SHOWORMMORPHOLOGY
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Organize the worm data.
 if iscell(worm)

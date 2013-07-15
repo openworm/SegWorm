@@ -72,6 +72,12 @@ function frames = findEvent(data, minThr, maxThr, varargin)
 %                
 %
 % See also EVENTS2STATS, EVENTS2ARRAY
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Is the threshold inclusive?
 isAtThr = false;

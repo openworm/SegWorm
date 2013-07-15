@@ -17,6 +17,12 @@ function [bwImg] = otsuImg(img, varargin)
 %
 %   Output:
 %       bwImg - the otsu-threshold, binarized image
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Should we normalize the image?
 isNormalized = false;

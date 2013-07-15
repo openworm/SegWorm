@@ -1,4 +1,4 @@
-function events2video(eventFrames, videoFile, eventVideoFile, varargin)
+function events2video_native(eventFrames, videoFile, eventVideoFile, varargin)
 %EVENTS2VIDEO Create a video of events.
 %
 %   EVENTS2VIDEO(EVENTFRAMES, VIDEOFILE, EVENTVIDEOFILE)
@@ -66,20 +66,15 @@ if length(varargin) > 3
 end
 
 % Open the video.
-if ispc()
-    vr = videoReader(videoFile, 'plugin', 'DirectShow');
-else
-    vr = videoReader(videoFile, 'plugin', 'ffmpegDirect');
-end
-fps = get(vr, 'fps');
+vr = VideoReader(videoFile);
+fps = vr.FrameRate;
 
 % Is the video grayscale?
 % Note: if there's no difference between the red and green channel, we
 % consider all 3 RGB channels identical grayscale images.
 isGray = false;
-isNextFrame = next(vr);
-if isNextFrame
-    img = getframe(vr);
+img = vr.read(1);
+if ~isempty(img)
     imgSize = size(img);
     if max(max(abs(img(:,:,1) - img(:,:,2)))) == 0
         isGray = true;
@@ -87,21 +82,17 @@ if isNextFrame
     
 % The video is empty.
 else
-    close(vr);
     error('events2video:EmptyVideo', 'The video is empty');
 end
 
 % Construct the video file of events.
-if ispc()
-    vw = videoWriter(eventVideoFile, 'fps', fps, 'plugin', 'DirectShow');
-else
-    vw = videoWriter(eventVideoFile, 'fps', fps, 'plugin', 'ffmpegDirect');
-end
+%vw = VideoWriter(eventVideoFile, 'Motion JPEG AVI');
+vw = VideoWriter(eventVideoFile, 'MPEG-4');
+vw.FrameRate = 3*fps;
+vw.open();
 
 % Create a video of the events.
 eventSeperatorFrames = round(eventSeparatorTime * fps);
-timestamp = get(vr, 'timeStamp');
-frame = round(timestamp * fps);
 for i = 1:length(eventFrames)
     
     % Record the event seperator.
@@ -138,53 +129,18 @@ for i = 1:length(eventFrames)
         end
 
         % Record the event information image.
+        disp(['Writing separator ' num2str(i) ' ...']);
         for j = 1:eventSeperatorFrames
-            addframe(vw, infoImg);
-        end
-    end
-    
-    % Are we at the start frame?
-    startFrame = eventFrames(i).start;
-    if frame ~= startFrame
-        
-        % Step to the next video frame.
-        if startFrame - frame == 1
-            next(vr);
-            timestamp = get(vr, 'timeStamp');
-            frame = round(timestamp * fps);
-            
-        % Seek the next video frame.
-        else
-            
-            % Find the requested frame.
-            % Note: seek is inaccurate.
-            seek(vr, startFrame);
-            timestamp = get(vr, 'timeStamp');
-            
-            % We overshot the requested frame.
-            j = startFrame;
-            while j > 0 && round(timestamp * fps) > startFrame
-                j = j - 1;
-                seek(vr, j);
-                timestamp = get(vr, 'timeStamp');
-            end
-            
-            % We undershot the requested frame.
-            isNextFrame = true;
-            while isNextFrame && round(timestamp * fps) < startFrame
-                isNextFrame = next(vr);
-                timestamp = get(vr, 'timeStamp');
-            end
-            frame = round(timestamp * fps);
+            vw.writeVideo(infoImg);
         end
     end
     
     % Save the event frames.
-    endFrame = eventFrames(i).end;
-    while isNextFrame && frame <= endFrame
+    disp(['Writing event ' num2str(i) ' ...']);
+    for j = eventFrames(i).start:eventFrames(i).end
         
         % Get the video frame.
-        img = getframe(vr);
+        img = vr.read(j);
         
         % Convert the frame to grayscale.
         if isConvert2Gray
@@ -197,7 +153,7 @@ for i = 1:length(eventFrames)
         
         % Show the frame number.
         if isShowFrame
-            frameImg = text2im(['Frame: ' num2str(frame)]);
+            frameImg = text2im(['Frame: ' num2str(j )]);
             img(1:size(frameImg,1),1:size(frameImg,2),1) = ...
                 frameImg * 255;
             if ndims(img) > 2
@@ -210,7 +166,7 @@ for i = 1:length(eventFrames)
         
         % Show the timestamp.
         if isShowTime
-            timeImg = text2im(['Time: ' num2str(timestamp, '%.3f')]);
+            timeImg = text2im(['Time: ' num2str(j / fps, '%.3f')]);
             img((end - size(timeImg,1) + 1):end, ...
                 (end - size(timeImg,2) + 1):end,1) = timeImg * 255;
             if ndims(img) > 2
@@ -222,16 +178,11 @@ for i = 1:length(eventFrames)
         end
         
         % Record the image.
-        addframe(vw, img);
-        
-        % Advance to the next video frame.
-        isNextFrame = next(vr);
-        timestamp = get(vr, 'timeStamp');
-        frame = round(timestamp * fps);
+        disp(['Writing frame ' num2str(j) ' ...']);
+        vw.writeVideo(img);
     end
 end
 
 % Clean up.
-close(vr);
-close(vw);
+vw.close();
 end

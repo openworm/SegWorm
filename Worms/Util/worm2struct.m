@@ -219,6 +219,12 @@ function worm = worm2struct(frame, ...
 %                                  confidence.vulva, confidence.nonVulva}
 %
 %   See also WORM2CELL, CELL2WORM, SEGWORM
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Organize the video information.
 video = struct('frame', frame);

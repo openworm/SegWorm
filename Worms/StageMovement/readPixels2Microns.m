@@ -12,6 +12,12 @@ function [pixel2MicronScale rotation] = readPixels2Microns(infoFile)
 %       rotation          - the rotation matrix
 %
 % See also PIXELS2MICRONS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Open the information file.
 if ~exist(infoFile, 'file')

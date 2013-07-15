@@ -9,6 +9,12 @@ function values = xmlReadTag(xml, tag)
 %
 %   Output:
 %       values - the values for the given tag
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Translate the tag to a path.
 path = [];

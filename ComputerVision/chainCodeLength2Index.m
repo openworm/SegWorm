@@ -16,6 +16,12 @@ function indices = chainCodeLength2Index(lengths, chainCodeLengths)
 %                 lengths
 %
 % See also COMPUTECHAINCODELENGTHS, CIRCCOMPUTECHAINCODELENGTHS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Check the lengths.
 % Note: circular chain-code lengths are minimally bounded at 0 and

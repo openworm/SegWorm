@@ -55,6 +55,12 @@ function info = wormStatsInfo()
 %                         n = the negative data
 %
 % See also WORM2STATSINFO, WORM2HISTOGRAM, ADDWORMHISTOGRAMS, WORM2STATS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Initialize the event summary data type.
 eventSummaryType = 'd';

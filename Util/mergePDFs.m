@@ -9,6 +9,12 @@
 %       files     - a cell array of the names for the PDF files to merge
 %       isDelete  - should we delete the separate PDFs after merging them?
 %                   the default is no (false)
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 function mergePDFs(mergeFile, files, varargin)
 
 % Should we delete the separate PDFs after merging them?

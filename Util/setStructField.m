@@ -10,6 +10,12 @@ function data = setStructField(data, field, value)
 %
 %   Output:
 %       data - a structure with the field set to the value
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 eval(['data.' field '=value;']);
 end

@@ -14,6 +14,12 @@ function angles = skeleton2angles(skeletonX, skeletonY, varargin)
 %
 %   Outputs:
 %       angles - the angles between each pair of coordinates per frame
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Construct the skeleton.
 skeleton = cat(3, skeletonX, skeletonY);

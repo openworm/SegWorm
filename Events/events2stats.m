@@ -37,6 +37,12 @@ function [eventStats summaryStats] = events2stats(frames, fps, data, ...
 %                                           (event data / total data)
 %
 % See also FINDEVENT
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are we computing/including the event's data sum.
 isName = true;

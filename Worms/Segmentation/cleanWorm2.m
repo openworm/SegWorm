@@ -27,6 +27,12 @@ function contour = cleanWorm2(contour, wormSegSize)
 %
 %   Output:
 %       contour - the cleaned up worm contour.
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Compute the contour's curvature on a small scale.
 angles = circCurvature(contour, wormSegSize);

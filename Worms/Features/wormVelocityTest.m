@@ -63,6 +63,12 @@ function [velocities centroidVelocities] = ...
 %                            the worm's contour.
 %
 %   See also MULTISCALEDIFF, NORMWORMS, SEGWORMVIDEOFRAMES
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Read the info to convert onscreen pixels to real-world microns.
 [pixel2MicronScale rotation] = readPixels2Microns(infoFile);

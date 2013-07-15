@@ -97,6 +97,12 @@ function wormStats2Matrix(filename, wormFiles, varargin)
 %                   the default is yes (true)
 %
 % See also WORM2STATSINFO, WORMSTATSINFO
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are we displaying the progress?
 isVerbose = false;

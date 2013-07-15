@@ -55,6 +55,12 @@ function worm = coiledSkeleton(oContour, iContour, sWormSegs)
 %                                  confidence.vulva, confidence.nonVulva}
 %
 %   See also WORM2STRUCT
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Estimate the size of a worm muscle segment.
 % Note: since the worm is touching itself, about at least 2 muscle segments

@@ -106,6 +106,12 @@ function wormStatsMatrix2CSV(filename, wormFile, varargin)
 %                      the default is yes (true)
 %
 % See also WORM2STATSMATRIX
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are we transposing the file to features x worms?
 isTranspose = true;
@@ -242,13 +248,16 @@ featureLabels = featureLabels(isShow);
 % Find the wild-type control values.
 %controlStr = 'N2: C. elegans Wild Isolate, Schafer Lab N2 (Bristol, UK)';
 controlStr = 'Schafer Lab N2 (Bristol, UK)';
+maleStr = 'Male';
 controlI = cellfun(@(x) strcmp(x, controlStr), wormLabels);
 controlI = find(controlI);
 if length(controlI) ~= 1
     warning('plotWormStatsMatrix:NoControl', ...
         'Cannot find the wild-type control');
 end
-allControlI = find(cellfun(@(x) ~isempty(strfind(x, 'N2')), wormLabels));
+maleI = find(cellfun(@(x) ~isempty(strfind(x, maleStr)), wormLabels));
+allControlI = find(cellfun(@(x) ~isempty(strfind(x, controlStr)), wormLabels));
+hourDayMonthControlI = setdiff(allControlI, [maleI controlI]);
 
 % Use the normalized feature z-scores.
 isImputeNeg = [];
@@ -281,13 +290,49 @@ else
     worms = data.worm.stats.mean(:,isShow);
 end
 
+    %worms(hourDayMonthControlI, :) = [];
+    isLabel = true(size(wormLabels));
+    %isLabel(hourDayMonthControlI) = false;
+    wormLabels = wormLabels(isLabel);
 % Remove statistically insignificant data.
 if ~isempty(maxQValue)
-    signs = sign(worms);
-    worms = log(1 ./ data.worm.sig.qWValue.all(:, isShow));
-    worms = worms .* signs;
-    isNorm = false;
-    worms(isnan(worms)) = 0;
+
+    sigValues = data.worm.sig.qWValue.all(isLabel, isShow);
+    %worms(sigValues > maxQValue) = 0;
+    
+    sigs = zeros(size(sigValues));
+    sigs(sigValues <= 0.05) = 1;
+    sigs(sigValues <= 0.01) = 2;
+    sigs(sigValues <= 0.001) = 3;
+    sigs(sigValues <= 0.0001) = 4;
+    sigs = sigs .* sign(worms);
+    sigs(isnan(sigs)) = 0;
+    [vars, varI] = sort(var(sigs), 'descend');
+    keepI = varI(1:498);
+    worms = worms(:, keepI);
+    featureLabels = featureLabels(keepI);
+    isImputeNeg = isImputeNeg(keepI);
+    isImputePos = isImputePos(keepI);
+    
+    %489
+    %525
+    
+    % Use MRMR to select features.
+%     numMRMR = 50;
+%     sigValues = data.worm.sig.qWValue.all(:, isShow);
+%     worms(isnan(worms)) = 0;
+%     worms(sigValues > maxQValue) = 0;
+%     mrmrFeatures = mRMR_feature_select(worms, 1:size(worms,1), numMRMR);
+%     worms = worms(:, mrmrFeatures);
+%     featureLabels = featureLabels(mrmrFeatures);
+%     isImputeNeg = isImputeNeg(mrmrFeatures);
+%     isImputePos = isImputePos(mrmrFeatures);
+    
+%     signs = sign(worms);
+%     worms = log(1 ./ data.worm.sig.qWValue.all(:, isShow));
+%     worms = worms .* signs;
+%     isNorm = false;
+%     worms(isnan(worms)) = 0;
 %     if isZScore
 %         sigValues = data.worm.sig.qWValue.all(:, isShow);
 %         worms(sigValues > maxQValue) = 0;

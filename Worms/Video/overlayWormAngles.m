@@ -54,6 +54,12 @@ function oImg = overlayWormAngles(img, worm, cRGB360, sRGB360, sRGBNaN, ...
 %              (curvature); and, the head and vulval side labeled
 %
 %   SEE also OVERLAYWORMTOUCH, SEGWORM, and WORM2STRUCT
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Convert the image to grayscale.
 if (size(img,3) == 3)

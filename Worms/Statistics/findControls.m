@@ -1,4 +1,10 @@
 % Initialize the control info.
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 controlFile = 'N2_stat.mat';
 load(controlFile, 'wormInfo');
 

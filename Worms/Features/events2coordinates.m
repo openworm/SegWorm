@@ -14,6 +14,12 @@ function coordinates = events2coordinates(skeleton, points, frames)
 %
 %   Output:
 %       coordinates - the events coordinates (XY coordinates x event number)
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Compute the event coordinates.
 coordinates = nan(2, length(events));

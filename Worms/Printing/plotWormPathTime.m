@@ -31,6 +31,12 @@
 %       axisName  - the name to label the path axes
 %       isStats   - are we showing the summary statistics in the X label?
 %                   the default is yes (true)
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 function plotWormPathTime(arena, time, titleName, axisName, varargin)
 
 % Are we showing summary statistics?

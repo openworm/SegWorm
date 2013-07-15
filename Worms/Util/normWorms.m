@@ -73,6 +73,12 @@ function [vulvaContours nonVulvaContours skeletons angles inOutTouches ...
 %                          segmentation failures are marked as false)
 %
 % See also SEGWORM, FINDSTAGEMOVEMENT, READPIXELS2MICRONS, NORM2WORM
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Pre-compute values.
 pixel2MicronArea = sum(pixel2MicronScale .^ 2) / 2;

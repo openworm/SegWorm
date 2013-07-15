@@ -122,6 +122,12 @@ function oImg = overlayWormTouch(img, worm, headRGB, isHeadOpaque, ...
 %              vulval/non-vulval sides labeled
 %
 %   SEE also OVERLAYWORMANGLES, SEGWORM, and WORM2STRUCT
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Convert the image to grayscale.
 if (size(img,3) == 3)

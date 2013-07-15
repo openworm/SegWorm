@@ -16,6 +16,12 @@ function summary = wormFileSummary()
 %                 summary    = a descriptive summary of the value
 %                 method     = a descriptive summary of the method
 %                 references = reference publications for the method
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 %% *** EXPERIMENTAL ANNOTATION
 

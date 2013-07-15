@@ -61,6 +61,12 @@ function video2Diff(videoFile, diffFile, varargin)
 %                       largest connected component isn't dilated
 %
 % See also FINDSTAGEMOVEMENT, SIMPLEPROGRESSUPDATE
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % % Get the vignette.
 % vImg = [];

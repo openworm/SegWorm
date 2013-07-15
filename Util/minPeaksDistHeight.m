@@ -1,17 +1,17 @@
-function [peaks indices] = maxPeaksDistHeight(x, dist, height)
-%MAXPEAKSDISTHEIGHT Find the maximum peaks in a vector. The peaks are
-%   separated by, at least, the given distance unless interrupted and are, at least, the given
-%   height.
+function [peaks indices] = minPeaksDistHeight(x, dist, height)
+%MINPEAKSDISTHEIGHT Find the minimum peaks in a vector. The peaks are
+%   separated by, at least, the given distance unless interrupted and are,
+%   at most, the given height.
 %
-%   [PEAKS INDICES] = MAXPEAKSDISTHEIGHT(X, DIST, HEIGHT)
+%   [PEAKS INDICES] = MINPEAKSDISTHEIGHT(X, DIST, HEIGHT)
 %
 %   Input:
 %       x      - the vector to search for maximum peaks
 %       dist   - the minimum distance between peaks
-%       height - the minimum height for peaks
+%       height - the maximum height for peaks
 %
 %   Output:
-%       peaks   - the maximum peaks
+%       peaks   - the minimum peaks
 %       indices - the indices for the peaks
 %
 %
@@ -23,7 +23,7 @@ function [peaks indices] = maxPeaksDistHeight(x, dist, height)
 % Is the vector larger than the search window?
 winSize = 2 * dist + 1;
 if length(x) < winSize
-    [peaks indices] = max(x);
+    [peaks indices] = min(x);
     if peaks < height
         peaks = [];
         indices = [];
@@ -37,15 +37,15 @@ peaks = zeros(wins, 1); % pre-allocate memory
 indices = zeros(wins, 1); % pre-allocate memory
 
 % Search for peaks.
-im = []; % the last maxima index
-ip = []; % the current, potential, max peak index
-p = []; % the current, potential, max peak value
+im = []; % the last minima index
+ip = []; % the current, potential, min peak index
+p = []; % the current, potential, min peak value
 i = 1; % the vector index
-j = 1; % the recorded, maximal peaks index
+j = 1; % the recorded, minimal peaks index
 while i <= length(x)
     
     % Found a potential peak.
-    if x(i) >= height && (isempty(p) || x(i) > p)
+    if x(i) <= height && (isempty(p) || x(i) < p)
         ip = i;
         p = x(i);
     end
@@ -57,13 +57,13 @@ while i <= length(x)
         if ~isempty(im) && ip - im <= 2 * dist
             
             % Record the peak.
-            if p > max(x((ip - dist):(im + dist)))
+            if p < min(x((ip - dist):(im + dist)))
                 indices(j) = ip;
                 peaks(j) = p;
                 j = j + 1;
             end
             
-            % Record the maxima.
+            % Record the minima.
             im = ip;
             ip = i;
             p = x(ip);

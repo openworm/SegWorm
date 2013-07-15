@@ -25,6 +25,12 @@ function center = circPolyCenter(s1, e1, side1, s2, e2, side2, varargin)
 %   Output:
 %       center - the center pixels between both circularly continuous
 %                segments of the polygon's sides
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are there chain-code lengths?
 if length(varargin) == 2

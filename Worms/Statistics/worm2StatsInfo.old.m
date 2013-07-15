@@ -119,6 +119,12 @@ function worm2StatsInfo(filename, wormFiles, varargin)
 %                       the default is yes (true)
 %
 % See also WORM2HISTOGRAM, WORM2STATS, FILTERWORMINFO, WORMSTATSINFO
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Determine the worm file filter.
 wormFilter = [];

@@ -19,6 +19,12 @@ function info = wormDisplayInfo()
 %              name       = a descriptive feature name (for titles)
 %              shortName  = a shortened feature name (for legends)
 %              unit       = the feature's measurement unit (for labels)
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 
 

@@ -48,6 +48,12 @@ function [vulvaContours nonVulvaContours skeletons angles inOutTouches ...
 %                          (excluding the head and tail)
 %
 % See also NORMWORMS, FLIPNORMWORMVULVAS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Flip the contour.
 for i = 1:size(vulvaContours,3)

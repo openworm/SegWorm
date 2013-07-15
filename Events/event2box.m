@@ -38,6 +38,12 @@ function [box state] = event2box(state, prevEvent, event, nextEvent)
 %       state - the function state (persists across function calls)
 %
 % See also PLOTEVENT
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Initialize the variables.
 box = nan(2,4);

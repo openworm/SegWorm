@@ -24,6 +24,12 @@ function [interpData indices] = chainCodeLengthInterp(data, lengths, ...
 %                          desired lengths
 %
 % See also COMPUTECHAINCODELENGTHS, CHAINCODELENGTH2INDEX
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Is the data 2 dimensional?
 if ndims(data) > 2 || (size(data, 1) > 2 && size(data, 2) > 2)

@@ -27,6 +27,12 @@ function [skeleton cWidths] = skeletonize2(s1, e1, i1, s2, e2, i2, c1, c2, ...
 %       skeleton - the skeleton traced between the 2 sets of contour points.
 %       cWidths  - the widths between the 2 sets of contour points.
 %                  Note: there are no widths when cutting across.
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % The first starting index is before the ending one.
 ws1 = [];

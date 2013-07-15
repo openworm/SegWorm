@@ -67,6 +67,12 @@ function histData = histogram(data, varargin)
 %                     stdDev.pos = the deviation of all the positive data
 %                     mean.neg   = the mean of all the negative data
 %                     stdDev.neg = the deviation of all the negative data
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Organize the data.
 if ~iscell(data)

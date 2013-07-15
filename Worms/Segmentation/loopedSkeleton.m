@@ -41,6 +41,12 @@ function worm = loopedSkeleton(oContour, iContour, wormSegSize)
 %                           skeleton (indices for [start end])}
 %
 %   See also WORM2STRUCT
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 tContourI = [];
 oContourI = [];

@@ -103,6 +103,12 @@ function plotWormStats(wormFile, worm2num, state, titleName, varargin)
 %                      the default is yes (true)
 %
 % See also WORM2HISTOGRAM, ADDWORMHISTOGRAMS, WORM2NORMTIMES
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are we plotting a time series?
 isTimeSeries = false;

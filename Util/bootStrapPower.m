@@ -17,6 +17,12 @@ function betas = bootStrapPower(func, data, offsets, Ns, varargin)
 %
 %   Output:
 %       betas    - the betas as offsets x Ns x alphas
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 
 % Determine the second group sample sizes to use (if unequal group sizes).

@@ -14,6 +14,12 @@ function worm = flipWormHead(worm)
 %
 %   See also FLIPWORMCELLHEAD, FLIPWORMVULVA, FLIPWORMDATA, WORM2STRUCT,
 %   SEGWORM
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Flip the worm's head and tail.
 worm.orientation.head.isFlipped = ~worm.orientation.head.isFlipped;
