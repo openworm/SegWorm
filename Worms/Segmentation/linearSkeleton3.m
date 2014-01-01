@@ -24,6 +24,12 @@ function [skeleton cWidths] = ...
 %   Output:
 %       skeleton - the worm's skeleton
 %       cWidths  - the worm contour's width at each skeleton point
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Is the segment size too long?
 % Note: the head and tail are not part of the sides.

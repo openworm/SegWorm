@@ -12,6 +12,12 @@ function lengths = circComputeChainCodeLengths(points)
 %       lengths - the chain-code length at each point
 %
 % See also CHAINCODELENGTH2INDEX, COMPUTECHAINCODELENGTHS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are the points 2 dimensional?
 if ndims(points) ~=2 || (size(points, 1) ~= 2 && size(points, 2) ~= 2)

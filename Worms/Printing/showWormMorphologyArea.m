@@ -25,6 +25,12 @@ function [saveFile pages] = showWormMorphologyArea(worm, varargin)
 %       pages    - the number of pages in the figure file
 %
 %   See WORMORGANIZATION, SHOWORMMORPHOLOGY
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Pad the title when saving the figure.
 % Note: Matlab has a bug that cuts off the title when saving figures.

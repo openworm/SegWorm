@@ -34,6 +34,12 @@ function [numKinks kinkAngles kinkIndices] = ...
 %   Outputs:
 %       numKinks - the number of kinks
 %       indices  - the indices of the kinks
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Determine the bend segment length threshold.
 lengthThr = round(size(wormAngles, 1) / 12);

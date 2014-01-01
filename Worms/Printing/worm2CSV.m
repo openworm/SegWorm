@@ -22,6 +22,12 @@ function filenames = worm2CSV(filename, wormInfo, worm, wormName, varargin)
 %       filenames - the CSV filenames
 %
 % See also WORM2HISTOGRAM, WORMDISPLAYINFO, HISTOGRAM
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Do we have a control?
 controlInfo = [];

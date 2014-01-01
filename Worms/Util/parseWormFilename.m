@@ -6,6 +6,12 @@ function [ info ] = parseWormFilename( filename )
 %   output 'info' is a struct containing the worm type, strain, whether
 %   it's crawling on food, what side it's crawling on, and the timestamp of
 %   when the file was created.
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Parse the file name.
 pattern = ['(?<type>\S+)\s*' ...

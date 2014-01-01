@@ -9,6 +9,12 @@ function filter = standardWormFilter()
 %       filter - a filter to identify standard worm experiments
 %
 % See also FILTERWORMINFO, PERMISSIVEWORMFILTER
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Construct a filter for standard worm experiments.
 filter = [];

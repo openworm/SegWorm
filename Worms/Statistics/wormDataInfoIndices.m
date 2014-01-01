@@ -11,6 +11,12 @@ function [morphologyI postureI locomotionI pathI] = wormDataInfoIndices()
 %       pathI       - the indices for the path features
 %
 % See also WORMDATAINFO
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Separate the worm data fields into their feature categories.
 info = wormDataInfo();

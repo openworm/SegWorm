@@ -1,5 +1,11 @@
 %% Compute the multi-scale worm.
 % *** REPLACE THESE CALLS WITH WHAT YOU ALREADY HAVE ***
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 wormSamples = 49;
 file = dir('*_features.mat');
 if isempty(file)

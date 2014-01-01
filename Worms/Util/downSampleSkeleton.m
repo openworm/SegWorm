@@ -15,6 +15,12 @@ function [pixels indices] = downSampleSkeleton(worm, samples)
 %                 chain-code-length spacing
 %
 % See also DOWNSAMPLEPOINTS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Downsample the skeleton to the requested number of samples.
 [pixels, indices, ~] = downSamplePoints(worm.skeleton.pixels, samples, ...

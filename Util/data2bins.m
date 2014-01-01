@@ -8,6 +8,12 @@
 %
 %   Output:
 %       dataBins - the quantized data bins (i.e., the data bin indices)
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 function dataBins = data2bins(data, numBins)
 
 % Normalize the data.

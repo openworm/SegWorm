@@ -179,6 +179,12 @@ function [frames movesI locations] = ...
 %       locations - the location of the stage after each stage movement
 %
 % See also VIDEO2DIFF
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Is there a GUI handle?
 if isempty(varargin)

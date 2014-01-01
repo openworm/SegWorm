@@ -2,6 +2,12 @@ function bends = testBendFunc(verbose)
 %TESTBENDFUNC Test worm2func as well as the values used in wormBends.
 %
 %   This function serves as an example and a test.
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 state = [];
 data = worm2func(@bendFunc, state, 'segNormInfo.mat', [], [], 0, 0, false);

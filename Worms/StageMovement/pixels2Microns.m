@@ -17,6 +17,12 @@ function microns = pixels2Microns(origin, pixels, pixel2MicronScale, ...
 %       microns - the real-world, micron locations
 %
 % See also READPIXELS2MICRONS, MICRONS2PIXELS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Rotate the pixels.
 pixels = (rotation * pixels')';

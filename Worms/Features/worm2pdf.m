@@ -9,6 +9,12 @@ function worm2pdf(wormFile, varargin)
 %       wormFile - the name of the worm feature's Matlab file
 %       pdfFile  - the name for the PDF file; if empty, the wormFile name
 %                  is used and ammended to end in .pdf
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Determine the PDF file name.
 if isempty(varargin)

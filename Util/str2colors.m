@@ -36,6 +36,12 @@ function colors = str2colors(string, varargin)
 %
 %   Output:
 %       colors - the list of colors (color x RGB value)
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Convert the string to colors.
 colors = nan(length(string),3);

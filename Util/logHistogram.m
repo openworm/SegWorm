@@ -20,6 +20,12 @@ function histogram = logHistogram(histogram, varargin)
 %       histogram - the base-10 logarithm of the histogram(s)
 %
 % See also HISTOGRAM
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Which log mode are we using?
 % 1 = convert the PDF to log scale (default)

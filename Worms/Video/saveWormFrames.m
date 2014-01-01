@@ -83,6 +83,12 @@ function failedFrames = saveWormFrames(wormFile, videoFile, frames, ...
 %       failedFrames - the frame numbers at which segmentation failed
 %
 %   See also SEGWORM, SEGWORMFRAMES, CELL2WORM, NORMWORMS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Check the variable input arguments.
 if ~isempty(varargin) && length(varargin) ~= 1 && length(varargin) ~= 4

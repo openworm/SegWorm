@@ -19,6 +19,12 @@ function curvature = wormPathCurvature(x, y, fps, varargin)
 %       curvature - the worm path curvature (the angle between every 3 
 %                   subsequent locations at the given scale, divided by the
 %                   distance traveled between these 3 subsequent locations)
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Where is the ventral side located?
 ventralMode = 0;

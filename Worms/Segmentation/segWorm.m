@@ -1,12 +1,14 @@
-function worm = segWorm(img, frame, isNormalized, verbose, varargin)
+function [worm errNum errMsg] = ...
+    segWorm(img, frame, isNormalized, verbose, varargin)
 %SEGWORM Segment the worm in an image and organize the information in a
 %   structure.
 %
 %   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE)
 %
-%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, SAMPLES)
+%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, NUMERODE, NUMDILATE)
 %
-%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, SAMPLES, ISINTERP)
+%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, NUMERODE, NUMDILATE,
+%                  SAMPLES, ISINTERP)
 %
 %   Inputs:
 %       img          - the image to segment
@@ -14,6 +16,10 @@ function worm = segWorm(img, frame, isNormalized, verbose, varargin)
 %       isNormalized - is the image already normalized (i.e., all pixel
 %                      values are between 0 to 1, inclusive)?
 %       verbose      - verbose mode shows the results in a figure
+%       numErode     - the number of time to erode the binary worm image;
+%                      if empty or 0, the binary image is left unchanged
+%       numDilate    - the number of time to dilate the binary worm image;
+%                      if empty or 0, the binary image is left unchanged
 %       samples      - the number of samples to use in verbose mode;
 %                      if empty, all the worm is used.
 %       isInterp     - when downsampling, should we interpolate the missing
@@ -71,7 +77,27 @@ function worm = segWorm(img, frame, isNormalized, verbose, varargin)
 %              orientation.vulva = {isClockwiseFromHead,
 %                                  confidence.vulva, confidence.nonVulva}
 %
+%       errNum - the error number if segmentation failed
+%                (see also WORMFRAMEANNOTATION)
+%       errMsg - the error message if segmentation failed
+%
 %   See also WORM2STRUCT, NORMWORMS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
+
+% Are we eroding and/or dilating the worm?
+numErode = [];
+numDilate = [];
+if ~isempty(varargin)
+    numErode = varargin{1};
+end
+if length(varargin) > 1
+    numDilate = varargin{2};
+end
 
 % Convert the image to grayscale.
 worm = [];
@@ -83,9 +109,19 @@ end
 % Store the original then binarize the image.
 oImg = img;
 img = otsuImg(img, isNormalized);
+img = ~img;
+
+% Erode and dilate the binary image.
+if ~isempty(numErode) && numErode > 0
+    img = imerode(img, strel('disk', numErode));
+end
+if ~isempty(numDilate) && numDilate > 0
+    img = imdilate(img, strel('disk', numDilate));
+end
 
 % Find the worm.
-img = ~img;
+errNum = [];
+errMsg = [];
 cc = bwconncomp(img);
 wormPixels = [];
 if ~isempty(cc.PixelIdxList)
@@ -103,11 +139,13 @@ end
 
 % No worm found.
 if isempty(wormPixels)
-    warning('segWorm:NoWormFound', 'Frame %d: No worm was found', frame);
-
+    errNum = 101;
+    errMsg = 'No worm was found.';
+    
     % Show the failure.
     if verbose
-        
+        warning('segWorm:NoWormFound', ['Frame %d: ' errMsg], frame);
+
         % Open a big figure.
         figure('OuterPosition', [50 50 1280 960]);
         set(gcf, 'Color', [1 .5 .5]);
@@ -128,11 +166,13 @@ contour = bwClockTrace(img, [x y], true);
 % The contour touches a boundary.
 if min(contour(:,1)) == 1 || min(contour(:,2)) == 1 || ...
         max(contour(:,1)) == size(img, 1) || max(contour(:,2)) == size(img, 2)
-    warning('segWorm:ContourTouchesBoundary', ...
-        'Frame %d: The worm contour touches the image boundary', frame);
+    errNum = 102;
+    errMsg = 'The worm contour touches the image boundary.';
     
     % Show the failure.
     if verbose
+        warning('segWorm:ContourTouchesBoundary', ...
+            ['Frame %d: ' errMsg], frame);
         
         % Open a big figure.
         figure('OuterPosition', [50 50 1280 960]);
@@ -161,11 +201,12 @@ cWormSegs = 2 * sWormSegs;
 
 % The contour is too small.
 if size(contour, 1) < cWormSegs
-    warning('segWorm:ContourTooSmall', ...
-        'Frame %d: The worm contour is too small', frame);
+    errNum = 103;
+    errMsg = 'The worm contour is too small.';
     
     % Show the failure.
     if verbose
+        warning('segWorm:ContourTooSmall', ['Frame %d: ' errMsg], frame);
         
         % Open a big figure.
         figure('OuterPosition', [50 50 1280 960]);
@@ -210,11 +251,12 @@ contour = cleanWorm(contour, size(contour, 1) / cWormSegs);
 
 % The contour is too small.
 if size(contour, 1) < cWormSegs
-    warning('segWorm:ContourTooSmall', ...
-        'Frame %d: The worm contour is too small', frame);
+    errNum = 103;
+    errMsg = 'The worm contour is too small.';
     
     % Show the failure.
     if verbose
+        warning('segWorm:ContourTooSmall', ['Frame %d: ' errMsg], frame);
         
         % Open a big figure.
         figure('OuterPosition', [50 50 1280 960]);
@@ -267,12 +309,13 @@ mhfCAngles = circConv(hfCAngles, hfBlurWin);
 lfHT = lfCMaxP > 90;
 lfHTSize = sum(lfHT);
 if lfHTSize > 2
-    warning('segWorm:TooManyEnds', ['Frame %d: The worm has 3 or more ' ...
-        'low-frequency sampled convexities sharper than 90 degrees ' ...
-        '(possible head/tail points).'], frame);
+    errNum = 104;
+    errMsg = ['The worm has 3 or more low-frequency sampled convexities' ...
+        'sharper than 90 degrees (possible head/tail points).'];
     
     % Organize the available worm information.
     if verbose
+        warning('segWorm:TooManyEnds', ['Frame %d: ' errMsg], frame);
         vWorm = worm2struct(frame, contour, [], [], [], lfCAngles, [], ...
             [], cCCLengths, [], [], [], [], [], [], [], [], [], [], [], ...
             [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], ...
@@ -286,13 +329,14 @@ end
 mhfHT = mhfCMaxP > 60;
 mhfHTSize = sum(mhfHT);
 if mhfHTSize < 2
-    warning('segWorm:TooFewEnds', ['Frame %d: The worm contour has ' ...
-        'less than 2 high-frequency sampled convexities sharper than ' ...
-        '60 degrees (the head and tail). Therefore, the worm is ' ...
-        'coiled or obscured and cannot be segmented'], frame);
+    errNum = 105;
+    errMsg = ['The worm contour has less than 2 high-frequency sampled '...
+        'convexities sharper than 60 degrees (the head and tail). ' ...
+        'Therefore, the worm is coiled or obscured and cannot be segmented.'];
     
     % Organize the available worm information.
     if verbose
+        warning('segWorm:TooFewEnds', ['Frame %d: ' errMsg], frame);
         vWorm = worm2struct(frame, contour, [], [], [], lfCAngles, [], ...
             [], cCCLengths, [], [], [], [], [], [], [], [], [], [], [], ...
             [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], ...
@@ -404,13 +448,14 @@ else
     % on one side (relative to the other), than the worm must be touching
     % itself.
     if min(size1, size2)/ max(size1, size2) <= .5
-        warning('segWorm:DoubleLengthSide', ['Frame %d: The worm ' ...
-            'length, from head to tail, is more than twice as large ' ...
-            'on one side than it is on the other. Therefore, the worm ' ...
-            'is coiled or obscured and cannot be segmented'], frame);
+        errNum = 106;
+        errMsg = ['The worm length, from head to tail, is more than ' ...
+            'twice as large on one side than it is on the other. ' ...
+            'Therefore, the worm is coiled or obscured and cannot be segmented.'];
         
         % Organize the available worm information.
         if verbose
+            warning('segWorm:DoubleLengthSide', ['Frame %d: ' errMsg], frame);
             vWorm = worm2struct(frame, contour, [], [], [], lfCAngles, ...
                 headI, tailI, cCCLengths, [], [], [], [], [], [], [], ...
                 [], [], [], [], [], [], [], [], [], [], [], [], [], [], ...
@@ -554,14 +599,16 @@ else
         maxWidth = max(cWidths);
         if isempty(hBendI)
             if maxWidth / cWidths(hsBounds(2)) > 2
-                warning('segWorm:DoubleHeadWidth', ...
-                    ['Frame %d: The worm more than doubles its width ' ...
+                errNum = 107;
+                errMsg = ['The worm more than doubles its width ' ...
                     'from end of its head. Therefore, the worm is ' ...
                     'coiled, laid an egg, and/or is significantly ' ...
-                    'obscured and cannot be segmented'], frame);
+                    'obscured and cannot be segmented.'];
                 
                 % Organize the available worm information.
                 if verbose
+                    warning('segWorm:DoubleHeadWidth', ...
+                        ['Frame %d: ' errMsg], frame);
                     vWorm = worm2struct(frame, contour, [], [], [], ...
                         lfCAngles, headI, tailI, cCCLengths, [], [], ...
                         [], [], [], [], [], [], [], [], [], [], [], [], ...
@@ -590,14 +637,16 @@ else
         % that at the end of the tail.
         if isempty(tBendI)
             if maxWidth / cWidths(tsBounds(1)) > 2
-                warning('segWorm:DoubleTailWidth', ...
-                    ['Frame %d: The worm more than doubles its width ' ...
+                errNum = 108;
+                errMsg = ['The worm more than doubles its width ' ...
                     'from end of its tail. Therefore, the worm is ' ...
                     'coiled, laid an egg, and/or is significantly ' ...
-                    'obscured and cannot be segmented'], frame);
+                    'obscured and cannot be segmented.'];
                 
                 % Organize the available worm information.
                 if verbose
+                    warning('segWorm:DoubleTailWidth', ...
+                        ['Frame %d: ' errMsg], frame);
                     vWorm = worm2struct(frame, contour, [], [], [], ...
                         lfCAngles, headI, tailI, cCCLengths, [], [], ...
                         [], [], [], [], [], [], [], [], [], [], [], [], ...
@@ -629,15 +678,16 @@ else
             % estimate of the worm's width.
             if min(hBendDist) >= min(tBendDist)
                 if maxWidth / cWidths(hsBounds(2)) > 2
-                    warning('segWorm:DoubleHeadWidth', ...
-                        ['Frame %d: The worm more than doubles its ' ...
-                        'width from end of its head. Therefore, the ' ...
-                        'worm is coiled, laid an egg, and/or is ' ...
-                        'significantly obscured and cannot be ' ...
-                        'segmented'], frame);
-                
+                    errNum = 107;
+                    errMsg = ['The worm more than doubles its width ' ...
+                        'from end of its head. Therefore, the worm is ' ...
+                        'coiled, laid an egg, and/or is significantly ' ...
+                        'obscured and cannot be segmented.'];
+                    
                     % Organize the available worm information.
                     if verbose
+                        warning('segWorm:DoubleHeadWidth', ...
+                            ['Frame %d: ' errMsg], frame);
                         vWorm = worm2struct(frame, contour, [], [], [], ...
                             lfCAngles, headI, tailI, cCCLengths, [], ...
                             [], [], [], [], [], [], [], [], [], [], [], ...
@@ -654,15 +704,16 @@ else
             % estimate of the worm's width.
             else
                 if maxWidth / cWidths(tsBounds(1)) > 2
-                    warning('segWorm:DoubleTailWidth', ...
-                        ['Frame %d: The worm more than doubles its ' ...
-                        'width from end of its tail. Therefore, the ' ...
-                        'worm is coiled, laid an egg, and/or is ' ...
-                        'significantly obscured and cannot be ' ...
-                        'segmented'], frame);
+                    errNum = 108;
+                    errMsg = ['The worm more than doubles its width ' ...
+                        'from end of its tail. Therefore, the worm is ' ...
+                        'coiled, laid an egg, and/or is significantly ' ...
+                        'obscured and cannot be segmented.'];
                     
                     % Organize the available worm information.
                     if verbose
+                        warning('segWorm:DoubleTailWidth', ...
+                            ['Frame %d: ' errMsg], frame);
                         vWorm = worm2struct(frame, contour, [], [], [], ...
                             lfCAngles, headI, tailI, cCCLengths, [], ...
                             [], [], [], [], [], [], [], [], [], [], [], ...
@@ -748,12 +799,14 @@ else
     % Note: the area of the head and tail should be roughly the same size.
     % A 2-fold difference is huge!
     if hArea > 2 * tArea
-        warning('segWorm:SmallTail', ['Frame %d: The worm tail is ' ...
-            'less than half the size of its head. Therefore, the worm ' ...
-            'is significantly obscured and cannot be segmented'], frame);
-        
+        errNum = 109;
+        errMsg = ['The worm tail is less than half the size of its ' ...
+            'head. Therefore, the worm is significantly obscured and ' ...
+            'cannot be segmented.'];
+                
         % Defer organizing the available worm information.
         if verbose
+            warning('segWorm:SmallTail', ['Frame %d: ' errMsg], frame);
             vWorm = 0;
         else
             return;
@@ -763,12 +816,14 @@ else
     % Note: the area of the head and tail should be roughly the same size.
     % A 2-fold difference is huge!
     elseif tArea > 2 * hArea
-        warning('segWorm:SmallHead', ['Frame %d: The worm head is ' ...
-            'less than half the size of its tail. Therefore, the worm ' ...
-            'is significantly obscured and cannot be segmented'], frame);
-        
+        errNum = 110;
+        errMsg = ['The worm head is less than half the size of its ' ...
+            'tail. Therefore, the worm is significantly obscured and ' ...
+            'cannot be segmented.'];
+                
         % Defer organizing the available worm information.
         if verbose
+            warning('segWorm:SmallHead', ['Frame %d: ' errMsg], frame);
             vWorm = 0;
         else
             return;
@@ -879,13 +934,14 @@ else
     % than (1/6) / (4/6) = 1/4 the combined area of the left and right
     % sides.
     if 4 * (hArea + tArea) < lArea + rArea
-        warning('segWorm:SmallHeadTail', ['Frame %d: The worm ' ...
-            'head and tail are less than 1/4 the size of its ' ...
-            'remaining body. Therefore, the worm is significantly ' ...
-            'obscured and cannot be segmented'], frame);
-        
+        errNum = 111;
+        errMsg = ['The worm head and tail are less than 1/4 the size ' ...
+            'of its remaining body. Therefore, the worm is ' ...
+            'significantly obscured and cannot be segmented.'];
+                
         % Defer organizing the available worm information.
         if verbose
+            warning('segWorm:SmallHeadTail', ['Frame %d: ' errMsg], frame);
             vWorm = 0;
         else
             return;
@@ -1094,16 +1150,16 @@ if verbose
     end
     
     % Are we downsampling the worm?
-    if ~isempty(varargin)
-        samples = varargin{1};
+    if length(varargin) > 2
+        samples = varargin{3};
     else
         samples = [];
     end
     
     % When downsampling, are we interpolating the missing data or copying
     % it from the original worm?
-    if length(varargin) > 1
-        isInterp = varargin{2};
+    if length(varargin) > 3
+        isInterp = varargin{4};
     else
         isInterp = true;
     end

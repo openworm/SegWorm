@@ -9,6 +9,12 @@ function [c] = circConv(a, b)
 %
 %   Outputs:
 %       c - the convolution of the circularly connected vector a with b
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are the inputs vectors.
 if ~isvector(a) || ~isvector(b)

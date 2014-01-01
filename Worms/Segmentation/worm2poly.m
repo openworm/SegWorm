@@ -36,6 +36,12 @@ function [polygon lcBounds rcBounds sBounds] = worm2poly(startSI, endSI, ...
 %       rcBounds - the right-side (clockwise from the head) contour
 %                  bounds (the start and end indices of the segment)
 %       sBounds  - skeleton bounds (the start and end indices of the segment)
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are there chain-code lengths?
 sLength = size(skeleton, 1);

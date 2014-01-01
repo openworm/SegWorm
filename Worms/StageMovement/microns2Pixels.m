@@ -17,6 +17,12 @@ function pixels = microns2Pixels(origin, microns, pixel2MicronScale, ...
 %       pixels - the onscreen pixel coordinates
 %
 % See also READPIXELS2MICRONS, PIXELS2MICRONS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Convert the micron locations to pixels coordinates.
 pixels(:,1) = (origin(1) - microns(:,1)) / pixel2MicronScale(1);

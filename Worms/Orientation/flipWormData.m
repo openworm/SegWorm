@@ -12,6 +12,12 @@ function worm = flipWormData(worm)
 %
 %   See also FLIPWORMCELLDATA, FLIPWORMHEAD, FLIPWORMVULVA, WORM2STRUCT,
 %   SEGWORM
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Flip the contour.
 tmp = worm.contour.headI;

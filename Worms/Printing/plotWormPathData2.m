@@ -24,6 +24,12 @@ function plotWormPathData(titleLabel, skeleton, coils, omegas, bodyI, ...
 %       yLims    - the y-axis limits;
 %                  if empty, the limits are scaled to the data set;
 %                  the default is scaled (empty)
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Get the data limits to use for coloring.
 dLims = [];

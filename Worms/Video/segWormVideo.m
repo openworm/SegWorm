@@ -44,6 +44,12 @@ function failedFrames = segWormVideo(videoFile, anglesVideoFile, ...
 %       failedFrames - the frame numbers at which segmentation failed
 %
 %   See also SEGWORMFRAMES, SEGWORM, OVERLAYWORMANGLES, OVERLAYWORMTOUCH
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are we downsampling the worm?
 if ~isempty(varargin)

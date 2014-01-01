@@ -12,6 +12,12 @@ function [mask polygonI] = inPolyMask(polygon, seed, maskSize)
 %   Output:
 %       mask     - a (logical) mask of the inside of the polygon
 %       polygonI - the polygon indices for the mask
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Create the mask.
 mask = false(maskSize);

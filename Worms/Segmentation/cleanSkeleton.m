@@ -26,6 +26,12 @@ function [cSkeleton cWidths] = cleanSkeleton(skeleton, widths, wormSegSize)
 %   Output:
 %       cSkeleton - the cleaned skeleton (no overlap & no missing points)
 %       cWidths   - the cleaned contour widths at each skeleton point
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % If a worm touches itself, the cuticle prevents the worm from folding and
 % touching adjacent pairs of muscle segments; therefore, the distance

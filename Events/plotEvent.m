@@ -32,6 +32,12 @@ function [timeAxis frameAxis] = plotEvent(events, totalFrames, fps, ...
 %       frameAxis - the plot's frame axis
 %
 % See also FINDEVENT, EVENT2BOX
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Do the boxes have a black edge?
 isBoxEdge = false;

@@ -16,6 +16,12 @@ function isEvent = events2array(frames, totalFrames)
 %       isEvent - a logical array of whether the event occured, per frame
 %
 % See also FINDEVENT
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Convert the event frames to an array of where the events take place.
 isEvent = false(totalFrames,1);

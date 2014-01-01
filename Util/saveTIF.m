@@ -20,6 +20,12 @@ function saveTIF(figureHandle, filename, varargin)
 %                      if empty, the page number is not shown
 %       isClose      - shoud we close the figure after saving it?
 %                      the default is no (false)
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Is the filename empty?
 if isempty(filename)

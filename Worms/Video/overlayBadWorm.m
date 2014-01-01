@@ -13,6 +13,12 @@ function oImg = overlayBadWorm(img, type)
 %
 %   Outputs:
 %       oImg - an image overlayed with the bad worm segmentation
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Convert the image to grayscale.
 if (size(img,3) == 3)
@@ -27,6 +33,8 @@ rgbImg(:,:,3) = img;
 % Compute the border.
 if size(img, 1) < size(img, 2)
     border = ceil(size(img, 1) / 50);
+else
+    border = ceil(size(img, 2) / 50);
 end
 
 % What's wrong with the worm?

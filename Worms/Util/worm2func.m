@@ -123,6 +123,12 @@ function data = worm2func(func, state, wormFile, startFrame, endFrame, ...
 %       data - the function output per block
 %
 %   See also SAVEWORMVIDEOFRAMES, NORMWORMS
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Are we extending the back and front of the data blocks to the next
 % segmented frames?

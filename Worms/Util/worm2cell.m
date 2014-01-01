@@ -59,6 +59,12 @@ function worm = worm2cell(worm)
 %       worm - the worm information organized in a cell array
 %
 %   See also CELL2WORM, WORM2STRUCT, SEGWORM
+%
+%
+% © Medical Research Council 2012
+% You will not remove any copyright or other notices from the Software; 
+% you must reproduce all copyright notices and other proprietary 
+% notices on any copies of the Software.
 
 % Convert the video information.
 worm.video = struct2cell(worm.video);
