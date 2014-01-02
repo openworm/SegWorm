@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment-project>
+  <configuration target="target.standalone.win" target-name="Windows Standalone Application" name="WormToolboxSchaferLab" location="C:\home\wormAnalysisToolbox\GUI" file="C:\home\wormAnalysisToolbox\GUI\WormToolboxSchaferLab.prj" preferred-package-type="package.type.exe" build-checksum="747857524" preferred-package-location="C:\home\matlab\11new_matlab\installer">
+    <param.project.name>C:\home\wormAnalysisToolbox\GUI\WormToolboxSchaferLab.prj</param.project.name>
+    <param.target.type>Windows Standalone Application</param.target.type>
+    <param.appname>wormToolboxSchaferLab</param.appname>
+    <param.intermediate>${PROJECT_ROOT}\wormToolboxSchaferLab\src</param.intermediate>
+    <param.output>${PROJECT_ROOT}\wormToolboxSchaferLab\distrib</param.output>
+    <param.embed.ctf>true</param.embed.ctf>
+    <param.tbx_on_path>
+      <item>all</item>
+    </param.tbx_on_path>
+    <param.warnings>
+      <warning.fullpath>on</warning.fullpath>
+      <warning.duplicate>on</warning.duplicate>
+      <warning.option.ignored>on</warning.option.ignored>
+      <warning.libname>on</warning.libname>
+      <warning.demo>on</warning.demo>
+    </param.warnings>
+    <param.version>1.0</param.version>
+    <param.c.cpp.options.file />
+    <param.include.dirs />
+    <param.lib.dirs>
+      <file>C:\tools\gdata_src\java\lib</file>
+      <file>C:\tools\gdata_samples_src\java\lib</file>
+      <file>C:\tools\gdata_src\java\deps</file>
+      <file>C:\tools\gdata_samples_src\java\deps</file>
+    </param.lib.dirs>
+    <param.lib.files />
+    <param.defines />
+    <param.undefines />
+    <param.debug>false</param.debug>
+    <param.share.mcr>false</param.share.mcr>
+    <param.disable.jvm>false</param.disable.jvm>
+    <param.disable.display>false</param.disable.display>
+    <param.create.log>false</param.create.log>
+    <param.log.file />
+    <param.user.defined.mcr.options />
+    <unset>
+      <param.project.name />
+      <param.target.type />
+      <param.intermediate />
+      <param.output />
+      <param.embed.ctf />
+      <param.tbx_on_path />
+      <param.warnings />
+      <param.version />
+      <param.c.cpp.options.file />
+      <param.include.dirs />
+      <param.lib.files />
+      <param.defines />
+      <param.undefines />
+      <param.debug />
+      <param.share.mcr />
+      <param.disable.jvm />
+      <param.disable.display />
+      <param.create.log />
+      <param.log.file />
+      <param.user.defined.mcr.options />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\start_main_GUI.m</file>
+    </fileset.main>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}\arrow1.png</file>
+      <file>${PROJECT_ROOT}\axis1.png</file>
+      <file>${PROJECT_ROOT}\axis2.png</file>
+      <file>${PROJECT_ROOT}\masterEigenWorms_N2.mat</file>
+      <file>${PROJECT_ROOT}\trainingData.mat</file>
+      <file>C:\home\wormAnalysisToolbox\Tools\Database\mysql-connector-java-3.0.17-ga-bin.jar</file>
+      <file>C:\home\wormAnalysisToolbox\Tools\VideoIO\videoReader_DirectShow.mexw32</file>
+      <file>C:\home\wormAnalysisToolbox\Tools\VideoIO\videoWriter_DirectShow.mexw32</file>
+      <file>C:\home\wormAnalysisToolbox\Tools\VideoIO\videoWriter_Vfw.mexw32</file>
+      <file>C:\home\wormAnalysisToolbox\wormInfo.mat</file>
+    </fileset.resources>
+    <fileset.package>
+      <file special-file="file.mcr" reference-mode="direct">${MATLAB_ROOT}\toolbox\compiler\deploy\win32\MCRInstaller.exe</file>
+    </fileset.package>
+    <build-deliverables>
+      <file name="wormToolboxSchaferLab.exe" location="${PROJECT_ROOT}\wormToolboxSchaferLab\distrib">C:\home\wormAnalysisToolbox\GUI\wormToolboxSchaferLab\distrib\wormToolboxSchaferLab.exe</file>
+      <file name="readme.txt" location="${PROJECT_ROOT}\wormToolboxSchaferLab\distrib">C:\home\wormAnalysisToolbox\GUI\wormToolboxSchaferLab\distrib\readme.txt</file>
+    </build-deliverables>
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2010b</root>
+      <path>
+        <directory>C:\home\wormAnalysisToolbox\Tools\External\patchline</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\External\sharedErrorBar</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\External\varycolour</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\eventAnalysis</directory>
+        <directory>C:\Documents and Settings\Tadas Jucikas\My Documents\MATLAB</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\ComputerVision</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Events</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Pipeline</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Util</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Worms</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Worms\Features</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Worms\Orientation</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Worms\Printing</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Worms\Segmentation</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Worms\StageMovement</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Worms\Statistics</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Worms\Util</directory>
+        <directory>C:\home\wormAnalysisToolbox\SegWorm\Worms\Video</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\External\ps2pdf</directory>
+        <directory>C:\home\wormAnalysisToolbox</directory>
+        <directory>C:\home\wormAnalysisToolbox\Features</directory>
+        <directory>C:\home\wormAnalysisToolbox\Features\HelperFunctions</directory>
+        <directory>C:\home\wormAnalysisToolbox\Features\Morphology</directory>
+        <directory>C:\home\wormAnalysisToolbox\Features\PathMoments</directory>
+        <directory>C:\home\wormAnalysisToolbox\Features\Schafer</directory>
+        <directory>C:\home\wormAnalysisToolbox\Features\Schafer\eccentricity</directory>
+        <directory>C:\home\wormAnalysisToolbox\Features\Sternberg</directory>
+        <directory>C:\home\wormAnalysisToolbox\Features\eigenWorms</directory>
+        <directory>C:\home\wormAnalysisToolbox\Features\multiScaleWorm</directory>
+        <directory>C:\home\wormAnalysisToolbox\GUI</directory>
+        <directory>${PROJECT_ROOT}\AnalysisStatus</directory>
+        <directory>${PROJECT_ROOT}\DataViewer</directory>
+        <directory>${PROJECT_ROOT}\Diagnostics</directory>
+        <directory>${PROJECT_ROOT}\FeatureHelper</directory>
+        <directory>${PROJECT_ROOT}\errorViewer</directory>
+        <directory>${PROJECT_ROOT}\wormViewer</directory>
+        <directory>C:\home\wormAnalysisToolbox\Installer</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\ChunkViewer</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\Database</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\External\dirRec</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\External\fit_elipse</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\FileSystem</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\VideoIO</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\dev</directory>
+        <directory>C:\home\wormAnalysisToolbox\Tools\headCorrector</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\general</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\ops</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\lang</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\elmat</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\randfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\elfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\specfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\matfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\datafun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\polyfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\funfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\sparfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\scribe</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\graph2d</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\graph3d</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\specgraph</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\graphics</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\uitools</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\strfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\imagesci</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\iofun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\audiovideo</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\timefun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\datatypes</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\verctrl</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\codetools</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\helptools</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\winfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\winfun\net</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\demos</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\timeseries</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\hds</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\guide</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\plottools</directory>
+        <directory>${MATLAB_ROOT}\toolbox\local</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\datamanager</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\simulink</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\instrument</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\asynciolib</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\comparisons</directory>
+        <directory>${MATLAB_ROOT}\toolbox\compiler</directory>
+        <directory>${MATLAB_ROOT}\toolbox\compiler\compilerdemos</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\controllib\general</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\controllib\graphics</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\dastudio</directory>
+        <directory>${MATLAB_ROOT}\toolbox\database\database</directory>
+        <directory>${MATLAB_ROOT}\toolbox\database\dbdemos</directory>
+        <directory>${MATLAB_ROOT}\toolbox\database\vqb</directory>
+        <directory>${MATLAB_ROOT}\toolbox\distcomp</directory>
+        <directory>${MATLAB_ROOT}\toolbox\distcomp\distcomp</directory>
+        <directory>${MATLAB_ROOT}\toolbox\distcomp\user</directory>
+        <directory>${MATLAB_ROOT}\toolbox\distcomp\mpi</directory>
+        <directory>${MATLAB_ROOT}\toolbox\distcomp\pctdemos</directory>
+        <directory>${MATLAB_ROOT}\toolbox\distcomp\parallel</directory>
+        <directory>${MATLAB_ROOT}\toolbox\distcomp\parallel\lapack</directory>
+        <directory>${MATLAB_ROOT}\toolbox\distcomp\parallel\util</directory>
+        <directory>${MATLAB_ROOT}\toolbox\distcomp\lang</directory>
+        <directory>${MATLAB_ROOT}\toolbox\distcomp\cluster</directory>
+        <directory>${MATLAB_ROOT}\toolbox\distcomp\gpu</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\colorspaces</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\images</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\imdemos</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\imuitools</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\iptformats</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\iptutils</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\imageslib</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\spcuilib</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\siglib</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\rptgen</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\eml\eml</directory>
+        <directory>${MATLAB_ROOT}\toolbox\signal\signal</directory>
+        <directory>${MATLAB_ROOT}\toolbox\signal\sigtools</directory>
+        <directory>${MATLAB_ROOT}\toolbox\signal\sptoolgui</directory>
+        <directory>${MATLAB_ROOT}\toolbox\signal\sigdemos</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\filterdesignlib</directory>
+        <directory>${MATLAB_ROOT}\toolbox\stats\stats</directory>
+        <directory>${MATLAB_ROOT}\toolbox\stats\statsdemos</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\statslib</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\testmeaslib\general</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\testmeaslib\graphics</directory>
+      </path>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>true</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>5.1</osver>
+      <os32>true</os32>
+      <os64>false</os64>
+      <arch>win32</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
+
