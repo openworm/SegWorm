@@ -3,7 +3,7 @@ function [dsPoints dsIndices dsLengths] = ...
 %DOWNSAMPLEPOINTS Downsample the points to fewer points using the chain
 %   code length.
 %
-%   INDICES = DOWNSAMPLEPOINTS(POINTS, CHAINCODELENGTHS, SAMPLES)
+%   INDICES = DOWNSAMPLEPOINTS(POINTS, SAMPLES, CHAINCODELENGTHS)
 %
 %   Inputs:
 %       points           - the points to downsample

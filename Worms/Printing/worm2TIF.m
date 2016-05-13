@@ -104,12 +104,6 @@ function [filename pages] = worm2TIF(filename, worm, wormName, varargin)
 % You will not remove any copyright or other notices from the Software; 
 % you must reproduce all copyright notices and other proprietary 
 % notices on any copies of the Software.
-%
-%
-% © Medical Research Council 2012
-% You will not remove any copyright or other notices from the Software; 
-% you must reproduce all copyright notices and other proprietary 
-% notices on any copies of the Software.
 
 % Load the worm.
 wormInfo = [];
@@ -259,6 +253,12 @@ else
     filename = [];
 end
 
+% Set the screen resolution for printing figures.
+screenPixelsPerInch = get(0, 'ScreenPixelsPerInch');
+if ispc
+    set(0, 'ScreenPixelsPerInch', 48);
+end
+
 % Create the table of contents and ontology information.
 if isVerbose
     disp('Printing TOC and ontology ...');
@@ -305,4 +305,9 @@ if isVerbose
 end
 page = page + pages;
 methodsTIF(filename, isShow, page, saveQuality, isClose, isVerbose);
+
+% Set the screen resolution back to the default.
+if ispc
+    set(0, 'ScreenPixelsPerInch', screenPixelsPerInch);
+end
 end

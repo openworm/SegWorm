@@ -15,7 +15,7 @@ function info = wormDisplayInfo()
 %
 %              resolution = the resolution for the histogram
 %              isZeroBin  = is the histogram centered at zero?
-%              isSigned   = is the data signed (+/-)?
+%              isSigned   = is the data signed (-/+)?
 %              name       = a descriptive feature name (for titles)
 %              shortName  = a shortened feature name (for legends)
 %              unit       = the feature's measurement unit (for labels)
@@ -114,7 +114,7 @@ for i = 1:length(fields)
     info.posture.bends.(field).mean.isZeroBin = true;
     info.posture.bends.(field).mean.isSigned = true;
     info.posture.bends.(field).mean.name = ...
-        [fields{i} ' Bend Mean (+/- = D/V Inside)'];
+        [fields{i} ' Bend Mean (-/+ = V/D Inside)'];
     info.posture.bends.(field).mean.shortName = fields{i};
     info.posture.bends.(field).mean.unit = 'Degrees';
 
@@ -123,7 +123,7 @@ for i = 1:length(fields)
     info.posture.bends.(field).stdDev.isZeroBin = true;
     info.posture.bends.(field).stdDev.isSigned = true;
     info.posture.bends.(field).stdDev.name = ...
-        [fields{i} ' Bend S.D. (+/- = D/V Inside)'];
+        [fields{i} ' Bend S.D. (-/+ = V/D Inside)'];
     info.posture.bends.(field).stdDev.shortName = fields{i};
     info.posture.bends.(field).stdDev.unit = 'Degrees';
 end
@@ -398,7 +398,7 @@ for i = 1:length(fields)
     info.locomotion.velocity.(fields{i}).speed.isZeroBin = true;
     info.locomotion.velocity.(fields{i}).speed.isSigned = true;
     info.locomotion.velocity.(fields{i}).speed.name = ...
-        [shortNames{i} ' Speed (+/- = Forward/Backward)'];
+        [shortNames{i} ' Speed (-/+ = Backward/Forward)'];
     info.locomotion.velocity.(fields{i}).speed.shortName = shortNames{i};
     info.locomotion.velocity.(fields{i}).speed.unit = 'Microns/Seconds';
 
@@ -407,7 +407,7 @@ for i = 1:length(fields)
     info.locomotion.velocity.(fields{i}).direction.isZeroBin = true;
     info.locomotion.velocity.(fields{i}).direction.isSigned = true;
     info.locomotion.velocity.(fields{i}).direction.name = ...
-        [shortNames{i} ' Motion Direction (+/- = Toward D/V)'];
+        [shortNames{i} ' Motion Direction (-/+ = Toward V/D)'];
     info.locomotion.velocity.(fields{i}).direction.shortName = shortNames{i};
     info.locomotion.velocity.(fields{i}).direction.unit = 'Degrees/Seconds';
 end
@@ -433,7 +433,7 @@ for i = 1:length(fields)
     info.locomotion.bends.(field).amplitude.isZeroBin = true;
     info.locomotion.bends.(field).amplitude.isSigned = true;
     info.locomotion.bends.(field).amplitude.name = ...
-        [fields{i} ' Crawling Amplitude (+/- = D/V Inside)'];
+        [fields{i} ' Crawling Amplitude (-/+ = V/D Inside)'];
     info.locomotion.bends.(field).amplitude.shortName = fields{i};
     info.locomotion.bends.(field).amplitude.unit = 'Degrees';
     
@@ -442,26 +442,26 @@ for i = 1:length(fields)
     info.locomotion.bends.(field).frequency.isZeroBin = true;
     info.locomotion.bends.(field).frequency.isSigned = true;
     info.locomotion.bends.(field).frequency.name = ...
-        [fields{i} ' Crawling Frequency (+/- = D/V Inside)'];
+        [fields{i} ' Crawling Frequency (-/+ = V/D Inside)'];
     info.locomotion.bends.(field).frequency.shortName = fields{i};
     info.locomotion.bends.(field).frequency.unit = 'Hz';
 end
 
 % Organize the foraging information.
-info.locomotion.bends.foraging.name = 'Foraging (+/- = Toward D/V)';
+info.locomotion.bends.foraging.name = 'Foraging (-/+ = Toward V/D)';
 info.locomotion.bends.foraging.shortName = 'Foraging';
 info.locomotion.bends.foraging.amplitude.resolution = 1;
 info.locomotion.bends.foraging.amplitude.isZeroBin = true;
 info.locomotion.bends.foraging.amplitude.isSigned = true;
 info.locomotion.bends.foraging.amplitude.name = ...
-    'Foraging Amplitude (+/- = Toward D/V)';
+    'Foraging Amplitude (-/+ = Toward V/D)';
 info.locomotion.bends.foraging.amplitude.shortName = 'Amplitude';
-info.locomotion.bends.foraging.amplitude.unit = 'Microns';
+info.locomotion.bends.foraging.amplitude.unit = 'Degrees';
 info.locomotion.bends.foraging.angleSpeed.resolution = 10;
 info.locomotion.bends.foraging.angleSpeed.isZeroBin = true;
 info.locomotion.bends.foraging.angleSpeed.isSigned = true;
 info.locomotion.bends.foraging.angleSpeed.name = ...
-    'Foraging Speed (+/- = Toward D/V)';
+    'Foraging Speed (-/+ = Toward V/D)';
 info.locomotion.bends.foraging.angleSpeed.shortName = 'Speed';
 info.locomotion.bends.foraging.angleSpeed.unit = 'Degrees/Seconds';
 
@@ -473,9 +473,9 @@ fields = { ...
     'interTime', ...
     'interDistance'};
 names = { ...
-    'Omega Turn Time (+/- = D/V Inside)', ...
-    'Inter Omega Time (+/- = Previous D/V)', ...
-    'Inter Omega Distance (+/- = Previous D/V)'};
+    'Omega Turn Time (-/+ = V/D Inside)', ...
+    'Inter Omega Time (-/+ = Previous V/D)', ...
+    'Inter Omega Distance (-/+ = Previous V/D)'};
 shortNames = { ...
     'Time', ...
     'Inter Time', ...
@@ -527,9 +527,9 @@ fields = { ...
     'interTime', ...
     'interDistance'};
 names = { ...
-    'Upsilon Turn Time (+/- = D/V Inside)', ...
-    'Inter Upsilon Time (+/- = Previous D/V)', ...
-    'Inter Upsilon Distance (+/- = Previous D/V)'};
+    'Upsilon Turn Time (-/+ = V/D Inside)', ...
+    'Inter Upsilon Time (-/+ = Previous V/D)', ...
+    'Inter Upsilon Distance (-/+ = Previous V/D)'};
 shortNames = { ...
     'Time', ...
     'Inter Time', ...
@@ -585,7 +585,7 @@ info.path.shortName = 'Path';
 info.path.curvature.resolution = 0.005;
 info.path.curvature.isZeroBin = true;
 info.path.curvature.isSigned = true;
-info.path.curvature.name = 'Path Curvature (+/- = D/V Inside)';
+info.path.curvature.name = 'Path Curvature (-/+ = V/D Inside)';
 info.path.curvature.shortName = 'Curvature';
 info.path.curvature.unit = 'Radians/Microns';
 

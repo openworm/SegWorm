@@ -285,7 +285,7 @@ reference(coilsI).alternatives = [];
 
 %% Locomotion.
 
-% Foraging
+% Foraging.
 refI = refI + 1;
 foragingI = refI;
 reference(foragingI).term = 'Foraging';
@@ -294,32 +294,32 @@ reference(foragingI).indices = [43, 47];
 reference(foragingI).sign = unSign;
 reference(foragingI).alternatives = [];
 
-% Forward velocity.
+% Forward speed.
 refI = refI + 1;
-forwardVelI = refI;
-reference(forwardVelI).term = 'Forward Velocity';
-reference(forwardVelI).category = 'Motion';
-reference(forwardVelI).indices = [35 40];
-reference(forwardVelI).sign = posSign;
-reference(forwardVelI).alternatives = [];
+forwardSpeedI = refI;
+reference(forwardSpeedI).term = 'Forward Speed';
+reference(forwardSpeedI).category = 'Motion';
+reference(forwardSpeedI).indices = 35;
+reference(forwardSpeedI).sign = posSign;
+reference(forwardSpeedI).alternatives = [];
 
-% Backward velocity.
+% Backward speed.
 refI = refI + 1;
-backwardVelI = refI;
-reference(backwardVelI).term = 'Backward Velocity';
-reference(backwardVelI).category = 'Motion';
-reference(backwardVelI).indices = [35 40];
-reference(backwardVelI).sign = negSign;
-reference(backwardVelI).alternatives = [];
+backwardSpeedI = refI;
+reference(backwardSpeedI).term = 'Backward Speed';
+reference(backwardSpeedI).category = 'Motion';
+reference(backwardSpeedI).indices = 35;
+reference(backwardSpeedI).sign = negSign;
+reference(backwardSpeedI).alternatives = [];
 
-% Absolute velocity.
+% Absolute speed.
 refI = refI + 1;
-absVelI = refI;
-reference(absVelI).term = 'Velocity';
-reference(absVelI).category = 'Motion';
-reference(absVelI).indices = [35 40];
-reference(absVelI).sign = absSign;
-reference(absVelI).alternatives = [];
+absSpeedI = refI;
+reference(absSpeedI).term = 'Speed';
+reference(absSpeedI).category = 'Motion';
+reference(absSpeedI).indices = 35;
+reference(absSpeedI).sign = absSign;
+reference(absSpeedI).alternatives = [];
 
 % Head motion.
 refI = refI + 1;
@@ -328,7 +328,7 @@ reference(headVelI).term = 'Head Motion';
 reference(headVelI).category = 'Motion';
 reference(headVelI).indices = [33:34 38:39];
 reference(headVelI).sign = noSign;
-reference(headVelI).alternatives = [foragingI forwardVelI backwardVelI];
+reference(headVelI).alternatives = [foragingI forwardSpeedI backwardSpeedI];
 
 % Tail motion.
 refI = refI + 1;
@@ -337,7 +337,7 @@ reference(tailVelI).term = 'Tail Motion';
 reference(tailVelI).category = 'Motion';
 reference(tailVelI).indices = [36:37 41:42];
 reference(tailVelI).sign = noSign;
-reference(tailVelI).alternatives = [forwardVelI backwardVelI];
+reference(tailVelI).alternatives = [forwardSpeedI backwardSpeedI];
 
 % Forward motion.
 refI = refI + 1;
@@ -383,6 +383,16 @@ reference(crawlFreqI).category = 'Motion';
 reference(crawlFreqI).indices = 48:50;
 reference(crawlFreqI).sign = unSign;
 reference(crawlFreqI).alternatives = [];
+
+% % Angular speed.
+% refI = refI + 1;
+% angleSpeedI = refI;
+% reference(angleSpeedI).term = 'Angular Speed';
+% reference(angleSpeedI).category = 'Motion';
+% reference(angleSpeedI).indices = 40;
+% reference(angleSpeedI).sign = unSign;
+% reference(angleSpeedI).alternatives = [forwardSpeedI backwardSpeedI ...
+%     absSpeedI crawlFreqI];
 
 % Turns.
 refI = refI + 1;

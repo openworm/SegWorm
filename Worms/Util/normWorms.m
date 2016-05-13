@@ -1,8 +1,11 @@
 function [vulvaContours nonVulvaContours skeletons angles inOutTouches ...
     lengths widths headAreas tailAreas vulvaAreas nonVulvaAreas isNormed] = ...
-    normWorms(worms, samples, moves, origins, pixel2MicronScale, ...
-    rotation, verbose)
+    normWorms(worms, samples, varargin)
 %NORMWORMS Normalize the worms' information to a standard, compact set.
+%
+%   [VULVACONTOURS NONVULVACONTOURS SKELETONS ANGLES TOUCHINOUTS LENGTHS
+%      WIDTHS HEADAREAS TAILAREAS VULVAAREAS NONVULVAAREAS ISNORMED] =
+%      NORMWORMS(WORMS, SAMPLES)
 %
 %   [VULVACONTOURS NONVULVACONTOURS SKELETONS ANGLES TOUCHINOUTS LENGTHS
 %      WIDTHS HEADAREAS TAILAREAS VULVAAREAS NONVULVAAREAS ISNORMED] =
@@ -79,6 +82,36 @@ function [vulvaContours nonVulvaContours skeletons angles inOutTouches ...
 % You will not remove any copyright or other notices from the Software; 
 % you must reproduce all copyright notices and other proprietary 
 % notices on any copies of the Software.
+
+% Determine the stage movements.
+moves = [0 0];
+if ~isempty(varargin)
+    moves = varargin{1};
+end
+
+% Determine the stage locations.
+origins = [0 0];
+if length(varargin) > 1
+    origins = varagin{2};
+end
+
+% Determine the pixels/microns.
+pixel2MicronScale = [1 1];
+if length(varargin) > 2
+    pixel2MicronScale = varagin{3};
+end
+
+% Determine the rotation.
+rotation = 1;
+if length(varargin) > 3
+    rotation = varagin{4};
+end
+
+% Are we in verbose mode?
+verbose = false;
+if length(varargin) > 4
+    verbose = varagin{5};
+end
 
 % Pre-compute values.
 pixel2MicronArea = sum(pixel2MicronScale .^ 2) / 2;

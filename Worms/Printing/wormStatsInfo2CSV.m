@@ -5,7 +5,9 @@ function wormStatsInfo2CSV(filename, wormFile, varargin)
 %   WORMSTATSINFO2CSV(FILENAME, WORMFILE, SIGFILE, SEPARATOR, VERBOSE)
 %
 %   Inputs:
-%       filename  - the CSV filename
+%       filename  - the CSV filename;
+%                   if empty, the file is named
+%                   "<wormName> [vs <controlName>].tif"
 %       wormFile  - the filename containing the worm statistics
 %                   (see WORM2STATSINFO)
 %       sigFile   - a file containing a matrix of worm significance to use
@@ -74,6 +76,27 @@ end
 if isempty(significance)
     warning('wormStatsInfo2CSV:NoSignificance', ...
         [wormFile ' does not contain "significance"']);
+end
+
+% Create the filename.
+if isempty(filename)
+    
+    % Discover the experiment and control names.
+    wormName = [];
+    controlName = [];
+    if ~isempty(wormInfo)
+        wormName = worm2StrainLabel(wormInfo);
+    end
+    if ~isempty(controlInfo)
+        controlName = worm2StrainLabel(controlInfo);
+    end
+    
+    % Construct the filename.
+    if isempty(controlName)
+        filename = wormName;
+    elseif ~isempty(wormName)
+        filename = [wormName ' vs ' controlName];
+    end
 end
 
 % Use the matrix statistics.
@@ -207,7 +230,7 @@ end
 fprintf(file, '\n');
 fprintf(file, '\n');
 
-% Print the genotype.
+% Print the strain.
 fprintf(file, 'Strain%s', sep1);
 printField(wormInfo, strainField, sepStr, file);
 if ~isempty(controlInfo)
@@ -216,7 +239,7 @@ if ~isempty(controlInfo)
 end
 fprintf(file, '\n');
 
-% Print the strain.
+% Print the genotype.
 fprintf(file, 'Genotype%s', sep1);
 printField(wormInfo, genotypeField, sepStr, file);
 if ~isempty(controlInfo)

@@ -263,7 +263,6 @@ end
 if length(wormInfo) <= 1
     warning('worm2StatsInfo:InsufficientWormData', ...
         'Insufficient worm data was found');
-    return;
 end
 
 % Sort the worm information by date.
@@ -393,7 +392,7 @@ if ~isempty(controlFiles)
     qNormal = nan(size(pNormal));
     nonNaNPNormal = pNormal(~isnan(pNormal));
     if ~isempty(nonNaNPNormal)
-        qNormal(~isnan(pNormal)) = mafdr(nonNaNPNormal);
+        [~, qNormal(~isnan(pNormal))] = mafdr(nonNaNPNormal);
     end
     for i = 1:size(qNormal,2)
         wormData(i).qNormal = qNormal(1,i);

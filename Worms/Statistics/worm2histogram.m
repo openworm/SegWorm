@@ -8,7 +8,10 @@ function worm2histogram(filename, wormFiles, varargin)
 %   WORM2HISTOGRAM(FILENAME, WORMFILES, CONTROLFILES, VERBOSE)
 %
 %   WORM2HISTOGRAM(FILENAME, WORMFILES, CONTROLFILES, VERBOSE,
-%                  PROGFUNC, PROGSTATE)
+%                  STARTTIME, ENDTIME)
+%
+%   WORM2HISTOGRAM(FILENAME, WORMFILES, CONTROLFILES, VERBOSE,
+%                  STARTTIME, ENDTIME, PROGFUNC, PROGSTATE)
 %
 %   Inputs:
 %       filename     - the file name for the histograms;
@@ -24,6 +27,10 @@ function worm2histogram(filename, wormFiles, varargin)
 %                      if empty, the worm has no control
 %       isVerbose    - verbose mode display the progress;
 %                      the default is no (false)
+%       startTime    - the start time (in seconds) for the data to use
+%                      if empty, start at the first data point
+%       endTime      - the end time (in seconds) for the data to use
+%                      if empty, end at the last data point
 %       progFunc     - a function to update on the progress
 %       progState    - a state for the progress function
 %
@@ -57,13 +64,32 @@ if length(varargin) > 1
     isVerbose = varargin{2};
 end
 
+% Initialize the start and end times for the data to use.
+startTime = [];
+endTime = [];
+if length(varargin) > 2
+    startTime = varargin{3};
+end
+if length(varargin) > 3
+    endTime = varargin{4};
+    if endTime <= startTime
+        error('worm2histogram:BadTime', ...
+            'The start time exceeds the end time.');
+    end
+    
+    % If empty, initialize the start time.
+    if isempty(startTime) && ~isempty(endTime)
+        startTime = 0;
+    end
+end
+
 % Initialize the progress function.
 progFunc = [];
 progState = [];
-if length(varargin) > 2
-    progFunc = varargin{3};
-    if length(varargin) > 3 && ~isempty(progFunc)
-        progState = varargin{4};
+if length(varargin) > 4
+    progFunc = varargin{5};
+    if length(varargin) > 5 && ~isempty(progFunc)
+        progState = varargin{6};
     end
 end
 
@@ -88,7 +114,7 @@ dataInfo = wormDataInfo();
 progCount = 0;
 progSize = length(dataInfo) + 2;
 
-% Save the worm information.
+% Load the worm information.
 if isVerbose
     disp('Saving "wormInfo" ...');
 end
@@ -99,10 +125,47 @@ wormInfo = [wormInfo.info];
 if size(wormInfo, 1) < size(wormInfo, 2)
     wormInfo = wormInfo';
 end
+
+% Compute the lengthS of the worm time-series data.
 wormFrames = arrayfun(@(x) x.video.length.frames, wormInfo);
+
+% Compute the start and end frames for the worm time-series data.
+wormStartFrames = [];
+wormEndFrames = [];
+if ~isempty(startTime)
+    
+    % Compute the start frames for the worm time-series data.
+    wormFPS = arrayfun(@(x) x.video.resolution.fps, wormInfo);
+    wormStartFrames = round(startTime * wormFPS) + 1;
+    badTimes = find(wormStartFrames > wormFrames);
+    if ~isempty(badTimes)
+        error('worm2histogram:BadTime', ['The start time, ' ...
+            num2str(startTime) ' seconds, exceeds the length of "' ...
+            wormFiles{badTimes(1)} '"']);
+    end
+    
+    % Compute the end frames for the worm time-series data.
+    if isempty(endTime)
+        wormEndFrames = wormFrames;
+    else
+        wormEndFrames = round(endTime * wormFPS) + 1;
+        badTimes = find(wormEndFrames > wormFrames);
+        if ~isempty(badTimes)
+            error('worm2histogram:BadTime', ['The end time, ' ...
+                num2str(endTime) ' seconds, exceeds the length of "' ...
+                wormFiles{badTimes(1)} '"']);
+        end
+    end
+end
+
+% Save the worm information.
 if isempty(controlFiles)
     save(filename, 'wormInfo', '-v7.3');
+
+% Load and save the worm and control information.
 else
+    
+    % Load the control information.
     if isVerbose
         disp('Saving "controlInfo" ...');
     end
@@ -112,6 +175,39 @@ else
         controlInfo = controlInfo';
     end
     controlFrames = arrayfun(@(x) x.video.length.frames, controlInfo);
+    
+    % Compute the start and end frames for the control time-series data.
+    controlStartFrames = [];
+    controlEndFrames = [];
+    if ~isempty(startTime)
+        
+        % Compute the start frames for the worm time-series data.
+        controlFPS = arrayfun(@(x) x.video.resolution.fps, controlInfo);
+        controlStartFrames = round(startTime * controlFPS) + 1;
+        badTimes = find(controlStartFrames > controlFrames);
+        if ~isempty(badTimes)
+            error('worm2histogram:BadTime', ['The start time, ' ...
+                num2str(controlStartTime) ...
+                ' seconds, exceeds the length of "' ...
+                controlFiles{badTimes(1)} '"']);
+        end
+        
+        % Compute the end frames for the worm time-series data.
+        if isempty(endTime)
+            controlEndFrames = controlFrames;
+        else
+            controlEndFrames = round(endTime * controlFPS) + 1;
+            badTimes = find(controlEndFrames > controlFrames);
+            if ~isempty(badTimes)
+                error('worm2histogram:BadTime', ['The end time, ' ...
+                    num2str(controlEndTime) ...
+                    ' seconds, exceeds the length of "' ...
+                    controlFiles{badTimes(1)} '"']);
+            end
+        end
+    end
+
+    % Save the worm and control information.
     save(filename, 'wormInfo', 'controlInfo', '-v7.3');
 end
 
@@ -120,12 +216,14 @@ clear('wormInfo', 'controlInfo');
 
 % Save the worm histograms.
 saveHistogram(filename, wormFiles, wormFrames, histInfo, dataInfo, ...
-    'worm', isVerbose, progFunc, progState, progCount, progSize);
+    'worm', isVerbose, wormStartFrames, wormEndFrames, ...
+    progFunc, progState, progCount, progSize);
 
 % Save the control histograms.
 if ~isempty(controlFiles)
     saveHistogram(filename, controlFiles, controlFrames, histInfo, ...
         dataInfo, 'control', isVerbose, ...
+        controlStartFrames, controlEndFrames, ...
         progFunc, progState, progCount, progSize);
 end
 end
@@ -142,18 +240,37 @@ end
 
 %% Save the worm histograms.
 function saveHistogram(filename, wormFiles, frames, histInfo, dataInfo, ...
-    wormName, isVerbose, progFunc, progState, progCount, progSize)
+    wormName, isVerbose, startFrames, endFrames, ...
+    progFunc, progState, progCount, progSize)
 
-% Determine the locomotion modes.
+% Initialize the locomotion mode information.
 motionModes = loadWormFiles(wormFiles, 'locomotion.motion.mode');
 motionNames = { ...
     'forward', ...
     'paused', ...
     'backward'};
-motionEvents = { ...
-    cellfun(@(x) x == 1, motionModes, 'UniformOutput', false), ...
-    cellfun(@(x) x == 0, motionModes, 'UniformOutput', false), ...
-    cellfun(@(x) x == -1, motionModes, 'UniformOutput', false)};
+motionValues = [ ...
+     1
+     0
+    -1];
+
+% Determine the locomotion modes.
+motionEvents = cell(3,1);
+if isempty(startFrames)
+    for i = 1:length(motionValues)
+        for j = 1:length(motionModes)
+            motionEvents{i}{j} = motionModes{j} == motionValues(i);
+        end
+    end
+else
+    for i = 1:length(motionValues)
+        for j = 1:length(motionModes)
+            motionEvents{i}{j} = ...
+                motionModes{j}(startFrames(j):endFrames(j)) == ...
+                motionValues(i);
+        end
+    end
+end
 
 % Check the locomotion modes.
 for i = 1:length(motionEvents)
@@ -179,7 +296,8 @@ for i = 1:length(dataInfo)
         
         % Compute the simple histogram.
         case 's'
-            data = data2histogram(wormFiles, field, subFields, histInfo);
+            data = data2histogram(wormFiles, field, subFields, ...
+                histInfo, dataInfo(i).isTimeSeries, startFrames, endFrames);
             eval([wormName '.' field '=data;']);
             
         % Compute the motion histogram.
@@ -188,26 +306,28 @@ for i = 1:length(dataInfo)
                 field = [field '.' dataInfo(i).subFields{1}]
             end
             data = motion2histograms(wormFiles, field, subFields, ...
-                histInfo, motionNames, motionEvents);
+                histInfo, startFrames, endFrames, ...
+                motionNames, motionEvents);
             eval([wormName '.' field '=data;']);
             
         % Compute the event histogram.
         case 'e'
             data = event2histograms(wormFiles, frames, field, ...
                 subFields.summary, subFields.data, subFields.sign, ...
-                histInfo);
+                histInfo, startFrames, endFrames);
             eval([wormName '.' field '=data;']);
     end
 end
 
 % Save the histograms.
-save(filename, wormName, '-append', '-v7.3');
+save(filename, wormName, '-append');
 end
 
 
 
 %% Convert data to a histogram.
-function histData = data2histogram(wormFiles, field, subFields, histInfo)
+function histData = data2histogram(wormFiles, field, subFields, ...
+        histInfo, isTimeSeries, startFrames, endFrames)
 
 % Get the histogram information.
 resolution = [];
@@ -229,6 +349,17 @@ if ~isempty(subFields)
     dataField = [dataField '.' subFields{1}];
 end
 data = loadWormFiles(wormFiles, dataField);
+
+% Get the data subset.
+if ~isempty(startFrames)
+    for i = 1:length(data)
+        if isTimeSeries
+            data{i} = data{i}(startFrames(i):endFrames(i));
+        else
+            data{i} = [];
+        end
+    end
+end
 
 % Check the data.
 for i = 1:length(data)
@@ -246,7 +377,7 @@ end
 
 %% Convert motion data to a set of histograms.
 function histData = motion2histograms(wormFiles, field, subFields, ...
-    histInfo, motionNames, motionEvents)
+    histInfo, startFrames, endFrames, motionNames, motionEvents)
 
 % Get the histogram information.
 resolution = [];
@@ -268,6 +399,13 @@ if ~isempty(subFields)
     dataField = [dataField '.' subFields{1}];
 end
 data = loadWormFiles(wormFiles, dataField);
+
+% Get the data subset.
+if ~isempty(startFrames)
+    for i = 1:length(data)
+        data{i} = data{i}(:,startFrames(i):endFrames(i));
+    end
+end
 
 % Check the data.
 for i = 1:length(data)
@@ -320,10 +458,45 @@ end
 
 %% Convert event data to a set of histograms.
 function histData = event2histograms(wormFiles, frames, field, ...
-    statFields, histFields, signField, histInfo)
+    statFields, histFields, signField, histInfo, startFrames, endFrames)
 
 % Get the data.
 data = loadWormFiles(wormFiles, field);
+
+% Get the data subset.
+if ~isempty(startFrames)
+    for i = 1:length(data) 
+        if ~isempty(data{i}.frames)
+            
+            % Which events should we keep?
+            keepI = [data{i}.frames.start] >= (startFrames(i) - 1) & ...
+                [data{i}.frames.end] <= (endFrames(i) - 1);
+            
+            % Recompute the event frequency.
+            data{i}.frequency = data{i}.frequency * ...
+                sum(keepI) / length(keepI);
+            
+            % Recompute the time spent in the event.
+            if isfield(data{i}, 'timeRatio')
+                data{i}.timeRatio = data{i}.timeRatio * ...
+                    sum([data{i}.frames(keepI).time]) / ...
+                    sum([data{i}.frames.time]);
+                
+            % Recompute the time spent and distance covered in the event.
+            elseif isfield(data{i}, 'ratio')
+                data{i}.ratio.time = data{i}.ratio.time * ...
+                    sum([data{i}.frames(keepI).time]) / ...
+                    sum([data{i}.frames.time]);
+                data{i}.ratio.distance = data{i}.ratio.distance * ...
+                    sum([data{i}.frames(keepI).distance]) / ...
+                    sum([data{i}.frames.distance]);
+            end
+            
+            % Remove events outside of the time range.
+            data{i}.frames = data{i}.frames(keepI);
+        end
+    end
+end
 
 % Remove partial events.
 for i = 1:length(data)
