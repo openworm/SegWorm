@@ -104,18 +104,26 @@ if length(varargin) > 3
 end
 
 % Combine the data into a single array of observations.
-if size(data, 1) ~= size(data{1}, 1) && size(data, 2) ~= size(data{1}, 2)
+if size(data,1) > size(data,2)
     data = data';
+end
+for i = 1:length(data)
+    if isempty(data{i})
+        data{i} = NaN;
+    elseif size(data{i},1) > size(data{i},2)
+        data{i} = data{i}';
+    end
 end
 allData = cell2mat(data);
 allData = allData(:);
 
-% Remove empty data.
+% NaN empty data.
 samples = cellfun(@(x) sum(~isnan(x)), data);
-keepI = find(samples > 0);
-if length(data) ~= length(keepI)
-    data = data(keepI);
-end
+% emptyI = find(samples == 0);
+% if length(emptyI) > 0
+%     %data = data(keepI);
+%     data(emptyI) = {NaN};
+% end
 
 % Remove infinite data measurements.
 for i = 1:length(data)
@@ -262,6 +270,12 @@ else
             counts(:,end) = [];
             pdfs(:,end) = [];
         end
+        
+        % Strip off the empty first bin.
+        if all(counts(:,1) == 0)
+            counts(:,1) = [];
+            pdfs(:,1) = [];
+        end
     end
 end
 
@@ -287,7 +301,7 @@ if isSigned
 end
 
 % Organize the histogram set data.
-histData.sets.samples = length(data);
+histData.sets.samples = sum(samples > 0);
 histData.sets.mean.all = nanmean(means);
 histData.sets.stdDev.all = nanstd(means);
 if isSigned

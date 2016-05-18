@@ -129,13 +129,14 @@ visStr = 'off';
 if isShow
     visStr = 'on';
 end
-set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-    'PaperType', 'A2', 'Visible', visStr);
+set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+    'Visible', visStr);
+set(h, 'units', 'normalized');
 hold on;
 
 % Initialize the drawing information.
 fontSize1 = 32;
-fontSize2 = 24;
+fontSize2 = 20;
 tocTitleColor = str2colors('k');
 tocSectionNumColor = str2colors('k', 0.5);
 tocSectionColor = str2colors('k', 0.25);
@@ -218,8 +219,8 @@ emailStr = {[headColorStr 'For questions, please contact ' infoColorStr ...
     '\it\bfEv.Yemini.WT2@gmail.com']};
 paperStr = {[headColorStr '\itPlease cite our publication: ' infoColorStr]
     '\bfYemini EI, Grundy LJ, Jucikas T, Brown AEX, Schafer WR'
-    '\bfTitle ???'
-    '\bfJournal ???'};
+    '\bfA database of Caenorhabditis elegans behavioral phenotypes'
+    '\bfNature Methods. 2013 Sep;10(9):877-9'};
 
 % Prepare the contact information.
 contactPosition = [xStart, 1 - contactHeight, contactWidth, contactHeight];
@@ -252,7 +253,7 @@ end
 
 % Initialize the drawing information.
 sepStr = '   ¤   ';
-fontSize = 16;
+fontSize = 14;
 textColor = str2colors('k');
 yStart1 = 0.98;
 yStart2 = 0.94;
@@ -322,12 +323,9 @@ for i = 1:length(texts)
                 % Create a new figure.
                 page = page + 1;
                 h = figure;
-                visStr = 'off';
-                if isShow
-                    visStr = 'on';
-                end
-                set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-                    'PaperType', 'A2', 'Visible', visStr);
+                set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+                    'Visible', visStr);
+                set(h, 'units', 'normalized');
                 hold on;
                 
                 % Draw the methods.

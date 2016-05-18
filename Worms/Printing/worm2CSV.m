@@ -463,8 +463,10 @@ wormDispInfo = wormDispInfo(index);
 % Get the data index.
 worm = getStructField(worm, dataField);
 worm = worm(index);
-control = getStructField(control, dataField);
-control = control(index);
+if ~isempty(control)
+    control = getStructField(control, dataField);
+    control = control(index);
+end
 
 % Print the data fields.
 for i = 1:length(dataSubFields)
@@ -519,8 +521,10 @@ wormDispInfo = wormDispInfo(index);
 % Get the data index.
 worm = getStructField(worm, dataField);
 worm = worm(index);
-control = getStructField(control, dataField);
-control = control(index);
+if ~isempty(control)
+    control = getStructField(control, dataField);
+    control = control(index);
+end
 
 % Print the data fields.
 for i = 1:length(dataSubFields)

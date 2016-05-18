@@ -242,7 +242,8 @@ featureLabels = {dataInfo.name};
 lowerLabels = lower(featureLabels);
 pausedI = cellfun(@(x) ~isempty(strfind(x, 'paused')), lowerLabels);
 crawlI = cellfun(@(x) ~isempty(strfind(x, 'crawl')), lowerLabels);
-isShow(pausedI & crawlI) = false;
+orientI = cellfun(@(x) ~isempty(strfind(x, 'orientation')), lowerLabels);
+isShow((pausedI & crawlI) | orientI) = false;
 featureLabels = featureLabels(isShow);
 
 % Find the wild-type control values.

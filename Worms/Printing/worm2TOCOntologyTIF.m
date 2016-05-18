@@ -334,8 +334,9 @@ visStr = 'off';
 if isShow
     visStr = 'on';
 end
-set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-    'PaperType', 'A2', 'Visible', visStr);
+set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+    'Visible', visStr);
+set(h, 'units', 'normalized');
 hold on;
 
 
@@ -675,8 +676,8 @@ emailStr = {[headColorStr 'For questions, please contact ' infoColorStr ...
     '\it\bfEv.Yemini.WT2@gmail.com']};
 paperStr = {[headColorStr '\itPlease cite our publication: ' infoColorStr]
     '\bfYemini EI, Grundy LJ, Jucikas T, Brown AEX, Schafer WR'
-    '\bfTitle ???'
-    '\bfJournal ???'};
+    '\bfA database of Caenorhabditis elegans behavioral phenotypes'
+    '\bfNature Methods. 2013 Sep;10(9):877-9'};
 
 % Prepare the contact information.
 contactPosition = [xStart, 0, contactWidth, contactHeight];
@@ -826,8 +827,8 @@ name = {
     'Genotype'
     'Worms'};
 info = {
-    worm2StrainLabel(wormInfo)
-    ['\it' worm2GenotypeLabel(wormInfo)]
+    strrep(worm2StrainLabel(wormInfo), '_', '\_')
+    ['\it' strrep(worm2GenotypeLabel(wormInfo), '_', '\_')]
     num2str(length(wormInfo))};
 
 % Draw the worm information.

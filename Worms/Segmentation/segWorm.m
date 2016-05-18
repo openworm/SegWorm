@@ -5,9 +5,19 @@ function [worm errNum errMsg] = ...
 %
 %   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE)
 %
-%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, NUMERODE, NUMDILATE)
+%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, THRESHOLD)
 %
-%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, NUMERODE, NUMDILATE,
+%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, THRESHOLD,
+%                  ISFILLHOLES)
+%
+%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, THRESHOLD,
+%                  ISFILLHOLES, NUMDILATE, NUMERODE)
+%
+%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, THRESHOLD,
+%                  ISFILLHOLES, NUMDILATE, NUMERODE, BODYSCALE)
+%
+%   WORM = SEGWORM(IMG, FRAME, ISNORMALIZED, VERBOSE, THRESHOLD,
+%                  ISFILLHOLES, NUMDILATE, NUMERODE, BODYSCALE,
 %                  SAMPLES, ISINTERP)
 %
 %   Inputs:
@@ -16,10 +26,19 @@ function [worm errNum errMsg] = ...
 %       isNormalized - is the image already normalized (i.e., all pixel
 %                      values are between 0 to 1, inclusive)?
 %       verbose      - verbose mode shows the results in a figure
-%       numErode     - the number of time to erode the binary worm image;
-%                      if empty or 0, the binary image is left unchanged
+%       threshold    - the threshold for binarizing the image
+%                      if empty, an adaptive threshold is computed using
+%                      the Otsu method
+%       isFillHoles  - should we fill holes in the binary image?
+%                      if empty, holes in the binary image are not filled
 %       numDilate    - the number of time to dilate the binary worm image;
 %                      if empty or 0, the binary image is left unchanged
+%       numErode     - the number of time to erode the binary worm image;
+%                      if empty or 0, the binary image is left unchanged
+%       bodyScale    - a scale to manipulate the segmentation failures
+%                      due to rejected body shapes (if too many shapes are
+%                      being rejected, please scale down);
+%                      if empty, the scale is set to 1
 %       samples      - the number of samples to use in verbose mode;
 %                      if empty, all the worm is used.
 %       isInterp     - when downsampling, should we interpolate the missing
@@ -89,34 +108,68 @@ function [worm errNum errMsg] = ...
 % you must reproduce all copyright notices and other proprietary 
 % notices on any copies of the Software.
 
-% Are we eroding and/or dilating the worm?
-numErode = [];
-numDilate = [];
+% Is there a fixed threshold for binarizing the image?
+threshold = [];
 if ~isempty(varargin)
-    numErode = varargin{1};
+    threshold = varargin{1};
 end
+
+% Are we filling holes in the binary image?
+isFillHoles = [];
 if length(varargin) > 1
-    numDilate = varargin{2};
+    isFillHoles = varargin{2};
+end
+if isempty(isFillHoles)
+    isFillHoles = false;
+end
+
+% Are we dilating and/or eroding the worm?
+numDilate = [];
+numErode = [];
+if length(varargin) > 2
+    numDilate = varargin{3};
+end
+if length(varargin) > 3
+    numErode = varargin{4};
+end
+
+% Are we manipulating the cutoff for segmentation failures due to rejected
+% body shapes?
+bodyScale = [];
+if length(varargin) > 4
+    bodyScale = varargin{5};
+end
+if isempty(bodyScale) || bodyScale < 0
+    bodyScale = 1;
 end
 
 % Convert the image to grayscale.
 worm = [];
 vWorm = []; % the verbose-mode worm
-if (size(img,3) == 3)
+if (size(img,3) > 2)
     img = rgb2gray(img);
 end
 
 % Store the original then binarize the image.
 oImg = img;
-img = otsuImg(img, isNormalized);
+if isempty(threshold)
+    img = otsuImg(img, isNormalized);
+else
+    img = im2bw(img, threshold);
+end
 img = ~img;
 
-% Erode and dilate the binary image.
-if ~isempty(numErode) && numErode > 0
-    img = imerode(img, strel('disk', numErode));
+% Fill holes in the binary image.
+if isFillHoles
+    img = imfill(img, 'holes');
 end
+
+% Dilate then erode the binary image.
 if ~isempty(numDilate) && numDilate > 0
     img = imdilate(img, strel('disk', numDilate));
+end
+if ~isempty(numErode) && numErode > 0
+    img = imerode(img, strel('disk', numErode));
 end
 
 % Find the worm.
@@ -598,7 +651,7 @@ else
         % double that at the end of the head.
         maxWidth = max(cWidths);
         if isempty(hBendI)
-            if maxWidth / cWidths(hsBounds(2)) > 2
+            if maxWidth / cWidths(hsBounds(2)) > 2 / bodyScale
                 errNum = 107;
                 errMsg = ['The worm more than doubles its width ' ...
                     'from end of its head. Therefore, the worm is ' ...
@@ -636,7 +689,7 @@ else
         % If the worm coils, its width will grow to more than double
         % that at the end of the tail.
         if isempty(tBendI)
-            if maxWidth / cWidths(tsBounds(1)) > 2
+            if maxWidth / cWidths(tsBounds(1)) > 2 / bodyScale
                 errNum = 108;
                 errMsg = ['The worm more than doubles its width ' ...
                     'from end of its tail. Therefore, the worm is ' ...
@@ -677,7 +730,7 @@ else
             % width at the end of the head is our most accurate
             % estimate of the worm's width.
             if min(hBendDist) >= min(tBendDist)
-                if maxWidth / cWidths(hsBounds(2)) > 2
+                if maxWidth / cWidths(hsBounds(2)) > 2 / bodyScale
                     errNum = 107;
                     errMsg = ['The worm more than doubles its width ' ...
                         'from end of its head. Therefore, the worm is ' ...
@@ -703,7 +756,7 @@ else
             % width at the end of the tail is our most accurate
             % estimate of the worm's width.
             else
-                if maxWidth / cWidths(tsBounds(1)) > 2
+                if maxWidth / cWidths(tsBounds(1)) > 2 / bodyScale
                     errNum = 108;
                     errMsg = ['The worm more than doubles its width ' ...
                         'from end of its tail. Therefore, the worm is ' ...
@@ -798,7 +851,7 @@ else
     % Is the tail too small (or the head too large)?
     % Note: the area of the head and tail should be roughly the same size.
     % A 2-fold difference is huge!
-    if hArea > 2 * tArea
+    if hArea > 2 * tArea / bodyScale
         errNum = 109;
         errMsg = ['The worm tail is less than half the size of its ' ...
             'head. Therefore, the worm is significantly obscured and ' ...
@@ -815,7 +868,7 @@ else
     % Is the head too small (or the tail too large)?
     % Note: the area of the head and tail should be roughly the same size.
     % A 2-fold difference is huge!
-    elseif tArea > 2 * hArea
+    elseif tArea > 2 * hArea / bodyScale
         errNum = 110;
         errMsg = ['The worm head is less than half the size of its ' ...
             'tail. Therefore, the worm is significantly obscured and ' ...
@@ -933,7 +986,7 @@ else
     % Therefore, the combined area of the head and tail must be greater
     % than (1/6) / (4/6) = 1/4 the combined area of the left and right
     % sides.
-    if 4 * (hArea + tArea) < lArea + rArea
+    if 4 * (hArea + tArea) < (lArea + rArea) * bodyScale 
         errNum = 111;
         errMsg = ['The worm head and tail are less than 1/4 the size ' ...
             'of its remaining body. Therefore, the worm is ' ...
@@ -1150,16 +1203,16 @@ if verbose
     end
     
     % Are we downsampling the worm?
-    if length(varargin) > 2
-        samples = varargin{3};
+    if length(varargin) > 5
+        samples = varargin{6};
     else
         samples = [];
     end
     
     % When downsampling, are we interpolating the missing data or copying
     % it from the original worm?
-    if length(varargin) > 3
-        isInterp = varargin{4};
+    if length(varargin) > 6
+        isInterp = varargin{7};
     else
         isInterp = true;
     end

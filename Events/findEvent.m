@@ -409,7 +409,7 @@ if ~isempty(startFrames)
     if ~(isempty(minFramesThr) && isempty(maxFramesThr))
     
         % Compute the event frames.
-        eventNumFrames = endFrames - startFrames + 1;
+        eventNumFrames = endFrames(:) - startFrames(:) + 1;
         
         % Remove small events.
         removeEvents = false(size(eventNumFrames));

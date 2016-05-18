@@ -98,12 +98,6 @@ function [filename pages] = worm2pathTIF(filename, worm, wormName, varargin)
 % You will not remove any copyright or other notices from the Software; 
 % you must reproduce all copyright notices and other proprietary 
 % notices on any copies of the Software.
-%
-%
-% © Medical Research Council 2012
-% You will not remove any copyright or other notices from the Software; 
-% you must reproduce all copyright notices and other proprietary 
-% notices on any copies of the Software.
 
 % Initialize drawing information.
 maxPaths = 24;
@@ -305,6 +299,10 @@ else
     filename = [];
 end
 
+% Fix the Tex labels.
+wormName = strrep(wormName, '_', '\_');
+controlName = strrep(controlName, '_', '\_');
+
 % Initialize the files and drawing information.
 if length(wormInfo) > maxPaths
     wormInfo = wormInfo(round(linspace(1, length(wormInfo), maxPaths)));
@@ -425,7 +423,7 @@ end
 
 
 %% Load the worm path information.
-function [wormInfo, skeleton, coils, omegas, speed foraging] = ...
+function [wormInfo, skeleton, coils, omegas, speed, foraging] = ...
     loadWorms(featDir, wormInfo, isVerbose)
 
 % Initialize the video extension.
@@ -534,7 +532,7 @@ shapeMode = [rows, cols];
 % Construct the titles.
 wormTitleStr = ['\it' wormName ' \rm' sepStr2 ...
     '\bf' num2str(length(wormInfo)) ' Worms'];
-wormPageStr = ['\it' wormName];
+wormPageStr = ['\it' strrep(wormName, '_', '\_')];
 if ~isempty(controlInfo)
     controlTitleStr = ['\it' controlName ' \rm' sepStr2 ...
         '\bf' num2str(length(controlInfo)) ' Worms'];
@@ -547,11 +545,17 @@ wormPageStr = [wormPageStr ' \rm'];
 
 % Display the progress.
 if isVerbose
+    
+    % Fix the escaped Tex characters.
+    wormNameFixed = strrep(wormName, '\_', '_');
+    controlNameFixed = strrep(wormName, '\_', '_');
+    
+    % Display the progress.
     if isempty(controlName)
-        disp(['Printing path overlay for "' wormName '" page 1/2 ...']);
+        disp(['Printing path overlay for "' wormNameFixed '" page 1/2 ...']);
     else
-        disp(['Printing path overlay for "' wormName '" vs. "' ...
-            controlName '" page 1/2 ...']);
+        disp(['Printing path overlay for "' wormNameFixed '" vs. "' ...
+            controlNameFixed '" page 1/2 ...']);
     end
 end
 
@@ -562,8 +566,9 @@ visStr = 'off';
 if isShow
     visStr = 'on';
 end
-set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-    'PaperType', 'A2', 'Visible', visStr);
+set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+    'Visible', visStr);
+set(h, 'units', 'normalized');
 
 % Show the legend.
 drawPathsLegend(h, true);
@@ -617,11 +622,17 @@ end
 
 % Display the progress.
 if isVerbose
+    
+    % Fix the escaped Tex characters.
+    wormNameFixed = strrep(wormName, '\_', '_');
+    controlNameFixed = strrep(wormName, '\_', '_');
+    
+    % Display the progress.
     if isempty(controlName)
-        disp(['Printing path overview for "' wormName '" page 2/2 ...']);
+        disp(['Printing path overview for "' wormNameFixed '" page 2/2 ...']);
     else
-        disp(['Printing path overview for "' wormName '" vs. "' ...
-            controlName '" page 2/2 ...']);
+        disp(['Printing path overview for "' wormNameFixed '" vs. "' ...
+            controlNameFixed '" page 2/2 ...']);
     end
 end
 
@@ -632,8 +643,9 @@ visStr = 'off';
 if isShow
     visStr = 'on';
 end
-set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-    'PaperType', 'A2', 'Visible', visStr);
+set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+    'Visible', visStr);
+set(h, 'units', 'normalized');
 
 % Show the legend.
 drawPathsLegend(h, false);
@@ -708,6 +720,10 @@ rotateMode = 0;
 % Draw the paths.
 pathsPerPage = rows * cols;
 h = [];
+visStr = 'off';
+if isShow
+    visStr = 'on';
+end
 for i = 1:length(wormInfo)
     
     % Find the path page index.
@@ -734,12 +750,9 @@ for i = 1:length(wormInfo)
         % Open a new figure.
         page = page + 1;
         h = figure;
-        visStr = 'off';
-        if isShow
-            visStr = 'on';
-        end
-        set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-            'PaperType', 'A2', 'Visible', visStr);
+        set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+            'Visible', visStr);
+        set(h, 'units', 'normalized');
         hold on;
         
         % Show the legend.
@@ -747,7 +760,12 @@ for i = 1:length(wormInfo)
         
         % Display the progress.
         if isVerbose
-            disp(['Printing path for "' wormName '" page ' ...
+            
+            % Fix the escaped Tex characters.
+            wormNameFixed = strrep(wormName, '\_', '_');
+            
+            % Display the progress.
+            disp(['Printing path for "' wormNameFixed '" page ' ...
                 num2str(ceil(i / pathsPerPage)) '/' ...
                 num2str(ceil(length(wormInfo) / pathsPerPage)) ' ...']);
         end
@@ -755,7 +773,10 @@ for i = 1:length(wormInfo)
     
     % Draw the path.
     timestamp = wormInfo(i).experiment.environment.timestamp;
-    dateStr = datestr(datenum(timestamp), 31);
+    dateStr = [];
+    if ~isempty(timestamp)
+        dateStr = datestr(datenum(timestamp), 31);
+    end
     titleName = ['\it' wormName ' \rm' sepStr2 '\bf' dateStr];
     plotWormPath(titleName, skeleton{i}, coils{i}, omegas{i}, ...
         xLims, yLims, centerMode, rotateMode, 0, 0, false, ...
@@ -808,8 +829,8 @@ wormTitleStr = ['\it' wormName ' \rm' sepStr2 ...
     '\bf' num2str(length(wormInfo)) ' Worms'];
 wormPageStr = ['\it' wormName];
 if ~isempty(controlInfo)
-    controlTitleStr = ['\it' controlName ' \rm' sepStr2 ...
-        '\bf' num2str(length(controlInfo)) ' Worms'];
+    controlTitleStr = ['\it' controlName ' \rm' ...
+        sepStr2 '\bf' num2str(length(controlInfo)) ' Worms'];
     wormPageStr = [wormPageStr ' vs. ' controlName];
 end
 wormPageStr = [wormPageStr ' \rm'];
@@ -820,12 +841,18 @@ wormPageStr = [wormPageStr ' \rm'];
 
 % Display the progress.
 if isVerbose
+    
+    % Fix the escaped Tex characters.
+    wormNameFixed = strrep(wormName, '\_', '_');
+    controlNameFixed = strrep(wormName, '\_', '_');
+    
+    % Display the progress.
     if isempty(controlName)
-        disp(['Printing ' dataName ' overlay for "' wormName ...
+        disp(['Printing ' dataName ' overlay for "' wormNameFixed ...
             '" page 1/2 ...']);
     else
-        disp(['Printing ' dataName ' overlay for "' wormName '" vs. "' ...
-            controlName '" page 1/2 ...']);
+        disp(['Printing ' dataName ' overlay for "' wormNameFixed ...
+            '" vs. "' controlNameFixed '" page 1/2 ...']);
     end
 end
 
@@ -836,8 +863,9 @@ visStr = 'off';
 if isShow
     visStr = 'on';
 end
-set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-    'PaperType', 'A2', 'Visible', visStr);
+set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+    'Visible', visStr);
+set(h, 'units', 'normalized');
 
 % Show the legend.
 drawPathsDataLegend(h, dataName, unitName, dLim, true);
@@ -894,12 +922,18 @@ end
 
 % Display the progress.
 if isVerbose
+    
+    % Fix the escaped Tex characters.
+    wormNameFixed = strrep(wormName, '\_', '_');
+    controlNameFixed = strrep(wormName, '\_', '_');
+    
+    % Display the progress.
     if isempty(controlName)
-        disp(['Printing ' dataName ' overview for "' wormName ...
+        disp(['Printing ' dataName ' overview for "' wormNameFixed ...
             '" page 2/2 ...']);
     else
-        disp(['Printing ' dataName ' overview for "' wormName '" vs. "' ...
-            controlName '" page 2/2 ...']);
+        disp(['Printing ' dataName ' overview for "' wormNameFixed ...
+            '" vs. "' controlNameFixed '" page 2/2 ...']);
     end
 end
 
@@ -910,8 +944,9 @@ visStr = 'off';
 if isShow
     visStr = 'on';
 end
-set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-    'PaperType', 'A2', 'Visible', visStr);
+set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+    'Visible', visStr);
+set(h, 'units', 'normalized');
 
 % Show the legend.
 drawPathsDataLegend(h, dataName, unitName, dLim, false);
@@ -987,6 +1022,10 @@ rotateMode = 0;
 % Draw the paths.
 pathsPerPage = rows * cols;
 h = [];
+visStr = 'off';
+if isShow
+    visStr = 'on';
+end
 for i = 1:length(wormInfo)
     
     % Find the path page index.
@@ -1013,12 +1052,9 @@ for i = 1:length(wormInfo)
         % Open a new figure.
         page = page + 1;
         h = figure;
-        visStr = 'off';
-        if isShow
-            visStr = 'on';
-        end
-        set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-            'PaperType', 'A2', 'Visible', visStr);
+        set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+            'Visible', visStr);
+        set(h, 'units', 'normalized');
         hold on;
         
         % Show the legend.
@@ -1026,15 +1062,23 @@ for i = 1:length(wormInfo)
         
         % Display the progress.
         if isVerbose
-            disp(['Printing "' dataName '" for "' wormName '" page ' ...
-                num2str(ceil(i / pathsPerPage)) '/' ...
+            
+            % Fix the escaped Tex characters.
+            wormNameFixed = strrep(wormName, '\_', '_');
+            
+            % Display the progress.
+            disp(['Printing "' dataName '" for "' wormNameFixed ...
+                '" page ' num2str(ceil(i / pathsPerPage)) '/' ...
                 num2str(ceil(length(wormInfo) / pathsPerPage)) ' ...']);
         end
     end
     
     % Draw the path.
     timestamp = wormInfo(i).experiment.environment.timestamp;
-    dateStr = datestr(datenum(timestamp), 31);
+    dateStr = [];
+    if ~isempty(timestamp)
+        dateStr = datestr(datenum(timestamp), 31);
+    end
     titleName = ['\it' wormName ' \rm' sepStr2 '\bf' dateStr];
     plotWormPathData(titleName, skeleton{i}, coils{i}, omegas{i}, ...
         bodyI, data{i}, dLim, alpha, xLims, yLims, ...

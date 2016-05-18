@@ -309,6 +309,10 @@ else
     filename = [];
 end
 
+% Fix the Tex labels.
+wormName = strrep(wormName, '_', '\_');
+controlName = strrep(controlName, '_', '\_');
+
 % Initialize the feature information.
 dispInfo = wormDisplayInfo();
 dataInfo = wormDataInfo();
@@ -380,8 +384,9 @@ visStr = 'off';
 if isShow
     visStr = 'on';
 end
-set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-    'PaperType', 'A2', 'Visible', visStr);
+set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+    'Visible', visStr);
+set(h, 'units', 'normalized');
 hold on;
 
 % Draw an example.
@@ -594,13 +599,9 @@ end
 
 % Create a figure.
 h = figure;
-if isShow
-    set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-        'PaperType', 'A2');
-else
-    set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-        'PaperType', 'A2', 'Visible', 'off');
-end
+set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+    'Visible', visStr);
+set(h, 'units', 'normalized');
 hold on;
 
 % Draw the foraging amplitude.
@@ -797,13 +798,9 @@ end
 
 % Create a figure.
 h = figure;
-if isShow
-    set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-        'PaperType', 'A2');
-else
-    set(h, 'units', 'normalized', 'position', [0 0 1 1], ...
-        'PaperType', 'A2', 'Visible', 'off');
-end
+set(h, 'units', 'centimeters', 'position', [0 0 59.4 42], ...
+    'Visible', visStr);
+set(h, 'units', 'normalized');
 hold on;
 
 % Draw the range.
