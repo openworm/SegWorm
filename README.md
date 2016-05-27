@@ -9,6 +9,7 @@ http://htmlpreview.github.io/?https://github.com/openworm/SegWorm/blob/master/do
 
 Additional code from MRC for post processing of features has been uploaded.
 
-This code is not under active development. Other versions include:
-- (https://github.com/JimHokanson/SegwormMatlabClasses) - a partial reimplementation of the code that uses Matlab classes for better encapsulation
-- (https://github.com/MichaelCurrie/movement_validation) - part of this repo is similar to the Matlab classes except the code is in Python
+A Python port of this repository, which includes several changes, exists here:
+- https://github.com/openworm/open-worm-analysis-toolbox
+
+An effort is now underway to "merge" the changes committed to this repository in May 2016 into the Open Worm Analysis Toolbox repository.  (see issue https://github.com/openworm/open-worm-analysis-toolbox/issues/189)
